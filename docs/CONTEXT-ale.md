@@ -44,6 +44,9 @@ arancio/verde (mai rosa-azzurro), Okabe-Ito ovunque.
 - `fig02_composizione_stato` — popolazione 15-24 per sei stati, femmine e maschi a confronto:
   la figura del meccanismo (casalinghe 13,4% contro 1,7%).
 - `fig03_coorti` — dumbbell F/M della ritenzione di coorte, riferimento al 100%.
+- `fig04_mappa_sicilia` — coropleta dei 390 comuni (occupazione femminile 2011, 15+) con
+  Bagheria evidenziata, più la striscia di distribuzione che mostra il 12° percentile.
+  Confini ISTAT 2026 in EPSG:32633; Misiliscemi in bianco (non esisteva nel 2011).
 
 ## Aperture
 - `pipeline/stats.py` condiviso (Wilson/Newcombe/LPM): decisione di team, per ora le

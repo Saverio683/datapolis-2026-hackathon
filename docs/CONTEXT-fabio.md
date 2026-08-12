@@ -22,6 +22,14 @@ sesso, tienila** anche se a te non serve: una sola tabella origine-destinazione 
 genere (chi pendola verso Palermo, ragazzi o ragazze?) cambia la portata del focus gender
 e trasforma lo scenario di policy qui sotto in un intervento concreto.
 
+## Cartografia già pronta (per le tue mappe)
+`pipeline/fetch` scarica i confini ISTAT e `pipeline/build` li trasforma in
+`comuni_sicilia_poligoni.csv` (vertici già proiettati, EPSG:32633) e
+`comuni_sicilia_centroidi.csv` (punto-etichetta per comune). **Non serve `sf`**, che su queste
+macchine non si installa: in R si disegna con `geom_polygon(group = interaction(territorio,
+parte), subgroup = anello, rule = "evenodd")`. `viz/fig04_mappa_sicilia.R` è l'esempio completo,
+copiabile cambiando solo la variabile colorata. Dettagli e trappole in `docs/sources.md` §5.
+
 ## Cosa offre il thread genere (`data/processed/`)
 - `genere_composizione_stato.csv` — chi è disponibile a muoversi: popolazione 15-24 per
   stato (occupati / in cerca / studenti / altri inattivi) e genere, quattro territori.
