@@ -77,6 +77,7 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 - Palette: colorblind-safe (viridis per continue, Okabe-Ito per categoriche). Per il genere, mai il cliché rosa/azzurro.
 - Ogni figura: titolo che enuncia il finding (non la variabile), fonte + anno in caption, export sia PNG 300dpi sia SVG in `figures/`.
 - Mappe: confini ISTAT ufficiali (shapefile/GeoJSON delle unità amministrative), CRS documentato nello script.
+  - `sf` **non è installabile** senza root (servono GDAL/GEOS/PROJ di sistema): la geometria la fa geopandas in `pipeline/build.py`, che esporta i poligoni come tabella di vertici già proiettata (`comuni_sicilia_poligoni.csv`, EPSG:32633). In R si disegna con `geom_polygon(group = interaction(territorio, parte), subgroup = anello, rule = "evenodd")` — `parte` separa le isole, `anello` i buchi. Esempio completo: `viz/fig04_mappa_sicilia.R`.
 
 ## Guardrail
 - Nessun numero hardcodato nella policy proposal o nelle slide: ogni cifra si rigenera dal notebook.
