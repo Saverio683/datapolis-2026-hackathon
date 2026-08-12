@@ -1,0 +1,137 @@
+dimensione,codice,etichetta
+genere,M,maschi
+genere,F,femmine
+genere,T,totale
+condizione,22,forze di lavoro
+condizione,1,occupato
+condizione,12,in cerca di occupazione
+condizione,23,non forze di lavoro
+condizione,24,percettore/rice di una o più pensioni per effetto di attività lavorativa precedente o di redditi da capitale
+condizione,5,studente/ssa
+condizione,4,casalinga/o
+condizione,7,in altra condizione
+condizione,99,totale
+titolo_studio,NED,nessun titolo di studio
+titolo_studio,IL,analfabeti
+titolo_studio,LBNA,alfabeti privi di titolo di studio
+titolo_studio,PSE,licenza di scuola elementare
+titolo_studio,LSE,licenza di scuola media inferiore o di avviamento professionale
+titolo_studio,USE_IF,diploma di istruzione secondaria di II grado o di qualifica professionale (corso di 3-4 anni) compresi IFTS
+titolo_studio,BL,diploma di tecnico superiore ITS o titolo di studio terziario di primo livello
+titolo_studio,ML_RDD,titolo di studio terziario di secondo livello e dottorato di ricerca
+titolo_studio,ML,titolo di studio terziario di secondo livello
+titolo_studio,RDD,dottorato di ricerca/diploma accademico di formazione alla ricerca
+titolo_studio,ALL,totale
+cittadinanza,ITL,italiano-a
+cittadinanza,FRGAPO,straniero-a/apolide
+cittadinanza,TOTAL,totale
+stato_civile,ALL,totale
+eta,Y0,0 anni
+eta,Y1,1 anni
+eta,Y2,2 anni
+eta,Y3,3 anni
+eta,Y4,4 anni
+eta,Y5,5 anni
+eta,Y6,6 anni
+eta,Y7,7 anni
+eta,Y8,8 anni
+eta,Y9,9 anni
+eta,Y10,10 anni
+eta,Y11,11 anni
+eta,Y12,12 anni
+eta,Y13,13 anni
+eta,Y14,14 anni
+eta,Y15,15 anni
+eta,Y16,16 anni
+eta,Y17,17 anni
+eta,Y18,18 anni
+eta,Y19,19 anni
+eta,Y20,20 anni
+eta,Y21,21 anni
+eta,Y22,22 anni
+eta,Y23,23 anni
+eta,Y24,24 anni
+eta,Y15-24,15-24 anni
+eta,Y9-24,9-24 anni
+eta,Y25,25 anni
+eta,Y26,26 anni
+eta,Y27,27 anni
+eta,Y28,28 anni
+eta,Y29,29 anni
+eta,Y30,30 anni
+eta,Y31,31 anni
+eta,Y32,32 anni
+eta,Y33,33 anni
+eta,Y34,34 anni
+eta,Y35,35 anni
+eta,Y36,36 anni
+eta,Y37,37 anni
+eta,Y38,38 anni
+eta,Y39,39 anni
+eta,Y40,40 anni
+eta,Y41,41 anni
+eta,Y42,42 anni
+eta,Y43,43 anni
+eta,Y44,44 anni
+eta,Y45,45 anni
+eta,Y46,46 anni
+eta,Y47,47 anni
+eta,Y48,48 anni
+eta,Y49,49 anni
+eta,Y25-49,25-49 anni
+eta,Y50,50 anni
+eta,Y51,51 anni
+eta,Y52,52 anni
+eta,Y53,53 anni
+eta,Y54,54 anni
+eta,Y55,55 anni
+eta,Y56,56 anni
+eta,Y57,57 anni
+eta,Y58,58 anni
+eta,Y59,59 anni
+eta,Y60,60 anni
+eta,Y61,61 anni
+eta,Y62,62 anni
+eta,Y63,63 anni
+eta,Y64,64 anni
+eta,Y50-64,50-64 anni
+eta,Y65,65 anni
+eta,Y66,66 anni
+eta,Y67,67 anni
+eta,Y68,68 anni
+eta,Y69,69 anni
+eta,Y70,70 anni
+eta,Y71,71 anni
+eta,Y72,72 anni
+eta,Y73,73 anni
+eta,Y74,74 anni
+eta,Y75,75 anni
+eta,Y76,76 anni
+eta,Y77,77 anni
+eta,Y78,78 anni
+eta,Y79,79 anni
+eta,Y80,80 anni
+eta,Y81,81 anni
+eta,Y82,82 anni
+eta,Y83,83 anni
+eta,Y84,84 anni
+eta,Y85,85 anni
+eta,Y86,86 anni
+eta,Y87,87 anni
+eta,Y88,88 anni
+eta,Y89,89 anni
+eta,Y90,90 anni
+eta,Y91,91 anni
+eta,Y92,92 anni
+eta,Y93,93 anni
+eta,Y94,94 anni
+eta,Y95,95 anni
+eta,Y96,96 anni
+eta,Y97,97 anni
+eta,Y98,98 anni
+eta,Y99,99 anni
+eta,Y_GE100,100 anni e più
+eta,Y_GE65,65 anni e più
+eta,Y_GE15,15 anni e più
+eta,Y_GE9,9 anni e più
+eta,TOTAL,totale
