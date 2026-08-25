@@ -21,6 +21,13 @@ sono classificati come persone in cerca di occupazione. Sono casalinghe/i o pers
 altre condizioni inattive; “invisibili” non socialmente, ma rispetto ai normali canali di
 matching fra titolo e lavoro.
 
+**Chi c'è dentro, per genere** (notebook genere, sezione «La ritenzione per età»): il
+gruppo dei ~1.121 **non è femminile nelle dimensioni** — 573 ragazze e 549 ragazzi, 51% F —
+ma lo è **nell'etichetta**: fra le ragazze prevale una condizione dichiarata (387
+casalinghe contro 50), fra i ragazzi il residuo senza nome ("altra condizione": 485 contro
+183). L'outreach deve quindi coprire entrambi i generi, con agganci diversi: per le
+ragazze il carico di cura ha già un nome censuario, per i ragazzi non c'è neppure quello.
+
 Questo sposta radicalmente la domanda. Se un giovane non arriva a candidarsi, migliorare
 l'abbinamento tra curriculum e offerte non basta. Prima bisogna capire **perché il titolo
 posseduto non si trasforma neppure in ricerca attiva**.
@@ -104,8 +111,9 @@ azione concreta entro 15 giorni.
 Il pilota non costruisce un elenco nominativo permanente. Usa consenso, minimizzazione dei
 dati, pseudonimizzazione per il follow-up e cancellazione programmata.
 
-**Target:** residenti 18–24 fuori da studio e lavoro, con priorità a chi non cerca
-attivamente da almeno tre mesi.
+**Target:** residenti 18–24 fuori da studio e lavoro, di entrambi i generi, con priorità
+a chi non cerca attivamente da almeno tre mesi; esiti sempre disaggregati per genere
+(la platea 2024 è 573 F + 549 M).
 
 **KPI:** tasso di contatto; quota con titolo rilevato; tempo al primo passo; riattivazione
 della ricerca; ingresso in formazione o lavoro a 3 e 6 mesi; esiti per titolo, barriera e
