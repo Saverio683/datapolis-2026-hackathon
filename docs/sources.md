@@ -445,3 +445,274 @@ per la Sicilia è la 33N, `pipeline/build.py` riproietta a **EPSG:32633**.
 punto-etichetta interno al poligono per comune. In R si disegnano con `geom_polygon(group = comune ×
 parte, subgroup = anello, rule = "evenodd")`: `parte` separa le isole dello stesso comune, `anello`
 distingue il contorno esterno dai buchi. Sono 15.702 vertici dopo `simplify(100 m)`, 0,6 MB.
+
+---
+
+## 6. ISTAT — Censimento permanente, i cinque comuni vicini a Bagheria (SDMX)
+
+Scaricato il **2026-08-25** per portare nelle figure 1 e 7 del thread Genere anche il vicinato
+di Bagheria. Stesso host, stessi dataflow della sezione 2: cambia solo la `key`, che elenca i
+cinque comuni **geograficamente più vicini** per distanza fra centroidi ISTAT (la selezione la
+calcola `notebooks/genere.ipynb`, cella della mappa, e la scrive in
+`data/processed/genere_mappa_etichette.csv`).
+
+| Codice | Comune | Distanza dal centroide di Bagheria |
+|---|---|---|
+| `082067` | Santa Flavia | 2,9 km |
+| `082035` | Ficarazzi | 3,2 km |
+| `082079` | Villabate | 4,7 km |
+| `082023` | Casteldaccia | 7,9 km |
+| `082048` | Misilmeri | 8,1 km |
+
+URL esatti (header `Accept: application/vnd.sdmx.data+csv;version=1.0.0`, `Accept-Language: it`):
+
+```
+data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/A.082067+082035+082079+082023+082048......../ALL/?detail=full
+data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_1,1.0/A.082067+082035+082079+082023+082048......../ALL/?detail=full
+data/IT1,DF_DCSS_POP_DEMCITMIG_SETA_1,1.0/A.082067+082035+082079+082023+082048......./ALL/?detail=full
+```
+
+→ `data/raw/censpop_lavoro_vicini_2026-08-25.csv`, `censpop_istruzione_vicini_2026-08-25.csv` e
+`censpop_popolazione_vicini_2026-08-25.csv`, struttura identica ai fratelli a quattro territori
+(sezione 2). Comando: `uv run python -m pipeline.fetch --solo=vicini`.
+
+**Perché file separati e non `TERRITORI` allargato.** `pipeline/build.py` prende sempre il raw più
+recente per prefisso (`ultimo()`): riscaricare i censpop con nove territori li avrebbe serviti in
+automatico a tutti i thread, cambiando i numeri di chi aggrega senza filtrare per territorio.
+Con prefissi distinti i `censpop_*_long.csv` condivisi restano a quattro territori e il vicinato
+vive in `censpop_istr_lav_vicini_long.csv` (lavoro + istruzione, stesso schema del condiviso) e
+`censpop_popolazione_vicini_long.csv`.
+
+**Uscite del thread Genere** (tutte con i cinque comuni separati e, dove serve alle figure, la riga
+aggregata `territorio = "VICINI5"` — chi somma quei file per territorio deve escluderla):
+`genere_gap_occupazione_ci_vicini.csv` (fig01), `genere_composizione_stato_dettaglio_vicini.csv`
+(fig02), `genere_coorti_vicini.csv` (fig03), `genere_forbice_vicini.csv` (fig05),
+`genere_ritenzione_eta_vicini.csv` (fig07).
+
+**Copertura verificata sul raw**: 5 territori, anni 2018-2024 con il **2020 assente sulla classe
+15-24** (stesso buco alla fonte dei territori di confronto), età singole presenti dal 2021.
+
+**Taglia campionaria**: comuni fra 10.000 e 28.000 abitanti, 580-800 donne 15-24 per anno e
+conteggi di occupate nell'ordine delle decine. Gli intervalli di confidenza sul gap sono molto più
+larghi di quelli dei quattro territori di confronto: le serie sono contesto locale, non stime da
+confrontare anno su anno.
+
+**Timeout**: la query per età singola impiega più di 180 secondi a produrre il corpo della risposta
+(verificato 2026-08-25, tre tentativi falliti). Il timeout di `pipeline/fetch.py` è stato portato a
+600 secondi.
+
+---
+
+## 7. ISTAT — Censimento permanente oltre il 2011: gemelle, 390 comuni, classi quinquennali
+
+Ricognizione e scarico del **2026-08-25**. Domanda di partenza: `viz/fig10_muro_recente.R`
+si ferma al 2011 perché 8milaCensus è l'ultimo censimento decennale — c'è modo di arrivare
+più vicino a oggi restando dentro le fonti già censite? **Sì**, e senza cambiare fonte:
+la stessa tavola lavoro della sezione 2 espone la classe **15 anni e più**.
+
+### La chiave del ponte: `AGE_NOCLASS = Y_GE15`
+
+In `DF_DCSS_ISTR_LAV_PEN_2_TV_3` la classe `Y_GE15` esiste a livello comunale, incrociata
+con `GENDER` e `CUR_ACT_STAT`. È **la stessa base dei quattro indicatori di lavoro di
+8milaCensus**, non un'approssimazione: le definizioni del codebook (`indicatori.csv`)
+combaciano codice per codice.
+
+| 8milaCensus (1991-2011) | Ricostruzione dal permanente (2018-2024) |
+|---|---|
+| `L11` tasso di occupazione femminile | `CUR_ACT_STAT=1` / `99`, `GENDER=F`, `Y_GE15` |
+| `L10` tasso di occupazione maschile | `1` / `99`, `GENDER=M`, `Y_GE15` |
+| `L2` partecipazione al lavoro femminile | `22` / `99`, `GENDER=F`, `Y_GE15` |
+| `L7` tasso di disoccupazione femminile | `12` / `22`, `GENDER=F`, `Y_GE15` |
+
+`I1` (differenziale educativo M/F) **non è ricostruibile**: 8milaCensus lo calcola sulla
+popolazione **6+**, la tavola istruzione del permanente parte da `Y_GE9` e non ha una classe
+15+. Sarebbe un altro indicatore, non un seguito: resta fermo al 2011.
+
+### ✔ Le due rilevazioni concordano sull'occupazione — e non sulla disoccupazione
+
+Il salto 2011 → 2018 mette a confronto **due disegni di rilevazione diversi**: censimento
+decennale universale a questionario contro censimento permanente campionario appoggiato ai
+registri. Non è una validazione esterna (i numeri restano ISTAT da entrambe le parti), ma
+dice se il livello dipende dal disegno. Bagheria:
+
+| | 2011 (decennale) | 2018 (permanente) | scarto |
+|---|---|---|---|
+| L11 occupazione F | 18,1 | 18,8 | +0,7 |
+| L10 occupazione M | 43,1 | 40,4 | −2,7 |
+| L2 partecipazione F | 28,7 | 30,4 | +1,7 |
+| L7 disoccupazione F | 36,9 | 38,1 | +1,2 |
+
+⚠️ **La rottura vera non è al giunto fra le fonti: è dentro il censimento permanente, fra
+2019 e 2021**, e c'è su tutti i territori (Bagheria L7 38,1 → 22,6; Italia 15,1 → 10,6;
+Sicilia 30,1 → 17,3). Cambia la misura di "in cerca di occupazione", quindi tocca **L7 e L2**
+e lascia intatti L10 e L11, che attraversano il 2019-2021 senza scalini. Conseguenza
+operativa: **si estendono L11 e L10; L2 e L7 solo con la rottura marcata a vista**.
+La tabella completa per i quattro territori è in `data/processed/genere_coerenza_fonti.csv`,
+prodotta da `notebooks/genere.ipynb` (sezione "Il ponte fra i due censimenti").
+
+### ⚠️ Il limite che decide come si scarica: IIS taglia il segmento di path
+
+Il server SDMX sta dietro IIS, che rifiuta un **segmento di path** oltre ~260 caratteri con
+`400 Bad Request - Invalid URL` (non `414`, e il corpo è HTML: senza il controllo di
+`pipeline/fetch.py` finirebbe in `data/raw/` una pagina di errore travestita da CSV).
+Verificato il 2026-08-25 sulla chiave dei comuni: **33 codici → 200, 35 → 400**.
+Quindi i 390 comuni siciliani si scaricano in **12 blocchi** da 33.
+
+### Le tre query aggiunte
+
+Header come nella sezione 2 (`Accept: application/vnd.sdmx.data+csv;version=1.0.0`,
+`Accept-Language: it`). Comandi: `uv run python -m pipeline.fetch --solo=gemelle`,
+`--solo=demografia_classi`, `--solo=15piu`.
+
+**A. Le dieci gemelle strutturali** — `censpop_lavoro_gemelle_2026-08-25.csv`
+```
+data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/A.082070+082067+082020+082073+082048+082005+082071+081008+084028+084041......../ALL/?detail=full
+```
+Termini Imerese, Santa Flavia, Capaci, Trabia, Misilmeri, Altofonte, Terrasini, Erice,
+Porto Empedocle, Sciacca — il gruppo di controllo del matching Mahalanobis, che finora
+esisteva solo al 2011. Tavola intera (tutte le classi d'età), 1,0 MB.
+Attenzione: **Santa Flavia e Misilmeri sono anche fra i cinque vicini** della sezione 6.
+I due raw restano separati, chi li unisse deve deduplicare per territorio.
+
+**B. I 390 comuni siciliani sulla sola classe 15+** — `censpop_lavoro_15piu_sicilia_01..12_2026-08-25.csv`
+```
+data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/A.{33 codici separati da +}...Y_GE15.TOTAL.ALL.../ALL/?detail=full
+```
+Chiave ristretta a `Y_GE15` / `CITIZENSHIP=TOTAL` / `EDU_ATTAIN=ALL`: 162 righe per comune
+invece di 819. Senza il vincolo sarebbero ~320.000 righe per usarne un quinto.
+È il **denominatore dei percentili regionali**, che finora esistevano solo al 2011.
+
+⚠️ **390 e non 391.** La lista è quella dei comuni **ai confini 2011**, la stessa su cui il
+notebook calcola i percentili di 8milaCensus. **Misiliscemi** (`081025`), istituito nel 2021
+staccandosi da Trapani, è escluso di proposito: includerlo cambierebbe il denominatore fra le
+due epoche e renderebbe i percentili non confrontabili. Corollario da dichiarare: i valori
+2021-2024 di **Trapani** (`081021`) sono su un territorio più piccolo di quello del 2011.
+
+**C. Popolazione per classi quinquennali** — `censpop_demografia_classi_2026-08-25.csv`
+```
+data/IT1,DF_DCSS_POP_DEMCITMIG_TV_1,1.0/A.082006+082053+ITG1+IT......./ALL/?detail=full
+```
+DSD a **9 dimensioni**: `FREQ, REF_AREA, INDICATOR, GENDER, AGE_CLASS, MARITAL_STATUS,
+CITIZENSHIP, AREA_CONTRY_CITIZEN, USUAL_RESID_1Y`. Nota che la dimensione dell'età qui si
+chiama `AGE_CLASS`, non `AGE_NOCLASS` come nelle tavole della sezione 2.
+
+È **l'unica tavola comunale che copre 2001 e 2011 oltre al 2018-2024**: `SETA_1` parte dal
+2018 e le età singole solo dal 2021. Le classi `Y15-19`, `Y20-24`, `Y25-29`, `Y30-34`
+ricompongono il target **15-34 esatto**, quindi la serie demografica del target si allunga di
+vent'anni. A livello comunale `MARITAL_STATUS`, `AREA_CONTRY_CITIZEN` e `USUAL_RESID_1Y`
+valgono solo `ALL` e `CITIZENSHIP` solo `TOTAL`: niente incroci, solo la struttura per età.
+
+### Tempi e copertura
+
+- Blocchi da 33 comuni: ~50-60 s ciascuno, ~12 minuti per i 390. `DF_DCSS_POP_DEMCITMIG_TV_1`
+  a quattro territori: 70 s. Il timeout di `pipeline/fetch.py` (600 s) basta.
+- Anni serviti su `Y_GE15`: **2018, 2019, 2021, 2022, 2023, 2024**. Il **2020 manca**, come su
+  ogni classe che contenga i 15-24 (stesso buco alla fonte già noto dalla sezione 2).
+- `DF_DCSS_POP_DEMCITMIG_TV_1`: **2001, 2011, 2018-2024**, qui il 2020 c'è.
+
+### Uscite in `data/processed/`
+
+| File | Contenuto |
+|---|---|
+| `censpop_lavoro_gemelle_long.csv` | tavola lavoro delle 10 gemelle, schema dei `censpop_istr_lav_*_long` |
+| `censpop_lavoro_15piu_sicilia_long.csv` | 390 comuni × `Y_GE15`, 2018-2024 |
+| `censpop_demografia_classi_long.csv` | popolazione per classi quinquennali, 2001-2024 |
+| `genere_coerenza_fonti.csv` | decennale 2011 vs permanente 2018 + salto 2019-2021, per i 4 territori |
+| `genere_madri_recente.csv` | L2/L11/L10/L7 e percentile sui 390, 2018-2024 (gemello recente di `genere_gap_madri.csv`) |
+| `genere_pretrend_gemelle_recente.csv` | L11 di Bagheria contro la banda interquartile delle gemelle, 2018-2024 |
+
+`pipeline/build.py` salta queste uscite senza rompersi se i raw non ci sono, così chi non
+ha ancora rifatto il fetch continua a rigenerare tutto il resto.
+
+### Regola per le figure
+
+Le due fonti restano due. **Mai una linea continua fra il 2011 e il 2018**: stacco visibile,
+fonte dichiarata per blocco. I **percentili** attraversano il giunto meglio dei livelli perché
+sono ranghi calcolati dentro l'anno, e lo scarto di definizione sposta tutti i 390 comuni
+nello stesso verso; i livelli assoluti no, e vanno letti come due serie affiancate.
+
+---
+
+## 8. Verifica di attualità dei claim: la graduatoria del 2011 regge nel 2024?
+
+*Ricognizione del 2026-08-25, senza nuovi download.* Tutto quello che segue si ricava dai
+raw già in `data/raw/` (sezioni 1, 2, 6 e 7): serve a rispondere alla domanda «i claim
+poggiano su dati legacy o su previsioni verificabili?» prima di portarli nella proposal.
+
+### Persistenza della graduatoria dei 390 comuni
+
+Stesso indicatore (`L11`, tasso di occupazione femminile 15+), stessa platea (390 comuni ai
+confini 2011), due epoche e due disegni di rilevazione. Il confronto è fra **ranghi**, non
+fra livelli, per la ragione già scritta in fondo alla sezione 7.
+
+| coppia di annate | rho di Spearman | quintile basso ancora tale nel 2024 |
+|---|---|---|
+| 2011 → 2024 (8milaCensus → permanente) | **0,848** | 74% |
+| 2011 → 2018 | 0,883 | 83% |
+| 2018 → 2024 (solo permanente) | **0,919** | 83% |
+| 2021 → 2024 (solo permanente) | 0,942 | 87% |
+
+Letto così: la graduatoria comunale è una struttura stabile, non un rumore annuale. Un
+claim di posizionamento costruito sul censimento 2011 **si è avverato**, e il rho lo misura.
+Il livello invece va aggiornato: Bagheria passa da 18,1% (12° percentile) a 23,7% (17°),
+mentre la mediana regionale sale da 23,6% a 28,3% — cioè **nel 2024 Bagheria arriva dove
+stava la mediana siciliana nel 2011**.
+
+Cautela d'obbligo: rho alto significa che l'*ordine* si conserva, non che i livelli siano
+confrontabili. Le due rilevazioni non misurano la stessa cosa allo stesso modo, e sulla
+mappa le due annate restano due scale distinte.
+
+### Ritenzione di coorte a passo quinquennale
+
+`DF_DCSS_POP_DEMCITMIG_TV_1` (sezione 7) serve 2001, 2011 e 2018-2024 per classi
+quinquennali: una coorte si segue spostandosi di **una classe ogni cinque anni**. Chi ha
+15-19 anni in *t* ne ha 25-29 in *t+10*.
+
+| coorte 15-19, femmine | Bagheria | Palermo | Sicilia | Italia |
+|---|---|---|---|---|
+| 2001 → 2011 | **102,9%** | 87,6% | 97,8% | 113,1% |
+| 2011 → 2021 | **88,6%** | 90,2% | 92,1% | 104,4% |
+
+Sui maschi il ribaltamento è di 98,4% → 83,9%. In entrambi i casi **circa quattordici punti
+in un decennio**, e nel secondo decennio Bagheria sta sotto Palermo sui maschi.
+
+**Il decennio 2011-2021 ha una gamba per rilevazione** (2011 decennale, 2021 permanente) e
+va marcato. La distorsione nota però va nel verso prudente: il censimento 2011 contò meno
+dell'anagrafe, quindi sta al *denominatore* del decennio che crolla e al *numeratore* di
+quello che tiene — il divario fra i due decenni è una **stima per difetto in entrambe le
+gambe**. In più i controlli interamente interni al permanente (2018→2023 e 2019→2024)
+ritrovano la perdita sulla transizione 20-24 → 25-29: femmine 92,8% e 93,3% a Bagheria
+contro ~102% in Italia. La perdita è databile ed è attuale.
+
+### Stabilità della «forbice» (fig05)
+
+Le due misure della forbice ripetute su tutte le annate disponibili (2018-2024, il 2020
+manca), Bagheria contro i quattro benchmark e il vicinato aggregato:
+
+| misura | Bagheria all'estremo in |
+|---|---|
+| tasso di occupazione femminile 15-24 (il più basso) | **6 anni su 6** |
+| vantaggio educativo femminile 9-24 (il più ampio) | 4 anni su 6 (nel 2018-2019 era la Sicilia) |
+| rapporto M/F sull'occupazione (il più alto) | 4 anni su 6 (nel 2022-2023 era il vicinato) |
+
+Qui il problema non è l'età del dato — la fotografia è già al 2024 — ma il fatto che poggi
+su **un anno solo**. Il rapporto M/F di Bagheria oscilla (2,47 nel 2018 → 1,89 nel 2023 →
+2,01 nel 2024) e nel 2023 era il migliore del gruppo locale. Il claim difendibile è il
+**livello femminile**, minimo del panel ogni anno, insieme all'allargamento della forbice
+(vantaggio educativo da +3,1 a +4,2 mentre il vicinato crolla da +2,9 a +0,5).
+
+### Uscite in `data/processed/`
+
+| File | Contenuto |
+|---|---|
+| `genere_distribuzione_390.csv` | per anno: Bagheria, percentile, mediana, quartili, rho vs 2011 e vs 2024, persistenza del quintile |
+| `genere_mappa_2011_2024.csv` | 390 comuni: valore e percentile alle due annate, centroide, ruolo per l'etichettatura |
+| `genere_ritenzione_decennale.csv` | ritenzione di coorte per tutte le classi e i quattro periodi (2001-2011, 2011-2021, 2018-2023, 2019-2024) |
+| `genere_forbice_serie.csv` | le tre misure della forbice per 5 territori × 6 anni (fotografia e serie nella stessa tabella) |
+
+### Regola per le figure
+
+Un claim di posizionamento va scritto **con il suo rho**: dire «12° percentile nel 2011»
+senza dire che quella graduatoria predice il 2024 con rho 0,848 lascia al revisore
+l'obiezione più facile. E viceversa: una fotografia recente costruita su un anno solo va
+accompagnata dalla serie, altrimenti si scambia un'oscillazione per una struttura.
