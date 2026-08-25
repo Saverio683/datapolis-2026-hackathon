@@ -1,0 +1,8 @@
+anno,fonte,bagheria,percentile,comuni_sotto,mediana,q1,q3,minimo,massimo,rho_vs_2011,rho_vs_2024,quintile_basso_ancora_tale_nel_2024_pct
+2011,8milaCensus,18.1,12.3,48,23.6,19.7,27.4,13.0,39.4,1.0,0.848,74.0
+2018,censimento permanente,18.8,8.2,32,24.3,20.9,27.4,14.8,36.0,0.883,0.919,83.3
+2019,censimento permanente,19.4,9.7,38,25.0,21.6,28.0,14.8,35.9,0.879,0.925,83.3
+2021,censimento permanente,20.6,13.3,52,25.7,22.7,28.7,16.5,37.1,0.887,0.942,87.2
+2022,censimento permanente,21.1,13.1,51,26.3,23.3,29.5,14.7,37.6,0.881,0.958,85.9
+2023,censimento permanente,22.2,12.6,49,27.5,24.3,30.6,14.8,38.4,0.849,0.969,89.7
+2024,censimento permanente,23.7,16.9,66,28.3,25.4,31.6,14.1,39.1,0.848,1.0,100.0

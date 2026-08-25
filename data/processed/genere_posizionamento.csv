@@ -1,0 +1,8 @@
+indicatore,nome,verso,bagheria,gemelle_min,gemelle_q1,gemelle_mediana,gemelle_q3,gemelle_max,gemelle_sotto,n_gemelle,percentile_390,n_regione
+L11,Tasso di occupazione femminile,1,18.1,16.2,17.8,19.8,22.7,26.8,3,10,12.3,390
+L7,Tasso di disoccupazione femminile,-1,36.9,21.3,28.0,30.5,35.1,41.3,8,10,94.6,390
+I1,Differenziali di genere per l'istruzione superiore,-1,98.9,97.0,100.1,101.2,103.4,107.0,1,10,37.4,390
+L4,Incidenza giovani 15-29 anni che non studiano e non lavorano,-1,40.1,30.4,37.4,41.2,42.7,46.8,4,10,87.4,390
+F4,Incidenza di giovani che vivono da soli,1,3.6,3.6,4.0,4.4,4.9,8.6,0,10,3.3,390
+F7,Incidenza di coppie giovani con figli,0,11.7,7.7,10.6,11.8,13.0,14.0,5,10,81.0,390
+M2,Mobilità fuori comune per studio o lavoro,0,14.3,3.6,16.3,24.0,27.4,30.7,2,10,25.4,390

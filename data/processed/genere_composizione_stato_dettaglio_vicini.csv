@@ -1,0 +1,109 @@
+territorio,nome_territorio,anno,genere,stato,quota
+VICINI5,vicinato (5 comuni),2018,F,occupati,5.9
+VICINI5,vicinato (5 comuni),2018,M,occupati,13.4
+VICINI5,vicinato (5 comuni),2018,T,occupati,9.7
+VICINI5,vicinato (5 comuni),2019,F,occupati,6.5
+VICINI5,vicinato (5 comuni),2019,M,occupati,13.1
+VICINI5,vicinato (5 comuni),2019,T,occupati,9.9
+VICINI5,vicinato (5 comuni),2021,F,occupati,7.5
+VICINI5,vicinato (5 comuni),2021,M,occupati,15.6
+VICINI5,vicinato (5 comuni),2021,T,occupati,11.7
+VICINI5,vicinato (5 comuni),2022,F,occupati,7.9
+VICINI5,vicinato (5 comuni),2022,M,occupati,16.4
+VICINI5,vicinato (5 comuni),2022,T,occupati,12.3
+VICINI5,vicinato (5 comuni),2023,F,occupati,8.1
+VICINI5,vicinato (5 comuni),2023,M,occupati,16.7
+VICINI5,vicinato (5 comuni),2023,T,occupati,12.5
+VICINI5,vicinato (5 comuni),2024,F,occupati,8.9
+VICINI5,vicinato (5 comuni),2024,M,occupati,17.7
+VICINI5,vicinato (5 comuni),2024,T,occupati,13.4
+VICINI5,vicinato (5 comuni),2018,F,in cerca,18.8
+VICINI5,vicinato (5 comuni),2018,M,in cerca,19.4
+VICINI5,vicinato (5 comuni),2018,T,in cerca,19.1
+VICINI5,vicinato (5 comuni),2019,F,in cerca,18.1
+VICINI5,vicinato (5 comuni),2019,M,in cerca,20.5
+VICINI5,vicinato (5 comuni),2019,T,in cerca,19.4
+VICINI5,vicinato (5 comuni),2021,F,in cerca,9.7
+VICINI5,vicinato (5 comuni),2021,M,in cerca,12.5
+VICINI5,vicinato (5 comuni),2021,T,in cerca,11.1
+VICINI5,vicinato (5 comuni),2022,F,in cerca,10.5
+VICINI5,vicinato (5 comuni),2022,M,in cerca,12.7
+VICINI5,vicinato (5 comuni),2022,T,in cerca,11.6
+VICINI5,vicinato (5 comuni),2023,F,in cerca,11.1
+VICINI5,vicinato (5 comuni),2023,M,in cerca,13.3
+VICINI5,vicinato (5 comuni),2023,T,in cerca,12.2
+VICINI5,vicinato (5 comuni),2024,F,in cerca,8.0
+VICINI5,vicinato (5 comuni),2024,M,in cerca,10.2
+VICINI5,vicinato (5 comuni),2024,T,in cerca,9.1
+VICINI5,vicinato (5 comuni),2018,F,studenti,53.0
+VICINI5,vicinato (5 comuni),2018,M,studenti,48.8
+VICINI5,vicinato (5 comuni),2018,T,studenti,50.9
+VICINI5,vicinato (5 comuni),2019,F,studenti,56.9
+VICINI5,vicinato (5 comuni),2019,M,studenti,52.6
+VICINI5,vicinato (5 comuni),2019,T,studenti,54.7
+VICINI5,vicinato (5 comuni),2021,F,studenti,60.6
+VICINI5,vicinato (5 comuni),2021,M,studenti,55.5
+VICINI5,vicinato (5 comuni),2021,T,studenti,57.9
+VICINI5,vicinato (5 comuni),2022,F,studenti,63.1
+VICINI5,vicinato (5 comuni),2022,M,studenti,56.5
+VICINI5,vicinato (5 comuni),2022,T,studenti,59.7
+VICINI5,vicinato (5 comuni),2023,F,studenti,59.8
+VICINI5,vicinato (5 comuni),2023,M,studenti,53.3
+VICINI5,vicinato (5 comuni),2023,T,studenti,56.4
+VICINI5,vicinato (5 comuni),2024,F,studenti,63.5
+VICINI5,vicinato (5 comuni),2024,M,studenti,55.1
+VICINI5,vicinato (5 comuni),2024,T,studenti,59.2
+VICINI5,vicinato (5 comuni),2018,F,casalinghe/i,14.5
+VICINI5,vicinato (5 comuni),2018,M,casalinghe/i,0.9
+VICINI5,vicinato (5 comuni),2018,T,casalinghe/i,7.6
+VICINI5,vicinato (5 comuni),2019,F,casalinghe/i,13.6
+VICINI5,vicinato (5 comuni),2019,M,casalinghe/i,1.2
+VICINI5,vicinato (5 comuni),2019,T,casalinghe/i,7.2
+VICINI5,vicinato (5 comuni),2021,F,casalinghe/i,16.5
+VICINI5,vicinato (5 comuni),2021,M,casalinghe/i,2.0
+VICINI5,vicinato (5 comuni),2021,T,casalinghe/i,9.0
+VICINI5,vicinato (5 comuni),2022,F,casalinghe/i,12.9
+VICINI5,vicinato (5 comuni),2022,M,casalinghe/i,1.3
+VICINI5,vicinato (5 comuni),2022,T,casalinghe/i,6.9
+VICINI5,vicinato (5 comuni),2023,F,casalinghe/i,15.1
+VICINI5,vicinato (5 comuni),2023,M,casalinghe/i,1.9
+VICINI5,vicinato (5 comuni),2023,T,casalinghe/i,8.3
+VICINI5,vicinato (5 comuni),2024,F,casalinghe/i,13.6
+VICINI5,vicinato (5 comuni),2024,M,casalinghe/i,1.6
+VICINI5,vicinato (5 comuni),2024,T,casalinghe/i,7.4
+VICINI5,vicinato (5 comuni),2018,F,altra condizione,7.7
+VICINI5,vicinato (5 comuni),2018,M,altra condizione,17.3
+VICINI5,vicinato (5 comuni),2018,T,altra condizione,12.5
+VICINI5,vicinato (5 comuni),2019,F,altra condizione,4.7
+VICINI5,vicinato (5 comuni),2019,M,altra condizione,12.3
+VICINI5,vicinato (5 comuni),2019,T,altra condizione,8.6
+VICINI5,vicinato (5 comuni),2021,F,altra condizione,5.7
+VICINI5,vicinato (5 comuni),2021,M,altra condizione,14.2
+VICINI5,vicinato (5 comuni),2021,T,altra condizione,10.1
+VICINI5,vicinato (5 comuni),2022,F,altra condizione,5.5
+VICINI5,vicinato (5 comuni),2022,M,altra condizione,12.8
+VICINI5,vicinato (5 comuni),2022,T,altra condizione,9.3
+VICINI5,vicinato (5 comuni),2023,F,altra condizione,5.9
+VICINI5,vicinato (5 comuni),2023,M,altra condizione,14.6
+VICINI5,vicinato (5 comuni),2023,T,altra condizione,10.4
+VICINI5,vicinato (5 comuni),2024,F,altra condizione,6.0
+VICINI5,vicinato (5 comuni),2024,M,altra condizione,15.0
+VICINI5,vicinato (5 comuni),2024,T,altra condizione,10.6
+VICINI5,vicinato (5 comuni),2018,F,pensione,0.1
+VICINI5,vicinato (5 comuni),2018,M,pensione,0.2
+VICINI5,vicinato (5 comuni),2018,T,pensione,0.1
+VICINI5,vicinato (5 comuni),2019,F,pensione,0.1
+VICINI5,vicinato (5 comuni),2019,M,pensione,0.3
+VICINI5,vicinato (5 comuni),2019,T,pensione,0.2
+VICINI5,vicinato (5 comuni),2021,F,pensione,0.1
+VICINI5,vicinato (5 comuni),2021,M,pensione,0.2
+VICINI5,vicinato (5 comuni),2021,T,pensione,0.2
+VICINI5,vicinato (5 comuni),2022,F,pensione,0.1
+VICINI5,vicinato (5 comuni),2022,M,pensione,0.2
+VICINI5,vicinato (5 comuni),2022,T,pensione,0.1
+VICINI5,vicinato (5 comuni),2023,F,pensione,0.0
+VICINI5,vicinato (5 comuni),2023,M,pensione,0.2
+VICINI5,vicinato (5 comuni),2023,T,pensione,0.1
+VICINI5,vicinato (5 comuni),2024,F,pensione,0.1
+VICINI5,vicinato (5 comuni),2024,M,pensione,0.4
+VICINI5,vicinato (5 comuni),2024,T,pensione,0.2

@@ -1,394 +1,394 @@
 territorio,nome_territorio,livello,fonti
-081001,Alcamo,comune,8milacensus
-081002,Buseto Palizzolo,comune,8milacensus
-081003,Calatafimi-Segesta,comune,8milacensus
-081004,Campobello di Mazara,comune,8milacensus
-081005,Castellammare del Golfo,comune,8milacensus
-081006,Castelvetrano,comune,8milacensus
-081007,Custonaci,comune,8milacensus
-081008,Erice,comune,8milacensus
-081009,Favignana,comune,8milacensus
-081010,Gibellina,comune,8milacensus
-081011,Marsala,comune,8milacensus
-081012,Mazara del Vallo,comune,8milacensus
-081013,Paceco,comune,8milacensus
-081014,Pantelleria,comune,8milacensus
-081015,Partanna,comune,8milacensus
-081016,Poggioreale,comune,8milacensus
-081017,Salaparuta,comune,8milacensus
-081018,Salemi,comune,8milacensus
-081019,Santa Ninfa,comune,8milacensus
-081020,San Vito Lo Capo,comune,8milacensus
-081021,Trapani,comune,8milacensus
-081022,Valderice,comune,8milacensus
-081023,Vita,comune,8milacensus
-081024,Petrosino,comune,8milacensus
-082001,Alia,comune,8milacensus
-082002,Alimena,comune,8milacensus
-082003,Aliminusa,comune,8milacensus
-082004,Altavilla Milicia,comune,8milacensus
-082005,Altofonte,comune,8milacensus
+081001,Alcamo,comune,8milacensus+censpop
+081002,Buseto Palizzolo,comune,8milacensus+censpop
+081003,Calatafimi-Segesta,comune,8milacensus+censpop
+081004,Campobello di Mazara,comune,8milacensus+censpop
+081005,Castellammare del Golfo,comune,8milacensus+censpop
+081006,Castelvetrano,comune,8milacensus+censpop
+081007,Custonaci,comune,8milacensus+censpop
+081008,Erice,comune,8milacensus+censpop
+081009,Favignana,comune,8milacensus+censpop
+081010,Gibellina,comune,8milacensus+censpop
+081011,Marsala,comune,8milacensus+censpop
+081012,Mazara del Vallo,comune,8milacensus+censpop
+081013,Paceco,comune,8milacensus+censpop
+081014,Pantelleria,comune,8milacensus+censpop
+081015,Partanna,comune,8milacensus+censpop
+081016,Poggioreale,comune,8milacensus+censpop
+081017,Salaparuta,comune,8milacensus+censpop
+081018,Salemi,comune,8milacensus+censpop
+081019,Santa Ninfa,comune,8milacensus+censpop
+081020,San Vito Lo Capo,comune,8milacensus+censpop
+081021,Trapani,comune,8milacensus+censpop
+081022,Valderice,comune,8milacensus+censpop
+081023,Vita,comune,8milacensus+censpop
+081024,Petrosino,comune,8milacensus+censpop
+082001,Alia,comune,8milacensus+censpop
+082002,Alimena,comune,8milacensus+censpop
+082003,Aliminusa,comune,8milacensus+censpop
+082004,Altavilla Milicia,comune,8milacensus+censpop
+082005,Altofonte,comune,8milacensus+censpop
 082006,Bagheria,comune,8milacensus+censpop
-082007,Balestrate,comune,8milacensus
-082008,Baucina,comune,8milacensus
-082009,Belmonte Mezzagno,comune,8milacensus
-082010,Bisacquino,comune,8milacensus
-082011,Bolognetta,comune,8milacensus
-082012,Bompietro,comune,8milacensus
-082013,Borgetto,comune,8milacensus
-082014,Caccamo,comune,8milacensus
-082015,Caltavuturo,comune,8milacensus
-082016,Campofelice di Fitalia,comune,8milacensus
-082017,Campofelice di Roccella,comune,8milacensus
-082018,Campofiorito,comune,8milacensus
-082019,Camporeale,comune,8milacensus
-082020,Capaci,comune,8milacensus
-082021,Carini,comune,8milacensus
-082022,Castelbuono,comune,8milacensus
-082023,Casteldaccia,comune,8milacensus
-082024,Castellana Sicula,comune,8milacensus
-082025,Castronovo di Sicilia,comune,8milacensus
-082026,Cefalà Diana,comune,8milacensus
-082027,Cefalù,comune,8milacensus
-082028,Cerda,comune,8milacensus
-082029,Chiusa Sclafani,comune,8milacensus
-082030,Ciminna,comune,8milacensus
-082031,Cinisi,comune,8milacensus
-082032,Collesano,comune,8milacensus
-082033,Contessa Entellina,comune,8milacensus
-082034,Corleone,comune,8milacensus
-082035,Ficarazzi,comune,8milacensus
-082036,Gangi,comune,8milacensus
-082037,Geraci Siculo,comune,8milacensus
-082038,Giardinello,comune,8milacensus
-082039,Giuliana,comune,8milacensus
-082040,Godrano,comune,8milacensus
-082041,Gratteri,comune,8milacensus
-082042,Isnello,comune,8milacensus
-082043,Isola delle Femmine,comune,8milacensus
-082044,Lascari,comune,8milacensus
-082045,Lercara Friddi,comune,8milacensus
-082046,Marineo,comune,8milacensus
-082047,Mezzojuso,comune,8milacensus
-082048,Misilmeri,comune,8milacensus
-082049,Monreale,comune,8milacensus
-082050,Montelepre,comune,8milacensus
-082051,Montemaggiore Belsito,comune,8milacensus
-082052,Palazzo Adriano,comune,8milacensus
+082007,Balestrate,comune,8milacensus+censpop
+082008,Baucina,comune,8milacensus+censpop
+082009,Belmonte Mezzagno,comune,8milacensus+censpop
+082010,Bisacquino,comune,8milacensus+censpop
+082011,Bolognetta,comune,8milacensus+censpop
+082012,Bompietro,comune,8milacensus+censpop
+082013,Borgetto,comune,8milacensus+censpop
+082014,Caccamo,comune,8milacensus+censpop
+082015,Caltavuturo,comune,8milacensus+censpop
+082016,Campofelice di Fitalia,comune,8milacensus+censpop
+082017,Campofelice di Roccella,comune,8milacensus+censpop
+082018,Campofiorito,comune,8milacensus+censpop
+082019,Camporeale,comune,8milacensus+censpop
+082020,Capaci,comune,8milacensus+censpop
+082021,Carini,comune,8milacensus+censpop
+082022,Castelbuono,comune,8milacensus+censpop
+082023,Casteldaccia,comune,8milacensus+censpop
+082024,Castellana Sicula,comune,8milacensus+censpop
+082025,Castronovo di Sicilia,comune,8milacensus+censpop
+082026,Cefalà Diana,comune,8milacensus+censpop
+082027,Cefalù,comune,8milacensus+censpop
+082028,Cerda,comune,8milacensus+censpop
+082029,Chiusa Sclafani,comune,8milacensus+censpop
+082030,Ciminna,comune,8milacensus+censpop
+082031,Cinisi,comune,8milacensus+censpop
+082032,Collesano,comune,8milacensus+censpop
+082033,Contessa Entellina,comune,8milacensus+censpop
+082034,Corleone,comune,8milacensus+censpop
+082035,Ficarazzi,comune,8milacensus+censpop
+082036,Gangi,comune,8milacensus+censpop
+082037,Geraci Siculo,comune,8milacensus+censpop
+082038,Giardinello,comune,8milacensus+censpop
+082039,Giuliana,comune,8milacensus+censpop
+082040,Godrano,comune,8milacensus+censpop
+082041,Gratteri,comune,8milacensus+censpop
+082042,Isnello,comune,8milacensus+censpop
+082043,Isola delle Femmine,comune,8milacensus+censpop
+082044,Lascari,comune,8milacensus+censpop
+082045,Lercara Friddi,comune,8milacensus+censpop
+082046,Marineo,comune,8milacensus+censpop
+082047,Mezzojuso,comune,8milacensus+censpop
+082048,Misilmeri,comune,8milacensus+censpop
+082049,Monreale,comune,8milacensus+censpop
+082050,Montelepre,comune,8milacensus+censpop
+082051,Montemaggiore Belsito,comune,8milacensus+censpop
+082052,Palazzo Adriano,comune,8milacensus+censpop
 082053,Palermo,comune,8milacensus+censpop
-082054,Partinico,comune,8milacensus
-082055,Petralia Soprana,comune,8milacensus
-082056,Petralia Sottana,comune,8milacensus
-082057,Piana degli Albanesi,comune,8milacensus
-082058,Polizzi Generosa,comune,8milacensus
-082059,Pollina,comune,8milacensus
-082060,Prizzi,comune,8milacensus
-082061,Roccamena,comune,8milacensus
-082062,Roccapalumba,comune,8milacensus
-082063,San Cipirello,comune,8milacensus
-082064,San Giuseppe Jato,comune,8milacensus
-082065,San Mauro Castelverde,comune,8milacensus
-082066,Santa Cristina Gela,comune,8milacensus
-082067,Santa Flavia,comune,8milacensus
-082068,Sciara,comune,8milacensus
-082069,Sclafani Bagni,comune,8milacensus
-082070,Termini Imerese,comune,8milacensus
-082071,Terrasini,comune,8milacensus
-082072,Torretta,comune,8milacensus
-082073,Trabia,comune,8milacensus
-082074,Trappeto,comune,8milacensus
-082075,Ustica,comune,8milacensus
-082076,Valledolmo,comune,8milacensus
-082077,Ventimiglia di Sicilia,comune,8milacensus
-082078,Vicari,comune,8milacensus
-082079,Villabate,comune,8milacensus
-082080,Villafrati,comune,8milacensus
-082081,Scillato,comune,8milacensus
-082082,Blufi,comune,8milacensus
-083001,Alcara li Fusi,comune,8milacensus
-083002,Alì,comune,8milacensus
-083003,Alì Terme,comune,8milacensus
-083004,Antillo,comune,8milacensus
-083005,Barcellona Pozzo di Gotto,comune,8milacensus
-083006,Basicò,comune,8milacensus
-083007,Brolo,comune,8milacensus
-083008,Capizzi,comune,8milacensus
-083009,Capo d'Orlando,comune,8milacensus
-083010,Capri Leone,comune,8milacensus
-083011,Caronia,comune,8milacensus
-083012,Casalvecchio Siculo,comune,8milacensus
-083013,Castel di Lucio,comune,8milacensus
-083014,Castell'Umberto,comune,8milacensus
-083015,Castelmola,comune,8milacensus
-083016,Castroreale,comune,8milacensus
-083017,Cesarò,comune,8milacensus
-083018,Condrò,comune,8milacensus
-083019,Falcone,comune,8milacensus
-083020,Ficarra,comune,8milacensus
-083021,Fiumedinisi,comune,8milacensus
-083022,Floresta,comune,8milacensus
-083023,Fondachelli-Fantina,comune,8milacensus
-083024,Forza d'Agrò,comune,8milacensus
-083025,Francavilla di Sicilia,comune,8milacensus
-083026,Frazzanò,comune,8milacensus
-083027,Furci Siculo,comune,8milacensus
-083028,Furnari,comune,8milacensus
-083029,Gaggi,comune,8milacensus
-083030,Galati Mamertino,comune,8milacensus
-083031,Gallodoro,comune,8milacensus
-083032,Giardini-Naxos,comune,8milacensus
-083033,Gioiosa Marea,comune,8milacensus
-083034,Graniti,comune,8milacensus
-083035,Gualtieri Sicaminò,comune,8milacensus
-083036,Itala,comune,8milacensus
-083037,Leni,comune,8milacensus
-083038,Letojanni,comune,8milacensus
-083039,Librizzi,comune,8milacensus
-083040,Limina,comune,8milacensus
-083041,Lipari,comune,8milacensus
-083042,Longi,comune,8milacensus
-083043,Malfa,comune,8milacensus
-083044,Malvagna,comune,8milacensus
-083045,Mandanici,comune,8milacensus
-083046,Mazzarrà Sant'Andrea,comune,8milacensus
-083047,Merì,comune,8milacensus
-083048,Messina,comune,8milacensus
-083049,Milazzo,comune,8milacensus
-083050,Militello Rosmarino,comune,8milacensus
-083051,Mirto,comune,8milacensus
-083052,Mistretta,comune,8milacensus
-083053,Moio Alcantara,comune,8milacensus
-083054,Monforte San Giorgio,comune,8milacensus
-083055,Mongiuffi Melia,comune,8milacensus
-083056,Montagnareale,comune,8milacensus
-083057,Montalbano Elicona,comune,8milacensus
-083058,Motta Camastra,comune,8milacensus
-083059,Motta d'Affermo,comune,8milacensus
-083060,Naso,comune,8milacensus
-083061,Nizza di Sicilia,comune,8milacensus
-083062,Novara di Sicilia,comune,8milacensus
-083063,Oliveri,comune,8milacensus
-083064,Pace del Mela,comune,8milacensus
-083065,Pagliara,comune,8milacensus
-083066,Patti,comune,8milacensus
-083067,Pettineo,comune,8milacensus
-083068,Piraino,comune,8milacensus
-083069,Raccuja,comune,8milacensus
-083070,Reitano,comune,8milacensus
-083071,Roccafiorita,comune,8milacensus
-083072,Roccalumera,comune,8milacensus
-083073,Roccavaldina,comune,8milacensus
-083074,Roccella Valdemone,comune,8milacensus
-083075,Rodì Milici,comune,8milacensus
-083076,Rometta,comune,8milacensus
-083077,San Filippo del Mela,comune,8milacensus
-083078,San Fratello,comune,8milacensus
-083079,San Marco d'Alunzio,comune,8milacensus
-083080,San Pier Niceto,comune,8milacensus
-083081,San Piero Patti,comune,8milacensus
-083082,San Salvatore di Fitalia,comune,8milacensus
-083083,Santa Domenica Vittoria,comune,8milacensus
-083084,Sant'Agata di Militello,comune,8milacensus
-083085,Sant'Alessio Siculo,comune,8milacensus
-083086,Santa Lucia del Mela,comune,8milacensus
-083087,Santa Marina Salina,comune,8milacensus
-083088,Sant'Angelo di Brolo,comune,8milacensus
-083089,Santa Teresa di Riva,comune,8milacensus
-083090,San Teodoro,comune,8milacensus
-083091,Santo Stefano di Camastra,comune,8milacensus
-083092,Saponara,comune,8milacensus
-083093,Savoca,comune,8milacensus
-083094,Scaletta Zanclea,comune,8milacensus
-083095,Sinagra,comune,8milacensus
-083096,Spadafora,comune,8milacensus
-083097,Taormina,comune,8milacensus
-083098,Torregrotta,comune,8milacensus
-083099,Tortorici,comune,8milacensus
-083100,Tripi,comune,8milacensus
-083101,Tusa,comune,8milacensus
-083102,Ucria,comune,8milacensus
-083103,Valdina,comune,8milacensus
-083104,Venetico,comune,8milacensus
-083105,Villafranca Tirrena,comune,8milacensus
-083106,Terme Vigliatore,comune,8milacensus
-083107,Acquedolci,comune,8milacensus
-083108,Torrenova,comune,8milacensus
-084001,Agrigento,comune,8milacensus
-084002,Alessandria della Rocca,comune,8milacensus
-084003,Aragona,comune,8milacensus
-084004,Bivona,comune,8milacensus
-084005,Burgio,comune,8milacensus
-084006,Calamonaci,comune,8milacensus
-084007,Caltabellotta,comune,8milacensus
-084008,Camastra,comune,8milacensus
-084009,Cammarata,comune,8milacensus
-084010,Campobello di Licata,comune,8milacensus
-084011,Canicattì,comune,8milacensus
-084012,Casteltermini,comune,8milacensus
-084013,Castrofilippo,comune,8milacensus
-084014,Cattolica Eraclea,comune,8milacensus
-084015,Cianciana,comune,8milacensus
-084016,Comitini,comune,8milacensus
-084017,Favara,comune,8milacensus
-084018,Grotte,comune,8milacensus
-084019,Joppolo Giancaxio,comune,8milacensus
-084020,Lampedusa e Linosa,comune,8milacensus
-084021,Licata,comune,8milacensus
-084022,Lucca Sicula,comune,8milacensus
-084023,Menfi,comune,8milacensus
-084024,Montallegro,comune,8milacensus
-084025,Montevago,comune,8milacensus
-084026,Naro,comune,8milacensus
-084027,Palma di Montechiaro,comune,8milacensus
-084028,Porto Empedocle,comune,8milacensus
-084029,Racalmuto,comune,8milacensus
-084030,Raffadali,comune,8milacensus
-084031,Ravanusa,comune,8milacensus
-084032,Realmonte,comune,8milacensus
-084033,Ribera,comune,8milacensus
-084034,Sambuca di Sicilia,comune,8milacensus
-084035,San Biagio Platani,comune,8milacensus
-084036,San Giovanni Gemini,comune,8milacensus
-084037,Santa Elisabetta,comune,8milacensus
-084038,Santa Margherita di Belice,comune,8milacensus
-084039,Sant'Angelo Muxaro,comune,8milacensus
-084040,Santo Stefano Quisquina,comune,8milacensus
-084041,Sciacca,comune,8milacensus
-084042,Siculiana,comune,8milacensus
-084043,Villafranca Sicula,comune,8milacensus
-085001,Acquaviva Platani,comune,8milacensus
-085002,Bompensiere,comune,8milacensus
-085003,Butera,comune,8milacensus
-085004,Caltanissetta,comune,8milacensus
-085005,Campofranco,comune,8milacensus
-085006,Delia,comune,8milacensus
-085007,Gela,comune,8milacensus
-085008,Marianopoli,comune,8milacensus
-085009,Mazzarino,comune,8milacensus
-085010,Milena,comune,8milacensus
-085011,Montedoro,comune,8milacensus
-085012,Mussomeli,comune,8milacensus
-085013,Niscemi,comune,8milacensus
-085014,Resuttano,comune,8milacensus
-085015,Riesi,comune,8milacensus
-085016,San Cataldo,comune,8milacensus
-085017,Santa Caterina Villarmosa,comune,8milacensus
-085018,Serradifalco,comune,8milacensus
-085019,Sommatino,comune,8milacensus
-085020,Sutera,comune,8milacensus
-085021,Vallelunga Pratameno,comune,8milacensus
-085022,Villalba,comune,8milacensus
-086001,Agira,comune,8milacensus
-086002,Aidone,comune,8milacensus
-086003,Assoro,comune,8milacensus
-086004,Barrafranca,comune,8milacensus
-086005,Calascibetta,comune,8milacensus
-086006,Catenanuova,comune,8milacensus
-086007,Centuripe,comune,8milacensus
-086008,Cerami,comune,8milacensus
-086009,Enna,comune,8milacensus
-086010,Gagliano Castelferrato,comune,8milacensus
-086011,Leonforte,comune,8milacensus
-086012,Nicosia,comune,8milacensus
-086013,Nissoria,comune,8milacensus
-086014,Piazza Armerina,comune,8milacensus
-086015,Pietraperzia,comune,8milacensus
-086016,Regalbuto,comune,8milacensus
-086017,Sperlinga,comune,8milacensus
-086018,Troina,comune,8milacensus
-086019,Valguarnera Caropepe,comune,8milacensus
-086020,Villarosa,comune,8milacensus
-087001,Aci Bonaccorsi,comune,8milacensus
-087002,Aci Castello,comune,8milacensus
-087003,Aci Catena,comune,8milacensus
-087004,Acireale,comune,8milacensus
-087005,Aci Sant'Antonio,comune,8milacensus
-087006,Adrano,comune,8milacensus
-087007,Belpasso,comune,8milacensus
-087008,Biancavilla,comune,8milacensus
-087009,Bronte,comune,8milacensus
-087010,Calatabiano,comune,8milacensus
-087011,Caltagirone,comune,8milacensus
-087012,Camporotondo Etneo,comune,8milacensus
-087013,Castel di Iudica,comune,8milacensus
-087014,Castiglione di Sicilia,comune,8milacensus
-087015,Catania,comune,8milacensus
-087016,Fiumefreddo di Sicilia,comune,8milacensus
-087017,Giarre,comune,8milacensus
-087018,Grammichele,comune,8milacensus
-087019,Gravina di Catania,comune,8milacensus
-087020,Licodia Eubea,comune,8milacensus
-087021,Linguaglossa,comune,8milacensus
-087022,Maletto,comune,8milacensus
-087023,Mascali,comune,8milacensus
-087024,Mascalucia,comune,8milacensus
-087025,Militello in Val di Catania,comune,8milacensus
-087026,Milo,comune,8milacensus
-087027,Mineo,comune,8milacensus
-087028,Mirabella Imbaccari,comune,8milacensus
-087029,Misterbianco,comune,8milacensus
-087030,Motta Sant'Anastasia,comune,8milacensus
-087031,Nicolosi,comune,8milacensus
-087032,Palagonia,comune,8milacensus
-087033,Paternò,comune,8milacensus
-087034,Pedara,comune,8milacensus
-087035,Piedimonte Etneo,comune,8milacensus
-087036,Raddusa,comune,8milacensus
-087037,Ramacca,comune,8milacensus
-087038,Randazzo,comune,8milacensus
-087039,Riposto,comune,8milacensus
-087040,San Cono,comune,8milacensus
-087041,San Giovanni la Punta,comune,8milacensus
-087042,San Gregorio di Catania,comune,8milacensus
-087043,San Michele di Ganzaria,comune,8milacensus
-087044,San Pietro Clarenza,comune,8milacensus
-087045,Sant'Agata li Battiati,comune,8milacensus
-087046,Sant'Alfio,comune,8milacensus
-087047,Santa Maria di Licodia,comune,8milacensus
-087048,Santa Venerina,comune,8milacensus
-087049,Scordia,comune,8milacensus
-087050,Trecastagni,comune,8milacensus
-087051,Tremestieri Etneo,comune,8milacensus
-087052,Valverde,comune,8milacensus
-087053,Viagrande,comune,8milacensus
-087054,Vizzini,comune,8milacensus
-087055,Zafferana Etnea,comune,8milacensus
-087056,Mazzarrone,comune,8milacensus
-087057,Maniace,comune,8milacensus
-087058,Ragalna,comune,8milacensus
-088001,Acate,comune,8milacensus
-088002,Chiaramonte Gulfi,comune,8milacensus
-088003,Comiso,comune,8milacensus
-088004,Giarratana,comune,8milacensus
-088005,Ispica,comune,8milacensus
-088006,Modica,comune,8milacensus
-088007,Monterosso Almo,comune,8milacensus
-088008,Pozzallo,comune,8milacensus
-088009,Ragusa,comune,8milacensus
-088010,Santa Croce Camerina,comune,8milacensus
-088011,Scicli,comune,8milacensus
-088012,Vittoria,comune,8milacensus
-089001,Augusta,comune,8milacensus
-089002,Avola,comune,8milacensus
-089003,Buccheri,comune,8milacensus
-089004,Buscemi,comune,8milacensus
-089005,Canicattini Bagni,comune,8milacensus
-089006,Carlentini,comune,8milacensus
-089007,Cassaro,comune,8milacensus
-089008,Ferla,comune,8milacensus
-089009,Floridia,comune,8milacensus
-089010,Francofonte,comune,8milacensus
-089011,Lentini,comune,8milacensus
-089012,Melilli,comune,8milacensus
-089013,Noto,comune,8milacensus
-089014,Pachino,comune,8milacensus
-089015,Palazzolo Acreide,comune,8milacensus
-089016,Rosolini,comune,8milacensus
-089017,Siracusa,comune,8milacensus
-089018,Solarino,comune,8milacensus
-089019,Sortino,comune,8milacensus
-089020,Portopalo di Capo Passero,comune,8milacensus
-089021,Priolo Gargallo,comune,8milacensus
+082054,Partinico,comune,8milacensus+censpop
+082055,Petralia Soprana,comune,8milacensus+censpop
+082056,Petralia Sottana,comune,8milacensus+censpop
+082057,Piana degli Albanesi,comune,8milacensus+censpop
+082058,Polizzi Generosa,comune,8milacensus+censpop
+082059,Pollina,comune,8milacensus+censpop
+082060,Prizzi,comune,8milacensus+censpop
+082061,Roccamena,comune,8milacensus+censpop
+082062,Roccapalumba,comune,8milacensus+censpop
+082063,San Cipirello,comune,8milacensus+censpop
+082064,San Giuseppe Jato,comune,8milacensus+censpop
+082065,San Mauro Castelverde,comune,8milacensus+censpop
+082066,Santa Cristina Gela,comune,8milacensus+censpop
+082067,Santa Flavia,comune,8milacensus+censpop
+082068,Sciara,comune,8milacensus+censpop
+082069,Sclafani Bagni,comune,8milacensus+censpop
+082070,Termini Imerese,comune,8milacensus+censpop
+082071,Terrasini,comune,8milacensus+censpop
+082072,Torretta,comune,8milacensus+censpop
+082073,Trabia,comune,8milacensus+censpop
+082074,Trappeto,comune,8milacensus+censpop
+082075,Ustica,comune,8milacensus+censpop
+082076,Valledolmo,comune,8milacensus+censpop
+082077,Ventimiglia di Sicilia,comune,8milacensus+censpop
+082078,Vicari,comune,8milacensus+censpop
+082079,Villabate,comune,8milacensus+censpop
+082080,Villafrati,comune,8milacensus+censpop
+082081,Scillato,comune,8milacensus+censpop
+082082,Blufi,comune,8milacensus+censpop
+083001,Alcara li Fusi,comune,8milacensus+censpop
+083002,Alì,comune,8milacensus+censpop
+083003,Alì Terme,comune,8milacensus+censpop
+083004,Antillo,comune,8milacensus+censpop
+083005,Barcellona Pozzo di Gotto,comune,8milacensus+censpop
+083006,Basicò,comune,8milacensus+censpop
+083007,Brolo,comune,8milacensus+censpop
+083008,Capizzi,comune,8milacensus+censpop
+083009,Capo d'Orlando,comune,8milacensus+censpop
+083010,Capri Leone,comune,8milacensus+censpop
+083011,Caronia,comune,8milacensus+censpop
+083012,Casalvecchio Siculo,comune,8milacensus+censpop
+083013,Castel di Lucio,comune,8milacensus+censpop
+083014,Castell'Umberto,comune,8milacensus+censpop
+083015,Castelmola,comune,8milacensus+censpop
+083016,Castroreale,comune,8milacensus+censpop
+083017,Cesarò,comune,8milacensus+censpop
+083018,Condrò,comune,8milacensus+censpop
+083019,Falcone,comune,8milacensus+censpop
+083020,Ficarra,comune,8milacensus+censpop
+083021,Fiumedinisi,comune,8milacensus+censpop
+083022,Floresta,comune,8milacensus+censpop
+083023,Fondachelli-Fantina,comune,8milacensus+censpop
+083024,Forza d'Agrò,comune,8milacensus+censpop
+083025,Francavilla di Sicilia,comune,8milacensus+censpop
+083026,Frazzanò,comune,8milacensus+censpop
+083027,Furci Siculo,comune,8milacensus+censpop
+083028,Furnari,comune,8milacensus+censpop
+083029,Gaggi,comune,8milacensus+censpop
+083030,Galati Mamertino,comune,8milacensus+censpop
+083031,Gallodoro,comune,8milacensus+censpop
+083032,Giardini-Naxos,comune,8milacensus+censpop
+083033,Gioiosa Marea,comune,8milacensus+censpop
+083034,Graniti,comune,8milacensus+censpop
+083035,Gualtieri Sicaminò,comune,8milacensus+censpop
+083036,Itala,comune,8milacensus+censpop
+083037,Leni,comune,8milacensus+censpop
+083038,Letojanni,comune,8milacensus+censpop
+083039,Librizzi,comune,8milacensus+censpop
+083040,Limina,comune,8milacensus+censpop
+083041,Lipari,comune,8milacensus+censpop
+083042,Longi,comune,8milacensus+censpop
+083043,Malfa,comune,8milacensus+censpop
+083044,Malvagna,comune,8milacensus+censpop
+083045,Mandanici,comune,8milacensus+censpop
+083046,Mazzarrà Sant'Andrea,comune,8milacensus+censpop
+083047,Merì,comune,8milacensus+censpop
+083048,Messina,comune,8milacensus+censpop
+083049,Milazzo,comune,8milacensus+censpop
+083050,Militello Rosmarino,comune,8milacensus+censpop
+083051,Mirto,comune,8milacensus+censpop
+083052,Mistretta,comune,8milacensus+censpop
+083053,Moio Alcantara,comune,8milacensus+censpop
+083054,Monforte San Giorgio,comune,8milacensus+censpop
+083055,Mongiuffi Melia,comune,8milacensus+censpop
+083056,Montagnareale,comune,8milacensus+censpop
+083057,Montalbano Elicona,comune,8milacensus+censpop
+083058,Motta Camastra,comune,8milacensus+censpop
+083059,Motta d'Affermo,comune,8milacensus+censpop
+083060,Naso,comune,8milacensus+censpop
+083061,Nizza di Sicilia,comune,8milacensus+censpop
+083062,Novara di Sicilia,comune,8milacensus+censpop
+083063,Oliveri,comune,8milacensus+censpop
+083064,Pace del Mela,comune,8milacensus+censpop
+083065,Pagliara,comune,8milacensus+censpop
+083066,Patti,comune,8milacensus+censpop
+083067,Pettineo,comune,8milacensus+censpop
+083068,Piraino,comune,8milacensus+censpop
+083069,Raccuja,comune,8milacensus+censpop
+083070,Reitano,comune,8milacensus+censpop
+083071,Roccafiorita,comune,8milacensus+censpop
+083072,Roccalumera,comune,8milacensus+censpop
+083073,Roccavaldina,comune,8milacensus+censpop
+083074,Roccella Valdemone,comune,8milacensus+censpop
+083075,Rodì Milici,comune,8milacensus+censpop
+083076,Rometta,comune,8milacensus+censpop
+083077,San Filippo del Mela,comune,8milacensus+censpop
+083078,San Fratello,comune,8milacensus+censpop
+083079,San Marco d'Alunzio,comune,8milacensus+censpop
+083080,San Pier Niceto,comune,8milacensus+censpop
+083081,San Piero Patti,comune,8milacensus+censpop
+083082,San Salvatore di Fitalia,comune,8milacensus+censpop
+083083,Santa Domenica Vittoria,comune,8milacensus+censpop
+083084,Sant'Agata di Militello,comune,8milacensus+censpop
+083085,Sant'Alessio Siculo,comune,8milacensus+censpop
+083086,Santa Lucia del Mela,comune,8milacensus+censpop
+083087,Santa Marina Salina,comune,8milacensus+censpop
+083088,Sant'Angelo di Brolo,comune,8milacensus+censpop
+083089,Santa Teresa di Riva,comune,8milacensus+censpop
+083090,San Teodoro,comune,8milacensus+censpop
+083091,Santo Stefano di Camastra,comune,8milacensus+censpop
+083092,Saponara,comune,8milacensus+censpop
+083093,Savoca,comune,8milacensus+censpop
+083094,Scaletta Zanclea,comune,8milacensus+censpop
+083095,Sinagra,comune,8milacensus+censpop
+083096,Spadafora,comune,8milacensus+censpop
+083097,Taormina,comune,8milacensus+censpop
+083098,Torregrotta,comune,8milacensus+censpop
+083099,Tortorici,comune,8milacensus+censpop
+083100,Tripi,comune,8milacensus+censpop
+083101,Tusa,comune,8milacensus+censpop
+083102,Ucria,comune,8milacensus+censpop
+083103,Valdina,comune,8milacensus+censpop
+083104,Venetico,comune,8milacensus+censpop
+083105,Villafranca Tirrena,comune,8milacensus+censpop
+083106,Terme Vigliatore,comune,8milacensus+censpop
+083107,Acquedolci,comune,8milacensus+censpop
+083108,Torrenova,comune,8milacensus+censpop
+084001,Agrigento,comune,8milacensus+censpop
+084002,Alessandria della Rocca,comune,8milacensus+censpop
+084003,Aragona,comune,8milacensus+censpop
+084004,Bivona,comune,8milacensus+censpop
+084005,Burgio,comune,8milacensus+censpop
+084006,Calamonaci,comune,8milacensus+censpop
+084007,Caltabellotta,comune,8milacensus+censpop
+084008,Camastra,comune,8milacensus+censpop
+084009,Cammarata,comune,8milacensus+censpop
+084010,Campobello di Licata,comune,8milacensus+censpop
+084011,Canicattì,comune,8milacensus+censpop
+084012,Casteltermini,comune,8milacensus+censpop
+084013,Castrofilippo,comune,8milacensus+censpop
+084014,Cattolica Eraclea,comune,8milacensus+censpop
+084015,Cianciana,comune,8milacensus+censpop
+084016,Comitini,comune,8milacensus+censpop
+084017,Favara,comune,8milacensus+censpop
+084018,Grotte,comune,8milacensus+censpop
+084019,Joppolo Giancaxio,comune,8milacensus+censpop
+084020,Lampedusa e Linosa,comune,8milacensus+censpop
+084021,Licata,comune,8milacensus+censpop
+084022,Lucca Sicula,comune,8milacensus+censpop
+084023,Menfi,comune,8milacensus+censpop
+084024,Montallegro,comune,8milacensus+censpop
+084025,Montevago,comune,8milacensus+censpop
+084026,Naro,comune,8milacensus+censpop
+084027,Palma di Montechiaro,comune,8milacensus+censpop
+084028,Porto Empedocle,comune,8milacensus+censpop
+084029,Racalmuto,comune,8milacensus+censpop
+084030,Raffadali,comune,8milacensus+censpop
+084031,Ravanusa,comune,8milacensus+censpop
+084032,Realmonte,comune,8milacensus+censpop
+084033,Ribera,comune,8milacensus+censpop
+084034,Sambuca di Sicilia,comune,8milacensus+censpop
+084035,San Biagio Platani,comune,8milacensus+censpop
+084036,San Giovanni Gemini,comune,8milacensus+censpop
+084037,Santa Elisabetta,comune,8milacensus+censpop
+084038,Santa Margherita di Belice,comune,8milacensus+censpop
+084039,Sant'Angelo Muxaro,comune,8milacensus+censpop
+084040,Santo Stefano Quisquina,comune,8milacensus+censpop
+084041,Sciacca,comune,8milacensus+censpop
+084042,Siculiana,comune,8milacensus+censpop
+084043,Villafranca Sicula,comune,8milacensus+censpop
+085001,Acquaviva Platani,comune,8milacensus+censpop
+085002,Bompensiere,comune,8milacensus+censpop
+085003,Butera,comune,8milacensus+censpop
+085004,Caltanissetta,comune,8milacensus+censpop
+085005,Campofranco,comune,8milacensus+censpop
+085006,Delia,comune,8milacensus+censpop
+085007,Gela,comune,8milacensus+censpop
+085008,Marianopoli,comune,8milacensus+censpop
+085009,Mazzarino,comune,8milacensus+censpop
+085010,Milena,comune,8milacensus+censpop
+085011,Montedoro,comune,8milacensus+censpop
+085012,Mussomeli,comune,8milacensus+censpop
+085013,Niscemi,comune,8milacensus+censpop
+085014,Resuttano,comune,8milacensus+censpop
+085015,Riesi,comune,8milacensus+censpop
+085016,San Cataldo,comune,8milacensus+censpop
+085017,Santa Caterina Villarmosa,comune,8milacensus+censpop
+085018,Serradifalco,comune,8milacensus+censpop
+085019,Sommatino,comune,8milacensus+censpop
+085020,Sutera,comune,8milacensus+censpop
+085021,Vallelunga Pratameno,comune,8milacensus+censpop
+085022,Villalba,comune,8milacensus+censpop
+086001,Agira,comune,8milacensus+censpop
+086002,Aidone,comune,8milacensus+censpop
+086003,Assoro,comune,8milacensus+censpop
+086004,Barrafranca,comune,8milacensus+censpop
+086005,Calascibetta,comune,8milacensus+censpop
+086006,Catenanuova,comune,8milacensus+censpop
+086007,Centuripe,comune,8milacensus+censpop
+086008,Cerami,comune,8milacensus+censpop
+086009,Enna,comune,8milacensus+censpop
+086010,Gagliano Castelferrato,comune,8milacensus+censpop
+086011,Leonforte,comune,8milacensus+censpop
+086012,Nicosia,comune,8milacensus+censpop
+086013,Nissoria,comune,8milacensus+censpop
+086014,Piazza Armerina,comune,8milacensus+censpop
+086015,Pietraperzia,comune,8milacensus+censpop
+086016,Regalbuto,comune,8milacensus+censpop
+086017,Sperlinga,comune,8milacensus+censpop
+086018,Troina,comune,8milacensus+censpop
+086019,Valguarnera Caropepe,comune,8milacensus+censpop
+086020,Villarosa,comune,8milacensus+censpop
+087001,Aci Bonaccorsi,comune,8milacensus+censpop
+087002,Aci Castello,comune,8milacensus+censpop
+087003,Aci Catena,comune,8milacensus+censpop
+087004,Acireale,comune,8milacensus+censpop
+087005,Aci Sant'Antonio,comune,8milacensus+censpop
+087006,Adrano,comune,8milacensus+censpop
+087007,Belpasso,comune,8milacensus+censpop
+087008,Biancavilla,comune,8milacensus+censpop
+087009,Bronte,comune,8milacensus+censpop
+087010,Calatabiano,comune,8milacensus+censpop
+087011,Caltagirone,comune,8milacensus+censpop
+087012,Camporotondo Etneo,comune,8milacensus+censpop
+087013,Castel di Iudica,comune,8milacensus+censpop
+087014,Castiglione di Sicilia,comune,8milacensus+censpop
+087015,Catania,comune,8milacensus+censpop
+087016,Fiumefreddo di Sicilia,comune,8milacensus+censpop
+087017,Giarre,comune,8milacensus+censpop
+087018,Grammichele,comune,8milacensus+censpop
+087019,Gravina di Catania,comune,8milacensus+censpop
+087020,Licodia Eubea,comune,8milacensus+censpop
+087021,Linguaglossa,comune,8milacensus+censpop
+087022,Maletto,comune,8milacensus+censpop
+087023,Mascali,comune,8milacensus+censpop
+087024,Mascalucia,comune,8milacensus+censpop
+087025,Militello in Val di Catania,comune,8milacensus+censpop
+087026,Milo,comune,8milacensus+censpop
+087027,Mineo,comune,8milacensus+censpop
+087028,Mirabella Imbaccari,comune,8milacensus+censpop
+087029,Misterbianco,comune,8milacensus+censpop
+087030,Motta Sant'Anastasia,comune,8milacensus+censpop
+087031,Nicolosi,comune,8milacensus+censpop
+087032,Palagonia,comune,8milacensus+censpop
+087033,Paternò,comune,8milacensus+censpop
+087034,Pedara,comune,8milacensus+censpop
+087035,Piedimonte Etneo,comune,8milacensus+censpop
+087036,Raddusa,comune,8milacensus+censpop
+087037,Ramacca,comune,8milacensus+censpop
+087038,Randazzo,comune,8milacensus+censpop
+087039,Riposto,comune,8milacensus+censpop
+087040,San Cono,comune,8milacensus+censpop
+087041,San Giovanni la Punta,comune,8milacensus+censpop
+087042,San Gregorio di Catania,comune,8milacensus+censpop
+087043,San Michele di Ganzaria,comune,8milacensus+censpop
+087044,San Pietro Clarenza,comune,8milacensus+censpop
+087045,Sant'Agata li Battiati,comune,8milacensus+censpop
+087046,Sant'Alfio,comune,8milacensus+censpop
+087047,Santa Maria di Licodia,comune,8milacensus+censpop
+087048,Santa Venerina,comune,8milacensus+censpop
+087049,Scordia,comune,8milacensus+censpop
+087050,Trecastagni,comune,8milacensus+censpop
+087051,Tremestieri Etneo,comune,8milacensus+censpop
+087052,Valverde,comune,8milacensus+censpop
+087053,Viagrande,comune,8milacensus+censpop
+087054,Vizzini,comune,8milacensus+censpop
+087055,Zafferana Etnea,comune,8milacensus+censpop
+087056,Mazzarrone,comune,8milacensus+censpop
+087057,Maniace,comune,8milacensus+censpop
+087058,Ragalna,comune,8milacensus+censpop
+088001,Acate,comune,8milacensus+censpop
+088002,Chiaramonte Gulfi,comune,8milacensus+censpop
+088003,Comiso,comune,8milacensus+censpop
+088004,Giarratana,comune,8milacensus+censpop
+088005,Ispica,comune,8milacensus+censpop
+088006,Modica,comune,8milacensus+censpop
+088007,Monterosso Almo,comune,8milacensus+censpop
+088008,Pozzallo,comune,8milacensus+censpop
+088009,Ragusa,comune,8milacensus+censpop
+088010,Santa Croce Camerina,comune,8milacensus+censpop
+088011,Scicli,comune,8milacensus+censpop
+088012,Vittoria,comune,8milacensus+censpop
+089001,Augusta,comune,8milacensus+censpop
+089002,Avola,comune,8milacensus+censpop
+089003,Buccheri,comune,8milacensus+censpop
+089004,Buscemi,comune,8milacensus+censpop
+089005,Canicattini Bagni,comune,8milacensus+censpop
+089006,Carlentini,comune,8milacensus+censpop
+089007,Cassaro,comune,8milacensus+censpop
+089008,Ferla,comune,8milacensus+censpop
+089009,Floridia,comune,8milacensus+censpop
+089010,Francofonte,comune,8milacensus+censpop
+089011,Lentini,comune,8milacensus+censpop
+089012,Melilli,comune,8milacensus+censpop
+089013,Noto,comune,8milacensus+censpop
+089014,Pachino,comune,8milacensus+censpop
+089015,Palazzolo Acreide,comune,8milacensus+censpop
+089016,Rosolini,comune,8milacensus+censpop
+089017,Siracusa,comune,8milacensus+censpop
+089018,Solarino,comune,8milacensus+censpop
+089019,Sortino,comune,8milacensus+censpop
+089020,Portopalo di Capo Passero,comune,8milacensus+censpop
+089021,Priolo Gargallo,comune,8milacensus+censpop
 IT,Italia,nazione,8milacensus+censpop
 ITG1,Sicilia,regione,8milacensus+censpop
 PROV001,Torino,provincia,8milacensus
