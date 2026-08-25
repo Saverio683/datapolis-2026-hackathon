@@ -10,6 +10,9 @@ Output:
     ottomilacensus_long.csv        99 indicatori x 1991/2001/2011
     censpop_istr_lav_long.csv      lavoro + istruzione per genere ed età, 2018-2024
     censpop_popolazione_long.csv   popolazione per età singola e genere, 2018-2024
+    censpop_lavoro_gemelle_long.csv        lavoro per le 10 gemelle strutturali, 2018-2024
+    censpop_lavoro_15piu_sicilia_long.csv  lavoro 15+ per i 390 comuni siciliani, 2018-2024
+    censpop_demografia_classi_long.csv     popolazione per classi quinquennali, 2001-2024
 
 Le descrizioni stanno nei lookup e non nelle tabelle lunghe: ripetute su ogni riga
 gonfiavano ottomilacensus_long da 4 a 40 MB. In R è una join in più.
@@ -126,16 +129,33 @@ def leggi_sdmx(prefisso: str, colonne: dict[str, str]) -> pd.DataFrame:
     return tabella
 
 
+COLONNE_ISTR_LAV = {
+    "REF_AREA": "territorio",
+    "TIME_PERIOD": "anno",
+    "GENDER": "genere",
+    "AGE_NOCLASS": "eta",
+    "CITIZENSHIP": "cittadinanza",
+    "EDU_ATTAIN": "titolo_studio",
+    "CUR_ACT_STAT": "condizione",
+}
+
+COLONNE_POPOLAZIONE = {
+    "REF_AREA": "territorio",
+    "TIME_PERIOD": "anno",
+    "GENDER": "genere",
+    "AGE_NOCLASS": "eta",
+    "MARITAL_STATUS": "stato_civile",
+    "CITIZENSHIP": "cittadinanza",
+}
+
+# Stessa tavola di popolazione ma per classi quinquennali: la dimensione età si chiama
+# AGE_CLASS e non AGE_NOCLASS, ed è l'unica differenza rispetto a COLONNE_POPOLAZIONE.
+COLONNE_DEMOGRAFIA_CLASSI = {**COLONNE_POPOLAZIONE, "AGE_CLASS": "eta"}
+del COLONNE_DEMOGRAFIA_CLASSI["AGE_NOCLASS"]
+
+
 def costruisci_censpop_istr_lav() -> pd.DataFrame:
-    colonne = {
-        "REF_AREA": "territorio",
-        "TIME_PERIOD": "anno",
-        "GENDER": "genere",
-        "AGE_NOCLASS": "eta",
-        "CITIZENSHIP": "cittadinanza",
-        "EDU_ATTAIN": "titolo_studio",
-        "CUR_ACT_STAT": "condizione",
-    }
+    colonne = COLONNE_ISTR_LAV
     pezzi = []
     for prefisso, tavola in (("censpop_lavoro_eta_genere", "lavoro"),
                              ("censpop_istruzione_eta_genere", "istruzione")):
@@ -149,17 +169,104 @@ def costruisci_censpop_istr_lav() -> pd.DataFrame:
 
 
 def costruisci_censpop_popolazione() -> pd.DataFrame:
-    lungo = leggi_sdmx("censpop_popolazione_eta_singola", {
-        "REF_AREA": "territorio",
-        "TIME_PERIOD": "anno",
-        "GENDER": "genere",
-        "AGE_NOCLASS": "eta",
-        "MARITAL_STATUS": "stato_civile",
-        "CITIZENSHIP": "cittadinanza",
-    })
+    lungo = leggi_sdmx("censpop_popolazione_eta_singola", COLONNE_POPOLAZIONE)
     lungo["eta_anni"] = eta_in_anni(lungo["eta"])
     return lungo[["territorio", "anno", "genere", "eta", "eta_anni",
                   "stato_civile", "cittadinanza", "valore"]]
+
+
+def costruisci_censpop_vicini() -> dict[str, pd.DataFrame]:
+    """Le stesse due tavole per i cinque comuni vicini a Bagheria, in file a parte.
+
+    Restano separate di proposito: i _long condivisi continuano a contenere quattro
+    territori, così nessun altro thread si ritrova numeri diversi senza averlo chiesto.
+    Se i raw non ci sono (fetch vecchio), si salta invece di rompere la pipeline di tutti.
+    """
+    if _mancano("vicini", "censpop_lavoro_vicini", "censpop_istruzione_vicini",
+                "censpop_popolazione_vicini"):
+        return {}
+
+    uscite: dict[str, pd.DataFrame] = {}
+    pezzi = []
+    for prefisso, tavola in (("censpop_lavoro_vicini", "lavoro"),
+                             ("censpop_istruzione_vicini", "istruzione")):
+        tabella = leggi_sdmx(prefisso, COLONNE_ISTR_LAV)
+        tabella["tavola"] = tavola
+        pezzi.append(tabella)
+    istr_lav = pd.concat(pezzi, ignore_index=True)
+    istr_lav["eta_anni"] = eta_in_anni(istr_lav["eta"])
+    uscite["censpop_istr_lav_vicini_long.csv"] = istr_lav[
+        ["territorio", "anno", "tavola", "genere", "eta", "eta_anni",
+         "cittadinanza", "titolo_studio", "condizione", "valore"]]
+
+    popolazione = leggi_sdmx("censpop_popolazione_vicini", COLONNE_POPOLAZIONE)
+    popolazione["eta_anni"] = eta_in_anni(popolazione["eta"])
+    uscite["censpop_popolazione_vicini_long.csv"] = popolazione[
+        ["territorio", "anno", "genere", "eta", "eta_anni",
+         "stato_civile", "cittadinanza", "valore"]]
+    return uscite
+
+
+def _mancano(solo: str, *prefissi: str) -> bool:
+    """True se manca almeno uno dei raw, con l'istruzione per scaricarlo.
+
+    I raw aggiunti dopo il primo giro non ci sono in tutte le copie del repo: si salta
+    l'uscita che li usa invece di rompere la pipeline di chi non li ha ancora.
+    """
+    assenti = [p for p in prefissi if not list(RAW.glob(f"{p}_*.csv"))]
+    if assenti:
+        print(f"   {', '.join(assenti[:3])}{'...' if len(assenti) > 3 else ''}"
+              f" assenti in data/raw/: salto (uv run python -m pipeline.fetch --solo={solo})")
+    return bool(assenti)
+
+
+def costruisci_censpop_gemelle() -> dict[str, pd.DataFrame]:
+    """Tavola lavoro per le dieci gemelle strutturali di Bagheria, 2018-2024.
+
+    File a parte per la stessa ragione dei vicini. Attenzione a chi unisse i due:
+    Santa Flavia e Misilmeri stanno in entrambi, sommarli conta quei comuni due volte.
+    """
+    if _mancano("gemelle", "censpop_lavoro_gemelle"):
+        return {}
+    tabella = leggi_sdmx("censpop_lavoro_gemelle", COLONNE_ISTR_LAV)
+    tabella["tavola"] = "lavoro"
+    tabella["eta_anni"] = eta_in_anni(tabella["eta"])
+    return {"censpop_lavoro_gemelle_long.csv": tabella[
+        ["territorio", "anno", "tavola", "genere", "eta", "eta_anni",
+         "cittadinanza", "titolo_studio", "condizione", "valore"]]}
+
+
+def costruisci_censpop_sicilia_15piu() -> dict[str, pd.DataFrame]:
+    """I 390 comuni siciliani sulla sola classe 15+, ricomposti dai 12 blocchi del fetch.
+
+    È il denominatore dei percentili regionali, che finora esistevano solo al 2011.
+    Il conteggio dei comuni è un assert e non un commento: un blocco tornato vuoto non si
+    vede a occhio, i percentili verrebbero fuori lo stesso e sarebbero sbagliati.
+    """
+    prefissi = [f"censpop_lavoro_15piu_sicilia_{i:02d}" for i in range(1, 13)]
+    if _mancano("15piu", *prefissi):
+        return {}
+    lungo = pd.concat([leggi_sdmx(p, COLONNE_ISTR_LAV) for p in prefissi], ignore_index=True)
+    comuni = lungo["territorio"].nunique()
+    assert comuni == 390, f"{comuni} comuni invece di 390: un blocco è tornato vuoto"
+    assert set(lungo["eta"]) == {"Y_GE15"}, sorted(set(lungo["eta"]))
+    return {"censpop_lavoro_15piu_sicilia_long.csv": lungo[
+        ["territorio", "anno", "genere", "eta",
+         "cittadinanza", "titolo_studio", "condizione", "valore"]]}
+
+
+def costruisci_censpop_demografia_classi() -> dict[str, pd.DataFrame]:
+    """Popolazione per classi quinquennali e genere: 2001, 2011 e 2018-2024.
+
+    L'unica tavola comunale che attraversa i due censimenti: SETA_1 parte dal 2018 e le
+    età singole solo dal 2021. Le classi Y15-19...Y30-34 ricompongono il 15-34 esatto,
+    quindi la serie demografica del target si allunga di vent'anni.
+    """
+    if _mancano("demografia_classi", "censpop_demografia_classi"):
+        return {}
+    lungo = leggi_sdmx("censpop_demografia_classi", COLONNE_DEMOGRAFIA_CLASSI)
+    return {"censpop_demografia_classi_long.csv": lungo[
+        ["territorio", "anno", "genere", "eta", "stato_civile", "cittadinanza", "valore"]]}
 
 
 DIMENSIONI_CODIFICATE = {
@@ -301,8 +408,15 @@ def main() -> int:
     istr_lav = costruisci_censpop_istr_lav()
     print("- censpop popolazione")
     popolazione = costruisci_censpop_popolazione()
+    print("- censpop comuni vicini a Bagheria")
+    vicini = costruisci_censpop_vicini()
+    print("- censpop gemelle strutturali, 390 comuni 15+, classi quinquennali")
+    recenti = {**costruisci_censpop_gemelle(),
+               **costruisci_censpop_sicilia_15piu(),
+               **costruisci_censpop_demografia_classi()}
     print("- territori e codici")
-    territori = costruisci_territori(ottomila, istr_lav, popolazione)
+    territori = costruisci_territori(ottomila, istr_lav, popolazione,
+                                     *vicini.values(), *recenti.values())
     codici = costruisci_codici(istr_lav, popolazione)
     print("- confini comunali Sicilia")
     poligoni, centroidi = costruisci_confini_sicilia()
@@ -319,6 +433,8 @@ def main() -> int:
         "censpop_popolazione_long.csv": popolazione,
         "comuni_sicilia_poligoni.csv": poligoni,
         "comuni_sicilia_centroidi.csv": centroidi,
+        **vicini,
+        **recenti,
     }
     print()
     for nome, tabella in uscite.items():
