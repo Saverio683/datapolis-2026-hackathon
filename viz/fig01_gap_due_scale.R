@@ -3,21 +3,44 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
-dati <- read_csv(file.path(PROCESSED, "genere_gap_occupazione_ci.csv"), show_col_types = FALSE) |>
-  mutate(nome_territorio = factor(nome_territorio, levels = ORDINE)) |>
+# Il vicinato entra aggregato, come in tutte le altre figure: una serie sola con la sua
+# banda, non cinque linee. Sui conteggi sommati dei cinque comuni l'intervallo si stringe
+# abbastanza da reggere il confronto con Bagheria; le serie per singolo comune restano nel
+# CSV e sono troppo rumorose per essere lette anno su anno.
+gap_vicini <- read_csv(file.path(PROCESSED, "genere_gap_occupazione_ci_vicini.csv"),
+                       col_types = cols(territorio = "c", nome_territorio = "c", .default = "d"))
+vicinato <- filter(gap_vicini, territorio == "VICINI5")
+ETICHETTA_VICINATO <- vicinato$nome_territorio[1]
+COLORI <- c(COLORI_TERRITORIO, setNames(COLORE_VICINATO, ETICHETTA_VICINATO))
+
+dati <- bind_rows(
+    read_csv(file.path(PROCESSED, "genere_gap_occupazione_ci.csv"), show_col_types = FALSE),
+    vicinato
+  ) |>
+  mutate(nome_territorio = factor(nome_territorio, levels = names(COLORI))) |>
   # Il 2020 manca alla fonte sulla classe 15-24: la riga vuota interrompe la linea invece
   # di farla passare dritta sopra il buco. Nessun valore inventato.
   complete(nome_territorio, anno = 2018:2024)
 
+ULTIMO_ANNO <- max(dati$anno[!is.na(dati$rapporto_M_F)])
+rapporto_di <- function(territorio) {
+  dati$rapporto_M_F[dati$nome_territorio == territorio & dati$anno == ULTIMO_ANNO]
+}
+# Il comune più sbilanciato resta un fatto anche se non è disegnato: senza questa riga il
+# sottotitolo lascerebbe credere che nessuno in zona superi Bagheria, e non è vero.
+PEGGIORE_COMUNE <- gap_vicini |>
+  filter(territorio != "VICINI5", anno == ULTIMO_ANNO) |>
+  slice_max(rapporto_M_F, n = 1)
+
 comune <- list(
-  scale_colour_manual(values = COLORI_TERRITORIO),
+  scale_colour_manual(values = COLORI, breaks = names(COLORI)),
   scale_x_continuous(breaks = c(2018, 2019, 2021, 2022, 2023, 2024)),
   labs(x = NULL)
 )
 
 punti <- ggplot(dati, aes(anno, gap, colour = nome_territorio, fill = nome_territorio)) +
   geom_ribbon(aes(ymin = gap_lo, ymax = gap_hi), alpha = 0.15, colour = NA) +
-  scale_fill_manual(values = COLORI_TERRITORIO) +
+  scale_fill_manual(values = COLORI) +
   geom_line(linewidth = 0.9) +
   geom_point(size = 1.7) +
   comune +
@@ -34,7 +57,10 @@ rapporto <- ggplot(dati, aes(anno, rapporto_M_F, colour = nome_territorio)) +
   geom_line(linewidth = 0.9) +
   geom_point(size = 1.7) +
   comune +
-  scale_y_continuous(limits = c(0.95, 2.6)) +
+  # coord_cartesian e non limits: taglia la vista, non le righe. Qualche vicino ha rapporti
+  # fuori scala su conteggi minuscoli, la linea esce dal riquadro e non sparisce in silenzio.
+  scale_y_continuous(labels = function(x) virgola(x, 1, taglia_zero = FALSE)) +
+  coord_cartesian(ylim = c(0.95, max(dati$rapporto_M_F, na.rm = TRUE) + 0.05)) +
   labs(subtitle = "In rapporto (tasso M / tasso F)",
        y = "quante volte")
 
@@ -43,12 +69,20 @@ figura <- (punti | rapporto) +
   plot_annotation(
     title = "Il divario di genere di Bagheria è medio in punti, il peggiore in proporzione",
     subtitle = paste("Tasso di occupazione 15-24 anni, 2018-2024. In punti percentuali il gap di Bagheria (8,3 nel 2024)",
-                     "sta sotto Sicilia e Italia;\nin rapporto è il più sbilanciato dei quattro: un ragazzo ha il doppio",
-                     "della probabilità di lavorare di una coetanea."),
-    caption = paste("Fonte: ISTAT, Censimento permanente della popolazione — tavola condizione professionale, classe 15-24 anni.",
+                     "sta sotto Sicilia e Italia;\nin rapporto è il più sbilanciato del panel: un ragazzo ha il doppio",
+                     "della probabilità di lavorare di una coetanea.",
+                     paste0("\nMa il vicinato lo segue a un soffio (",
+                            virgola(rapporto_di(ETICHETTA_VICINATO), 2, "×", taglia_zero = FALSE), " contro ",
+                            virgola(rapporto_di("Bagheria"), 2, "×", taglia_zero = FALSE),
+                            " nel ", ULTIMO_ANNO, "): in rapporto il divario è un tratto di zona.",
+                            "\nPreso comune per comune, ", PEGGIORE_COMUNE$nome_territorio, " arriva a ",
+                            virgola(PEGGIORE_COMUNE$rapporto_M_F, 2, "×", taglia_zero = FALSE), ".")),
+    caption = paste("Fonte: ISTAT, Censimento permanente della popolazione - tavola condizione professionale, classe 15-24 anni.",
                     "\nBande: intervalli di confidenza 95% (Wilson per i tassi, Newcombe per la differenza).",
                     "Il 2020 manca alla fonte sulla classe 15-24: la linea è interrotta, non interpolata.",
-                    "\nElaborazione: notebooks/genere.ipynb — data/processed/genere_gap_occupazione_ci.csv"),
+                    "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi i tassi, non media dei cinque tassi.",
+                    "\nLe serie dei singoli comuni stanno in genere_gap_occupazione_ci_vicini.csv: su 10-28 mila abitanti gli intervalli sono larghi il quintuplo.",
+                    "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_gap_occupazione_ci.csv, genere_gap_occupazione_ci_vicini.csv"),
     theme = tema_datapolis()
   ) &
   theme(legend.position = "top")

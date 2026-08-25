@@ -5,18 +5,33 @@ source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
 STATI <- names(COLORI_STATO)
 
-dati <- read_csv(file.path(PROCESSED, "genere_composizione_stato_dettaglio.csv"),
-                 show_col_types = FALSE) |>
+# Il vicinato aggregato entra come quinta barra, subito sotto Bagheria: conteggi dei
+# cinque comuni sommati e poi le quote (nel notebook), non media delle cinque quote.
+vicinato <- read_csv(file.path(PROCESSED, "genere_composizione_stato_dettaglio_vicini.csv"),
+                     show_col_types = FALSE)
+ETICHETTA_VICINATO <- vicinato$nome_territorio[1]
+LIVELLI <- c("Bagheria", ETICHETTA_VICINATO, "Palermo", "Sicilia", "Italia")
+
+dati <- bind_rows(
+    read_csv(file.path(PROCESSED, "genere_composizione_stato_dettaglio.csv"),
+             show_col_types = FALSE),
+    vicinato
+  ) |>
   filter(anno == 2024, genere %in% c("F", "M")) |>
   mutate(
-    nome_territorio = factor(nome_territorio, levels = rev(ORDINE)),
+    nome_territorio = factor(nome_territorio, levels = rev(LIVELLI)),
     stato = factor(stato, levels = STATI),
     genere = factor(ETICHETTE_GENERE[genere], levels = ETICHETTE_GENERE),
     # Etichette solo sui due segmenti che portano il finding. Restano nel dataset completo:
     # position_stack calcola le posizioni sullo stack intero, non sul sottoinsieme.
     etichetta = if_else(stato == "occupati" | (stato == "casalinghe/i" & quota >= 3),
-                        sub("\\.", ",", sprintf("%.1f", quota)), "")
+                        virgola(quota, taglia_zero = FALSE), "")
   )
+
+quota <- function(territorio, stato_scelto) {
+  dati$quota[dati$nome_territorio == territorio & dati$stato == stato_scelto &
+               dati$genere == ETICHETTE_GENERE[["F"]]]
+}
 
 figura <- ggplot(dati, aes(quota, nome_territorio, fill = stato)) +
   geom_col(width = 0.68, colour = "white", linewidth = 0.3,
@@ -32,11 +47,15 @@ figura <- ggplot(dati, aes(quota, nome_territorio, fill = stato)) +
     title = "Stessa quota di inattivi, ragioni opposte: una ragazza su sette è casalinga",
     subtitle = paste("Popolazione 15-24 anni per condizione, 2024. A Bagheria gli \"altri inattivi\" pesano quasi uguale nei due generi",
                      "\n(19,9% F contro 18,2% M), ma sono casalinghe il 13,4% delle ragazze e l'1,7% dei ragazzi: il triplo dell'incidenza",
-                     "\nnazionale (4,6%). Etichette: quota di occupati e di casalinghe/i."),
+                     "\nnazionale (4,6%). Etichette: quota di occupati e di casalinghe/i.",
+                     paste0("\nNel vicinato la quota è la stessa (", virgola(quota(ETICHETTA_VICINATO, "casalinghe/i")),
+                            "%), a Palermo il ", virgola(quota("Palermo", "casalinghe/i")),
+                            "%: non è un'anomalia comunale ma un tratto di zona.")),
     x = NULL, y = NULL,
-    caption = paste("Fonte: ISTAT, Censimento permanente della popolazione — tavola condizione professionale, classe 15-24 anni, 2024.",
+    caption = paste("Fonte: ISTAT, Censimento permanente della popolazione - tavola condizione professionale, classe 15-24 anni, 2024.",
                     "\nLa condizione è autodichiarata al censimento: marcatore del carico di cura, non sua misura diretta.",
-                    "\nElaborazione: notebooks/genere.ipynb — data/processed/genere_composizione_stato_dettaglio.csv")
+                    "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media delle cinque quote.",
+                    "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv")
   )
 
 salva(figura, "fig02_composizione_stato", larghezza = 26, altezza = 16)
