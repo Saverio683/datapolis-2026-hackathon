@@ -1,0 +1,63 @@
+{
+  "generated_at_utc": "2026-08-26T13:53:03.055349+00:00",
+  "status": "passed",
+  "checks_passed": 11,
+  "checks_total": 11,
+  "checks": [
+    {
+      "check": "raw_sha256",
+      "passed": true,
+      "detail": "10 raw verificati"
+    },
+    {
+      "check": "municipalities_2011",
+      "passed": true,
+      "detail": "osservati 390 comuni"
+    },
+    {
+      "check": "youth_composition_100",
+      "passed": true,
+      "detail": "deviazione massima 0.000000 p.p."
+    },
+    {
+      "check": "no_work_2020_interpolation",
+      "passed": true,
+      "detail": "anni presenti [2018, 2019, 2021, 2022, 2023, 2024]"
+    },
+    {
+      "check": "unique_youth_keys",
+      "passed": true,
+      "detail": "duplicati 0"
+    },
+    {
+      "check": "nonnegative_youth_values",
+      "passed": true,
+      "detail": "conteggi e quote non negativi"
+    },
+    {
+      "check": "sentinel_bagheria_2024",
+      "passed": true,
+      "detail": "occupati 15-24 attesi: 734"
+    },
+    {
+      "check": "shift_share_identity",
+      "passed": true,
+      "detail": "residuo massimo 1.137e-13"
+    },
+    {
+      "check": "core_sources_available",
+      "passed": true,
+      "detail": "Indicatori comunali e benchmark: available, Condizione professionale: available, Titolo di studio: available, Popolazione per età: available"
+    },
+    {
+      "check": "bagheria_out_of_training",
+      "passed": true,
+      "detail": "n training: [389]"
+    },
+    {
+      "check": "findings_are_supported",
+      "passed": true,
+      "detail": "5 risultati con evidenza esplicita"
+    }
+  ]
+}

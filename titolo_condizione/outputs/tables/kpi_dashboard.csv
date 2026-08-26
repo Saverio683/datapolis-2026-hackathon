@@ -1,0 +1,10 @@
+periodo,metrica,bagheria_pct,sicilia_pct,gap_pp,direzione,definizione
+2011,Almeno licenza media 15-19,96.7,96.5,0.20000000000000284,alto = favorevole,Indicatore 8milaCensus; fascia indicata nel nome.
+2011,Uscita precoce 15-24,28.6,23.2,5.400000000000002,alto = sfavorevole,Indicatore 8milaCensus; fascia indicata nel nome.
+2011,NEET 15-29,40.1,34.7,5.399999999999999,alto = sfavorevole,Indicatore 8milaCensus; fascia indicata nel nome.
+2011,Occupazione 15-29,20.0,24.3,-4.300000000000001,alto = favorevole,Indicatore 8milaCensus; fascia indicata nel nome.
+2024,Occupazione 15-24,12.432249322493226,15.55484391914326,-3.1225945966500337,alto = favorevole,Ricostruzione dalla tavola IstatData 15-24.
+2024,Inattivi non studenti 15-24,18.99345066210384,14.80391542981638,4.18953523228746,alto = sfavorevole,Ricostruzione dalla tavola IstatData 15-24.
+2024,Fuori da lavoro e studio 15-24,26.910599403471288,22.291340276018847,4.619259127452441,alto = sfavorevole,Ricostruzione dalla tavola IstatData 15-24.
+2024,Almeno diploma 25-49,62.3784637822071,66.50598572991974,-4.127521947712644,alto = favorevole,Aggregati separati sulla stessa fascia 25-49.
+2024,Occupazione 25-49,53.59747204666991,59.32714249360683,-5.729670446936922,alto = favorevole,Aggregati separati sulla stessa fascia 25-49.

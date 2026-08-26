@@ -1,0 +1,9 @@
+fonte,dataset,stato,periodo,grana,righe_pulite,dimensione_raw_bytes,uso,ruolo,limite
+Istat 8milaCensus,Indicatori comunali e benchmark,available,"1991, 2001, 2011",territorio × anno × indicatore,154737,1054261,"Trend storico, benchmark, peer matching",core,Ultimo anno 2011; definizioni diverse dalle tavole recenti.
+IstatData SDMX,Condizione professionale,available,"2018-2019, 2021-2024",territorio × anno × età × condizione,3276,405933,Stati 15-24 e occupazione 25-49,core,2020 assente; nessun incrocio comunale titolo × lavoro.
+IstatData SDMX,Titolo di studio,available,2018-2024,territorio × anno × età × titolo,3276,397607,Capitale umano 9-24 e 25-49,core,Tavola separata dalla condizione lavorativa.
+IstatData SDMX,Popolazione per età,available,2021-2024,territorio × anno × età singola,14462,1664184,Denominatore e popolazione 15-34,core,La variazione demografica non identifica la migrazione.
+IstatData SDMX,Pendolarismo,available,2018-2019,territorio × anno × motivo × destinazione aggregata,216,27151,Contesto in appendice,appendice,Non identifica Palermo come destinazione.
+Ministero dell'Istruzione,Anagrafe istituti tecnici,available,202526,sede scolastica,276,78344,Canali operativi della policy,policy,"Anagrafica di sedi, non esiti scolastici o lavorativi."
+Comune di Palermo / AMAT,GTFS rete urbana,available,20260727-20260831,"fermate, linee e corse",10703,2118551,Contesto in appendice,appendice,Rete urbana; non copre il collegamento Bagheria-Palermo.
+Open Data Regione Siciliana,Offerte e operatori dei servizi al lavoro,unavailable,metadati non correnti,offerta / sede operatore,0,0,Nessun uso quantitativo,non usata,Endpoint HTTP 502 al run; esclusa dalle conclusioni.

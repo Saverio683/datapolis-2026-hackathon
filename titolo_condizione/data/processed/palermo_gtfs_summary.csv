@@ -1,0 +1,2 @@
+feed_publisher,feed_start_date,feed_end_date,feed_version,routes,stops,trips,central_station_stops,routes_serving_central_station,scope_note
+AMAT Palermo S.p.A.,20260727,20260831,20260727-20260831,71,1653,10703,11,18,Solo rete urbana AMAT; non include il tratto Bagheria-Palermo.
