@@ -1,0 +1,37 @@
+PREFIX miur: <http://www.miur.it/ns/miur#>
+SELECT ?AnnoScolastico ?AreaGeografica ?Regione ?Provincia
+       ?CodiceIstitutoRiferimento ?DenominazioneIstitutoRiferimento
+       ?CodiceScuola ?DenominazioneScuola ?IndirizzoScuola ?CAPScuola
+       ?CodiceComuneScuola ?DescrizioneComune
+       ?DescrizioneCaratteristicaScuola
+       ?DescrizioneTipologiaGradoIstruzioneScuola
+       ?IndicazioneSedeDirettivo ?IndicazioneSedeOmnicomprensivo
+       ?IndirizzoEmailScuola ?IndirizzoPecScuola ?SitoWebScuola ?SedeScolastica
+WHERE {
+  GRAPH ?g {
+    ?S miur:ANNOSCOLASTICO ?AnnoScolastico.
+    ?S miur:AREAGEOGRAFICA ?AreaGeografica.
+    ?S miur:CAPSCUOLA ?CAPScuola.
+    ?S miur:CODICECOMUNESCUOLA ?CodiceComuneScuola.
+    ?S miur:CODICEISTITUTORIFERIMENTO ?CodiceIstitutoRiferimento.
+    ?S miur:CODICESCUOLA ?CodiceScuola.
+    ?S miur:DENOMINAZIONEISTITUTORIFERIMENTO ?DenominazioneIstitutoRiferimento.
+    ?S miur:DENOMINAZIONESCUOLA ?DenominazioneScuola.
+    ?S miur:DESCRIZIONECARATTERISTICASCUOLA ?DescrizioneCaratteristicaScuola.
+    ?S miur:DESCRIZIONECOMUNE ?DescrizioneComune.
+    ?S miur:DESCRIZIONETIPOLOGIAGRADOISTRUZIONESCUOLA ?DescrizioneTipologiaGradoIstruzioneScuola.
+    ?S miur:INDICAZIONESEDEDIRETTIVO ?IndicazioneSedeDirettivo.
+    ?S miur:INDICAZIONESEDEOMNICOMPRENSIVO ?IndicazioneSedeOmnicomprensivo.
+    ?S miur:INDIRIZZOEMAILSCUOLA ?IndirizzoEmailScuola.
+    ?S miur:INDIRIZZOPECSCUOLA ?IndirizzoPecScuola.
+    ?S miur:INDIRIZZOSCUOLA ?IndirizzoScuola.
+    ?S miur:PROVINCIA ?Provincia.
+    ?S miur:REGIONE ?Regione.
+    ?S miur:SITOWEBSCUOLA ?SitoWebScuola.
+    FILTER regex(str(?Regione), "SICILIA").
+    FILTER regex(str(?DescrizioneTipologiaGradoIstruzioneScuola), "TEC").
+    OPTIONAL { ?S miur:SEDESCOLASTICA ?SedeScolastica }
+  }
+}
+LIMIT 1000
+
