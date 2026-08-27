@@ -168,6 +168,10 @@ anno con rho e persistenza del quintile; i 390 comuni alle due annate con ruolo 
 etichettatura), `genere_ritenzione_decennale.csv` (fig07: ritenzione di coorte per tutte le
 classi e i quattro periodi), `genere_forbice_serie.csv` (fig05: le tre misure per 5
 territori × 6 anni — fotografia e serie nella stessa tabella),
+`genere_forbice_quadrante.csv` (fig05: vantaggio nel diploma e occupazione sulla
+**stessa fascia 15-24**, differenza F − M calcolata nel notebook, 2021-2024),
+`genere_fuori_lavoro_istruzione.csv` (fig02: quota e persone del proxy «fuori da
+lavoro e istruzione» = tutti meno occupati e studenti, per territorio e genere),
 `genere_posizionamento.csv` (alimenta fig08: min/q1/mediana/q3/max delle gemelle,
 `gemelle_sotto`, `percentile_390`, più la colonna `verso` — +1 alto è meglio, -1 alto è
 peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel notebook, non in R),
@@ -180,20 +184,35 @@ peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel noteboo
 ## Figure (R)
 `Rscript viz/build_all.R` rigenera tutto in `figures/` (PNG 300dpi + SVG). Tema e palette
 condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okabe-Ito.
-- `fig01_gap_due_scale` — gap 15-24 nelle due scale (punti con IC 95% | rapporto M/F).
-- `fig02_composizione_stato` — popolazione 15-24 per sei stati (casalinghe 13.4% vs 1.7%).
+- `fig01_gap_tre_scale` — gap 15-24 nelle **tre scale** (punti con IC 95% | rapporto M/F |
+  livello femminile), ciascuna col conteggio delle annate in cui Bagheria è all'estremo:
+  0/6 in punti, 4/6 in rapporto, **6/6 sul livello**. È qui che si argomenta quale scala
+  reggere, ed è per questo che fig05 non ripete più le serie dell'occupazione
+  (erano identiche riga per riga, e qui hanno le bande).
+- `fig02_composizione_stato` — popolazione 15-24 per sei stati (casalinghe 13,4% vs 1,7%).
+  Dal 2026-08-27 lo stack è riordinato (occupati, studenti, poi i quattro stati fuori da
+  entrambi) e la barra di Bagheria porta la **graffa del proxy NEET** — «fuori da lavoro
+  e istruzione»: 26,7% F (771 ragazze), 27,1% M (818) — da
+  `genere_fuori_lavoro_istruzione.csv`; il sottotitolo aggiunge il dato nubili
+  (41 già coniugate contro 387 casalinghe, ≥89%) da `genere_stato_civile.csv`.
 - `fig03_coorti` — dumbbell F/M della ritenzione di coorte.
 - `fig04_mappa_sicilia` — coropleta dei 390 comuni al **2024** (legenda dentro il pannello,
   a nord-ovest: fuori rubava altezza alla carta) + istogramma con le due distribuzioni
   sovrapposte (2024 pieno, 2011 a profilo) + scatter percentile 2011 × percentile 2024 con
   rho di Spearman e quadrato del quintile basso. Il titolo è «nel 2024 Bagheria arriva dove
   stava la mediana siciliana nel 2011».
-- `fig05_forbice` — vantaggio educativo (pp, 9-24) | svantaggio occupazionale (rapporto
-  M/F, 15-24) al 2024, più una **striscia con le sei annate** sulle stesse tre misure e il
-  conteggio degli anni in cui Bagheria è all'estremo. L'occupazione è in rapporto, non in
-  punti, per coerenza con la sezione LPM. Il claim del sottotitolo è stato spostato dal
-  rapporto (che oscilla) al livello femminile (minimo del panel ogni anno): la fotografia
-  di un anno solo non reggeva la formula «prima in entrambe le classifiche sbagliate».
+- `fig05_forbice` — **riscritta il 2026-08-27**: la congiunzione che dà il titolo adesso
+  è una posizione, non due classifiche da unire a mente. A sinistra il **quadrante sulla
+  stessa fascia 15-24** (vantaggio nel diploma F − M × tasso di occupazione femminile,
+  guide alle mediane del panel): Bagheria da sola nell'angolo «più istruite, meno
+  occupate». A destra la **forbice nel tempo** (vantaggio 9-24, fascia dichiarata):
+  enfasi su Bagheria e vicinato — appaiati nel 2018-19, cuneo dal 2021 — con
+  Palermo/Sicilia/Italia in grigio ed etichette dirette. Il rapporto M/F non è più in
+  figura (le scale stanno in fig01): l'occupazione è il livello femminile. Sulla fascia
+  15-24 il primato del vantaggio è un pareggio con la Sicilia (+4,8 contro +4,7): il
+  claim in figura è il distacco dal vicinato e la mancata conversione, e la caption lo
+  dichiara. Dati: `genere_forbice_quadrante.csv` + `genere_forbice_serie.csv`; banda del
+  2020 condivisa con fig01 (`buco_2020()`, ora in theme.R).
 - `fig06_quadrante` — quadrante per genere 2024 (frecce M→F) | nuvola dei 390 comuni
   2011 con gemelle evidenziate. Pannelli affiancati ed etichettati, mai uniti: fasce e
   fonti diverse.
@@ -216,7 +235,9 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
 - `fig09_kpi_finestra` — il KPI della proposal e la sua misurabilità: waffle delle 2.882
   ragazze (un quadratino = 10) con i tre scenari in persone | MDE all'80% di potenza per
   ampiezza della finestra, con la soglia del delta da rilevare. È la figura che dichiara
-  in anticipo **quando** si potrà dire se l'intervento ha funzionato.
+  in anticipo **quando** si potrà dire se l'intervento ha funzionato. Dal 2026-08-27 il
+  pannello del waffle dichiara anche la **platea 2029/2034** (2.651 e 2.435, −15,5%;
+  `genere_platea.csv`): il tetto dei KPI in teste è già nato e si restringe.
 - `fig10_muro_recente` — il lungo periodo **fino al 2024**: percentili di Bagheria sui 390 |
   L11 contro la banda interquartile delle gemelle, entrambi in due blocchi (censimenti
   1991-2011 e permanente 2018-2024) separati da una banda grigia che nessuna linea
