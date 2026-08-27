@@ -81,6 +81,32 @@ COLORI_STATO <- c("occupati" = "#0072B2", "in cerca" = "#56B4E9", "studenti" = "
                   "casalinghe/i" = "#D55E00", "altra condizione" = "#E69F00",
                   "pensione" = "#999999")
 
+#' Conteggio di annate in forma leggibile: «Bagheria ha il tasso più basso in tutte le 6
+#' annate». Gli estremi si dicono a parole — «in 0 annate su 6» costringe il lettore a
+#' tradurre una negazione in un conteggio, e «in 6 su 6» sottovende un primato senza
+#' eccezioni. `frase` è l'estremo su quella scala, detto per esteso: «in testa» da solo si
+#' legge come una contraddizione su un pannello dove la posizione peggiore è in basso.
+frase_annate <- function(k, n, frase) {
+  if (k == 0) paste0("Bagheria non ha mai ", frase)
+  else if (k == n) paste0("Bagheria ha ", frase, " in tutte le ", n, " annate")
+  else paste0("Bagheria ha ", frase, " in ", k, " annate su ", n)
+}
+
+#' La banda del 2020 mancante nelle serie 2018-2024 (fig01, fig05): la linea interrotta
+#' dice che manca qualcosa ma non cosa, e letta di corsa passa per una scelta di
+#' impaginazione. La banda grigia occupa lo spazio del dato assente invece di lasciarlo
+#' bianco — stessa soluzione dello stacco fra le epoche in fig10. `y` è dove sta la
+#' scritta, perché ogni pannello ha la sua scala; il testo è verticale (orizzontale
+#' sarebbe più largo della banda) e corto: il dettaglio («manca alla fonte sulla classe
+#' 15-24») sta in caption. Va messa come primo layer, altrimenti copre bande e linee.
+buco_2020 <- function(y) {
+  list(
+    annotate("rect", xmin = 2019.35, xmax = 2020.65, ymin = -Inf, ymax = Inf, fill = "grey95"),
+    annotate("text", x = 2020, y = y, size = 2.7, colour = "grey45", angle = 90,
+             label = "2020 non rilevato")
+  )
+}
+
 # Tre livelli tipografici, una sola famiglia. La gerarchia la fanno corpo, peso e colore:
 # un secondo font richiederebbe che la macchina ce l'abbia (qui è garantito solo il
 # fallback di Lato) e cairo in SVG converte comunque il testo in tracciati.
