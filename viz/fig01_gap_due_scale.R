@@ -38,7 +38,22 @@ comune <- list(
   labs(x = NULL)
 )
 
+#' Il vuoto del 2020, nominato. La linea interrotta dice che manca qualcosa ma non cosa:
+#' letta di corsa passa per una scelta di impaginazione. La banda grigia è la stessa
+#' soluzione dello stacco fra le due epoche in fig10 — occupa lo spazio del dato assente
+#' invece di lasciarlo bianco. `y` è dove sta la scritta: le due scale sono diverse.
+#' Va messa come primo layer, altrimenti copre bande e linee invece di stare sotto.
+buco_2020 <- function(y) {
+  list(
+    annotate("rect", xmin = 2019.35, xmax = 2020.65, ymin = -Inf, ymax = Inf, fill = "grey95"),
+    # verticale dentro la banda, come in fig10: orizzontale sarebbe più larga della banda.
+    annotate("text", x = 2020, y = y, size = 2.7, colour = "grey45", angle = 90,
+             label = "2020 non rilevato alla fonte")
+  )
+}
+
 punti <- ggplot(dati, aes(anno, gap, colour = nome_territorio, fill = nome_territorio)) +
+  buco_2020(y = 7.5) +
   geom_ribbon(aes(ymin = gap_lo, ymax = gap_hi), alpha = 0.15, colour = NA) +
   scale_fill_manual(values = COLORI) +
   geom_line(linewidth = 0.9) +
@@ -51,6 +66,7 @@ punti <- ggplot(dati, aes(anno, gap, colour = nome_territorio, fill = nome_terri
        y = "punti percentuali")
 
 rapporto <- ggplot(dati, aes(anno, rapporto_M_F, colour = nome_territorio)) +
+  buco_2020(y = 1.75) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
   annotate("text", x = 2018, y = 1.04, label = "parità", hjust = 0,
            size = 3, colour = "grey45") +
