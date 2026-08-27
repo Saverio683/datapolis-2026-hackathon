@@ -74,7 +74,8 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 
 ## Convenzioni viz (R)
 - Un tema ggplot condiviso in `viz/theme.R` — caricato da ogni script, mai stili inline duplicati.
-- Palette: colorblind-safe (viridis per continue, Okabe-Ito per categoriche). Per il genere, mai il cliché rosa/azzurro.
+- Palette: colorblind-safe (viridis per continue, Okabe-Ito per categoriche). Per il genere si usano blu (M) e rosa (F) — scelta del team del 2026-08-26, per la lettura immediata: i due valori restano dentro Okabe-Ito (`#0072B2` e `#CC79A7`), quindi la coppia è ancora distinguibile in protanopia e deuteranopia. Di conseguenza nessun territorio usa quei due colori: Palermo è viola, Sicilia ambra.
+- Tipografia delle figure: tre livelli, una sola famiglia. Titolo della figura e sottotitolo prendono `tema_figura()`, i titoli dei singoli pannelli restano su `tema_datapolis()`. Mai un secondo font: solo Lato ha un fallback verificato e cairo converte comunque il testo in tracciati nell'SVG.
 - Ogni figura: titolo che enuncia il finding (non la variabile), fonte + anno in caption, export sia PNG 300dpi sia SVG in `figures/`.
 - Mappe: confini ISTAT ufficiali (shapefile/GeoJSON delle unità amministrative), CRS documentato nello script.
   - `sf` **non è installabile** senza root (servono GDAL/GEOS/PROJ di sistema): la geometria la fa geopandas in `pipeline/build.py`, che esporta i poligoni come tabella di vertici già proiettata (`comuni_sicilia_poligoni.csv`, EPSG:32633). In R si disegna con `geom_polygon(group = interaction(territorio, parte), subgroup = anello, rule = "evenodd")` — `parte` separa le isole, `anello` i buchi. Esempio completo: `viz/fig04_mappa_sicilia.R`.

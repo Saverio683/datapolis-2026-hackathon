@@ -48,7 +48,8 @@ vicini <- vicini_di_bagheria()
 COLORI_VICINI <- setNames(vicini$colore, vicini$nome_comune)
 # Le gemelle restano nel grafico ma come contesto: grigio scuro, una classe sola.
 CLASSI <- c("altri comuni" = "grey78", "gemelle strutturali" = "grey45", COLORI_VICINI,
-            "Palermo" = "#0072B2", "Bagheria" = "#D55E00")
+            "Palermo" = COLORI_TERRITORIO[["Palermo"]],
+            "Bagheria" = COLORI_TERRITORIO[["Bagheria"]])
 sovrapposte <- intersect(vicini$nome_comune, filter(nuvola, gemella)$nome_comune)
 nuvola <- nuvola |>
   mutate(classe = factor(case_when(!is.na(evidenzia) ~ evidenzia,
@@ -93,7 +94,7 @@ figura <- (pannello_a | pannello_b) +
                            "\n", paste(sovrapposte, collapse = " e "), " sono entrambe le cose: prevale il colore di vicino."),
                     "\nFonti: ISTAT, Censimento permanente; ISTAT, 8milaCensus 2011. Elaborazione: notebooks/genere.ipynb -",
                     "genere_quadrante.csv, genere_nuvola_390.csv, genere_mappa_etichette.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
 salva(figura, "fig06_quadrante", larghezza = 30, altezza = 18)

@@ -120,7 +120,7 @@ figura <- (waffle | potenza) +
       "MDE = differenza minima rilevabile a potenza 80% e alfa 5% fra due proporzioni (trasformazione arcoseno); \"anni pooled\" = ampiezza di ciascuno dei due lati del confronto.\n",
       "In grigio le finestre in cui l'effetto promesso è più piccolo della soglia. I quadratini sono arrotondati alla decina, i totali in legenda no.\n",
       "Elaborazione: notebooks/genere.ipynb - data/processed/genere_base_persone.csv, genere_gap_persone.csv, genere_mde.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
 salva(figura, "fig09_kpi_finestra", larghezza = 28, altezza = 17)

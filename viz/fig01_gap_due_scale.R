@@ -83,7 +83,7 @@ figura <- (punti | rapporto) +
                     "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi i tassi, non media dei cinque tassi.",
                     "\nLe serie dei singoli comuni stanno in genere_gap_occupazione_ci_vicini.csv: su 10-28 mila abitanti gli intervalli sono larghi il quintuplo.",
                     "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_gap_occupazione_ci.csv, genere_gap_occupazione_ci_vicini.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   ) &
   theme(legend.position = "top")
 

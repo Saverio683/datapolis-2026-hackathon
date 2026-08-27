@@ -127,7 +127,7 @@ figura <- (istruzione | occupazione) / striscia +
       "«In testa» = il territorio all'estremo che definisce la forbice: il massimo per vantaggio educativo e rapporto M/F, il minimo per il tasso femminile.\n",
       "Un vantaggio educativo ampio non è di per sé un male: lo diventa accoppiato alla peggiore conversione in lavoro, ed è quella coppia la misura del sistema.\n",
       "Elaborazione: notebooks/genere.ipynb - data/processed/genere_forbice_serie.csv (fotografia e serie)"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
 salva(figura, "fig05_forbice", larghezza = 28, altezza = 22)

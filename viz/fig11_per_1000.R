@@ -23,8 +23,13 @@ v <- function(terr, gen, colonna) dati[[colonna]][dati$nome_territorio == terr &
 # --- pannello A: per 1.000 residenti 15-24, diploma e lavoro in parallelo ------------
 # Due misure sulla stessa base, non due identità: grigio per il diploma (contesto),
 # vermiglio per il lavoro (il punto della figura è la conversione mancata).
+# Non il blu degli "occupati" di fig02: qui accanto c'è il pannello del genere, dove il
+# blu vuol dire "maschi", e una barra blu dentro il facet "femmine" si legge male.
+# Il vermiglio è l'emphasis della cartella (casalinghe in fig02, "peggio" in fig08) e in
+# una figura a righe-territorio funziona già come colore di categoria, non di Bagheria:
+# stessa costruzione di fig02, dove il vermiglio delle casalinghe attraversa tutte le righe.
 MISURE <- c(per_1000_diploma = "con almeno il diploma", per_1000_occupati = "al lavoro")
-COLORI_MISURA <- setNames(c("#9C9C9C", "#D55E00"), MISURE)
+COLORI_MISURA <- setNames(c("#9C9C9C", COLORI_STATO[["casalinghe/i"]]), MISURE)
 
 lungo <- dati |>
   pivot_longer(all_of(names(MISURE)), names_to = "misura", values_to = "per_1000") |>
@@ -78,7 +83,7 @@ figura <- (parallele | attainment) +
       "Il 18-24 è un bound superiore: qualche qualifica IFP si ottiene a 17 anni (stessa logica dei bounds sulle casalinghe). L'incrocio titolo × condizione non è pubblicato a livello comunale.\n",
       "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media dei cinque valori.\n",
       "Elaborazione: notebooks/genere.ipynb - data/processed/genere_per_1000.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
 salva(figura, "fig11_per_1000", larghezza = 28, altezza = 15)

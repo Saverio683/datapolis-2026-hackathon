@@ -58,4 +58,8 @@ figura <- ggplot(dati, aes(quota, nome_territorio, fill = stato)) +
                     "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv")
   )
 
+# Figura a pannello unico: titolo e sottotitolo qui sono quelli della figura, non di un
+# pannello, quindi vale il tema della figura (vedi la gerarchia in theme.R).
+figura <- figura + tema_figura()
+
 salva(figura, "fig02_composizione_stato", larghezza = 26, altezza = 16)

@@ -52,4 +52,8 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
                     "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_coorti.csv, genere_coorti_vicini.csv")
   )
 
+# Figura a pannello unico: titolo e sottotitolo qui sono quelli della figura, non di un
+# pannello, quindi vale il tema della figura (vedi la gerarchia in theme.R).
+figura <- figura + tema_figura()
+
 salva(figura, "fig03_coorti", larghezza = 24, altezza = 18)

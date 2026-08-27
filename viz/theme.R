@@ -36,14 +36,17 @@ virgola <- function(x, decimali = 1, suffisso = "", taglia_zero = TRUE) {
 
 # Palette Okabe-Ito (colorblind-safe). Bagheria in vermiglio: è il soggetto, gli altri
 # territori sono il contesto.
-COLORI_TERRITORIO <- c(Bagheria = "#D55E00", Palermo = "#0072B2",
-                       Sicilia = "#CC79A7", Italia = "#666666")
+# Palermo e Sicilia non usano più blu e rosa: quei due colori adesso significano "maschi"
+# e "femmine" in tutta la cartella, e un territorio che li indossa li smentisce.
+COLORI_TERRITORIO <- c(Bagheria = "#D55E00", Palermo = "#785EF0",
+                       Sicilia = "#E69F00", Italia = "#666666")
 
 # I cinque comuni geograficamente vicini a Bagheria: un colore pieno ciascuno, lo stesso
 # in ogni figura che li mostra (fig01, fig06, fig07). L'ordine è per distanza crescente,
 # i nomi li appaia ogni script leggendo il CSV: qui stanno i colori, non i comuni.
-# Nessuno coincide con l'arancio di Bagheria, il blu di Palermo o i due colori del genere.
-PALETTE_VICINI <- c("#56B4E9", "#CC79A7", "#785EF0", "#8C564B", "#000000")
+# Nessuno coincide con il vermiglio di Bagheria, il viola di Palermo o i due colori del
+# genere: il rosa e il viola che stavano qui sono usciti quando quei due sono stati presi.
+PALETTE_VICINI <- c("#56B4E9", "#E69F00", "#009E73", "#8C564B", "#000000")
 
 # Il vicinato aggregato (fig07: coorti dei cinque comuni sommate) è un territorio a sé,
 # non uno dei cinque: colore proprio, così non si confonde con Villabate & co.
@@ -66,8 +69,11 @@ vicini_di_bagheria <- function() {
     mutate(colore = PALETTE_VICINI[row_number()])
 }
 
-# Genere: mai rosa/azzurro. Arancio e verde-acqua, entrambi Okabe-Ito.
-COLORI_GENERE <- c(F = "#E69F00", M = "#009E73")
+# Genere: blu per i maschi, rosa per le femmine — scelta esplicita del team, per una
+# lettura immediata senza legenda. I due valori restano dentro Okabe-Ito (#0072B2 e
+# #CC79A7), quindi la coppia resta distinguibile anche in protanopia e deuteranopia:
+# è la convenzione di genere che cambia, non il requisito colorblind-safe.
+COLORI_GENERE <- c(F = "#CC79A7", M = "#0072B2")
 ETICHETTE_GENERE <- c(F = "femmine", M = "maschi")
 
 # Stati della condizione professionale: casalinghe/i in vermiglio perché è il finding.
@@ -75,11 +81,21 @@ COLORI_STATO <- c("occupati" = "#0072B2", "in cerca" = "#56B4E9", "studenti" = "
                   "casalinghe/i" = "#D55E00", "altra condizione" = "#E69F00",
                   "pensione" = "#999999")
 
+# Tre livelli tipografici, una sola famiglia. La gerarchia la fanno corpo, peso e colore:
+# un secondo font richiederebbe che la macchina ce l'abbia (qui è garantito solo il
+# fallback di Lato) e cairo in SVG converte comunque il testo in tracciati.
+#   1. titolo della figura     grande, nero, bold      -> tema_figura()
+#   2. sottotitolo della figura corpo pieno, grigio     -> tema_figura()
+#   3. titolo di pannello       piccolo, scuro, bold    -> tema_datapolis(), qui sotto
+# `plot.subtitle` porta due ruoli diversi a seconda di dove sta: dentro un sotto-grafico
+# è il titolo del pannello (3), nell'annotazione di patchwork è il sottotitolo (2). Per
+# questo tema_figura() lo rimette a corpo di testo: senza, i paragrafi verrebbero in bold.
 tema_datapolis <- function(base_size = 12) {
   theme_minimal(base_size = base_size, base_family = FAMIGLIA) +
     theme(
       plot.title = element_text(face = "bold", size = rel(1.25), margin = margin(b = 4)),
-      plot.subtitle = element_text(colour = "grey30", margin = margin(b = 12)),
+      plot.subtitle = element_text(face = "bold", colour = "grey15", size = rel(0.98),
+                                   lineheight = 1.05, margin = margin(b = 12)),
       # Il footer è provenienza e cautele: deve restare leggibile ma non competere con
       # il grafico. grey55 sta a 3,4:1 sul bianco — sotto i 4,5:1 che WCAG chiede al
       # testo normale, sopra il minimo di 3:1: non scendere oltre.
@@ -94,6 +110,21 @@ tema_datapolis <- function(base_size = 12) {
       legend.title = element_blank(),
       legend.key.height = unit(0.8, "lines"),
       plot.margin = margin(12, 16, 10, 12)
+    )
+}
+
+#' Tema dell'annotazione di patchwork (titolo, sottotitolo e caption della figura intera)
+#' e delle figure a pannello unico. Stacca il titolo dai titoli dei pannelli: un corpo e
+#' mezzo più grande, nero pieno, e sotto un sottotitolo che torna testo normale.
+tema_figura <- function(base_size = 12) {
+  tema_datapolis(base_size) +
+    theme(
+      # 1,35 e non di più: a 1,45 il titolo di fig07, che è il più lungo del gruppo,
+      # usciva dai 28 cm. Il salto sui titoli di pannello (rel 0,98) resta di un terzo.
+      plot.title = element_text(face = "bold", size = rel(1.35), colour = "grey10",
+                                lineheight = 1.1, margin = margin(b = 6)),
+      plot.subtitle = element_text(face = "plain", colour = "grey30", size = rel(0.92),
+                                   lineheight = 1.25, margin = margin(b = 14))
     )
 }
 

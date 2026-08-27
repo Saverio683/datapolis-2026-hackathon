@@ -195,7 +195,7 @@ figura <- carta / (spostamento | persistenza) +
       "gli estremi regionali si leggono agli estremi dell'istogramma. Rho di Spearman e persistenza del quintile: notebooks/genere.ipynb.\n",
       "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mappa_occupazione_femminile.csv, genere_mappa_2011_2024.csv,\n",
       "genere_distribuzione_390.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
 # Più alta dell'originale: coord_equal vincola la carta dall'altezza, quindi l'altezza
