@@ -910,6 +910,127 @@ check("forbice_serie.csv Bagheria 2023 rapporto M/F",
       fserie[(fserie["territorio"] == B) & (fserie["anno"] == 2023)]["rapporto_M_F_occupazione"].item(),
       1.89, 0.011)
 
+# ---------------- bilancio dei giovani, audit sex ratio, stranieri, stato civile ---
+# Sezioni del 2026-08-26. Come sopra: ricalcolo dai raw con percorso proprio, attesi
+# pinnati sui numeri pubblicati nel notebook.
+
+# (a) platea 15-24 del 2029/2034 dalle età singole del 2024 (SETA_1)
+def eta_somma(terr, gen, a0, a1, anno=2024, citt="TOTAL"):
+    d = pop[pop["REF_AREA"].eq(terr) & pop["anno"].eq(anno) & pop["GENDER"].eq(gen)
+            & pop["CITIZENSHIP"].eq(citt) & pop["eta"].between(a0, a1)]
+    return d["v"].sum()
+
+
+for gen, (oggi, a29, a34, v29, v34) in {"F": (2882, 2651, 2435, -8.0, -15.5),
+                                        "M": (3022, 2946, 2846, -2.5, -5.8)}.items():
+    o, p29, p34 = (eta_somma(B, gen, 15, 24), eta_somma(B, gen, 10, 19),
+                   eta_somma(B, gen, 5, 14))
+    check(f"platea {gen} Bagheria 2024", round(o), oggi, 0.5)
+    check(f"platea {gen} Bagheria 2029 (10-19enni di oggi)", round(p29), a29, 0.5)
+    check(f"platea {gen} Bagheria 2034 (5-14enni di oggi)", round(p34), a34, 0.5)
+    check(f"platea {gen} variazione 2029 (%)", round(100 * (p29 / o - 1), 1), v29)
+    check(f"platea {gen} variazione 2034 (%)", round(100 * (p34 / o - 1), 1), v34)
+    # tavola indipendente: le classi quinquennali devono ridare i 5-14enni del 2024
+    q = coorte(B, gen, "Y5-9", 2024) + coorte(B, gen, "Y10-14", 2024)
+    check(f"platea {gen}: classi quinquennali vs età singole (5-14)", q, round(p34), 0.5)
+
+
+# (b) sex ratio 5-14: livelli, salita post-2011, z sull'ultima finestra
+def cinque14(terr, gen, anno):
+    return coorte(terr, gen, "Y5-9", anno) + coorte(terr, gen, "Y10-14", anno)
+
+
+for anno, att in ((2001, 103.7), (2011, 107.2), (2018, 110.5), (2024, 116.9)):
+    check(f"sex ratio 5-14 Bagheria {anno} (M per 100 F)",
+          round(100 * cinque14(B, "M", anno) / cinque14(B, "F", anno), 1), att)
+check("sex ratio 5-14 Italia 2024",
+      round(100 * cinque14(I, "M", 2024) / cinque14(I, "F", 2024), 1), 106.0)
+m_b, f_b = cinque14(B, "M", 2024), cinque14(B, "F", 2024)
+m_i, f_i = cinque14(I, "M", 2024), cinque14(I, "F", 2024)
+p_oss, p_att, n_b = m_b / (m_b + f_b), m_i / (m_i + f_i), m_b + f_b
+check("sex ratio: z binomiale 2024 vs quota maschile italiana",
+      round((p_oss - p_att) / np.sqrt(p_att * (1 - p_att) / n_b), 1), 3.5)
+
+# (c) componente straniera 15-34 (età singole, quindi 2021-2024)
+check("stranieri 15-34 Bagheria 2024", round(eta_somma(B, "T", 15, 34, citt="FRGAPO")), 195, 0.5)
+check("quota stranieri 15-34 Bagheria 2024 (%)",
+      round(100 * eta_somma(B, "T", 15, 34, citt="FRGAPO") / eta_somma(B, "T", 15, 34), 1), 1.6)
+check("quota stranieri 15-34 Italia 2024 (%)",
+      round(100 * eta_somma(I, "T", 15, 34, citt="FRGAPO") / eta_somma(I, "T", 15, 34), 1), 12.4)
+check("variazione 2021-2024 italiani 15-34 Bagheria",
+      round(eta_somma(B, "T", 15, 34, citt="ITL") - eta_somma(B, "T", 15, 34, 2021, "ITL")), -350, 0.5)
+check("variazione 2021-2024 italiane F 15-34 Bagheria",
+      round(eta_somma(B, "F", 15, 34, citt="ITL") - eta_somma(B, "F", 15, 34, 2021, "ITL")), -219, 0.5)
+check("variazione 2021-2024 stranieri 15-34 Bagheria",
+      round(eta_somma(B, "T", 15, 34, citt="FRGAPO") - eta_somma(B, "T", 15, 34, 2021, "FRGAPO")), 37, 0.5)
+
+
+# (d) transizioni annuali della ritenzione: la finestra 22-25 un anno alla volta
+def rapporto_annuo(terr, gen, a, t0):
+    return 100 * eta_somma(terr, gen, a + 1, a + 1, t0 + 1) / eta_somma(terr, gen, a, a, t0)
+
+
+for t0, att in ((2021, 100.7), (2022, 104.5), (2023, 96.5)):
+    check(f"transizione F 24 Bagheria {t0}-{t0 + 1}", round(rapporto_annuo(B, "F", 24, t0), 1), att)
+r24 = [rapporto_annuo(B, "F", 24, t0) for t0 in (2021, 2022, 2023)]
+check("transizioni: escursione F 24 Bagheria (pp)", round(max(r24) - min(r24), 1), 8.0)
+sotto_100 = sum(round(rapporto_annuo(B, "F", a, t0), 1) < 100
+                for a in range(22, 26) for t0 in (2021, 2022, 2023))
+check("transizioni: celle F 22-25 Bagheria sotto quota 100", sotto_100, 5, 0.5)
+italia_2225 = [round(rapporto_annuo(I, "F", a, t0), 1)
+               for a in range(22, 26) for t0 in (2021, 2022, 2023)]
+check("transizioni: minimo Italia F 22-25", min(italia_2225), 100.7)
+check("transizioni: massimo Italia F 22-25", max(italia_2225), 101.3)
+
+# (e) stato civile (DCIS_POPRES1): parsing proprio del raw, codici sesso legacy inclusi
+sciv = pd.read_csv(RAW / "popres_stato_civile_eta_2026-08-26.csv", dtype=str)
+sciv["v"] = pd.to_numeric(sciv["OBS_VALUE"])
+sciv["anno"] = sciv["TIME_PERIOD"].astype(int)
+sciv["eta"] = pd.to_numeric(sciv["AGE"].str.extract(r"^Y(\d+)$", expand=False))
+GIA_CONIUGATE = ["2", "3", "4", "15", "16", "17"]
+
+
+def stato_civ(terr, sesso, anno, a0, a1, codici):
+    d = sciv[sciv["REF_AREA"].eq(terr) & sciv["SEX"].eq(sesso) & sciv["anno"].eq(anno)
+             & sciv["eta"].between(a0, a1) & sciv["MARITAL_STATUS"].isin(codici)]
+    return d["v"].sum()
+
+
+check("stato civile: F 15-24 Bagheria al 1.1.2025 (totale)",
+      round(stato_civ(B, "2", 2025, 15, 24, ["99"])), 2882, 0.5)
+check("stato civile: già coniugate F 15-24 Bagheria 1.1.2025",
+      round(stato_civ(B, "2", 2025, 15, 24, GIA_CONIUGATE)), 41, 0.5)
+check("stato civile: quota già coniugate F 15-24 Bagheria (%)",
+      round(100 * stato_civ(B, "2", 2025, 15, 24, GIA_CONIUGATE)
+            / stato_civ(B, "2", 2025, 15, 24, ["99"]), 2), 1.42)
+for terr, att in ((B, 2.67), (P, 3.21), (S, 2.90), (I, 2.25)):
+    check(f"stato civile: quota già coniugate F 20-24 {NOMI[terr]} 1.1.2025 (%)",
+          round(100 * stato_civ(terr, "2", 2025, 20, 24, GIA_CONIUGATE)
+                / stato_civ(terr, "2", 2025, 20, 24, ["99"]), 2), att)
+# partizione: il dettaglio (con gli zeri strutturali sotto i 16/18 anni) == totale 99
+det = sciv[sciv["MARITAL_STATUS"].ne("99") & sciv["eta"].notna()].groupby(
+    ["REF_AREA", "anno", "SEX", "eta"])["v"].sum()
+tot99 = sciv[sciv["MARITAL_STATUS"].eq("99") & sciv["eta"].notna()].set_index(
+    ["REF_AREA", "anno", "SEX", "eta"])["v"]
+indice_comune = det.index.intersection(tot99.index)
+check("stato civile: partizione dettaglio == totale (scarto max)",
+      float((det.loc[indice_comune] - tot99.loc[indice_comune]).abs().max()), 0.0)
+check("stato civile: anni con il dettaglio coniugale",
+      str(sorted(sciv[sciv["MARITAL_STATUS"].eq("2")]["anno"].unique().tolist())),
+      "[2019, 2020, 2021, 2022, 2023, 2024, 2025]")
+
+# (f) i nuovi CSV processed letti dalle figure
+for nome, righe_attese in (("genere_ritenzione_transizioni.csv", 384),
+                           ("genere_platea.csv", 8),
+                           ("genere_sex_ratio_5_14.csv", 36),
+                           ("genere_stranieri.csv", 32),
+                           ("genere_stato_civile.csv", 168)):
+    check(f"{nome} righe", len(pd.read_csv(PROCESSED / nome)), righe_attese, 0.5)
+platea_csv = pd.read_csv(PROCESSED / "genere_platea.csv", dtype={"territorio": str})
+check("platea.csv: platea F 2034 Bagheria",
+      platea_csv[(platea_csv["territorio"] == B)
+                 & (platea_csv["genere"] == "F")]["platea_2034"].item(), 2435, 0.5)
+
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]
 print(f"\n{'=' * 70}\nTOTALE: {len(esiti)} controlli, {len(esiti) - len(falliti)} PASS, {len(falliti)} FAIL")
