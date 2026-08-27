@@ -9,6 +9,9 @@ dependencies = [
     "ipykernel>=6.29",
     "statsmodels>=0.14.6",
     "geopandas>=1.1.4",
+    "matplotlib>=3.10",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.6",
 ]
 
 [tool.uv]
