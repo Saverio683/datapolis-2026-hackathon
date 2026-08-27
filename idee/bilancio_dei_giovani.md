@@ -30,11 +30,16 @@ dell'hackathon si rispetta esattamente (età singole di `DF_DCSS_POP_DEMCITMIG_S
   sono il tetto massimo dei 15-24 fra dieci anni (al netto delle migrazioni, che finora
   sottraggono). Nessuna proiezione, nessun modello: un conteggio, con l'onestà di dire che
   è un tetto e non una previsione. Dimensiona la platea su cui qualunque policy agirà.
+  ✔ Sviluppata il 2026-08-26 in `notebooks/genere.ipynb` («Il bilancio dei giovani»):
+  ragazze -15.5% al 2034 contro -5.8% dei ragazzi, con l'**audit della sex ratio 5-14**
+  (117 M per 100 F, anomalia post-2011, meccanismo aperto) come sezione gemella.
 - **Chi arriva: la componente straniera** 🟢 — `SETA_1` ha `CITIZENSHIP` (`ITL`/`FRGAPO`)
   incrociata con età singola e genere: la popolazione straniera giovane compensa in parte
   le uscite? A Bagheria, quanto? (⚠️ nelle tavole lavoro la cittadinanza è solo `TOTAL` —
   vicolo cieco già verificato: la componente straniera si conta in demografia, non se ne
   misura l'occupazione comunale.) Contesto anche negli `S1`-`S10` del 2011.
+  ✔ Sviluppata il 2026-08-26 («La componente straniera»): 1.6% del 15-34 (195 persone)
+  contro 12.4% Italia; 2021-2024: -350 italiani, +37 stranieri. Il ricambio non c'è.
 - **La piramide a confronto** 🟢 — struttura per età completa di Bagheria vs benchmark,
   2021-2024: dove la piramide di Bagheria si scava rispetto a Palermo, e per quale genere.
 

@@ -39,3 +39,9 @@ copiabile cambiando solo la variabile colorata. Dettagli e trappole in `docs/sou
 - `genere_coorti.csv` — ritenzione di coorte 2021-2024 per genere (le ragazze si perdono
   dopo i 25 anni, i ragazzi prima). La misura è netta e senza destinazioni: i flussi
   origine-destinazione sono il pezzo che manca, ed è roba tua.
+- `genere_platea.csv` (nuovo, 2026-08-26) — la platea 15-24 del 2024 e quella già nata
+  del 2029/2034, per genere e territorio: il denominatore futuro di qualunque scenario.
+- `genere_stranieri.csv` (nuovo, 2026-08-26) — il 15-34 per cittadinanza e genere,
+  2021-2024: a Bagheria il ricambio migratorio è l'1.6% (195 persone), quindi i flussi
+  rilevanti sono quasi solo in uscita. (L'occupazione degli stranieri a livello comunale
+  resta non misurabile: nelle tavole lavoro la cittadinanza è solo TOTAL.)

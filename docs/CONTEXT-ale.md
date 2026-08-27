@@ -1,6 +1,6 @@
 # CONTEXT — Ale (focus genere)
 
-Stato del thread genere al 2026-08-25. Le regole condivise stanno in `CLAUDE.md`; qui solo
+Stato del thread genere al 2026-08-26. Le regole condivise stanno in `CLAUDE.md`; qui solo
 ciò che riguarda questo thread. Ogni numero citato si rigenera da una cella di
 `notebooks/genere.ipynb` — mai copiarlo a mano nella proposal.
 
@@ -9,11 +9,14 @@ ciò che riguarda questo thread. Ogni numero citato si rigenera da una cella di
 in ordine: verifica di fattibilità degli incroci, serie e gap occupazionale 15-24 con CI
 (Wilson/Newcombe), doppia scala (punti e rapporto M/F), LPM (GLM binomiale link identità)
 sull'eccesso di gap **e sui livelli femminili** vs benchmark, trend OLS 2018-2024, decomposizione della popolazione
-per stato, scissione delle casalinghe, **bounds per età sulle casalinghe**, gap istruzione
-9-24, verifica di composizione per età, quadro di sintesi, **quadrante per genere** (con
+per stato, scissione delle casalinghe, **bounds per età sulle casalinghe**, **stato civile per
+età (le casalinghe sono nubili, fonte DCIS_POPRES1)**, gap istruzione 9-24, verifica di composizione per età, quadro di sintesi, **quadrante per genere** (con
 export per le figure 5 e 6), gap in persone, **potenza statistica e MDE dei KPI**,
 ritenzione di coorte per genere 2021-2024, **profilo di ritenzione per età singola +
-gruppo invisibile scisso per genere**, contesto storico 2011, mappa siciliana,
+gruppo invisibile scisso per genere**, **transizioni annuali (robustezza della
+finestra 22-25)**, **bilancio dei giovani (platea 2029/2034 per genere)**, **audit
+della sex ratio 5-14**, **componente straniera nel 15-34**, contesto storico 2011,
+mappa siciliana,
 **su 1.000 ragazze** (istruzione e lavoro sulla stessa fascia: estrazione 15-24 dalla
 tavola 9-24 con assert di coerenza sulle età singole, bound 18-24), **gap
 delle madri** (tre censimenti, valori + percentili sui 390), **gemelle di Bagheria**
@@ -26,17 +29,18 @@ coerenza fra le due rilevazioni, percentili sui 390 fino al 2024, gemelle 2018-2
 **i claim reggono al 2024?** (persistenza della graduatoria dei 390 comuni con rho di
 Spearman, ritenzione di coorte a scala decennale dalle classi quinquennali, forbice
 ripetuta su tutte le annate disponibili),
-sintesi finale in 12 sezioni con finestre di lettura dei KPI.
+sintesi finale in 13 sezioni con finestre di lettura dei KPI.
 Ogni sezione si apre con una riga `📌 Risultato chiave`; la «Sintesi finale» le ricompone
 e le traduce nel template della proposal (evidenza → target → KPI → finestra di lettura).
 
-**Verifica indipendente** (2026-08-25): `uv run python -m pipeline.verifica` — 475
+**Verifica indipendente** (2026-08-26): `uv run python -m pipeline.verifica` — 521
 controlli che ricalcolano ogni numero chiave direttamente da `data/raw/` con
 implementazioni alternative (Wilson/Newcombe riscritte, LPM saturo in forma analitica,
 IRLS per il GLM a link identità, arcoseno per MDE/potenza, matching Mahalanobis rifatto, tassi 15+ ricalcolati dai 12 blocchi dei 390 comuni,
 Spearman come Pearson sui ranghi, ritenzione di coorte rifatta dal raw delle classi
-quinquennali):
-**475/475 PASS**; output salvati identici alla riesecuzione (diff nullo), CSV rigenerati
+quinquennali, platea/sex ratio/stranieri/transizioni dalle età singole e dalle classi,
+stato civile dal raw POPRES coi codici sesso legacy):
+**521/521 PASS**; output salvati identici alla riesecuzione (diff nullo), CSV rigenerati
 byte-identici. È il pin di regressione del thread: se i raw cambiano deve fallire finché
 notebook e attesi non vengono riallineati.
 
@@ -120,6 +124,28 @@ notebook e attesi non vengono riallineati.
   +2.9 a +0.5, ma il **rapporto M/F oscilla** (2.47 → 1.89 nel 2023 → 2.01) e mette
   Bagheria in testa solo in 4 anni su 6. Il claim da portare nella proposal è il **livello
   femminile**, non il rapporto. Dettaglio e cautele in `docs/sources.md` sezione 8.
+- **Il bilancio dei giovani** (nuovo, 2026-08-26). *Platea*: chi avrà 15-24 anni nel
+  2029/2034 è già nato — le ragazze passano da 2.882 a 2.651 (-8.0%) e **2.435
+  (-15.5%)**, i ragazzi -2.5% e -5.8%; nei benchmark il calo è simmetrico fra i generi.
+  I KPI in teste si riparametrano sulla platea corrente; il conteggio è un tetto.
+  *Audit*: l'asimmetria viene dalla **sex ratio 5-14** — 117 M per 100 F al 2024 contro
+  il 104-106 dei benchmark, nella norma fino al 2011 (z +0.4) e in salita da allora
+  (z +3.5; identica su due tavole indipendenti; tutta nella popolazione italiana).
+  Meccanismo aperto: si cita solo insieme all'audit; i check decisivi (nati per sesso,
+  gemelle sulle classi) sono fetch 🟡. *Ricambio*: stranieri all'**1.6% del 15-34**
+  (195 persone) contro 5.1% Palermo / 6.4% Sicilia / 12.4% Italia; 2021-2024: -350
+  italiani (di cui **-219 F**), +37 stranieri. La fuga è al netto di niente.
+- **Le casalinghe sono nubili** (nuovo, 2026-08-26, fonte DCIS_POPRES1 — sources.md §9):
+  già coniugate 15-24 al 1.1.2025 = **41 (1.4%)** contro 387 casalinghe → **almeno
+  l'89% è nubile**; quota coniugate 20-24 di Bagheria (2.7%) *sotto* Palermo (3.2%) e
+  Sicilia (2.9%), matrimonio under-25 in caduta ovunque (6.1% → 2.7% dal 2019). I
+  denominatori delle due fonti coincidono alla singola unità (2.882 = 2.882). Il canale
+  non è il matrimonio precoce ma la famiglia d'origine: servizio di **attivazione**,
+  non solo conciliazione. Limite: lo stato civile non osserva convivenze né maternità.
+- **La finestra 22-25 è una lettura pooled**: le transizioni annuali oscillano fino a
+  8 pp sulla stessa età (24enni F: 100.7 / 104.5 / 96.5; n≈290 per cella) contro
+  ±0.8 pp di solo rumore di conteggio e un'Italia ferma in 100.7-101.3; 5 celle su 12
+  sotto quota 100. Il claim si titola sul triennio, l'anno singolo è un controllo.
 
 ## Export per R (`data/processed/`)
 `genere_gap_occupazione.csv`, `genere_gap_occupazione_ci.csv` (bande di confidenza),
@@ -144,7 +170,12 @@ classi e i quattro periodi), `genere_forbice_serie.csv` (fig05: le tre misure pe
 territori × 6 anni — fotografia e serie nella stessa tabella),
 `genere_posizionamento.csv` (alimenta fig08: min/q1/mediana/q3/max delle gemelle,
 `gemelle_sotto`, `percentile_390`, più la colonna `verso` — +1 alto è meglio, -1 alto è
-peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel notebook, non in R).
+peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel notebook, non in R),
+`genere_ritenzione_transizioni.csv` (le tre transizioni annuali per età 15-30, 4 territori),
+`genere_platea.csv` (15-24 del 2024 e platea 2029/2034 per genere),
+`genere_sex_ratio_5_14.csv` (M per 100 F, 2001-2024, dalle classi quinquennali),
+`genere_stranieri.csv` (15-34 per cittadinanza e genere, 2021-2024),
+`genere_stato_civile.csv` (già coniugate per fascia 15-24/18-24/20-24, 1.1.2019-1.1.2025).
 
 ## Figure (R)
 `Rscript viz/build_all.R` rigenera tutto in `figures/` (PNG 300dpi + SVG). Tema e palette
@@ -179,7 +210,9 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   2/10). Si colora **solo** dove Bagheria esce dalla metà centrale del riferimento —
   interquartile delle gemelle a sinistra, 25°-75° percentile a destra — così un 3/10 non
   diventa un'affermazione categorica; il giudizio è calcolato **per pannello**, sul dato
-  che quel pannello mostra. Tutto 2011/8milaCensus, mai in serie con il 2018-2024.
+  che quel pannello mostra. Dal 2026-08-26 i tre colori hanno una **legenda in figura**
+  (prima la chiave stava nel sottotitolo, che si legge una volta e poi non si ritrova più
+  mentre si guarda il grafico). Tutto 2011/8milaCensus, mai in serie con il 2018-2024.
 - `fig09_kpi_finestra` — il KPI della proposal e la sua misurabilità: waffle delle 2.882
   ragazze (un quadratino = 10) con i tre scenari in persone | MDE all'80% di potenza per
   ampiezza della finestra, con la soglia del delta da rilevare. È la figura che dichiara
@@ -191,6 +224,12 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   (8milaCensus lo calcola su 6+, il permanente non ha una classe 15+ sull'istruzione) e una
   linea che muore a metà pannello confonde — resta in caption. Il punto per la proposal: il
   divario è **databile e non si richiude da solo**.
+  L'asse del tempo **non è in scala** (dal 2026-08-26): il tratto 1991-2011 è compresso
+  ~3,3:1 e il 2018-2024 dilatato 1,2:1, perché venti anni con tre rilevazioni si prendevano
+  due terzi della larghezza e i sei anni con sei rilevazioni si schiacciavano contro il
+  bordo. Si può fare solo perché le due epoche non sono già una serie unica: nessuna linea
+  attraversa lo stacco, quindi non c'è una pendenza continua da falsare. Le pendenze restano
+  confrontabili **dentro** ciascuna epoca, non fra le due, e la caption lo dichiara.
 - `fig11_per_1000` — istruzione e lavoro **sulla stessa fascia**: su 1.000 ragazze 15-24,
   510 diplomate e 82 al lavoro (coetanei: 462 e 165); barre parallele sulla stessa base,
   **mai** stadi di un funnel (l'incrocio titolo × condizione non esiste a livello comunale
@@ -202,21 +241,43 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
 Tipografia: Lato dove installato (fallback al sans di sistema) e numeri all'italiana
 via `virgola()` — entrambi in `viz/theme.R`, nessuno stile inline.
 
-Palette (verificata 2026-08-25 con il validatore del dataviz skill, modalità light):
-il vicinato è passato da `#44AA99` a **`#1B9E8F`** perché il primo stava sotto il chroma
-floor e sotto 3:1 di contrasto sul bianco; tocca fig01, fig05, fig07. Restano due
-segnalazioni **volute**: `#666666` (Italia) è grigio per scelta — è il colore del
-contesto, non una serie — e `#CC79A7` (Sicilia) ha contrasto 2,98 contro una soglia di
-3,00, coperto dalle etichette diritte presenti in ogni figura che lo usa. Scurirlo per
-passare la soglia peggiora la separazione CVD contro il blu di Palermo (ΔE 9,6 → 6,4):
-scambio non conveniente, si tiene l'Okabe-Ito canonico.
-`DIVERGENTE` (vermiglio ↔ grigio ↔ blu) è la scala di polarità di fig08.
+Palette (rivista 2026-08-26). **Il genere prende blu (M `#0072B2`) e rosa (F `#CC79A7`)**
+su decisione del team: lettura immediata senza legenda. La coppia resta Okabe-Ito, quindi
+distinguibile in protanopia e deuteranopia — cambia la convenzione, non il requisito.
+Di conseguenza nessun territorio può più indossare quei due colori: **Palermo passa a
+`#785EF0`** (viola) e **Sicilia a `#E69F00`** (ambra); il rosa e il viola escono da
+`PALETTE_VICINI`, che diventa sky/ambra/verde/marrone/nero (tocca solo fig06, dove Sicilia
+non compare). Il vicinato resta `#1B9E8F` (era `#44AA99`, sotto il chroma floor).
+
+Il costo, misurato: **l'ambra di Sicilia sta a 2,25:1 di contrasto sul bianco**, sotto la
+soglia di 3:1 — peggio del 2,98 che aveva il rosa. Non è aggirabile scurendola: a parità
+di separazione serve un'ocra tipo `#B8860B`, che passa il contrasto (3,25) ma crolla a
+ΔE 5,0 contro il vermiglio di Bagheria in visione dicromatica, cioè diventa la stessa
+linea. Una griglia HSL completa (contrasto ≥ 3 e ΔE ≥ 15 contro le altre quattro serie)
+non restituisce nessun colore fuori dal blu-viola: con blu e rosa impegnati dal genere, i
+cinque territori non stanno tutti sopra soglia. Si tiene l'ambra, che almeno conserva la
+separazione CVD (ΔE 17,6 contro Bagheria), e la si copre come già si faceva con il rosa:
+etichette dirette o legenda in ogni figura che la usa. Le alternative scartate sono il
+nero (passa tutto, ma pesa più di Bagheria in fig01 dove le linee hanno lo stesso spessore)
+e la rinuncia al blu/rosa sul genere.
+`DIVERGENTE` (vermiglio ↔ grigio ↔ blu) è la scala di polarità di fig08, ora con legenda
+in figura invece della spiegazione nel sottotitolo.
+
+Tipografia: tre livelli, una sola famiglia — titolo della figura (`tema_figura()`, corpo
+1,45 e nero), sottotitolo (testo normale grigio), titolo di pannello (`tema_datapolis()`,
+bold grigio scuro). Niente secondo font: solo Lato ha un fallback verificato e i device
+cairo convertono comunque il testo in tracciati nell'SVG.
 
 ## Aperture
 - `pipeline/stats.py` condiviso (Wilson/Newcombe/LPM): decisione di team, per ora le
   funzioni vivono nelle celle del notebook.
 - Fetch possibili ma non pianificati (decisione di team, "nuova fonte"): stato civile ×
   età via SDMX (per legare bounds casalinghe e matrimoni precoci).
+  ✔ Fatto il 2026-08-26 via `DCIS_POPRES1` (il permanente non lo incrocia nemmeno con
+  chiave esplicita, NoRecordsFound: sources.md §9). Risposta netta: le casalinghe sono
+  nubili (≥89%), il matrimonio precoce è escluso come canale. Restano 🟡 da decidere:
+  nati per sesso del comune (demo.istat) e classi quinquennali delle gemelle — i due
+  check che chiuderebbero l'anomalia della sex ratio 5-14.
   ✔ Fatto il 2026-08-25: censimento permanente per le dieci gemelle (il DiD 2018-2024 ha
   adesso il suo pre-periodo) e per i 390 comuni siciliani sulla classe 15+.
 - `censpop_demografia_classi_long.csv` (classi quinquennali, **2001, 2011 e 2018-2024**,

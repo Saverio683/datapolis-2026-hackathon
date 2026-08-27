@@ -51,6 +51,12 @@ riportare le persone dentro il mercato, l'altro deve solo intermediarlo).
    (`ALL`). L'SDMX lo espone: è un task "nuova fonte", da pianificare e non da improvvisare.
    Se si fa, la domanda "le ventenni di Bagheria si sposano prima che altrove?" ha una
    risposta al 2024 e non solo al 2011.
+   ✔ **Fatto il 2026-08-26**, ma da un'altra tavola: il permanente non incrocia lo stato
+   civile nemmeno con chiave esplicita (NoRecordsFound); si usa `DCIS_POPRES1`
+   (popolazione al 1° gennaio, `docs/sources.md` §9). **Risposta: no.** Già coniugate
+   15-24 = 41 contro 387 casalinghe (≥89% nubili); quota 20-24 di Bagheria (2.7%) sotto
+   Palermo e Sicilia. Il canale è la famiglia d'origine, non il matrimonio: sezione
+   «Le casalinghe sono coniugate?» in `notebooks/genere.ipynb`.
 4. **Confronto con i benchmark** su tutta la composizione degli stati, non solo su
    "casalinga": la figura deve mostrare che a Palermo quelle stesse persone stanno in
    "studente" o "in cerca", cioè dentro percorsi che un servizio può intercettare.
