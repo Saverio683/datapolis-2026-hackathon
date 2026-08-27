@@ -13,6 +13,8 @@ Output:
     censpop_lavoro_gemelle_long.csv        lavoro per le 10 gemelle strutturali, 2018-2024
     censpop_lavoro_15piu_sicilia_long.csv  lavoro 15+ per i 390 comuni siciliani, 2018-2024
     censpop_demografia_classi_long.csv     popolazione per classi quinquennali, 2001-2024
+    popres_stato_civile_long.csv           popolazione al 1° gennaio per età, sesso e
+                                           stato civile (DCIS_POPRES1, 2019-2026)
 
 Le descrizioni stanno nei lookup e non nelle tabelle lunghe: ripetute su ogni riga
 gonfiavano ottomilacensus_long da 4 a 40 MB. In R è una join in più.
@@ -269,6 +271,37 @@ def costruisci_censpop_demografia_classi() -> dict[str, pd.DataFrame]:
         ["territorio", "anno", "genere", "eta", "stato_civile", "cittadinanza", "valore"]]}
 
 
+COLONNE_POPRES_STATCIV = {
+    "REF_AREA": "territorio",
+    "TIME_PERIOD": "anno",
+    "SEX": "genere",
+    "AGE": "eta",
+    "MARITAL_STATUS": "stato_civile",
+}
+
+# DCIS_POPRES1 usa i codici legacy di CL_SEXISTAT1 (1/2/9): qui si normalizzano ai M/F/T
+# del resto della pipeline, così i filtri di notebook e figure non dipendono dalla fonte.
+SESSO_LEGACY = {"1": "M", "2": "F", "9": "T"}
+
+
+def costruisci_popres_stato_civile() -> dict[str, pd.DataFrame]:
+    """Popolazione al 1° gennaio per età singola, sesso e stato civile (DCIS_POPRES1).
+
+    Fonte diversa dal censimento permanente (stock al 1° gennaio su base censuaria, dal
+    2019, contro la media annua di SETA_1): file a parte, mai in serie con
+    censpop_popolazione_long. La copertura per anno non è uniforme fra i territori
+    (il 2026 esiste solo per alcuni): si lascia com'è e si verifica in analisi.
+    """
+    if _mancano("stato_civile", "popres_stato_civile_eta"):
+        return {}
+    lungo = leggi_sdmx("popres_stato_civile_eta", COLONNE_POPRES_STATCIV)
+    lungo["genere"] = lungo["genere"].map(SESSO_LEGACY)
+    assert lungo["genere"].notna().all(), "codice sesso fuori dai legacy 1/2/9"
+    lungo["eta_anni"] = eta_in_anni(lungo["eta"])
+    return {"popres_stato_civile_long.csv": lungo[
+        ["territorio", "anno", "genere", "eta", "eta_anni", "stato_civile", "valore"]]}
+
+
 DIMENSIONI_CODIFICATE = {
     "genere": ["genere"],
     "condizione": ["condizione"],
@@ -413,11 +446,12 @@ def main() -> int:
     print("- censpop gemelle strutturali, 390 comuni 15+, classi quinquennali")
     recenti = {**costruisci_censpop_gemelle(),
                **costruisci_censpop_sicilia_15piu(),
-               **costruisci_censpop_demografia_classi()}
+               **costruisci_censpop_demografia_classi(),
+               **costruisci_popres_stato_civile()}
     print("- territori e codici")
     territori = costruisci_territori(ottomila, istr_lav, popolazione,
                                      *vicini.values(), *recenti.values())
-    codici = costruisci_codici(istr_lav, popolazione)
+    codici = costruisci_codici(istr_lav, popolazione, *recenti.values())
     print("- confini comunali Sicilia")
     poligoni, centroidi = costruisci_confini_sicilia()
 
