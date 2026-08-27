@@ -64,8 +64,12 @@ rapporto <- ggplot(dati, aes(anno, rapporto_M_F, colour = nome_territorio)) +
   labs(subtitle = "In rapporto (tasso M / tasso F)",
        y = "quante volte")
 
-figura <- (punti | rapporto) +
-  plot_layout(guides = "collect") +
+# La legenda in una riga tutta sua, in cima (come in fig07): `guide_area()` è il posto
+# che patchwork dà ai guide raccolti, e come prima riga della composizione finisce sopra
+# i titoli dei due pannelli invece che incastrata fra i titoli e i grafici. Centrata
+# sull'intera figura, non sul solo pannello che la produce.
+figura <- guide_area() / (punti | rapporto) +
+  plot_layout(heights = c(0.08, 1), guides = "collect") +
   plot_annotation(
     title = "Il divario di genere di Bagheria è medio in punti, il peggiore in proporzione",
     subtitle = paste("Tasso di occupazione 15-24 anni, 2018-2024. In punti percentuali il gap di Bagheria (8,3 nel 2024)",
@@ -84,7 +88,6 @@ figura <- (punti | rapporto) +
                     "\nLe serie dei singoli comuni stanno in genere_gap_occupazione_ci_vicini.csv: su 10-28 mila abitanti gli intervalli sono larghi il quintuplo.",
                     "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_gap_occupazione_ci.csv, genere_gap_occupazione_ci_vicini.csv"),
     theme = tema_figura()
-  ) &
-  theme(legend.position = "top")
+  )
 
 salva(figura, "fig01_gap_due_scale", larghezza = 26, altezza = 15)

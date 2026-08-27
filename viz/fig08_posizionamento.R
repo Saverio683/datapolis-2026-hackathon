@@ -98,8 +98,11 @@ regione <- ggplot(dati, aes(percentile_390, breve, colour = giudizio_regione)) +
        x = "percentile (50 = mediana regionale)", y = NULL) +
   theme(axis.text.y = element_blank())
 
-figura <- (gruppo | regione) +
-  plot_layout(widths = c(1, 1), guides = "collect") +
+# La legenda in una riga tutta sua, in cima (come in fig07): come prima riga della
+# composizione `guide_area()` finisce sopra i titoli dei due pannelli invece che
+# incastrata fra i titoli e i grafici.
+figura <- guide_area() / ((gruppo | regione) + plot_layout(widths = c(1, 1))) +
+  plot_layout(heights = c(0.07, 1), guides = "collect") +
   plot_annotation(
     title = "Lo svantaggio giovanile è di fascia territoriale; il tratto di Bagheria è l'autonomia dei suoi giovani",
     subtitle = paste0(
