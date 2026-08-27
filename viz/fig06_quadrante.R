@@ -86,7 +86,7 @@ figura <- (pannello_a | pannello_b) +
   plot_annotation(
     title = "Più istruite, meno occupate: la freccia punta nella stessa direzione a ogni scala",
     subtitle = paste("A sinistra, la freccia va dal punto maschile a quello femminile: ovunque verso più istruzione e meno lavoro, e a Bagheria arriva più in basso.",
-                     "\nA destra, il contesto strutturale: dove le donne sono relativamente più istruite l'occupazione femminile di solito è più alta (Spearman -0,24, p<0,001);",
+                     "\nA destra, il contesto strutturale: dove le donne sono relativamente più istruite l'occupazione femminile di solito è più alta (rho di Spearman fra I1 e occupazione femminile -0,24, p<0,001);",
                      "\nBagheria è nel quadrante che contraddice il pattern, al 12° percentile di occupazione femminile."),
     caption = paste("Pannelli non confrontabili fra loro: fasce d'età, popolazioni e fonti diverse, dichiarate su ciascuno. Correlazione ecologica: orienta, non dimostra.",
                     paste0("\nIn colore i ", nrow(vicini), " comuni più vicini a Bagheria (distanza fra i centroidi, tutti entro 8 km), in legenda dal più vicino."),

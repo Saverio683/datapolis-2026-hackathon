@@ -168,7 +168,7 @@ figura <- (posizione | confronto) +
     subtitle = paste0(
       "Fra il 1991 e il 2011 le donne di Bagheria entrano nel lavoro, ma il mercato non le assorbe: l'occupazione femminile scende al 12° percentile.\n",
       "Il censimento permanente mostra che dopo il 2011 è peggiorata ancora - 8° percentile nel 2018 - e che al 2024 ha recuperato solo in parte, al 17°.\n",
-      "Nello stesso periodo l'occupazione maschile risale dal 15° al 30° percentile, mentre la partecipazione femminile continua a scendere, dal 32° al 17°:\n",
+      "Fra il 2011 e il 2024 l'occupazione maschile risale dal 15° al 30° percentile, mentre la partecipazione femminile continua a scendere, dal 32° al 17°:\n",
       "la lettura del 2011, un mercato ristretto per tutti, al 2024 non regge più - gli uomini recuperano e le donne no.\n",
       "Rispetto alle gemelle strutturali lo scarto non si è chiuso: -1,7 punti nel 2011, fra -2,1 e -3,1 in ogni anno dal 2018 al 2024.\n",
       "Per la proposal: la frattura è databile e non si richiude da sola - e il pre-periodo del disegno di valutazione adesso è misurato, non assunto."),
