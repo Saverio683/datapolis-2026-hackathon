@@ -1,4 +1,4 @@
-"""Verifica indipendente del thread genere: 475 controlli di regressione.
+"""Verifica indipendente del thread genere: 558 controlli di regressione.
 
 Ricalcola i numeri chiave DIRETTAMENTE da data/raw/ con un percorso di codice
 autonomo — parsing proprio dei CSV SDMX e 8milaCensus, implementazioni proprie
@@ -1030,6 +1030,81 @@ platea_csv = pd.read_csv(PROCESSED / "genere_platea.csv", dtype={"territorio": s
 check("platea.csv: platea F 2034 Bagheria",
       platea_csv[(platea_csv["territorio"] == B)
                  & (platea_csv["genere"] == "F")]["platea_2034"].item(), 2435, 0.5)
+
+# ------------------------------------------- (g) integrazione thread educazione ---
+# Le tavole edu_* sono copie (pipeline/edu.py) degli output di titolo_condizione/:
+# qui i valori chiave si ricalcolano dai NOSTRI raw (fetch e parsing indipendenti
+# dai suoi) e si verificano i due export del notebook che ne derivano.
+edu_ys = pd.read_csv(PROCESSED / "edu_youth_states_2018_2024.csv", dtype={"territorio": str})
+check("edu: righe youth_states", len(edu_ys), 24, 0.5)
+r24 = edu_ys[(edu_ys["territorio"] == B) & (edu_ys["anno"] == 2024)].iloc[0]
+check("edu: occupati T 2024 == raw", float(r24["occupati"]), cella_lav(B, 2024, "T", "1"))
+inattivi_raw = sum(cella_lav(B, 2024, "T", c) for c in ("4", "7", "24"))
+check("edu: inattivi non studenti T 2024 == 4+7+24 dal raw",
+      round(float(r24["inattivi_non_studenti"]), 2), round(inattivi_raw, 2))
+check("edu: fuori lavoro-studio T 2024 == 12+4+7+24 dal raw",
+      round(float(r24["fuori_lavoro_studio"]), 2),
+      round(inattivi_raw + cella_lav(B, 2024, "T", "12"), 2))
+
+# shift-share per genere (export del notebook): ricalcolo con aritmetica propria
+sco = pd.read_csv(PROCESSED / "genere_occupazione_scomposta.csv")
+check("scomposizione: righe (F, M, T)", len(sco), 3, 0.5)
+for gen in ("F", "M", "T"):
+    p0, p1 = cella_lav(B, 2018, gen, "99"), cella_lav(B, 2024, gen, "99")
+    n0, n1 = cella_lav(B, 2018, gen, "1"), cella_lav(B, 2024, gen, "1")
+    riga = sco[sco["genere"] == gen].iloc[0]
+    check(f"scomposizione {gen}: variazione", riga["variazione"], round(n1 - n0, 2))
+    check(f"scomposizione {gen}: effetto platea", riga["effetto_platea"],
+          round((p1 - p0) * n0 / p0, 2))
+    check(f"scomposizione {gen}: effetto tasso", riga["effetto_tasso"],
+          round(p1 * (n1 / p1 - n0 / p0), 2))
+    check(f"scomposizione {gen}: identità",
+          float(riga["variazione"] - riga["effetto_platea"] - riga["effetto_tasso"]), 0)
+
+# il tetto a tasso costante (export del notebook, letto da fig09)
+tetto = pd.read_csv(PROCESSED / "genere_tetto_platea.csv")
+check("tetto: righe (2 generi x 2 orizzonti)", len(tetto), 4, 0.5)
+for gen in ("F", "M"):
+    occ24, pop24 = cella_lav(B, 2024, gen, "1"), cella_lav(B, 2024, gen, "99")
+    for oriz, (a0, a1) in ((2029, (10, 19)), (2034, (5, 14))):
+        plat = round(eta_somma(B, gen, a0, a1))
+        riga = tetto[(tetto["genere"] == gen) & (tetto["orizzonte"] == oriz)].iloc[0]
+        check(f"tetto {gen} {oriz}: platea (registro per eta singola)", riga["platea"], plat, 0.5)
+        check(f"tetto {gen} {oriz}: delta a tasso costante", riga["delta_vs_2024"],
+              round(plat * occ24 / pop24 - occ24, 1))
+
+# percentili storici: ricalcolo (rango medio) contro la tavola del thread educazione
+edu_hist = pd.read_csv(PROCESSED / "edu_historical_bagheria.csv")
+d2011 = otto_sic[(otto_sic["Livello territoriale"] == "1") & (otto_sic["AnnoCP"] == "2011")]
+for ind, att in (("L14", 12.9), ("L4", 87.8)):
+    vals = d2011[ind].map(numit).dropna()
+    v_bag = valore_8m("1", "82006", 2011, ind)
+    pct = 100 * ((vals < v_bag).sum() + ((vals == v_bag).sum() + 1) / 2) / len(vals)
+    check(f"edu: percentile {ind} 2011 (rango medio, ricalcolo)", round(pct, 1), att)
+    suo = edu_hist[(edu_hist["indicatore"] == ind)
+                   & (edu_hist["anno"] == 2011)]["percentile_sicilia"].item()
+    check(f"edu: percentile {ind} 2011 == tavola educazione", round(float(suo), 1), att)
+
+# peer del thread educazione: tavola e overlap con le gemelle strutturali
+peers = pd.read_csv(PROCESSED / "edu_matched_peers_2011.csv", dtype={"territorio": str})
+solo_peer = peers[peers["ruolo"] == "Peer"]
+check("edu: numero peer", len(solo_peer), 10, 0.5)
+check("edu: mediana L14 dei peer", pd.to_numeric(solo_peer["L14"]).median(), 24.1)
+check("edu: L14 Bagheria in tavola == 8milaCensus",
+      float(peers[peers["ruolo"] == "Bagheria"]["L14"].iloc[0]),
+      valore_8m("1", "82006", 2011, "L14"))
+gem = pd.read_csv(PROCESSED / "genere_gemelle.csv", dtype={"territorio": str})
+check("edu: overlap peer-gemelle (solo Misilmeri)",
+      str(sorted(set(solo_peer["territorio"]) & set(gem["territorio"]))), "['082048']")
+
+# modelli comunali 2011 e anagrafe MIUR (pin sui valori citati nel notebook)
+mod = pd.read_csv(PROCESSED / "edu_model_robustness_2011.csv")
+check("edu: Bagheria fuori dal training (tutti i modelli)",
+      str(sorted(mod["n_comuni_training"].unique().tolist())), "[389]")
+l14C = mod[(mod["outcome"] == "L14") & (mod["modello"] == "C_contesto_territoriale")].iloc[0]
+check("edu: residuo L14 modello C", round(float(l14C["residuo_bagheria"]), 2), -5.93)
+scuole = pd.read_csv(PROCESSED / "edu_technical_schools.csv", dtype=str)
+check("edu: sedi tecniche a Bagheria", int((scuole["territorio"] == B).sum()), 3, 0.5)
 
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]
