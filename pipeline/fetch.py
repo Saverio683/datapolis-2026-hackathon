@@ -151,6 +151,20 @@ def _sdmx_url_15piu(territori: str) -> str:
     return f"{SDMX}/data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/{chiave}/ALL/?detail=full"
 
 
+def _sdmx_url_popres_statciv() -> str:
+    """Popolazione al 1° gennaio per età singola, sesso e stato civile (DCIS_POPRES1).
+
+    Il censimento permanente NON incrocia lo stato civile a livello comunale: su tutta la
+    famiglia DEMCITMIG la dimensione MARITAL_STATUS è servita solo come ALL e una chiave
+    esplicita risponde 404 NoRecordsFound (verificato 2026-08-26). La tavola che lo espone
+    è DCIS_POPRES1 — popolazione residente al 1° gennaio, base censuaria dal 2019 — che è
+    una FONTE DIVERSA dal censimento permanente: stock al 1° gennaio contro media annua,
+    mai da mettere in serie con SETA_1. DSD a 6 dimensioni:
+    FREQ, REF_AREA, DATA_TYPE (=JAN), SEX (codici legacy 1/2/9), AGE, MARITAL_STATUS.
+    """
+    return f"{SDMX}/data/IT1,22_289_DF_DCIS_POPRES1_26,1.0/A.{TERRITORI}..../ALL/?detail=full"
+
+
 # Le etichette dei codici (1 = occupato, LSE = licenza media, ...) si prendono da qui
 # invece di ricopiarle a mano: la fonte è la stessa dei dati e non va fuori sincrono.
 CODELIST = {
@@ -184,6 +198,9 @@ FONTI: list[tuple[str, str, str | None, bytes]] = [
     # --- Popolazione per classi quinquennali: unica tavola comunale che copre 2001 e 2011
     #     oltre al 2018-2024, quindi l'unico ponte demografico attraverso il buco 2012-2017 ---
     ("censpop_demografia_classi", _sdmx_url("DF_DCSS_POP_DEMCITMIG_TV_1", 9), SDMX_CSV, b"DATAFLOW"),
+    # --- Stato civile per età singola e sesso (DCIS_POPRES1, anni 2019-2026): la copertura
+    #     per anno NON è uniforme fra i territori e va verificata in analisi, non assunta ---
+    ("popres_stato_civile_eta", _sdmx_url_popres_statciv(), SDMX_CSV, b"DATAFLOW"),
     # --- Cartografia: confini comunali generalizzati, per le mappe ---
     ("istat_confini_comuni", f"{CARTOGRAFIA}/2026/Limiti01012026_g.zip", None, b"PK"),
 ] + [

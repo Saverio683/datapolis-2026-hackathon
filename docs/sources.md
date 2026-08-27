@@ -716,3 +716,55 @@ Un claim di posizionamento va scritto **con il suo rho**: dire «12° percentile
 senza dire che quella graduatoria predice il 2024 con rho 0,848 lascia al revisore
 l'obiezione più facile. E viceversa: una fotografia recente costruita su un anno solo va
 accompagnata dalla serie, altrimenti si scambia un'oscillazione per una struttura.
+
+---
+
+## 9. ISTAT — Popolazione per stato civile ed età singola (DCIS_POPRES1, SDMX)
+
+**Ricognizione: 2026-08-26** — serve al thread genere per la domanda «le casalinghe
+ventenni sono coniugate?» (`notebooks/genere.ipynb`, sezione «Le casalinghe sono
+coniugate?»).
+
+### Perché non dal censimento permanente
+
+Il censimento permanente **non incrocia lo stato civile a livello comunale**: su tutta la
+famiglia `DF_DCSS_POP_DEMCITMIG_*` la dimensione `MARITAL_STATUS` è servita solo come
+`ALL`, e una chiave esplicita (es. `A.082006....2...` su `TV_1` o `SETA_1`) risponde
+**404 NoRecordsFound** (verificato 2026-08-26). `DF_DCSS_HCUE_COM_1_COM` («Popolazione
+per stato civile - comuni») ha lo stato civile ma **non l'età**. La tavola giusta è fuori
+dal censimento:
+
+- **Dataflow**: `22_289_DF_DCIS_POPRES1_26` — «Tutti i comuni per singola età e stato
+  civile», famiglia DCIS_POPRES1 (popolazione residente al **1° gennaio**, su base
+  censuaria dal 2019).
+- **DSD a 6 dimensioni**: `FREQ, REF_AREA, DATA_TYPE, SEX, AGE, MARITAL_STATUS`.
+- **Query usata** (fetch `popres_stato_civile_eta`, raw del 2026-08-26):
+  `data/IT1,22_289_DF_DCIS_POPRES1_26,1.0/A.082006+082053+ITG1+IT..../ALL/?detail=full`
+- Comando: `uv run python -m pipeline.fetch --solo=stato_civile`. Uscita processed:
+  `popres_stato_civile_long.csv` (sessi normalizzati a M/F/T).
+
+### ⚠️ È una fonte diversa dal censimento permanente
+
+Stock al **1° gennaio** contro **media annua** (`SETA_1`, `INDICATOR=RESPOP_AV`): mai in
+serie sullo stesso grafico. Il 1.1.2025 è la fotografia di fine 2024, l'anno di
+riferimento della tavola lavoro. Controllo di coerenza (in notebook e in
+`pipeline/verifica.py`): ragazze 15-24 di Bagheria al 1.1.2025 = **2.882**, identico alla
+media annua 2024 di `SETA_1`.
+
+### Trappole verificate
+
+- `SEX` usa i **codici legacy** di `CL_SEXISTAT1`: `1` maschi, `2` femmine, `9` totale.
+  La pipeline li normalizza a M/F/T in `pipeline/build.py`.
+- `DATA_TYPE` = `JAN` (unico valore): popolazione al 1° gennaio.
+- `MARITAL_STATUS` (codelist `CL_STATCIV2`): `1` nubile/celibe · `2` coniugata/o ·
+  `3` divorziata/o · `4` vedova/o · `15` unito/a civilmente · `16`/`17` già in unione
+  civile · `99` totale.
+- **Anni 2019-2026, ma il dettaglio coniugale arriva al 1.1.2025**: il 1.1.2026 pubblica
+  solo il totale `99`. L'anno di riferimento va scelto sugli anni con dettaglio.
+- **Zeri strutturali, non buchi**: il dettaglio coniugale non è pubblicato sotto i 16
+  anni (sotto i 18 per le unioni civili). Dove il dettaglio manca, nubile = totale
+  esattamente; con `fillna(0)` la partizione ricostruisce `99` al centesimo (verificato
+  su tutte le righe 2019-2025).
+- Lo stato civile osserva il **matrimonio formale**: niente convivenze, niente maternità.
+  Il check successivo sul canale famiglia (nati per età della madre, demo.istat) è un
+  fetch nuovo, da decidere in team.
