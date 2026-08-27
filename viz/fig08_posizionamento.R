@@ -51,6 +51,19 @@ dati <- posizionamento |>
                                percentile_390 > 50),
     breve = factor(breve, levels = rev(breve[order(gemelle_sotto)])))
 
+# La legenda dice cosa significano i tre colori: prima stava nel sottotitolo, che è il
+# posto sbagliato per una chiave di lettura — si legge una volta e poi non si ritrova più
+# mentre si guarda il grafico. `limits` fissa le tre voci anche se una classe non comparisse
+# nel dato, così la chiave è sempre completa.
+ETICHETTE_GIUDIZIO <- c(peggio = "Bagheria sta peggio del riferimento",
+                        neutro = "nella norma, o indicatore senza verso \"buono\" (*)",
+                        meglio = "Bagheria sta meglio del riferimento")
+scala_giudizio <- function() {
+  list(scale_colour_manual(values = DIVERGENTE, limits = names(DIVERGENTE),
+                           labels = ETICHETTE_GIUDIZIO, name = NULL),
+       guides(colour = guide_legend(override.aes = list(size = 4.6))))
+}
+
 # --- pannello A: la posizione dentro il gruppo delle gemelle ------------------------
 gruppo <- ggplot(dati, aes(gemelle_sotto, breve, colour = giudizio_gemelle)) +
   geom_vline(xintercept = MEDIANA_GEMELLE, colour = "grey80", linewidth = 0.4) +
@@ -60,7 +73,7 @@ gruppo <- ggplot(dati, aes(gemelle_sotto, breve, colour = giudizio_gemelle)) +
   geom_text(aes(label = paste0(gemelle_sotto, "/", N_GEMELLE)),
             nudge_x = ifelse(dati$gemelle_sotto >= MEDIANA_GEMELLE, 0.7, -0.7),
             size = 3.3, fontface = "bold", colour = "grey20") +
-  scale_colour_manual(values = DIVERGENTE, guide = "none") +
+  scala_giudizio() +
   scale_x_continuous(limits = c(-1.1, N_GEMELLE + 1.1), breaks = seq(0, N_GEMELLE, 2),
                      expand = expansion(mult = 0)) +
   labs(subtitle = paste0("Dentro il gruppo dei pari strutturali\n",
@@ -86,7 +99,7 @@ regione <- ggplot(dati, aes(percentile_390, breve, colour = giudizio_regione)) +
   theme(axis.text.y = element_blank())
 
 figura <- (gruppo | regione) +
-  plot_layout(widths = c(1, 1)) +
+  plot_layout(widths = c(1, 1), guides = "collect") +
   plot_annotation(
     title = "Lo svantaggio giovanile è di fascia territoriale; il tratto di Bagheria è l'autonomia dei suoi giovani",
     subtitle = paste0(
@@ -94,19 +107,18 @@ figura <- (gruppo | regione) +
       "Sul NEET Bagheria è dentro i quartili del suo gruppo — grigio a sinistra — ma all'87° percentile regionale: rosso a destra.\n",
       "È il ritratto di uno svantaggio di fascia, che una policy comunale da sola non sposta. Vale anche per l'occupazione femminile.\n",
       "Il tratto suo è altrove, e le due letture concordano: nessuna gemella ha meno giovani che vivono da soli (3° percentile\n",
-      "regionale), una sola ha un vantaggio educativo femminile più marcato, solo due hanno meno mobilità.\n",
-      "Colorato solo dove Bagheria esce dalla metà centrale del riferimento: rosso se sta peggio, blu se meglio,\n",
-      "grigio se è nella norma o se l'indicatore non ha un verso \"buono\" univoco (*)."),
+      "regionale), una sola ha un vantaggio educativo femminile più marcato, solo due hanno meno mobilità."),
     caption = paste0(
       "Fonte: ISTAT, 8milaCensus, censimento 2011.\n",
       "Fasce diverse per indicatore: 15+ (occupazione e disoccupazione F), 6+ (differenziale educativo), 15-29 (NEET), totale famiglie (giovani soli, coppie con figli), residenti (mobilità).\n",
       "Gemelle = i ", N_GEMELLE, " comuni più simili a Bagheria per dimensione, densità, età, stranieri, abitazioni e distanza da Palermo\n",
       "(matching Mahalanobis su variabili non-esito; robustezza 8/", N_GEMELLE, " e 6/", N_GEMELLE, " sugli altri metodi).\n",
       "Il verso è fissato nel notebook: alto è meglio per occupazione femminile e giovani soli, peggio per disoccupazione, NEET e differenziale educativo M/F. (*) F7 e M2 restano descrittivi.\n",
-      "\"Fuori dalla metà centrale\" = oltre i quartili delle gemelle a sinistra, sotto il 25° o sopra il 75° percentile regionale a destra. Il pallino mostra sempre la posizione, anche quando è grigia.\n",
+      "Il colore compare solo fuori dalla metà centrale del riferimento: oltre i quartili delle gemelle a sinistra, sotto il 25° o sopra il 75° percentile regionale a destra.\n",
+      "Il pallino mostra sempre la posizione, anche quando è grigio.\n",
       "Anno e fascia diversi dalle serie 15-24 del thread: è il gruppo di controllo storico, mai un termine di paragone con il censimento permanente 2018-2024.\n",
       "Elaborazione: notebooks/genere.ipynb - data/processed/genere_posizionamento.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
-salva(figura, "fig08_posizionamento", larghezza = 28, altezza = 15)
+salva(figura, "fig08_posizionamento", larghezza = 28, altezza = 17.5)

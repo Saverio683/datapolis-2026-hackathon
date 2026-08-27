@@ -119,8 +119,12 @@ quando <- ggplot(decenni, aes(periodo, ritenzione_pct, colour = nome_territorio,
                         "tratteggio a 100 = la coorte si conserva"),
        x = NULL, y = "coorte dopo dieci anni")
 
-figura <- profilo / quando +
-  plot_layout(heights = c(1.3, 1), guides = "collect") +
+# La legenda in una riga tutta sua, in cima: `guide_area()` è il posto che patchwork dà
+# ai guide raccolti, e come prima riga della composizione finisce sopra il titolo del
+# primo pannello invece che incastrata fra il titolo e le facet. Centrata sull'intera
+# figura, non sul solo pannello che la produce.
+figura <- guide_area() / profilo / quando +
+  plot_layout(heights = c(0.1, 1.3, 1), guides = "collect") +
   plot_annotation(
     title = "La finestra per trattenere le ragazze è fra i 22 e i 25 anni, e la falla si è aperta nel decennio 2011-2021",
     subtitle = paste0(
@@ -151,7 +155,7 @@ figura <- profilo / quando +
       "lette per età, restano in genere_ritenzione_eta_vicini.csv. Il vicinato non compare nel pannello inferiore: le classi quinquennali sono state scaricate\n",
       "solo per i quattro territori di confronto.\n",
       "Elaborazione: notebooks/genere.ipynb - data/processed/genere_ritenzione_eta.csv, genere_ritenzione_eta_vicini.csv, genere_ritenzione_decennale.csv"),
-    theme = tema_datapolis()
+    theme = tema_figura()
   )
 
 salva(figura, "fig07_ritenzione_eta", larghezza = 28, altezza = 26)
