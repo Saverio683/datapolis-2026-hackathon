@@ -147,6 +147,26 @@ notebook e attesi non vengono riallineati.
   ±0.8 pp di solo rumore di conteggio e un'Italia ferma in 100.7-101.3; 5 celle su 12
   sotto quota 100. Il claim si titola sul triennio, l'anno singolo è un controllo.
 
+- **L'integrazione col thread educazione** (2026-08-27, tavole `edu_*` via
+  `uv run python -m pipeline.edu`, sources.md §10; celle 🔗 nel notebook). Stessi numeri,
+  due pipeline: il suo 19% T è la somma F+M della composizione per stato (scarto 0,00
+  persone su ogni componente) e i percentili storici coincidono su 18 coppie (L4 87,8°,
+  L14 12,9° nel 2011). Dal suo impianto entrano: la **scomposizione shift-share** delle
+  occupate 15-24 (2018→2024 F: +94 = effetto platea −7,2 + effetto tasso +101,2) con il
+  **tetto a tasso costante** sulla platea già nata (F: −18,9 occupate al 2029, −36,6 al
+  2034; M: −12,5/−29,0 — `genere_tetto_platea.csv`, dichiarato nel waffle di fig09); i
+  **modelli comunali 2011** (L14 osservato−previsto −5,9 p.p. [bootstrap −7,7, −4,3],
+  CV R² 0,05: convergente con la nuvola, incertezza dei coefficienti e non intervallo di
+  previsione); la **seconda lente sui pari** (10 peer a pari istruzione, overlap 1/10 con
+  le gemelle — solo Misilmeri: fra i pari strutturali Bagheria è nella norma su L11, fra
+  i pari scolarizzati fa 20,0% di L14 contro mediana 24,1 — il titolo c'è, non si
+  converte; le due lenti si dichiarano insieme, mai fuse); **I8 2011 al 96,7%** (base
+  quasi universale ovunque: il collo è la conversione — contesto per fig11); l'**anagrafe
+  MIUR** (3 sedi tecniche a Bagheria, 23 a Palermo: i canali della presa in carico).
+  ⚠️ Citando la *serie* degli stati del thread educazione vale la rottura di misura
+  2019→2021 di sources.md §8/§10: i gap fra territori reggono, i livelli delle
+  componenti no.
+
 ## Export per R (`data/processed/`)
 `genere_gap_occupazione.csv`, `genere_gap_occupazione_ci.csv` (bande di confidenza),
 `genere_istruzione.csv`, `genere_quadro_sintesi.csv`, `genere_composizione_stato.csv`,
@@ -180,6 +200,9 @@ peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel noteboo
 `genere_sex_ratio_5_14.csv` (M per 100 F, 2001-2024, dalle classi quinquennali),
 `genere_stranieri.csv` (15-34 per cittadinanza e genere, 2021-2024),
 `genere_stato_civile.csv` (già coniugate per fascia 15-24/18-24/20-24, 1.1.2019-1.1.2025).
+`genere_occupazione_scomposta.csv` (shift-share per genere delle occupate 15-24, 2018→2024),
+`genere_tetto_platea.csv` (platea 2029/2034 × tasso 2024 costante, alimenta fig09),
+più le copie `edu_*` dal thread educazione (rigenerabili con `uv run python -m pipeline.edu`).
 
 ## Figure (R)
 `Rscript viz/build_all.R` rigenera tutto in `figures/` (PNG 300dpi + SVG). Tema e palette
@@ -237,7 +260,10 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   ampiezza della finestra, con la soglia del delta da rilevare. È la figura che dichiara
   in anticipo **quando** si potrà dire se l'intervento ha funzionato. Dal 2026-08-27 il
   pannello del waffle dichiara anche la **platea 2029/2034** (2.651 e 2.435, −15,5%;
-  `genere_platea.csv`): il tetto dei KPI in teste è già nato e si restringe.
+  `genere_platea.csv`): il tetto dei KPI in teste è già nato e si restringe. Dal
+  2026-08-27 il sottotitolo traduce il tetto in occupate: a tasso 2024 costante la sola
+  platea vale −19 al 2029 e −37 al 2034 (`genere_tetto_platea.csv`, shift-share nel
+  notebook).
 - `fig10_muro_recente` — il lungo periodo **fino al 2024**: percentili di Bagheria sui 390 |
   L11 contro la banda interquartile delle gemelle, entrambi in due blocchi (censimenti
   1991-2011 e permanente 2018-2024) separati da una banda grigia che nessuna linea
@@ -307,6 +333,11 @@ cairo convertono comunque il testo in tracciati nell'SVG.
   altri thread: le classi Y15-19...Y30-34 ricompongono il **15-34 esatto** e allungano al
   2001 la serie demografica del target — materia per il thread mobilità/demografia.
   Endpoint e trappole in `docs/sources.md` sezione 7, letture in sezione 8.
+- **Riconciliazione dei pari nella proposal** (dal 2026-08-27): esistono due gruppi di
+  comuni comparabili — le gemelle strutturali (qui) e i peer a pari istruzione del thread
+  educazione (overlap: solo Misilmeri). Verdetti diversi perché domande diverse; in
+  proposal si presentano come due lenti dichiarate, mai fusi in una classifica unica.
+  La cella 🔗 nella sezione gemelle contiene la formulazione.
 - Richieste agli altri thread: in `CONTEXT-fabio.md` (dimensione sesso nel pendolarismo)
   e `CONTEXT-saverio.md` (incrocio titolo × condizione per genere a livello regionale).
 - `doppia_fuga.md` e `04_il_19_percento_invisibile.md` aggiornate (2026-08-25) al

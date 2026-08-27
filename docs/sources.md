@@ -768,3 +768,46 @@ media annua 2024 di `SETA_1`.
 - Lo stato civile osserva il **matrimonio formale**: niente convivenze, niente maternità.
   Il check successivo sul canale famiglia (nati per età della madre, demo.istat) è un
   fetch nuovo, da decidere in team.
+
+---
+
+## 10. Interfaccia col thread educazione (`titolo_condizione/`)
+
+Aggiunta il 2026-08-27. Il thread educazione (Saverio) vive in `titolo_condizione/` come
+progetto autonomo con pipeline, raw e provenance propri: URL esatti, timestamp UTC,
+licenze e SHA-256 in `titolo_condizione/data/raw/manifest.csv`, endpoint dichiarati in
+`titolo_condizione/config/sources.yml`. Due fonti nuove rispetto al resto del repo:
+
+- **Anagrafe sedi scolastiche MIUR** — SPARQL su
+  `https://dati.istruzione.it/opendata/SCUANAGRAFESTAT/query` (query in
+  `titolo_condizione/config/technical_schools.sparql`), a.s. 2025/26, sedi tecniche
+  siciliane. Anagrafica di sedi, non di esiti.
+- **GTFS AMAT Palermo** —
+  `https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip`
+  (feed 20260727-20260831). Rete urbana: non copre il collegamento Bagheria-Palermo.
+- Esito negativo registrato: i due dataset regionali su offerte di lavoro e operatori
+  accreditati (`dati.regione.sicilia.it`) hanno risposto **HTTP 502** al run del
+  2026-08-25 e sono esclusi da ogni risultato quantitativo (fallimento nel manifest).
+
+Le tavole condivise passano da `data/processed/` col prefisso `edu_`, copiate con:
+
+```bash
+uv run python -m pipeline.edu
+```
+
+| file | contenuto |
+|---|---|
+| `edu_youth_states_2018_2024.csv` | stati 15-24 (totale di genere) per i quattro territori |
+| `edu_change_decomposition_2018_2024.csv` | shift-share 2018→2024 dei conteggi (Bagheria, T) |
+| `edu_gaps_vs_sicily.csv` | gap Bagheria−Sicilia per metrica e anno |
+| `edu_matched_peers_2011.csv` | i 10 peer (caliper 0,5-2×, feature con profilo educativo) |
+| `edu_model_robustness_2011.csv` | regressioni comunali 2011: residui di Bagheria con CI bootstrap |
+| `edu_historical_bagheria.csv` | indicatori 8milaCensus 1991-2011 con percentile siciliano |
+| `edu_historical_benchmarks_2011.csv` | benchmark 2011 (I5/I6/I7/I8/L4/L14) |
+| `edu_technical_schools.csv` | anagrafe MIUR delle sedi tecniche (Sicilia) |
+
+⚠️ Le quote della tavola lavoro hanno una **rottura di misura fra 2019 e 2021** (la
+componente "in cerca" si dimezza in tutti i territori e i conteggi diventano frazionari:
+cambio del metodo di stima del permanente, sezione 8): i *gap* fra territori restano
+confrontabili, i *livelli* delle componenti no. Da dichiarare ogni volta che si cita la
+serie di `edu_youth_states_2018_2024.csv` o la scomposizione 2018→2024.
