@@ -26,6 +26,12 @@ mde <- read_csv(file.path(PROCESSED, "genere_mde.csv"), show_col_types = FALSE)
 popolazione <- base$popolazione_F_15_24[1]
 occupate <- base$occupate_F_15_24[1]
 anno <- base$anno[1]
+
+# La platea futura è già nata: chi avrà 15-24 anni nel 2029 o nel 2034 è già residente.
+# Stessa base demografica del waffle: se i due denominatori 2024 divergono, errore subito.
+platea <- read_csv(file.path(PROCESSED, "genere_platea.csv"), show_col_types = FALSE) |>
+  filter(nome_territorio == "Bagheria", genere == "F")
+stopifnot(platea$platea_2024 == popolazione)
 delta <- function(s) persone[["occupate in più (2024)"]][persone$scenario == s]
 
 # --- pannello A: le ragazze 15-24, un quadratino ogni dieci -------------------------
@@ -60,7 +66,12 @@ waffle <- ggplot(griglia, aes(colonna, -riga, fill = classe)) +
                     guide = guide_legend(ncol = 2, byrow = TRUE)) +
   coord_equal(clip = "off") +
   labs(subtitle = paste0("Le ", migliaia(popolazione), " ragazze 15-24 di Bagheria, ",
-                         anno, "\nun quadratino = ", UNITA, " ragazze"),
+                         anno, "\nun quadratino = ", UNITA, " ragazze\n",
+                         "la platea è già nata e si restringe:\n",
+                         migliaia(platea$platea_2029), " nel 2029 (",
+                         virgola(platea$var_2029_pct), "%), ",
+                         migliaia(platea$platea_2034), " nel 2034 (",
+                         virgola(platea$var_2034_pct), "%)"),
        x = NULL, y = NULL) +
   theme(axis.text = element_blank(), panel.grid = element_blank(),
         legend.position = "bottom", legend.justification = "left")
@@ -119,7 +130,8 @@ figura <- (waffle | potenza) +
       "Fonte: ISTAT, Censimento permanente della popolazione - condizione professionale, classe 15-24 anni, ", anno, ".\n",
       "MDE = differenza minima rilevabile a potenza 80% e alfa 5% fra due proporzioni (trasformazione arcoseno); \"anni pooled\" = ampiezza di ciascuno dei due lati del confronto.\n",
       "In grigio le finestre in cui l'effetto promesso è più piccolo della soglia. I quadratini sono arrotondati alla decina, i totali in legenda no.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_base_persone.csv, genere_gap_persone.csv, genere_mde.csv"),
+      "La platea 2029/2034 conta le ragazze già nate e residenti oggi (demografia per età singola): un tetto che si restringe, non una previsione — i KPI in teste si riparametrano sulla platea corrente.\n",
+      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_base_persone.csv, genere_gap_persone.csv, genere_mde.csv, genere_platea.csv"),
     theme = tema_figura()
   )
 
