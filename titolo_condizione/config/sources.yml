@@ -1,0 +1,113 @@
+sources:
+  - id: ottomila_sicilia
+    provider: Istat 8milaCensus
+    url: https://ottomilacensus.istat.it/fileadmin/download/19/confini/confini_19.csv
+    extension: csv
+    required: true
+    expected_marker: AnnoCP
+    license: CC BY 4.0 / termini Istat
+    purpose: indicatori comunali 1991-2011 per tutti i comuni siciliani
+
+  - id: ottomila_benchmarks
+    provider: Istat 8milaCensus
+    url: https://ottomilacensus.istat.it/fileadmin/download/Province_Regioni_Italia_confini_2011.csv
+    extension: csv
+    required: true
+    expected_marker: AnnoCP
+    license: CC BY 4.0 / termini Istat
+    purpose: benchmark Sicilia e Italia 2011
+
+  - id: ottomila_codebook
+    provider: Istat 8milaCensus
+    url: https://ottomilacensus.istat.it/fileadmin/download/Descrizione_degli_indicatori_serie_confini_2011.csv
+    extension: csv
+    required: true
+    expected_marker: Descrizione tema
+    license: CC BY 4.0 / termini Istat
+    purpose: definizioni ufficiali degli indicatori
+
+  - id: ottomila_legend
+    provider: Istat 8milaCensus
+    url: https://ottomilacensus.istat.it/fileadmin/download/Legenda_codici_e_simboli_indicatori_ai_confini_2011.csv
+    extension: csv
+    required: true
+    expected_marker: ";"
+    license: CC BY 4.0 / termini Istat
+    purpose: simboli e dati mancanti
+
+  - id: census_work
+    provider: IstatData SDMX
+    dataflow: DF_DCSS_ISTR_LAV_PEN_2_TV_3
+    dimensions: 10
+    extension: csv
+    required: true
+    expected_marker: DATAFLOW
+    license: CC BY 4.0 / termini Istat
+    purpose: condizione professionale per età, 2018-2024
+
+  - id: census_education
+    provider: IstatData SDMX
+    dataflow: DF_DCSS_ISTR_LAV_PEN_2_TV_1
+    dimensions: 10
+    extension: csv
+    required: true
+    expected_marker: DATAFLOW
+    license: CC BY 4.0 / termini Istat
+    purpose: titolo di studio per età, 2018-2024
+
+  - id: census_population
+    provider: IstatData SDMX
+    dataflow: DF_DCSS_POP_DEMCITMIG_SETA_1
+    dimensions: 9
+    extension: csv
+    required: true
+    expected_marker: DATAFLOW
+    license: CC BY 4.0 / termini Istat
+    purpose: popolazione per età singola, 2018-2024
+
+  - id: census_commuting
+    provider: IstatData SDMX
+    dataflow: DF_DCSS_ISTR_LAV_PEN_2_TV_5
+    dimensions: 10
+    extension: csv
+    required: true
+    expected_marker: DATAFLOW
+    license: CC BY 4.0 / termini Istat
+    purpose: pendolarismo per studio e lavoro, 2018-2019
+
+  - id: technical_schools
+    provider: Ministero dell'Istruzione via catalogo Open Data Sicilia
+    kind: miur_sparql
+    extension: csv
+    required: true
+    expected_marker: AnnoScolastico
+    license: CC BY 4.0
+    purpose: sedi di istituti tecnici in Sicilia e a Bagheria
+
+  - id: regional_job_offers
+    provider: Open Data Regione Siciliana
+    url: https://dati.regione.sicilia.it/download/dataset/offerte-lavoro/filesystem/offerte-lavoro_csv.csv
+    extension: csv
+    required: false
+    expected_marker: ""
+    license: CC BY 4.0
+    purpose: domanda di lavoro osservata nel canale pubblico; fonte dichiarata quotidiana ma metadati 2022
+
+  - id: accredited_job_services
+    provider: Open Data Regione Siciliana
+    url: https://dati.regione.sicilia.it/dataset/5eadaf28-7e2b-4e11-81b6-3836577efdea/resource/d2b555b7-2c73-488b-8d2b-e20889844c38/download/37.csv
+    extension: csv
+    required: false
+    expected_marker: ""
+    license: CC BY 4.0
+    purpose: sedi accreditate ai servizi per il lavoro; metadati del portale non recenti
+
+  - id: palermo_gtfs
+    provider: Comune di Palermo / AMAT
+    url: https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip
+    extension: zip
+    required: true
+    expected_marker: PK
+    license: CC BY 4.0 IT
+    purpose: inventario aggiornato del trasporto urbano palermitano
+

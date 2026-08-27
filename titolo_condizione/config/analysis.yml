@@ -1,0 +1,35 @@
+project:
+  title: "Bagheria: dalla formazione all'attivazione"
+  research_question: >-
+    Come è cambiata la transizione tra istruzione e lavoro a Bagheria e quale segmento
+    presenta oggi il divario più persistente rispetto alla Sicilia?
+  target_geography: "082006"
+  comparison_geographies:
+    "082053": "Palermo"
+    "ITG1": "Sicilia"
+    "IT": "Italia"
+
+periods:
+  historical: [1991, 2001, 2011]
+  recent_work: [2018, 2019, 2021, 2022, 2023, 2024]
+  recent_education: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  population_15_34: [2021, 2022, 2023, 2024]
+
+peer_matching:
+  n_peers: 10
+  population_ratio_min: 0.5
+  population_ratio_max: 2.0
+  features: [logP1, P7, P10, P12, P13, A1, I5, I6, I7]
+  excluded_outcomes: [L4, L14]
+
+analysis:
+  reference_year: 2024
+  baseline_year: 2018
+  bootstrap_samples: 1000
+  random_seed: 2026
+
+policy:
+  pilot_participants: 200
+  preparation_days: 90
+  followup_months: [3, 6, 12]
+  case_manager_ratio: 50
