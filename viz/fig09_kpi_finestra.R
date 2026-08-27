@@ -32,6 +32,12 @@ anno <- base$anno[1]
 platea <- read_csv(file.path(PROCESSED, "genere_platea.csv"), show_col_types = FALSE) |>
   filter(nome_territorio == "Bagheria", genere == "F")
 stopifnot(platea$platea_2024 == popolazione)
+# Il tetto a tasso costante vive nel notebook (genere_tetto_platea.csv): qui si legge
+# e si dichiara nel sottotitolo del waffle, nessun ricalcolo.
+tetto <- read_csv(file.path(PROCESSED, "genere_tetto_platea.csv"), show_col_types = FALSE) |>
+  filter(genere == "F") |>
+  arrange(orizzonte)
+stopifnot(nrow(tetto) == 2, tetto$platea == c(platea$platea_2029, platea$platea_2034))
 delta <- function(s) persone[["occupate in più (2024)"]][persone$scenario == s]
 
 # --- pannello A: le ragazze 15-24, un quadratino ogni dieci -------------------------
@@ -71,7 +77,9 @@ waffle <- ggplot(griglia, aes(colonna, -riga, fill = classe)) +
                          migliaia(platea$platea_2029), " nel 2029 (",
                          virgola(platea$var_2029_pct), "%), ",
                          migliaia(platea$platea_2034), " nel 2034 (",
-                         virgola(platea$var_2034_pct), "%)"),
+                         virgola(platea$var_2034_pct), "%)\na tasso 2024 costante: ",
+                         virgola(tetto$delta_vs_2024[1], 0), " occupate nel 2029, ",
+                         virgola(tetto$delta_vs_2024[2], 0), " nel 2034"),
        x = NULL, y = NULL) +
   theme(axis.text = element_blank(), panel.grid = element_blank(),
         legend.position = "bottom", legend.justification = "left")
@@ -131,7 +139,7 @@ figura <- (waffle | potenza) +
       "MDE = differenza minima rilevabile a potenza 80% e alfa 5% fra due proporzioni (trasformazione arcoseno); \"anni pooled\" = ampiezza di ciascuno dei due lati del confronto.\n",
       "In grigio le finestre in cui l'effetto promesso è più piccolo della soglia. I quadratini sono arrotondati alla decina, i totali in legenda no.\n",
       "La platea 2029/2034 conta le ragazze già nate e residenti oggi (demografia per età singola): un tetto che si restringe, non una previsione — i KPI in teste si riparametrano sulla platea corrente.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_base_persone.csv, genere_gap_persone.csv, genere_mde.csv, genere_platea.csv"),
+      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_base_persone.csv, genere_gap_persone.csv, genere_mde.csv, genere_platea.csv, genere_tetto_platea.csv"),
     theme = tema_figura()
   )
 
