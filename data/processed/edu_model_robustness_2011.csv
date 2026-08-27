@@ -1,0 +1,7 @@
+outcome,modello,n_comuni_training,r2_in_sample,r2_cv_10fold,osservato_bagheria,previsto_bagheria,residuo_bagheria,residuo_ci95_basso,residuo_ci95_alto,uso
+L14,A_istruzione,389,0.02168495506458412,-0.04766599893280886,20.0,25.953147878596575,-5.953147878596575,-6.871839261166894,-5.031783883633988,Robustezza in appendice; nessuna interpretazione causale individuale.
+L14,B_istruzione_mobilita,389,0.03187876004546275,-0.040164540399560224,20.0,25.66317148071997,-5.663171480719971,-6.571341825208394,-4.764833204792037,Robustezza in appendice; nessuna interpretazione causale individuale.
+L14,C_contesto_territoriale,389,0.13512632004097613,0.05074437433738353,20.0,25.92611892625515,-5.92611892625515,-7.650329125093564,-4.297466082051355,Robustezza in appendice; nessuna interpretazione causale individuale.
+L4,A_istruzione,389,0.41420540102102643,0.38385778304208984,40.1,36.12420909414992,3.975790905850083,3.1341740860059795,4.6978655345889235,Robustezza in appendice; nessuna interpretazione causale individuale.
+L4,B_istruzione_mobilita,389,0.41420545240733364,0.3826724885985259,40.1,36.12343412554047,3.9765658744595314,3.163525773643204,4.728706811502673,Robustezza in appendice; nessuna interpretazione causale individuale.
+L4,C_contesto_territoriale,389,0.49884794552079637,0.44523259072284593,40.1,38.27664454569649,1.8233554543035098,0.2674251109686525,3.3454501954669853,Robustezza in appendice; nessuna interpretazione causale individuale.
