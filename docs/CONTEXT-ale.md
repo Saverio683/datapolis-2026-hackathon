@@ -192,9 +192,13 @@ territori × 6 anni — fotografia e serie nella stessa tabella),
 **stessa fascia 15-24**, differenza F − M calcolata nel notebook, 2021-2024),
 `genere_fuori_lavoro_istruzione.csv` (fig02: quota e persone del proxy «fuori da
 lavoro e istruzione» = tutti meno occupati e studenti, per territorio e genere),
-`genere_posizionamento.csv` (alimenta fig08: min/q1/mediana/q3/max delle gemelle,
-`gemelle_sotto`, `percentile_390`, più la colonna `verso` — +1 alto è meglio, -1 alto è
-peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel notebook, non in R),
+`genere_posizionamento.csv` (alimenta fig08: min/q1/mediana/q3/max e `_sotto` per
+**entrambi** i gruppi di pari — prefissi `gemelle_` e `istruiti_` — su 8 indicatori
+(dal 2026-08-27 c'è anche **L14**, occupazione 15-29, dove le due lenti divergono),
+`percentile_390`, più la colonna `verso` — +1 alto è meglio, -1 alto è peggio,
+0 descrittivo — che è l'unica scelta interpretativa e sta nel notebook, non in R),
+`genere_pari_lenti.csv` (19 comuni con la lente di appartenenza: `strutturale`,
+`istruzione`, `entrambe` — da qui fig08 conta l'overlap e nomina Misilmeri),
 `genere_ritenzione_transizioni.csv` (le tre transizioni annuali per età 15-30, 4 territori),
 `genere_platea.csv` (15-24 del 2024 e platea 2029/2034 per genere),
 `genere_sex_ratio_5_14.csv` (M per 100 F, 2001-2024, dalle classi quinquennali),
@@ -202,6 +206,10 @@ peggio, 0 descrittivo — che è l'unica scelta interpretativa e sta nel noteboo
 `genere_stato_civile.csv` (già coniugate per fascia 15-24/18-24/20-24, 1.1.2019-1.1.2025).
 `genere_occupazione_scomposta.csv` (shift-share per genere delle occupate 15-24, 2018→2024),
 `genere_tetto_platea.csv` (platea 2029/2034 × tasso 2024 costante, alimenta fig09),
+`genere_kpi_netto.csv` (lo stesso KPI al **tasso obiettivo di Palermo** su ciascuna
+platea: lordo, attrito demografico, netto — alimenta la cascata di fig09),
+`genere_frattura_istruzione.csv` (I5, uscita precoce, 1991-2011 con percentile
+ricalcolato in questo thread — alimenta la striscia di fig10),
 più le copie `edu_*` dal thread educazione (rigenerabili con `uv run python -m pipeline.edu`).
 
 ## Figure (R)
@@ -245,14 +253,26 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   coorte 15-19 dalle classi quinquennali): risponde all'obiezione che tre anni di dati non
   bastano a chiamarla fuga. Il decennio 2011-2021 unisce due rilevazioni, dichiarato in
   caption con l'argomento sul verso prudente della distorsione.
-- `fig08_posizionamento` — la **terza lente di confronto**: Bagheria dentro le 10 gemelle
-  strutturali | dentro i 390 comuni. Serve a separare lo svantaggio di fascia territoriale
-  (NEET e occupazione F: nella norma fra i pari ma all'87° e al 12° percentile regionale)
-  da quello che è di Bagheria (giovani soli 0/10, differenziale educativo 1/10, mobilità
-  2/10). Si colora **solo** dove Bagheria esce dalla metà centrale del riferimento —
-  interquartile delle gemelle a sinistra, 25°-75° percentile a destra — così un 3/10 non
-  diventa un'affermazione categorica; il giudizio è calcolato **per pannello**, sul dato
-  che quel pannello mostra. Dal 2026-08-26 i tre colori hanno una **legenda in figura**
+- `fig08_posizionamento` — le **lenti di confronto**, al plurale. Dal 2026-08-27 sono
+  **tre pannelli**: dentro le 10 gemelle strutturali | dentro i 10 pari a pari istruzione
+  del thread educazione | dentro i 390 comuni. La domanda che la figura pone è quale
+  conclusione sopravvive al cambio di definizione di «simile», e la risposta è il titolo:
+  **6 indicatori su 8 danno lo stesso giudizio con entrambi i gruppi**, e cambiano solo
+  L11 e I1. Reggono a tutte e due le letture i tre tratti che vanno in proposal:
+  disoccupazione F 8/10, occupazione giovanile (L14) 2/10, giovani soli 0/10.
+  ⚠️ **Il claim vecchio era sovraesteso**: «anche l'occupazione femminile è svantaggio di
+  fascia» valeva solo con le gemelle strutturali (3/10, dentro i quartili); fra i comuni
+  ugualmente scolarizzati Bagheria è **penultima** (1/10, sotto il primo quartile). A pari
+  istruzione il lavoro femminile non arriva — non è un tratto di fascia. Che I1 cambi
+  lettura invece è atteso e **non è un finding**: il secondo gruppo è appaiato anche
+  sull'istruzione, quindi su quell'asse è simile per costruzione. Il residuo del modello
+  del thread educazione (L14 −5,9 p.p.) sta nel sottotitolo come **conferma di segno**,
+  con il CV R² 0,05 dichiarato in caption: mai come quantità attribuibile al comune.
+  Si colora **solo** dove Bagheria esce dalla metà centrale del riferimento —
+  interquartile del gruppo nei due pannelli dei pari, 25°-75° percentile nel terzo — così
+  un 3/10 non diventa un'affermazione categorica; il giudizio è calcolato **per pannello**,
+  sul dato che quel pannello mostra. L'ordine delle righe lo fissa la prima lente: la
+  rottura della monotonia nel secondo pannello *è* il finding, e non serve marcarla. Dal 2026-08-26 i tre colori hanno una **legenda in figura**
   (prima la chiave stava nel sottotitolo, che si legge una volta e poi non si ritrova più
   mentre si guarda il grafico). Tutto 2011/8milaCensus, mai in serie con il 2018-2024.
 - `fig09_kpi_finestra` — il KPI della proposal e la sua misurabilità: waffle delle 2.882
@@ -263,13 +283,26 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   `genere_platea.csv`): il tetto dei KPI in teste è già nato e si restringe. Dal
   2026-08-27 il sottotitolo traduce il tetto in occupate: a tasso 2024 costante la sola
   platea vale −19 al 2029 e −37 al 2034 (`genere_tetto_platea.csv`, shift-share nel
-  notebook).
+  notebook), e un **terzo pannello a cascata** porta il numero che cambia la proposal:
+  le stesse +40 occupate misurate sulla platea di ciascun anno valgono **+18 al 2029 e
+  −2 al 2034** (lordo +40, attrito −22 e −43 — `genere_kpi_netto.csv`). Cioè: **il KPI
+  va scritto in tasso, non in teste**, o riparametrato ogni anno sulla platea corrente.
+  ⚠️ I due attriti non sono lo stesso numero e non vanno confusi: −19/−37 è lo scenario
+  «non si fa niente» (tasso 2024 fermo), −22/−43 è lo stesso conto al tasso obiettivo di
+  Palermo (9,59%). La caption lo dichiara.
 - `fig10_muro_recente` — il lungo periodo **fino al 2024**: percentili di Bagheria sui 390 |
   L11 contro la banda interquartile delle gemelle, entrambi in due blocchi (censimenti
   1991-2011 e permanente 2018-2024) separati da una banda grigia che nessuna linea
   attraversa. Il differenziale educativo M/F non è in figura: esiste solo fino al 2011
   (8milaCensus lo calcola su 6+, il permanente non ha una classe 15+ sull'istruzione) e una
-  linea che muore a metà pannello confonde — resta in caption. Il punto per la proposal: il
+  linea che muore a metà pannello confonde — resta in caption. Dal 2026-08-27 una
+  **striscia sotto il pannello sinistro** porta la stessa frattura vista dall'istruzione:
+  uscita precoce dalla scuola (I5), **56° → 70° → 83° percentile** fra 1991 e 2011. Ha
+  scala e asse y propri per due motivi indipendenti, non per estetica: su I5 alto = peggio
+  mentre nel pannello sopra alto = meglio (su un asse condiviso una linea che sale
+  significherebbe due cose diverse), e la fonte si ferma al 2011 come il differenziale
+  educativo. Serve a **datare, non a quantificare**: due domini diversi, due indicatori
+  diversi, la stessa datazione — il 2001-2011 non è un artefatto della misura del lavoro. Il punto per la proposal: il
   divario è **databile e non si richiude da solo**.
   L'asse del tempo **non è in scala** (dal 2026-08-26): il tratto 1991-2011 è compresso
   ~3,3:1 e il 2018-2024 dilatato 1,2:1, perché venti anni con tre rilevazioni si prendevano
@@ -337,7 +370,9 @@ cairo convertono comunque il testo in tracciati nell'SVG.
   comuni comparabili — le gemelle strutturali (qui) e i peer a pari istruzione del thread
   educazione (overlap: solo Misilmeri). Verdetti diversi perché domande diverse; in
   proposal si presentano come due lenti dichiarate, mai fusi in una classifica unica.
-  La cella 🔗 nella sezione gemelle contiene la formulazione.
+  La cella 🔗 nella sezione gemelle contiene la formulazione. Dal 2026-08-27 **fig08 le
+  disegna affiancate**, quindi la riconciliazione non è più solo testuale: quello che si
+  può affermare senza scegliere una lente è ciò che sopravvive a entrambi i pannelli.
 - Richieste agli altri thread: in `CONTEXT-fabio.md` (dimensione sesso nel pendolarismo)
   e `CONTEXT-saverio.md` (incrocio titolo × condizione per genere a livello regionale).
 - `doppia_fuga.md` e `04_il_19_percento_invisibile.md` aggiornate (2026-08-25) al
