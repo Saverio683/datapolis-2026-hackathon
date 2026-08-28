@@ -1,4 +1,4 @@
-"""Verifica indipendente del thread genere: 558 controlli di regressione.
+"""Verifica indipendente del thread genere: 650 controlli di regressione.
 
 Ricalcola i numeri chiave DIRETTAMENTE da data/raw/ con un percorso di codice
 autonomo — parsing proprio dei CSV SDMX e 8milaCensus, implementazioni proprie
@@ -1105,6 +1105,71 @@ l14C = mod[(mod["outcome"] == "L14") & (mod["modello"] == "C_contesto_territoria
 check("edu: residuo L14 modello C", round(float(l14C["residuo_bagheria"]), 2), -5.93)
 scuole = pd.read_csv(PROCESSED / "edu_technical_schools.csv", dtype=str)
 check("edu: sedi tecniche a Bagheria", int((scuole["territorio"] == B).sum()), 3, 0.5)
+
+# il KPI netto: obiettivo, attrito della platea, quello che resta (export letto da fig09)
+kpin = pd.read_csv(PROCESSED / "genere_kpi_netto.csv")
+check("kpi netto: righe (2 orizzonti)", len(kpin), 2, 0.5)
+tasso_pa = cella_lav(P, 2024, "F", "1") / cella_lav(P, 2024, "F", "99")
+occ_bag_f = cella_lav(B, 2024, "F", "1")
+lordo_att = round(eta_somma(B, "F", 15, 24)) * tasso_pa - occ_bag_f
+for oriz, (a0, a1) in ((2029, (10, 19)), (2034, (5, 14))):
+    riga = kpin[kpin["orizzonte"] == oriz].iloc[0]
+    plat = round(eta_somma(B, "F", a0, a1))
+    netto_att = plat * tasso_pa - occ_bag_f
+    check(f"kpi {oriz}: tasso obiettivo = Palermo F 15-24 2024",
+          riga["tasso_obiettivo_pct"], round(100 * tasso_pa, 2))
+    check(f"kpi {oriz}: platea (registro per eta singola)", riga["platea"], plat, 0.5)
+    check(f"kpi {oriz}: lordo sulla platea di oggi", riga["kpi_lordo"], round(lordo_att, 1))
+    check(f"kpi {oriz}: netto sulla platea futura", riga["kpi_netto"], round(netto_att, 1))
+    check(f"kpi {oriz}: attrito demografico", riga["attrito_demografico"],
+          round(netto_att - lordo_att, 1))
+    check(f"kpi {oriz}: identita lordo + attrito = netto",
+          float(riga["kpi_lordo"] + riga["attrito_demografico"] - riga["kpi_netto"]), 0, 0.15)
+check("kpi: lordo == gap_persone Palermo", round(kpin["kpi_lordo"].iloc[0]),
+      int(gp[gp["scenario"].str.contains("Palermo")]["occupate in più (2024)"].item()), 0.6)
+
+# le due lenti sui pari: appartenenza ai gruppi e posizione di Bagheria dentro ciascuno
+lenti_csv = pd.read_csv(PROCESSED / "genere_pari_lenti.csv", dtype={"territorio": str})
+check("pari lenti: comuni distinti (10 + 10 - 1 condiviso)", len(lenti_csv), 19, 0.5)
+check("pari lenti: nel gruppo di entrambe",
+      str(sorted(lenti_csv[lenti_csv["lente"] == "entrambe"]["territorio"])), "['082048']")
+GRUPPI = {"gemelle": ("strutturale", set(gem["territorio"])),
+          "istruiti": ("istruzione", set(solo_peer["territorio"]))}
+for chiave, (etichetta, membri) in GRUPPI.items():
+    dal_csv = set(lenti_csv[lenti_csv["lente"].isin([etichetta, "entrambe"])]["territorio"])
+    check(f"pari lenti: gruppo {etichetta} completo", str(sorted(dal_csv)), str(sorted(membri)))
+
+pos = pd.read_csv(PROCESSED / "genere_posizionamento.csv")
+check("posizionamento: indicatori (con L14)", len(pos), 8, 0.5)
+check("posizionamento: L14 presente", int(pos["indicatore"].eq("L14").sum()), 1, 0.5)
+for _, r in pos.iterrows():
+    ind = r["indicatore"]
+    vals = comuni_8m(2011, ind)
+    v_bag = vals.loc[B]
+    check(f"posizionamento {ind}: valore Bagheria", r["bagheria"], round(v_bag, 1))
+    check(f"posizionamento {ind}: percentile sui 390",
+          r["percentile_390"], round(100 * (vals < v_bag).mean(), 1))
+    for chiave, (_, membri) in GRUPPI.items():
+        sub = vals.loc[sorted(membri)]
+        check(f"posizionamento {ind}: {chiave} sotto Bagheria",
+              r[f"{chiave}_sotto"], int((sub < v_bag).sum()), 0.5)
+        # q1 e q3 non sono decorativi: sono la soglia oltre cui fig08 tinge la riga
+        check(f"posizionamento {ind}: {chiave} q1", r[f"{chiave}_q1"], round(sub.quantile(0.25), 1))
+        check(f"posizionamento {ind}: {chiave} q3", r[f"{chiave}_q3"], round(sub.quantile(0.75), 1))
+
+# la frattura educativa 1991-2011 (striscia di fig10): valore e percentile a rango medio
+fr = pd.read_csv(PROCESSED / "genere_frattura_istruzione.csv")
+check("frattura I5: righe (tre censimenti)", len(fr), 3, 0.5)
+for _, r in fr.iterrows():
+    anno = int(r["anno"])
+    vals = comuni_8m(anno, "I5")
+    v_bag = vals.loc[B]
+    check(f"frattura I5 {anno}: valore Bagheria", r["valore"], round(v_bag, 1))
+    pct = 100 * ((vals < v_bag).sum() + ((vals == v_bag).sum() + 1) / 2) / len(vals)
+    check(f"frattura I5 {anno}: percentile (rango medio)", r["percentile_390"], round(pct, 1))
+check("frattura I5: peggiora nel decennio 2001-2011",
+      float(fr[fr["anno"] == 2011]["percentile_390"].item()
+            - fr[fr["anno"] == 2001]["percentile_390"].item() > 0), 1.0, 0.5)
 
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]
