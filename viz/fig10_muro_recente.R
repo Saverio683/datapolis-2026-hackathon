@@ -14,6 +14,16 @@ madri_recente <- read_csv(file.path(PROCESSED, "genere_madri_recente.csv"), show
 gemelle <- read_csv(file.path(PROCESSED, "genere_pretrend_gemelle.csv"), show_col_types = FALSE)
 gemelle_recente <- read_csv(file.path(PROCESSED, "genere_pretrend_gemelle_recente.csv"),
                             show_col_types = FALSE)
+# La frattura vista dall'istruzione: uscita precoce dal sistema scolastico, 1991-2011.
+# Non entra nel pannello dei percentili come quinta linea per due motivi indipendenti.
+# Primo, il verso è opposto a quello delle linee che ci stanno (qui alto = peggio), e su
+# un asse condiviso una linea che sale significherebbe due cose diverse a seconda di
+# quale si guarda. Secondo, la fonte si ferma al 2011: varrebbe la stessa obiezione già
+# scritta sotto per il differenziale educativo. Sta quindi in una striscia sua, con scala
+# e verso dichiarati, allineata allo stesso asse del tempo.
+frattura <- read_csv(file.path(PROCESSED, "genere_frattura_istruzione.csv"),
+                     show_col_types = FALSE)
+stopifnot(nrow(frattura) == 3, all(frattura$anno <= 2011))
 
 # Le due fonti non si uniscono mai in una linea sola: `epoca` entra nel `group` di ogni
 # geom, così fra il 2011 e il 2018 il tracciato si interrompe invece di interpolare un
@@ -116,7 +126,31 @@ posizione <- ggplot(percentili, aes(x, percentile_390, colour = indicatore)) +
   coord_cartesian(clip = "off") +
   labs(subtitle = paste0("Bagheria nella distribuzione siciliana\n",
                          "percentile sui 390 comuni, ", min(anni), "-", max(anni)),
-       x = NULL, y = "percentile (0 = ultimo dei 390)")
+       # Corto di proposito: il sottotitolo dice già su quanti comuni, e con la striscia
+       # sotto il pannello è più basso — la scritta ruotata per esteso saliva nel titolo.
+       x = NULL, y = "percentile")
+
+# --- striscia sotto il pannello A: la stessa frattura, vista dall'istruzione ---------
+# Tre punti e nient'altro: serve a datare, non a quantificare. La scala parte poco sotto
+# la mediana regionale perché il salto da leggere è "da sopra la mediana a quasi in
+# fondo", e il verso sta nel titolo della striscia, dove il lettore lo incontra prima
+# dei numeri.
+striscia <- ggplot(frattura, aes(asse(anno), percentile_390)) +
+  geom_hline(yintercept = 50, colour = "grey80", linewidth = 0.4) +
+  geom_line(colour = "grey45", linewidth = 0.9) +
+  geom_point(colour = "grey45", size = 2.4) +
+  geom_text(aes(label = virgola(percentile_390, 0, "°")),
+            vjust = -1.05, size = 3.1, fontface = "bold", colour = "grey25") +
+  # Dove finisce la fonte lo dice il testo, così la linea non ha bisogno di fingere.
+  annotate("text", x = asse(2011) + 0.45, y = 62, hjust = 0, vjust = 0.5, size = 2.9,
+           colour = "grey45", lineheight = 1.05,
+           label = "8milaCensus si ferma al 2011:\nil permanente non pubblica\nquesto indicatore") +
+  scala_tempo(margine = 5.1) +
+  scale_y_continuous(limits = c(45, 100), breaks = c(50, 75, 100)) +
+  coord_cartesian(clip = "off") +
+  labs(subtitle = paste0("E la stessa frattura, vista dall'istruzione\n",
+                         "uscita precoce dalla scuola - più alto = peggio"),
+       x = NULL, y = "percentile")
 
 # --- pannello B: Bagheria dentro il gruppo delle gemelle strutturali -----------------
 banda <- bind_rows(
@@ -161,7 +195,7 @@ confronto <- ggplot(banda, aes(x, group = epoca)) +
                          "occupazione femminile 15+, banda = 1°-3° quartile"),
        x = NULL, y = "tasso di occupazione femminile (%)")
 
-figura <- (posizione | confronto) +
+figura <- ((posizione / striscia + plot_layout(heights = c(1, 0.32))) | confronto) +
   plot_layout(widths = c(1.15, 1)) +
   plot_annotation(
     title = "Il muro si alza fra il 2001 e il 2011, e nel 2024 è ancora lì",
@@ -171,6 +205,10 @@ figura <- (posizione | confronto) +
       "Fra il 2011 e il 2024 l'occupazione maschile risale dal 15° al 30° percentile, mentre la partecipazione femminile continua a scendere, dal 32° al 17°:\n",
       "la lettura del 2011, un mercato ristretto per tutti, al 2024 non regge più - gli uomini recuperano e le donne no.\n",
       "Rispetto alle gemelle strutturali lo scarto non si è chiuso: -1,7 punti nel 2011, fra -2,1 e -3,1 in ogni anno dal 2018 al 2024.\n",
+      "Nello stesso decennio peggiora anche l'istruzione, e in modo indipendente dal lavoro: l'uscita precoce dalla scuola passa dal ",
+      virgola(frattura$percentile_390[frattura$anno == 2001], 0, "°"), " al ",
+      virgola(frattura$percentile_390[frattura$anno == 2011], 0, "° percentile"), ".\n",
+      "Due domini diversi, due indicatori diversi, la stessa datazione: il 2001-2011 non è un artefatto della misura del lavoro.\n",
       "Per la proposal: la frattura è databile e non si richiude da sola - e il pre-periodo del disegno di valutazione adesso è misurato, non assunto."),
     caption = paste0(
       "Fonte: ISTAT - 8milaCensus (censimenti 1991, 2001, 2011) e Censimento permanente (2018-2024, il 2020 manca alla fonte). Popolazione 15 anni e più.\n",
@@ -181,8 +219,10 @@ figura <- (posizione | confronto) +
       "Occupazione maschile e femminile non ne risentono. Il differenziale educativo M/F si ferma al 2011: 8milaCensus lo calcola sulla popolazione 6+, il permanente non ha una classe 15+ sull'istruzione.\n",
       "390 comuni ai confini 2011 in entrambe le epoche (Misiliscemi, istituito nel 2021, resta fuori per non cambiare il denominatore).\n",
       "Gemelle = i 10 comuni più simili a Bagheria per dimensione, densità, età, stranieri, abitazioni e distanza da Palermo (matching Mahalanobis su variabili non-esito, nel notebook).\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_gap_madri.csv, genere_madri_recente.csv, genere_pretrend_gemelle.csv, genere_pretrend_gemelle_recente.csv"),
+      "L'uscita precoce (indicatore I5, 8milaCensus) è la quota di 15-24enni con la sola licenza media fuori da scuola e formazione: verso opposto al pannello sopra, per questo ha scala e striscia sue.\n",
+      "I suoi percentili, ricalcolati in questo thread, coincidono con quelli del thread educazione su tutte e 18 le coppie indicatore x anno (scarto massimo 0,00).\n",
+      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_gap_madri.csv, genere_madri_recente.csv, genere_pretrend_gemelle.csv, genere_pretrend_gemelle_recente.csv, genere_frattura_istruzione.csv"),
     theme = tema_figura()
   )
 
-salva(figura, "fig10_muro_recente", larghezza = 28, altezza = 17)
+salva(figura, "fig10_muro_recente", larghezza = 29, altezza = 21)
