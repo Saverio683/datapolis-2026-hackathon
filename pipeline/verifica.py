@@ -1,4 +1,4 @@
-"""Verifica indipendente del thread genere: 650 controlli di regressione.
+"""Verifica indipendente dei thread genere e mobilità: 701 controlli di regressione.
 
 Ricalcola i numeri chiave DIRETTAMENTE da data/raw/ con un percorso di codice
 autonomo — parsing proprio dei CSV SDMX e 8milaCensus, implementazioni proprie
@@ -7,6 +7,11 @@ link identità, di MDE/potenza (arcoseno) e del matching di Mahalanobis — e li
 confronta con i valori dichiarati in notebooks/genere.ipynb e con i CSV di
 data/processed/ letti dalle figure R. Nessun codice condiviso con il notebook:
 se i due percorsi coincidono, i numeri non dipendono dall'implementazione.
+
+Dal 2026-08-29 copre anche il thread mobilità (blocco `mob_` in fondo), che era
+l'unico focus del bando senza controllo indipendente pur reggendo il KPI della
+proposal: la matrice ISTAT del pendolarismo viene riletta in streaming dagli zip
+di data/raw/, con un parsing proprio, distinto da quello di pipeline/build.py.
 
     uv run python -m pipeline.verifica
 
@@ -1170,6 +1175,152 @@ for _, r in fr.iterrows():
 check("frattura I5: peggiora nel decennio 2001-2011",
       float(fr[fr["anno"] == 2011]["percentile_390"].item()
             - fr[fr["anno"] == 2001]["percentile_390"].item() > 0), 1.0, 0.5)
+
+# ------------------------------------------------------- thread mobilità (mob_) ---
+# Riparsing indipendente della matrice ISTAT del pendolarismo: percorso di codice
+# autonomo rispetto a costruisci_pendolarismo() in pipeline/build.py, come per il
+# resto di questo file. Il 2011 è un txt da 307 MB dentro lo zip: si legge in
+# streaming, un passaggio solo, senza espanderlo su disco.
+#
+# Convenzione del denominatore, non ovvia e finora non scritta da nessuna parte:
+# il tasso di uscita è fuori / (dentro + fuori), con `estero` FUORI da entrambi.
+# Sui territori siciliani la scelta è indifferente (estero = 0 ovunque, controllato
+# qui sotto); cambia solo la riga Italia, dove estero vale 66.007 persone. Se un
+# domani quella convenzione cambia, questi controlli devono fallire.
+import zipfile
+
+MOB_VICINI = {"082067", "082035", "082079", "082023", "082048"}
+MOB_SESSI = {"1": "M", "2": "F"}
+MOB_MOTIVI = {"1": "studio", "2": "lavoro"}
+MOB_LUOGHI = {"1": "dentro", "2": "fuori", "3": "estero"}
+MOB_PROV_SIC = tuple(f"08{c}" for c in range(1, 10))
+
+
+def _mob_ultimo(prefisso):
+    return sorted(RAW.glob(f"{prefisso}*.zip"))[-1]
+
+
+def _mob_territori(origine):
+    fuori = ["Italia"]
+    if origine == B:
+        fuori.append("Bagheria")
+    if origine == P:
+        fuori.append("Comune di Palermo")
+    if origine in MOB_VICINI:
+        fuori.append("5 comuni vicini")
+    if origine[:3] in MOB_PROV_SIC:
+        fuori.append("Sicilia")
+    return fuori
+
+
+mob_agg, mob_dest11 = {}, {}
+with zipfile.ZipFile(_mob_ultimo("istat_matrice_pendolarismo_2011")) as _z:
+    with _z.open("MATRICE PENDOLARISMO 2011/matrix_pendo2011_10112014.txt") as _f:
+        for _riga in _f:
+            _c = _riga.decode("latin-1").split()
+            if _c[0] != "S":          # S = conteggio esaustivo; L = record con mezzo/orario
+                continue
+            _orig = _c[2] + _c[3]
+            _chiave = (MOB_SESSI[_c[4]], MOB_MOTIVI[_c[5]], MOB_LUOGHI[_c[6]])
+            _n = int(_c[14])
+            for _t in _mob_territori(_orig):
+                mob_agg[(_t, *_chiave)] = mob_agg.get((_t, *_chiave), 0) + _n
+            if _orig == B and _chiave[1] == "studio" and _chiave[2] == "fuori":
+                _d = _c[7] + _c[8]
+                mob_dest11[_d] = mob_dest11.get(_d, 0) + _n
+
+
+def mob_tasso(terr, gen, motivo):
+    """Quota che esce dal comune, e la sua base. `estero` resta fuori dal denominatore."""
+    dentro = mob_agg.get((terr, gen, motivo, "dentro"), 0)
+    fuori = mob_agg.get((terr, gen, motivo, "fuori"), 0)
+    return 100 * fuori / (dentro + fuori), dentro + fuori
+
+
+def mob_gap(terr, motivo):
+    return mob_tasso(terr, "F", motivo)[0] - mob_tasso(terr, "M", motivo)[0]
+
+
+# La convenzione è indifferente in Sicilia solo finché estero resta a zero: se una
+# revisione della matrice lo popolasse, i tassi cambierebbero senza preavviso.
+for _t in ["Bagheria", "Comune di Palermo", "5 comuni vicini", "Sicilia"]:
+    check(f"mob estero {_t}: nessun pendolare verso l'estero",
+          sum(mob_agg.get((_t, g, m, "estero"), 0)
+              for g in ("F", "M") for m in ("studio", "lavoro")), 0, 0.5)
+
+rib = pd.read_csv(PROCESSED / "mob_ribaltamento_territori.csv")
+check("mob ribaltamento: cinque territori", len(rib), 5, 0.5)
+for _, r in rib.iterrows():
+    t = r["territorio"]
+    check(f"mob {t}: gap F-M lavoro 2011", r["gap_lavoro_F_M"], mob_gap(t, "lavoro"), 1e-6)
+    check(f"mob {t}: gap F-M studio 2011", r["gap_studio_F_M"], mob_gap(t, "studio"), 1e-6)
+    check(f"mob {t}: ribaltamento studio-lavoro",
+          r["ribaltamento"], mob_gap(t, "studio") - mob_gap(t, "lavoro"), 1e-6)
+
+# I tassi per genere che stanno dietro il gap (pannello sinistro di mob_fig02)
+det = pd.read_csv(PROCESSED / "mob_ribaltamento.csv")
+for _, r in det.iterrows():
+    for g in ("F", "M"):
+        check(f"mob {r['territorio']} {r['motivo']}: tasso {g}",
+              r[g], mob_tasso(r["territorio"], g, r["motivo"])[0], 1e-6)
+
+# Destinazione di chi esce da Bagheria per studio nel 2011: è il claim «9 su 10 va a
+# Palermo» di mob_fig01, e il conteggio esatto, non una quota arrotondata.
+mob_out11 = sum(mob_dest11.values())
+flu = pd.read_csv(PROCESSED / "mob_flussi_bagheria.csv", dtype={"destinazione": str})
+f11 = flu[(flu["anno"] == 2011) & (flu["motivo"] == "studio")]
+check("mob flussi 2011 studio: totale di chi esce", int(f11["persone"].sum()), mob_out11, 0.5)
+pa11 = f11[f11["destinazione"] == P].iloc[0]
+check("mob flussi 2011 studio: persone verso Palermo", int(pa11["persone"]), mob_dest11[P], 0.5)
+check("mob flussi 2011 studio: quota verso Palermo",
+      pa11["quota_su_chi_esce"], 100 * mob_dest11[P] / mob_out11, 1e-6)
+
+# --- 2021, solo lavoro e senza genere: definizione diversa dal 2011, mai in serie ---
+mob21, mob_dest21 = {"dentro": 0, "fuori": 0}, {}
+with zipfile.ZipFile(_mob_ultimo("istat_matrice_pendolarismo_lavoro_2021")) as _z:
+    with _z.open("matrix_pendoLAVORO_2021.txt") as _f:
+        for _riga in _f:
+            _c = _riga.decode("latin-1").split()
+            if _c[0] == "Prov_res":
+                continue
+            _, _orig, _, _dest, _pers = _c
+            if _orig != B:
+                continue
+            _n = int(_pers)
+            if _orig == _dest:
+                mob21["dentro"] += _n
+            else:
+                mob21["fuori"] += _n
+                mob_dest21[_dest] = mob_dest21.get(_dest, 0) + _n
+
+sin = pd.read_csv(PROCESSED / "mob_sintesi.csv")
+val = dict(zip(sin["misura"], sin["valore"]))
+check("mob 2021: quota che esce per lavoro",
+      val["quota che esce dal comune per lavoro, 2021"],
+      100 * mob21["fuori"] / (mob21["dentro"] + mob21["fuori"]), 1e-6)
+check("mob 2021: quota di chi esce che va a Palermo",
+      val["quota di chi esce che va a Palermo, lavoro 2021"],
+      100 * mob_dest21[P] / mob21["fuori"], 1e-6)
+check("mob 2011: quota di chi esce che va a Palermo (studio)",
+      val["quota di chi esce che va a Palermo, studio 2011"],
+      100 * mob_dest11[P] / mob_out11, 1e-6)
+check("mob 2011: divario F-M sul lavoro", val["divario F-M sull'uscire per lavoro, 2011"],
+      mob_gap("Bagheria", "lavoro"), 1e-6)
+check("mob 2011: divario F-M sullo studio", val["divario F-M sull'uscire per studio, 2011"],
+      mob_gap("Bagheria", "studio"), 1e-6)
+check("mob 2011: ribaltamento", val["ribaltamento studio-lavoro, 2011"],
+      mob_gap("Bagheria", "studio") - mob_gap("Bagheria", "lavoro"), 1e-6)
+
+# Il KPI della proposal: quante donne in più lavorerebbero fuori comune se il divario
+# di Bagheria fosse quello siciliano. È la cifra che regge «Ponte 19», e finora era
+# l'unica della proposal senza un controllo indipendente.
+_, nf_bag = mob_tasso("Bagheria", "F", "lavoro")
+donne_sic = (mob_gap("Sicilia", "lavoro") - mob_gap("Bagheria", "lavoro")) * nf_bag / 100
+check("mob KPI: donne in più col divario siciliano",
+      val["donne in più fuori comune col divario siciliano"], donne_sic, 1e-6)
+check("mob KPI: parità piena (gap azzerato)", 449,
+      round(-mob_gap("Bagheria", "lavoro") * nf_bag / 100), 0.5)
+info("mob KPI: base femminile 2011 (lavoro, dentro+fuori)", nf_bag)
 
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]
