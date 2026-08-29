@@ -43,7 +43,11 @@ PERMANENTE <- "censimento permanente 2018-2024"
 ANNI_PER_UNITA <- 3.3   # 1991-2011: venti anni in sei unità d'asse
 UNITA_PER_ANNO <- 1.2   # 2018-2024: ogni anno vale un'unità e un quinto
 FINE_DECENNALE <- (2011 - 1991) / ANNI_PER_UNITA
-LARGHEZZA_STACCO <- 2   # il vuoto fra le due epoche, in unità d'asse
+# Il vuoto fra le due epoche, in unità d'asse: il marcatore lo riempie tutto, come la
+# striscia del 2020 riempie il suo. Qui però il minimo non lo decide il disegno ma le
+# etichette: 2011 e 2018 sono due tacche a cavallo dello stacco, e sotto 1,9 i due numeri
+# a quattro cifre si toccano nel pannello destro, che è il più stretto dei tre.
+LARGHEZZA_STACCO <- 1.9
 INIZIO_PERMANENTE <- FINE_DECENNALE + LARGHEZZA_STACCO
 
 #' Dall'anno alla posizione sull'asse. Monotona: l'ordine temporale non cambia mai, e
@@ -55,15 +59,16 @@ asse <- function(anno) ifelse(anno <= 2011,
 ANNI_ASSE <- c(1991, 2001, 2011, 2018, 2024)   # solo gli estremi delle due epoche
 STACCO <- FINE_DECENNALE + LARGHEZZA_STACCO / 2   # ci vive il marcatore di frattura
 
+# Stessa striscia di theme.R che segnala il 2020 mancante in fig01 e fig05b: qui non manca
+# un anno ma la continuità fra due rilevazioni, e vale la stessa regola — a essere stretto
+# è lo STACCO, e il rettangolo lo riempie per intero meno il margine. Lo stacco basta a
+# tenere separate le due epoche: nessuna linea lo attraversa, perché nessuna serie ha un
+# punto lì in mezzo.
 marcatore_fonti <- function(y) {
-  list(
-    annotate("rect", xmin = FINE_DECENNALE + 0.35, xmax = INIZIO_PERMANENTE - 0.35,
-             ymin = -Inf, ymax = Inf, fill = "grey95"),
-    # verticale dentro la banda: orizzontale sarebbe più largo della banda stessa e
-    # finirebbe sopra le curve delle due epoche.
-    annotate("text", x = STACCO, y = y, size = 2.7, colour = "grey45", angle = 90,
-             label = "fonte diversa - nessuna linea attraversa")
-  )
+  # Etichetta corta: ruotata è alta quanto la striscia è larga, ma lunga quanto il
+  # pannello è alto, e per esteso sfondava sopra e sotto. Che nessuna linea attraversi
+  # lo stacco si vede, e la caption lo dice.
+  striscia_mancante(FINE_DECENNALE, INIZIO_PERMANENTE, y, "fonte diversa")
 }
 
 #' Asse x comune ai due pannelli: le etichette restano gli anni, le posizioni no.
@@ -106,7 +111,6 @@ ultimo <- percentili |> slice_max(anno, n = 1, by = indicatore)
 anni <- sort(unique(percentili$anno))
 
 posizione <- ggplot(percentili, aes(x, percentile_390, colour = indicatore)) +
-  marcatore_fonti(y = 50) +
   geom_hline(yintercept = 50, colour = "grey80", linewidth = 0.4) +
   # nel margine destro, dove vivono le etichette di fine linea: dentro il pannello
   # incrocerebbe l'occupazione maschile, che proprio lì attraversa il 50.
@@ -124,6 +128,7 @@ posizione <- ggplot(percentili, aes(x, percentile_390, colour = indicatore)) +
   scala_tempo(margine = 5.1) +
   scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25)) +
   coord_cartesian(clip = "off") +
+  marcatore_fonti(y = 50) +
   labs(subtitle = paste0("Bagheria nella distribuzione siciliana\n",
                          "percentile sui 390 comuni, ", min(anni), "-", max(anni)),
        # Corto di proposito: il sottotitolo dice già su quanti comuni, e con la striscia
@@ -163,7 +168,6 @@ scarto_2011 <- with(filter(banda, anno == 2011), bagheria - gemelle_mediana)
 scarto_finale <- finale$bagheria - finale$gemelle_mediana
 
 confronto <- ggplot(banda, aes(x, group = epoca)) +
-  marcatore_fonti(y = 19) +
   geom_ribbon(aes(ymin = gemelle_q1, ymax = gemelle_q3), fill = "grey88") +
   geom_line(aes(y = gemelle_mediana), colour = "grey45", linewidth = 0.9) +
   geom_point(aes(y = gemelle_mediana), colour = "grey45", size = 2.2) +
@@ -191,6 +195,7 @@ confronto <- ggplot(banda, aes(x, group = epoca)) +
                           virgola(scarto_finale), " nel 2024")) +
   scala_tempo(margine = 4.1) +
   coord_cartesian(clip = "off") +
+  marcatore_fonti(y = 19) +
   labs(subtitle = paste0("Bagheria dentro il suo gruppo di pari\n",
                          "occupazione femminile 15+, banda = 1°-3° quartile"),
        x = NULL, y = "tasso di occupazione femminile (%)")

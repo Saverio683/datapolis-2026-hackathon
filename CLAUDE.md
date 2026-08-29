@@ -20,6 +20,7 @@ uv run python -m pipeline.fetch           # scarica raw da tutte le fonti
 uv run python -m pipeline.build           # raw -> processed
 uv run jupyter nbconvert --to notebook --execute notebooks/analisi.ipynb  # SENSORE: il notebook DEVE passare questo comando
 Rscript viz/build_all.R                   # genera tutte le figure in figures/
+uv run python -m pipeline.schede          # data/processed -> docs/schede/ (4 schede HTML)
 ```
 
 Prima di dichiarare completo qualunque task che tocca il notebook, esegui il comando nbconvert sopra. Se fallisce, il task non è finito.
@@ -32,6 +33,8 @@ pipeline/          # moduli Python di fetch e trasformazione
 notebooks/         # analisi.ipynb (condiviso) + un notebook per thread esplorativo
 viz/               # script R, uno per figura + build_all.R
 figures/           # output viz (PNG 300dpi + SVG)
+docs/schede/       # quattro schede tematiche HTML, generate da pipeline/schede.py:
+                   # una per richiesta del bando, ogni cifra letta da data/processed/
 docs/sources.md    # dettaglio endpoint, query, struttura dei dataset — leggilo prima di scrivere codice di fetch
 ```
 

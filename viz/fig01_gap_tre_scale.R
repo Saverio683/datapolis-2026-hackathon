@@ -76,14 +76,15 @@ sotto_riferimenti <- function(colonna, riferimenti) {
 
 comune <- list(
   scale_colour_manual(values = COLORI, breaks = names(COLORI)),
-  scale_x_continuous(breaks = c(2018, 2019, 2021, 2022, 2023, 2024)),
+  scala_2020(),
   labs(x = NULL)
 )
 
-# La banda del 2020 (`buco_2020`) adesso sta in theme.R: la usa anche fig05.
+# La striscia del 2020 (`buco_2020`) e la compressione dell'asse (`asse_2020`) stanno in
+# theme.R: le usano anche fig05b e edu_fig06. L'asse porta le posizioni, non gli anni:
+# il 2020 non ne ha una, e fra 2019 e 2021 resta solo la colonna vuota che la striscia riempie.
 
-punti <- ggplot(dati, aes(anno, gap, colour = nome_territorio, fill = nome_territorio)) +
-  buco_2020(y = 7.5) +
+punti <- ggplot(dati, aes(asse_2020(anno), gap, colour = nome_territorio, fill = nome_territorio)) +
   geom_ribbon(aes(ymin = gap_lo, ymax = gap_hi), alpha = 0.15, colour = NA) +
   scale_fill_manual(values = COLORI) +
   geom_line(linewidth = 0.9) +
@@ -92,14 +93,14 @@ punti <- ggplot(dati, aes(anno, gap, colour = nome_territorio, fill = nome_terri
   # Il fill serve solo alle bande: senza questo la sua legenda resta distinta da quella
   # del colore e patchwork non riesce ad accorparle in una sola.
   guides(fill = "none") +
+  buco_2020(y = 7.5, dati$anno, dati$gap) +
   labs(subtitle = paste0("In punti percentuali (M − F)\n",
                          sotto_riferimenti("gap", c("Sicilia", "Italia"))),
        y = "punti percentuali")
 
-rapporto <- ggplot(dati, aes(anno, rapporto_M_F, colour = nome_territorio)) +
-  buco_2020(y = 1.75) +
+rapporto <- ggplot(dati, aes(asse_2020(anno), rapporto_M_F, colour = nome_territorio)) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
-  annotate("text", x = 2018, y = 1.04, label = "parità", hjust = 0,
+  annotate("text", x = asse_2020(2018), y = 1.04, label = "parità", hjust = 0,
            size = 3, colour = "grey45") +
   geom_line(linewidth = 0.9) +
   geom_point(size = 1.7) +
@@ -108,6 +109,7 @@ rapporto <- ggplot(dati, aes(anno, rapporto_M_F, colour = nome_territorio)) +
   # fuori scala su conteggi minuscoli, la linea esce dal riquadro e non sparisce in silenzio.
   scale_y_continuous(labels = function(x) virgola(x, 1, taglia_zero = FALSE)) +
   coord_cartesian(ylim = c(0.95, max(dati$rapporto_M_F, na.rm = TRUE) + 0.05)) +
+  buco_2020(y = 1.75, dati$anno, dati$rapporto_M_F) +
   labs(subtitle = paste0("In rapporto (tasso M / tasso F)\n",
                          quante_annate("rapporto_M_F", "max", "il rapporto più sbilanciato")),
        y = "quante volte")
@@ -115,13 +117,13 @@ rapporto <- ggplot(dati, aes(anno, rapporto_M_F, colour = nome_territorio)) +
 # Terza scala: il livello, non più il divario. Senza banda perché l'intervallo esportato è
 # quello di Newcombe sulla differenza, non il Wilson sui due tassi: disegnarne una qui
 # vorrebbe dire ricalcolarla in R, e la trasformazione sta in Python.
-livello <- ggplot(dati, aes(anno, tasso_F, colour = nome_territorio)) +
-  buco_2020(y = 11) +
+livello <- ggplot(dati, aes(asse_2020(anno), tasso_F, colour = nome_territorio)) +
   geom_line(linewidth = 0.9) +
   geom_point(size = 1.7) +
   comune +
   # breaks espliciti: i default cadono sui mezzi punti e l'asse esce con 5%, 8%, 10%, 12%.
   scale_y_continuous(breaks = seq(0, 20, 5), labels = function(x) virgola(x, 0, "%")) +
+  buco_2020(y = 11, dati$anno, dati$tasso_F) +
   labs(subtitle = paste0("In livello (tasso di occupazione femminile)\n",
                          quante_annate("tasso_F", "min", "il tasso più basso")),
        # corto: il titolo d'asse ruotato è alto quanto il testo, e per esteso finiva

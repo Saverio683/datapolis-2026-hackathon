@@ -116,6 +116,14 @@ OTTOMILA = "https://ottomilacensus.istat.it/fileadmin/download"
 # (verificato 2026-08-12: 404): l'unico vintage disponibile è quello corrente, quindi la
 # mappa dei dati 2011 usa confini 2026. Lo scarto va verificato sul join, non assunto.
 CARTOGRAFIA = "https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati"
+# Matrici del pendolarismo: l'unica fonte pubblica con la matrice **origine-destinazione**
+# comune per comune (chi parte da Bagheria e dove arriva), incrociata con sesso, motivo,
+# mezzo, fascia oraria e durata del tragitto. Il censimento permanente il comune di
+# destinazione non lo pubblica (verificato 2026-08-28: LOC_DEST servita solo come
+# ALL/SMPUR/OMPUR), quindi senza questa fonte il thread mobilità non ha destinazioni.
+# Tre censimenti, stesso passo di 8milaCensus: 1991, 2001, 2011.
+PENDOLARISMO = "https://www.istat.it/storage/cartografia/matrici_pendolarismo"
+MATPEN_2021 = "https://esploradati.istat.it/databrowser/DWL/PERMPOP/MATPEN"
 SDMX = "https://esploradati.istat.it/SDMXWS/rest"
 SDMX_CSV = "application/vnd.sdmx.data+csv;version=1.0.0"
 SDMX_STRUCT = "application/vnd.sdmx.structure+json;version=1.0"
@@ -201,6 +209,16 @@ FONTI: list[tuple[str, str, str | None, bytes]] = [
     # --- Stato civile per età singola e sesso (DCIS_POPRES1, anni 2019-2026): la copertura
     #     per anno NON è uniforme fra i territori e va verificata in analisi, non assunta ---
     ("popres_stato_civile_eta", _sdmx_url_popres_statciv(), SDMX_CSV, b"DATAFLOW"),
+    # --- Matrici origine-destinazione del pendolarismo (censimenti 1991/2001/2011) ---
+    ("istat_matrice_pendolarismo_1991", f"{PENDOLARISMO}/matrici_pendolarismo_1991.zip", None, b"PK"),
+    ("istat_matrice_pendolarismo_2001", f"{PENDOLARISMO}/matrici_pendolarismo_2001.zip", None, b"PK"),
+    ("istat_matrice_pendolarismo_2011", f"{PENDOLARISMO}/matrici_pendolarismo_2011.zip", None, b"PK"),
+    # La stessa matrice rifatta sul censimento permanente 2021 — l'anno base del progetto.
+    # Non sta nel catalogo del pendolarismo ma dentro IstatData, come dataflow "bulk"
+    # (DF_BULK_PEND_LAV_2021_1): l'API dati risponde 404, il file vero è nell'annotazione
+    # ATTACHED_DATA_FILES del dataflow. Copre il solo motivo lavoro.
+    ("istat_matrice_pendolarismo_lavoro_2021", f"{MATPEN_2021}/matrix_pendoLAVORO_2021.zip", None, b"PK"),
+    ("istat_matrice_pendolarismo_lavoro_2021_leggimi", f"{MATPEN_2021}/leggimi_file_matrix_pendoLAVORO_2021.doc", None, b"\xd0\xcf"),
     # --- Cartografia: confini comunali generalizzati, per le mappe ---
     ("istat_confini_comuni", f"{CARTOGRAFIA}/2026/Limiti01012026_g.zip", None, b"PK"),
 ] + [
@@ -215,8 +233,8 @@ FONTI: list[tuple[str, str, str | None, bytes]] = [
 
 
 def _estensione(url: str, accept: str | None) -> str:
-    if url.endswith(".zip"):
-        return ".zip"
+    if url.endswith((".zip", ".doc")):
+        return url[-4:]
     return ".json" if accept and "json" in accept else ".csv"
 
 

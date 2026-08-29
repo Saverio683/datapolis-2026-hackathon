@@ -2,9 +2,10 @@
 # I poligoni arrivano già proiettati da pipeline/build.py (ISTAT 2026 generalizzati,
 # EPSG:32633 — WGS 84 / UTM 33N): qui non si tocca la geometria, si disegna.
 # Niente sf: le librerie di sistema GDAL/GEOS non sono installabili su questa macchina.
-# Il punto per la proposal: la mappa è al 2024, ma la graduatoria che disegna è quasi la
-# stessa del 2011 (rho di Spearman nel pannello a destra). Un claim di posizionamento
-# costruito sul censimento 2011 non era una scommessa sul passato: era una previsione.
+# Il punto per la proposal: Bagheria arriva nel 2024 dove la Sicilia stava nel 2011 —
+# il livello sale, la posizione no. Che la graduatoria del 2011 predica quella del 2024,
+# cioè che un claim costruito sul censimento vecchio fosse una previsione e non una
+# scommessa sul passato, è un'affermazione metodologica e sta in fig04b.
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
@@ -28,19 +29,77 @@ mappa <- left_join(confini, select(comuni, territorio, occ_2024), by = "territor
 bagheria <- filter(comuni, ruolo == "Bagheria")
 vicini <- filter(comuni, ruolo == "vicino") |> arrange(distanza_km)
 
-# I cinque vicini stanno dentro 8 km: alla scala dell'isola sono un punto solo, quindi le
-# etichette si impilano in mare con una linea di richiamo ciascuna. Nome e valore in una
-# stringa sola: con due colonne allineate il nome più lungo tocca il valore, e il blocco
-# non ha spazio per allargarsi (deve stare fra Ustica, x 341000, e Alicudi, x 442000).
-# Le coordinate cadono su tratti di Tirreno senza comuni (verificato sui vertici).
-# Gli estremi regionali non sono più etichettati sulla carta: cambiano comune fra le due
-# annate e si leggono meglio agli estremi dell'istogramma qui sotto.
+palermo <- filter(comuni, territorio == "082053")
+stopifnot(nrow(palermo) == 1)
+
+# Bagheria e i cinque vicini stanno dentro 8 km: sulla carta dell'isola, larga 335 km,
+# sono un'unghia. Le etichette si impilano quindi in mare, con nome e valore in una stringa
+# sola (con due colonne allineate il nome più lungo tocca il valore, e il blocco non ha
+# spazio per allargarsi: deve stare fra Ustica, x 341000, e Alicudi, x 442000).
+#
+# Una linea di richiamo per comune, com'era prima, si intrecciava con le altre senza
+# distinguere niente: a quella distanza nessuno può appaiare la propria linea al proprio
+# poligono, e sei rette verso lo stesso punto sono sei volte lo stesso richiamo. Al loro
+# posto una graffa — verticale lungo il blocco, poi una sola discesa al gruppo — che dice
+# la cosa vera: queste sei righe stanno tutte lì.
+# Palermo no: 17,5 km più a ovest, poligono grande e riconoscibile, e non è un vicino ma il
+# termine di paragone. Riga staccata dal blocco, richiamo suo, viola come in ogni altra
+# figura della cartella.
+# Le coordinate del blocco cadono su tratti di Tirreno senza comuni (verificato sui vertici).
+# Gli estremi regionali non sono etichettati sulla carta: cambiano comune fra le due annate
+# e si leggono meglio agli estremi dell'istogramma qui sotto.
 X_NOME <- 370000
-pila <- bind_rows(bagheria, vicini) |>
-  mutate(y_lab = 4288000 - 11000 * (row_number() - 1),
+X_GRAFFA <- X_NOME - 2500
+PASSO <- 9500
+
+# Blocco in ordine decrescente di occupazione femminile: la colonna si legge come una
+# classifica, e dove cade Bagheria dentro il suo stesso vicinato — quarta su sei — è parte
+# di quello che la figura dice. L'ordine per distanza che c'era prima rispondeva a una
+# domanda che nessuno stava facendo.
+# Palermo apre il blocco perché ha il valore più alto, ma resta staccata di mezzo passo in
+# più: la graffa non la prende, e il suo richiamo va per conto suo.
+riga_palermo <- palermo |>
+  mutate(y_lab = 4290000, colore = COLORI_TERRITORIO[["Palermo"]], faccia = "bold")
+gruppo <- bind_rows(bagheria, vicini) |>
+  arrange(desc(occ_2024)) |>
+  mutate(y_lab = riga_palermo$y_lab - PASSO * 1.6 - PASSO * (row_number() - 1),
          colore = if_else(ruolo == "Bagheria", COLORI_TERRITORIO[["Bagheria"]], "grey20"),
-         faccia = if_else(ruolo == "Bagheria", "bold", "plain"),
-         testo = paste0(nome_comune, "  ", virgola(occ_2024, 1, "%")))
+         faccia = if_else(ruolo == "Bagheria", "bold", "plain"))
+pila <- bind_rows(riga_palermo, gruppo) |>
+  mutate(testo = paste0(nome_comune, "  ", virgola(occ_2024, 1, "%")))
+# Il blocco deve leggersi come una classifica: se un giorno Palermo non fosse più in testa,
+# la riga staccata in cima diventerebbe una bugia tipografica.
+stopifnot(!is.unsorted(rev(pila$occ_2024)))
+# Il richiamo di Palermo parte sotto la graffa e va a sinistra, il suo poligono sta lì:
+# se un giorno finisse sopra, le due linee si incrocerebbero e la graffa non terrebbe.
+stopifnot(riga_palermo$y_lab > palermo$y, palermo$x < X_GRAFFA)
+# Le due frasi del sottotitolo sul vicinato e su Palermo: se il verso cambiasse andrebbero
+# riscritte, non ristampate.
+stopifnot(all(vicini$occ_2024 < dopo$mediana), palermo$occ_2024 > dopo$mediana)
+
+# La centralità della carta è quella dell'isola, non dell'inquadratura. Pantelleria, le
+# Egadi, Ustica, le Eolie e Lampedusa stanno fino a 110 km al largo: se entrano nel conto
+# del riquadro ne spostano il centro a ovest (391500 contro i 415238 della terraferma), e
+# la Sicilia scivola a destra lasciando il vuoto in basso a sinistra. Il centro lo dà
+# quindi la sola terraferma; la larghezza resta quella di prima, così la carta non
+# rimpicciolisce — si sposta e basta. Fuori riquadro finiscono Pantelleria e Marettimo,
+# che restano nel dato e nella distribuzione qui sotto, come Lampedusa e Linosa.
+ISOLE_MINORI <- c("Pantelleria", "Favignana", "Ustica", "Lipari", "Malfa",
+                  "Santa Marina Salina", "Leni", "Lampedusa e Linosa")
+stopifnot(all(ISOLE_MINORI %in% confini$nome_comune))
+LARGHEZZA_RIQUADRO <- 335000
+XLIM <- mean(range(confini$x[!confini$nome_comune %in% ISOLE_MINORI])) +
+  c(-1, 1) * LARGHEZZA_RIQUADRO / 2
+YLIM <- c(4050000, 4300000)
+
+#' Il riquadro non deve tagliare a metà nessun poligono: una parte o è dentro o è fuori,
+#' altrimenti la carta mostra mezza isola e non lo dice da nessuna parte. È il motivo per
+#' cui `coord_equal` qui va con `expand = FALSE`: il 5% di margine che aggiunge di default
+#' vale 16,7 km, più della distanza fra Pantelleria e il bordo, e la rimetteva dentro
+#' per metà — con un lato dritto, che su una carta si legge come una costa.
+dentro <- function(x, y) x >= XLIM[1] & x <= XLIM[2] & y >= YLIM[1] & y <= YLIM[2]
+stopifnot(!any(summarise(confini, taglia = any(dentro(x, y)) & !all(dentro(x, y)),
+                         .by = c(nome_comune, parte))$taglia))
 
 # group = comune × parte (le isole sono parti separate), subgroup = anello (i buchi).
 forma <- aes(x, y, group = interaction(territorio, parte), subgroup = anello)
@@ -51,11 +110,23 @@ carta <- ggplot() +
                rule = "evenodd", colour = "white", linewidth = 0.08) +
   geom_polygon(data = filter(mappa, territorio %in% vicini$territorio),
                forma, rule = "evenodd", fill = NA, colour = "grey15", linewidth = 0.3) +
-  # Bagheria ridisegnata sopra con un bordo che stacca dalla scala viridis.
+  geom_polygon(data = filter(mappa, territorio == palermo$territorio), forma,
+               rule = "evenodd", fill = NA, colour = COLORI_TERRITORIO[["Palermo"]],
+               linewidth = 0.7) +
+  # Bagheria per ultima e sopra tutti: confina con Santa Flavia e Ficarazzi, e disegnata
+  # prima si farebbe coprire il bordo. Colore che stacca dalla scala viridis.
   geom_polygon(data = filter(mappa, territorio == bagheria$territorio), forma,
                rule = "evenodd", fill = NA, colour = "#D55E00", linewidth = 0.9) +
-  geom_segment(data = pila, aes(x = x, y = y, xend = X_NOME - 5000, yend = y_lab,
-                                colour = colore), linewidth = 0.3) +
+  # La graffa: il montante lungo il blocco, poi una discesa sola fino al grappolo.
+  annotate("segment", x = X_GRAFFA, xend = X_GRAFFA,
+           y = max(gruppo$y_lab), yend = min(gruppo$y_lab),
+           colour = "grey45", linewidth = 0.3) +
+  annotate("segment", x = X_GRAFFA, xend = bagheria$x,
+           y = min(gruppo$y_lab), yend = bagheria$y,
+           colour = "grey45", linewidth = 0.3) +
+  annotate("segment", x = X_GRAFFA, xend = palermo$x,
+           y = riga_palermo$y_lab, yend = palermo$y,
+           colour = COLORI_TERRITORIO[["Palermo"]], linewidth = 0.3) +
   geom_text(data = pila, aes(X_NOME, y_lab, label = testo, colour = colore,
                              fontface = faccia), hjust = 0, size = 3.2) +
   scale_colour_identity() +
@@ -66,23 +137,31 @@ carta <- ggplot() +
   # Riquadro sull'isola: Lampedusa e Linosa (250 km più a sud) lascerebbero mezza tela
   # vuota. Il comune resta nella distribuzione qui sotto e nel dato, solo fuori inquadratura.
   # Il clip resta acceso, altrimenti Lampedusa viene disegnata fuori dal pannello, sopra
-  # l'istogramma; le etichette stanno tutte dentro il riquadro. xlim ritagliato sui
-  # vertici effettivi (Pantelleria a ovest, Messina a est): il default lascia bande vuote.
-  coord_equal(xlim = c(224000, 559000), ylim = c(4050000, 4300000)) +
+  # l'istogramma; le etichette stanno tutte dentro il riquadro.
+  # `XLIM` è centrato sulla terraferma (sopra); `YLIM` no, e non per distrazione: la fascia
+  # di mare a nord non è vuota — ci stanno la legenda, il blocco delle etichette, Ustica e
+  # le Eolie. Centrarla sulla terraferma la taglierebbe via.
+  # expand = FALSE: il riquadro disegnato dev'essere quello su cui è fatto il conto del
+  # centro e quello che il controllo qui sopra verifica, non quello più il 5%.
+  coord_equal(xlim = XLIM, ylim = YLIM, expand = FALSE) +
   labs(x = NULL, y = NULL) +
   # panel.grid da solo non basta: tema_datapolis fissa esplicitamente major e minor,
   # e un figlio impostato vince sul genitore azzerato.
-  # Legenda dentro il pannello, nel Tirreno a nord-ovest: fuori si prendeva una fascia
-  # orizzontale intera e la carta, vincolata dall'altezza da coord_equal, restava piccola
-  # con bande vuote ai lati. Quel tratto di mare è libero (nessun comune sopra x 340000
-  # a ovest di Ustica) e il fondo bianco la stacca dall'azzurro dei comuni più bassi.
+  # La barra di colore torna dentro il pannello, in alto a sinistra: è l'unica figura
+  # della cartella dove sta dentro il disegno, e la ragione è che qui il pannello ha una
+  # forma imposta. `coord_equal` lega altezza e larghezza al rapporto della Sicilia
+  # (335 km per 250), quindi ogni centimetro speso in una fascia sopra la carta è un
+  # centimetro che la carta non usa in larghezza: la fascia costava il 15% del disegno.
+  # L'obiezione di prima resta vera — dentro il pannello la chiave si trova solo
+  # cercandola — ed è pagata mettendola nell'angolo che si legge per primo, sul Tirreno a
+  # nord-ovest, dove non c'è terraferma e non arriva il blocco delle etichette (x 370000,
+  # cioè al 44% della larghezza).
   theme(axis.text = element_blank(), axis.ticks = element_blank(),
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        legend.position = "inside", legend.position.inside = c(0.01, 0.99),
-        legend.justification = c(0, 1), legend.direction = "horizontal",
-        legend.background = element_rect(fill = "white", colour = NA),
-        legend.margin = margin(4, 8, 4, 8),
-        legend.title = element_text(size = rel(0.85)))
+        legend.position = "inside", legend.position.inside = c(0, 1),
+        legend.justification.inside = c(0, 1), legend.direction = "horizontal",
+        legend.margin = margin(0, 0, 0, 0),
+        legend.title = element_text(size = rel(0.85), hjust = 0))
 
 # --- pannello B: la distribuzione si è spostata, Bagheria si è spostata con lei --------
 # Barre piene = 2024 (stessa scala colore della carta), profilo grigio = 2011. Sovrapposti
@@ -123,50 +202,15 @@ spostamento <- ggplot(comuni, aes(occ_2024)) +
        x = "tasso di occupazione femminile", y = "comuni") +
   theme(panel.grid.major.x = element_blank())
 
-# --- pannello C: il rango del 2011 predice quello del 2024 -----------------------------
-# La prova che la fotografia vecchia non era una speculazione: ogni punto è un comune,
-# la diagonale è "stessa posizione nelle due annate". Il quadrato in basso a sinistra è
-# il quintile più basso in entrambe le annate — chi ci entra, tendenzialmente ci resta.
-# Bagheria non ha etichetta dentro il pannello: sta nel mucchio del quadrato e qualunque
-# testo lì sopra coprirebbe altri comuni. Il colore è quello della carta, il valore sta
-# nel sottotitolo. Le due annotazioni vivono negli angoli vuoti (alto-sinistra = chi è
-# risalito molto, basso-destra = chi è crollato: entrambi rari).
-QUINTILE <- 20
-punto <- function(dati, colore, dimensione) {
-  # alone bianco sotto: sul grigio dei 390 un punto pieno da solo non si stacca.
-  list(geom_point(data = dati, colour = "white", size = dimensione + 1.4),
-       geom_point(data = dati, colour = colore, size = dimensione))
-}
-
-persistenza <- ggplot(comuni, aes(pct_2011, pct_2024)) +
-  annotate("rect", xmin = 0, xmax = QUINTILE, ymin = 0, ymax = QUINTILE,
-           fill = "grey92", colour = NA) +
-  geom_abline(slope = 1, intercept = 0, colour = "grey60", linetype = "dashed",
-              linewidth = 0.4) +
-  geom_point(colour = "grey55", size = 0.9, alpha = 0.55) +
-  punto(vicini, COLORE_VICINATO, 2.1) +
-  punto(bagheria, COLORI_TERRITORIO[["Bagheria"]], 3.4) +
-  annotate("text", x = 3, y = 98, hjust = 0, vjust = 1, size = 2.9, colour = "grey35",
-           lineheight = 1.15,
-           label = paste0("nel quintile più basso\nin entrambe le annate:\n",
-                          virgola(prima$quintile_basso_ancora_tale_nel_2024_pct, 0, "%"),
-                          " dei comuni")) +
-  annotate("text", x = 99, y = 15, hjust = 1, size = 3.3, fontface = "bold", colour = "grey25",
-           label = paste0("rho di Spearman ", virgola(prima$rho_vs_2024, 3))) +
-  annotate("text", x = 99, y = 9, hjust = 1, vjust = 1, size = 2.9, colour = "grey45",
-           lineheight = 1.15,
-           label = paste0("dentro il solo permanente\n(2018 contro ", ANNO, "): ",
-                          virgola(riga(2018)$rho_vs_2024, 3))) +
-  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, 25)) +
-  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25)) +
-  coord_equal() +
-  labs(subtitle = paste0("E la graduatoria è quasi la stessa\n",
-                         "Bagheria in arancio, dal ", virgola(bagheria$pct_2011, 0, "°"),
-                         " al ", virgola(bagheria$pct_2024, 0, "°")),
-       x = paste0("percentile ", BASE), y = paste0("percentile ", ANNO))
-
-figura <- carta / (spostamento | persistenza) +
-  plot_layout(heights = c(4.4, 1.7)) +
+# La prova che questa fotografia non è scaduta — la graduatoria del 2011 predice quella
+# del 2024 — sta in fig04b: è un'affermazione metodologica, non geografica, e in un
+# terzo di riga sotto la carta stava stretta, con le annotazioni sopra la nuvola.
+figura <- carta / spostamento +
+  # 7,2 contro 1,9: con la carta vincolata da `coord_equal` il rapporto non è una
+  # preferenza di impaginazione ma il conto che le fa riempire la larghezza — sotto,
+  # l'altezza è il lato corto e la Sicilia si stringe lasciando bianco a destra e a
+  # sinistra. Se cambia `coord_equal` o il riquadro, va rifatto il conto.
+  plot_layout(heights = c(7.2, 1.9)) +
   plot_annotation(
     title = paste0("Nel ", ANNO, " Bagheria arriva dove stava la mediana siciliana nel ", BASE),
     subtitle = paste0(
@@ -177,27 +221,30 @@ figura <- carta / (spostamento | persistenza) +
       virgola(dopo$percentile, 0, "°"), " percentile, con ", dopo$comuni_sotto,
       " comuni su 390 più in basso.\n",
       "Non è un comune medio della Sicilia: è nella coda bassa, e ci era già nel ", BASE,
-      ". Anche i cinque vicini restano sotto la mediana.\n",
-      "Il pannello a destra dice perché vale la pena affermarlo: la graduatoria del ", BASE,
-      " predice quella del ", ANNO, " (rho ", virgola(prima$rho_vs_2024, 3), ").\n",
-      "Il posizionamento non è una fotografia scaduta, è una previsione verificata."),
+      ". Anche i cinque vicini restano sotto la mediana;\n",
+      "Palermo, a ", virgola(palermo$distanza_km, 0), " km, la supera appena (",
+      virgola(palermo$occ_2024, 1, "%"), ").\n",
+      "E non è una fotografia scaduta: la graduatoria del ", BASE, " predice quella del ", ANNO,
+      " (rho di Spearman ", virgola(prima$rho_vs_2024, 3), ", in fig04b)."),
     caption = paste0(
       "Fonte: ISTAT - 8milaCensus, indicatore L11 (censimento ", BASE,
       ") e Censimento permanente della popolazione (2018-", ANNO, ", il 2020 manca alla fonte).\n",
       "Tasso di occupazione femminile, popolazione 15 anni e più. Due rilevazioni con disegni diversi: universale a questionario la prima,\n",
       "campionaria sui registri la seconda. Il livello ne risente, il rango dentro l'anno molto meno, perché lo scarto di definizione sposta\n",
-      "tutti i comuni nello stesso verso: per questo il pannello a destra confronta percentili e non punti percentuali.\n",
+      "tutti i comuni nello stesso verso: per questo il confronto fra le due annate, in fig04b, usa percentili e non punti percentuali.\n",
       "Fascia e anno diversi dalle serie 15-24 del thread: contesto di lungo periodo, non termine di paragone.\n",
       "390 comuni ai confini ", BASE, " in entrambe le annate. In grigio Misiliscemi, istituito nel 2021 da Trapani: nel ", BASE,
-      " non esisteva, il dato\nnon gli è attribuibile ed è fuori dai 390. Lampedusa e Linosa è fuori riquadro, nella distribuzione c'è.\n",
+      " non esisteva, il dato\nnon gli è attribuibile ed è fuori dai 390.\n",
+      "Il riquadro è centrato sulla terraferma, non sull'estensione con le isole minori: restano fuori Lampedusa e Linosa, Pantelleria e Marettimo,\n",
+      "che sono nel dato e nella distribuzione qui sotto. Ustica, Levanzo, Favignana e le Eolie sono in carta.\n",
       "Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, EPSG:32633 (WGS 84 / UTM 33N).\n",
-      "Etichettati sulla carta Bagheria e i cinque comuni più vicini (distanza fra i centroidi, tutti entro 8 km);\n",
-      "gli estremi regionali si leggono agli estremi dell'istogramma. Rho di Spearman e persistenza del quintile: notebooks/genere.ipynb.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mappa_occupazione_femminile.csv, genere_mappa_2011_2024.csv,\n",
-      "genere_distribuzione_390.csv"),
+      "Etichettati sulla carta Bagheria (bordo vermiglio) e i cinque comuni più vicini (bordo scuro, distanza fra i centroidi, tutti entro 8 km):\n",
+      "una graffa sola per tutti e sei, perché a questa scala i loro poligoni sono un punto e sei richiami distinti non distinguerebbero niente.\n",
+      "Palermo (bordo viola) ha il richiamo suo: non è un vicino ma il termine di paragone. Gli estremi regionali si leggono agli estremi dell'istogramma.\n",
+      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mappa_occupazione_femminile.csv, genere_mappa_2011_2024.csv, genere_distribuzione_390.csv"),
     theme = tema_figura()
   )
 
 # Più alta dell'originale: coord_equal vincola la carta dall'altezza, quindi l'altezza
 # del pannello è ciò che decide quanto la Sicilia riempie i 26 cm di larghezza.
-salva(figura, "fig04_mappa_sicilia", larghezza = 26, altezza = 33)
+salva(figura, "fig04_mappa_sicilia", larghezza = 26, altezza = 35)

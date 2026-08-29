@@ -1,0 +1,37 @@
+scheda,claim,valore,unita,fonte,cautela
+1. profilo,residenti 15-24 a Bagheria (2024),5904.0,persone,edu_youth_states_2018_2024.csv,
+1. profilo,"fuori da lavoro e studio, 15-24",26.910599403471288,%,edu_youth_states_2018_2024.csv,"proxy 15-24, non e' il NEET 15-29 ISTAT"
+1. profilo,"di chi e' fuori, quota che non cerca",70.57981272484703,%,edu_youth_states_2018_2024.csv,
+1. profilo,"inattivi non studenti, in persone",1121.3733270906107,persone,edu_youth_states_2018_2024.csv,stima dalla ricostruzione della tavola 15-24
+1. profilo,"gap occupazionale 15-24 vs Sicilia, 2018 e 2024",-3.1 / -3.1,p.p.,edu_youth_states_2018_2024.csv,rottura di misura 2019-2021 sulle componenti
+1. profilo,NEET 15-29 al 2011 (8milaCensus L4),40.1,%,edu_historical_benchmarks_2011.csv,fascia 15-29 e definizione 2011: MAI in serie col proxy 15-24
+1. profilo,"percentile siciliano del NEET, 1991 -> 2011",17 -> 88,percentile,edu_historical_bagheria.csv,"390 comuni, alto = sfavorevole"
+1. profilo,"popolazione 15-34, 2021 -> 2024",12174 -> 11861,persone,edu_youth_population_15_34.csv,"saldo netto: non misura l'emigrazione, non ha destinazione"
+1. profilo,stranieri sul 15-34,1.6440435039204115,%,genere_stranieri.csv,
+2. forbice,"almeno diploma 9-24, vantaggio femminile",4.2,p.p.,genere_quadro_sintesi.csv,"fascia 9-24 della fonte, include bambini"
+2. forbice,tasso di occupazione F 15-24,8.2,%,genere_quadro_sintesi.csv,
+2. forbice,gap occupazionale M-F 15-24 con IC 95%,8.3 [6.6; 10.0],p.p.,genere_gap_occupazione_ci.csv,Newcombe
+2. forbice,annate in cui Bagheria ha il tasso F minimo del panel,6/6,annate,genere_forbice_serie.csv,
+2. forbice,su 1.000 ragazze: diplomate / occupate,510 / 82,per mille,genere_per_1000.csv,"stessa base, NON un funnel: l'incrocio individuale non esiste"
+2. forbice,su 1.000 ragazzi: diplomati / occupati,462 / 165,per mille,genere_per_1000.csv,
+2. forbice,casalinghe 15-24 (F) contro casalinghi (M),387 / 50,persone,genere_composizione_stato_dettaglio.csv,
+2. forbice,quota delle casalinghe che NON e' gia' coniugata,89.40020682523267,%,genere_stato_civile.csv + genere_composizione_stato_dettaglio.csv,bound inferiore: fonti e date di riferimento diverse
+2. forbice,"posizione fra i 10 comuni ugualmente scolarizzati (occupazione F 15+, 2011)",1/10 sotto Bagheria,rango,genere_posizionamento.csv,"indicatore 15+, non giovanile"
+3. pendolarismo,"di chi esce per studio (2011), quota diretta a Palermo",91.0902696365768,%,mob_sintesi.csv / mob_flussi_bagheria.csv,93o percentile dei 381 non capoluogo
+3. pendolarismo,"di chi esce per lavoro (2021), quota diretta a Palermo",65.07903494176372,%,mob_sintesi.csv,definizione 2021 diversa dal 2011: non e' una serie
+3. pendolarismo,"divario F-M sull'uscire per studio, 2011",2.621171977168105,p.p.,mob_ribaltamento_territori.csv,"conteggio esaustivo, nessuna eta' nella fonte"
+3. pendolarismo,"divario F-M sull'uscire per lavoro, 2011",-12.05183695732424,p.p.,mob_ribaltamento_territori.csv,15o percentile dei 390 comuni
+3. pendolarismo,ribaltamento studio->lavoro,14.673008934492346,p.p.,mob_ribaltamento_territori.csv,"Sicilia 6,0 - il salto e' 2,5 volte il regionale"
+3. pendolarismo,"quota treno fra chi esce, donne / uomini",31.5 / 16.4,%,mob_mezzo_genere.csv,stima campionaria calibrata sui margini esatti
+3. pendolarismo,percentile siciliano di Bagheria per uso del treno,97.6923076923077,percentile,mob_treno_390.csv,il treno non e' sottoutilizzato
+3. pendolarismo,"Spearman treno x divario di genere sul lavoro, 390 comuni",rho=0.06 p=0.27,-,mob_treno_390.csv + mob_ribaltamento_390.csv,RISULTATO NEGATIVO: l'offerta di trasporto non spiega il divario
+3. pendolarismo,residuo di Bagheria a parita' di taglia e distanza,-1.8848821696426867,p.p.,mob_taglia_distanza.csv,«Bagheria si muove poco» non regge al controllo
+3. pendolarismo,donne in piu' fuori comune col divario medio siciliano,279.0116187990033,persone,mob_sintesi.csv,bersaglio del KPI; parita' piena = 449
+4. Ponte 19,"platea femminile 15-24, 2024 -> 2029 -> 2034",2882 -> 2651 -> 2435,persone,genere_platea.csv,"conteggio di chi e' gia' nato e residente, non una proiezione"
+4. Ponte 19,variazione della platea F al 2034,-15.5,%,genere_platea.csv,"sui maschi e' -5,8%: l'asimmetria e' locale"
+4. Ponte 19,"KPI lordo, attrito e netto al 2029",40.4 / -22.2 / 18.2,occupate,genere_kpi_netto.csv,al tasso obiettivo di Palermo
+4. Ponte 19,KPI netto al 2034,-2.5,occupate,genere_kpi_netto.csv,"DIVERSO dallo scenario «non si fa niente» (-19/-37, genere_tetto_platea.csv)"
+4. Ponte 19,"scenario «non si fa niente», 2029 / 2034",-18.9 / -36.6,occupate,genere_tetto_platea.csv,tasso 2024 fermo
+4. Ponte 19,MDE annuale contro delta da rilevare,2.14 vs 1.4,p.p.,genere_mde.csv,la lettura annuale NON e' ammessa sui KPI primari
+4. Ponte 19,"inattivi non studenti 15-24, F / M",573 / 549,persone,genere_composizione_stato_dettaglio.csv,51% F: il gruppo non e' femminile
+4. Ponte 19,pendenza del tasso F 2018-2024 e test di pre-trend vs Palermo,0.65 pp/anno; p=0.29,-,genere_pretrend.csv,"prerequisito del controfattuale, testato non assunto"

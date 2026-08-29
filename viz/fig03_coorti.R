@@ -23,6 +23,26 @@ ritenzione_F <- function(territorio) {
   dati$rit_F[dati$nome_territorio == territorio & dati$coorte == COORTE_CHIAVE]
 }
 
+# I numeri sui punti: senza, i pallini dicono l'ordine e non il valore, e la scala è
+# talmente stretta (96-105) che a occhio due righe diverse sembrano uguali. L'etichetta va
+# al lato ESTERNO del segmento - il valore basso a sinistra, l'alto a destra - così le due
+# non si toccano mai, nemmeno dove i punti coincidono (Sicilia, 25-29): lì il pareggio si
+# vede perché i due numeri stampati sono identici, che è più chiaro dell'anello.
+# `ties.method = "first"` è il rompi-parità: a valori uguali la F (prima riga del pivot)
+# va a sinistra e la M a destra, sempre nello stesso verso.
+# Testo in inchiostro e non nel colore del genere: il rosa a corpo 2,9 non regge i 4,5:1
+# sul bianco (vedi la nota sul footer in theme.R). A dire il genere ci pensa il pallino
+# che l'etichetta tocca.
+STACCO <- 0.22  # in unità d'asse: quanto l'etichetta sta lontano dal centro del punto
+
+etichette <- dati |>
+  pivot_longer(c(rit_F, rit_M), names_prefix = "rit_", names_to = "genere",
+               values_to = "valore") |>
+  mutate(destra = rank(valore, ties.method = "first") == 2,
+         .by = c(nome_territorio, coorte)) |>
+  mutate(x_testo = valore + if_else(destra, STACCO, -STACCO),
+         allineamento = if_else(destra, 0, 1))
+
 figura <- ggplot(dati, aes(y = nome_territorio)) +
   geom_vline(xintercept = 100, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
   geom_segment(aes(x = rit_F, xend = rit_M, yend = nome_territorio),
@@ -31,9 +51,16 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
   # invece di un punto solo, che sembrerebbe un dato mancante.
   geom_point(aes(x = rit_F, colour = "F"), size = 4.2) +
   geom_point(aes(x = rit_M, colour = "M"), size = 2.8) +
+  geom_text(data = etichette,
+            aes(x = x_testo, hjust = allineamento,
+                label = virgola(valore, 1, taglia_zero = FALSE)),
+            size = 2.9, fontface = "bold", colour = "grey25") +
   facet_wrap(~coorte, ncol = 1) +
   scale_colour_manual(values = COLORI_GENERE, labels = ETICHETTE_GENERE) +
-  scale_x_continuous(labels = function(x) virgola(x, 1, "%")) +
+  # L'espansione fa spazio alle etichette agli estremi: senza, il 104,7 dell'Italia e il
+  # 96,3 di Bagheria finiscono tagliati dal bordo del pannello.
+  scale_x_continuous(labels = function(x) virgola(x, 1, "%"),
+                     expand = expansion(mult = 0.09)) +
   labs(
     title = "I ragazzi se ne vanno presto, le ragazze dopo i 25 anni",
     subtitle = paste("Quota della coorte ancora residente dopo tre anni (chi aveva 15-19 anni nel 2021 ne ha 18-22 nel 2024).",
@@ -47,7 +74,8 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
     x = "residenti nel 2024 in % della coorte 2021", y = NULL,
     caption = paste("Fonte: ISTAT, Censimento permanente della popolazione - età singole, 2021 e 2024.",
                     "\nMisura netta su tre anni: comprende chi arriva, non distingue le destinazioni e include l'aggiustamento",
-                    "post-censuario delle stime.\nSi leggono i pattern rispetto al riferimento nazionale, non i decimali.",
+                    "post-censuario delle stime.\nSi leggono i pattern rispetto al riferimento nazionale, non i decimali:",
+                    "\ni valori stampati a lato di ogni punto sono la stessa quota in % della coorte 2021.",
                     "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: coorti sommate prima del rapporto, non media dei cinque rapporti.",
                     "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_coorti.csv, genere_coorti_vicini.csv")
   )

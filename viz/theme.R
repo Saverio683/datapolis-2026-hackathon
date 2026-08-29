@@ -25,6 +25,13 @@ FAMIGLIA <- tryCatch(
   error = function(e) ""
 )
 
+#' Interi all'italiana: separatore di migliaia, e decimal.mark esplicito perché
+#' altrimenti format() avverte che big.mark e decimal.mark coincidono.
+#' `scientific = FALSE` non è pignoleria: senza, format(500) dà «5e+02» — la notazione
+#' scientifica scatta quando è più corta, e le etichette tonde sono proprio quelle a rischio.
+migliaia <- function(x) format(x, big.mark = ".", decimal.mark = ",", trim = TRUE,
+                              scientific = FALSE)
+
 #' Numeri all'italiana nelle etichette: virgola decimale, zero finale opzionale.
 #' virgola(97.5, 1, "%") -> "97,5%"   virgola(100, 1, "%") -> "100%"
 #' virgola(2.01, 2, "×", taglia_zero = FALSE) -> "2,01×"
@@ -92,19 +99,73 @@ frase_annate <- function(k, n, frase) {
   else paste0("Bagheria ha ", frase, " in ", k, " annate su ", n)
 }
 
-#' La banda del 2020 mancante nelle serie 2018-2024 (fig01, fig05): la linea interrotta
-#' dice che manca qualcosa ma non cosa, e letta di corsa passa per una scelta di
-#' impaginazione. La banda grigia occupa lo spazio del dato assente invece di lasciarlo
-#' bianco — stessa soluzione dello stacco fra le epoche in fig10. `y` è dove sta la
-#' scritta, perché ogni pannello ha la sua scala; il testo è verticale (orizzontale
-#' sarebbe più largo della banda) e corto: il dettaglio («manca alla fonte sulla classe
-#' 15-24») sta in caption. Va messa come primo layer, altrimenti copre bande e linee.
-buco_2020 <- function(y) {
+#' La striscia del dato che manca: occupa lo spazio del buco invece di lasciarlo bianco,
+#' perché la linea interrotta dice che manca qualcosa ma non cosa, e letta di corsa passa
+#' per una scelta di impaginazione.
+#'
+#' A essere stretta è la COLONNA VUOTA, non il rettangolo: è l'asse a comprimersi dove il
+#' dato manca (`asse_2020()` qui sotto, `asse()` in fig10), e la striscia riempie quel
+#' vuoto per intero meno un margine per lato, così i suoi bordi non combaciano con le
+#' annate ai lati. Lasciare largo il vuoto e stretto il rettangolo dice la stessa cosa in
+#' peggio: il bianco attorno resta a suggerire un'annata misurata e vuota, che non c'è.
+#' `y` è dove sta la scritta, perché ogni pannello ha la sua scala; il testo è verticale
+#' (orizzontale sarebbe più largo della striscia) e corto: il dettaglio sta in caption.
+#'
+#' Va messa come ULTIMO layer, e la ragione è cambiata: prima stava per prima perché le
+#' serie attraversavano il buco e la striscia le avrebbe coperte. Adesso non lo attraversa
+#' nessuna serie — l'asse è compresso, il valore del 2020 è mancante e `buco_2020()` si
+#' rifiuta di disegnare la striscia se non è vero — ma ci passavano ancora le righe di
+#' riferimento (la parità in fig01, la mediana regionale in fig10) e le linee della
+#' griglia, e una riga tirata dritta sopra un buco dice che lì qualcosa c'è.
+#' Da ultima, la striscia le taglia tutte: il blocco è opaco, e sopra non passa niente.
+VUOTO <- 0.62          # unità d'asse fra l'ultima annata prima del buco e la prima dopo
+MARGINE_VUOTO <- 0.09  # di quanto il rettangolo resta dentro il vuoto, per lato
+
+striscia_mancante <- function(da, a, y, etichetta) {
   list(
-    annotate("rect", xmin = 2019.35, xmax = 2020.65, ymin = -Inf, ymax = Inf, fill = "grey95"),
-    annotate("text", x = 2020, y = y, size = 2.7, colour = "grey45", angle = 90,
-             label = "2020 non rilevato")
+    annotate("rect", xmin = da + MARGINE_VUOTO, xmax = a - MARGINE_VUOTO,
+             ymin = -Inf, ymax = Inf, fill = "grey93"),
+    annotate("text", x = (da + a) / 2, y = y, size = 2.3, colour = "grey45", angle = 90,
+             label = etichetta)
   )
+}
+
+#' Posizione sull'asse delle serie 2018-2024, dove il 2020 manca alla fonte. Le annate dal
+#' 2021 scalano indietro di un anno, così fra il 2019 e il 2021 resta solo `VUOTO`: la
+#' colonna stretta che la striscia riempie, invece di un'annata intera di bianco.
+#' Il 2020 finisce a metà del vuoto e non fuori scala: le serie che lo tengono come riga a
+#' valore mancante (fig01, fig05b) hanno bisogno che quel punto esista per interrompere la
+#' linea lì in mezzo — con una x mancante la riga sparirebbe e il tracciato si richiuderebbe
+#' sopra il buco, che è esattamente ciò che la striscia dice non essere successo.
+#' Le pendenze dentro ciascun tratto restano quelle vere; sopra il vuoto non passa nessuna
+#' linea, quindi non c'è nessuna pendenza da falsare.
+asse_2020 <- function(anno) {
+  ifelse(anno <= 2019, anno - 2018,
+         ifelse(anno >= 2021, anno - 2020 + VUOTO, 1 + VUOTO / 2))
+}
+
+ANNI_2020 <- c(2018, 2019, 2021, 2022, 2023, 2024)
+
+#' L'asse x delle serie 2018-2024: etichette gli anni, posizioni compresse sul buco.
+scala_2020 <- function(...) {
+  scale_x_continuous(breaks = asse_2020(ANNI_2020), labels = ANNI_2020, ...)
+}
+
+#' Il 2020 che manca alla fonte nelle serie 2018-2024 (fig01, fig05b, edu_fig06).
+#' `anno` e `valore` sono le due colonne che la figura disegna, e servono al controllo:
+#' la serie deve avere la riga vuota del 2020 (`complete(chiave, anno = ...)` a monte).
+#' Senza quella riga la linea unisce 2019 e 2021 passando SOTTO il rettangolo, che è
+#' opaco e la nasconde: la figura sembra a posto e non lo è. È la ragione del controllo —
+#' questo errore non si vede guardando il PNG, si vede solo qui. Era il caso di edu_fig06.
+#' ponytail: verifica che la riga vuota ci sia, non che ci sia per ogni serie; con
+#' `complete()` o ci sono tutte o nessuna. Se una figura spezzerà a mano, passare al
+#' controllo per gruppo.
+#' fig10 non passa di qui: là lo stacco separa due rilevazioni e a tenere distinte le
+#' serie è `group = interaction(..., epoca)`, non una riga mancante.
+buco_2020 <- function(y, anno, valore) {
+  stopifnot("manca la riga vuota del 2020: la linea passerebbe sotto la striscia" =
+              any(anno == 2020 & is.na(valore)))
+  striscia_mancante(asse_2020(2019), asse_2020(2021), y, "2020 non rilevato")
 }
 
 # Tre livelli tipografici, una sola famiglia. La gerarchia la fanno corpo, peso e colore:
@@ -132,7 +193,15 @@ tema_datapolis <- function(base_size = 12) {
       panel.grid.minor = element_blank(),
       panel.grid.major = element_line(colour = "grey92", linewidth = 0.3),
       strip.text = element_text(face = "bold", hjust = 0),
+      # La legenda sta SEMPRE fra la didascalia e il grafico: "top" la mette sotto titolo
+      # e sottotitolo e sopra il pannello, mai in fondo alla figura, dove si legge solo
+      # dopo aver già provato a decifrare i colori da soli.
+      # `legend.location = "plot"` la centra sulla larghezza della figura invece che su
+      # quella del pannello: col default le etichette dell'asse y spostano il pannello a
+      # destra e la legenda le segue, e in fig03 e fig12 si vedeva scentrata.
       legend.position = "top",
+      legend.location = "plot",
+      legend.justification = "center",
       legend.title = element_blank(),
       legend.key.height = unit(0.8, "lines"),
       plot.margin = margin(12, 16, 10, 12)
@@ -158,6 +227,49 @@ theme_set(tema_datapolis())
 # geom_text/geom_label non ereditano la famiglia dal tema: va fissata sui default.
 update_geom_defaults("text", list(family = FAMIGLIA))
 update_geom_defaults("label", list(family = FAMIGLIA))
+
+#' Scosta verticalmente le etichette di fine linea quel tanto che basta a non
+#' sovrapporsi. Serve quando due serie arrivano quasi allo stesso valore — ed è proprio
+#' il caso interessante: in edu-08 Bagheria e la Sicilia finiscono a 0,02 punti l'una
+#' dall'altra, che È il finding, e le due scritte finivano una sopra l'altra rendendo
+#' illeggibile la cosa che la figura vuole mostrare.
+#' Lo scostamento tocca SOLO il testo: i punti restano sul valore vero, e ogni figura che
+#' la usa lo dichiara in caption. `gap` è nelle unità dell'asse y di quella figura.
+scosta_etichette <- function(y, gap) {
+  ordine <- order(y)
+  scostato <- y[ordine]
+  for (i in seq_along(scostato)[-1]) {
+    scostato[i] <- max(scostato[i], scostato[i - 1] + gap)
+  }
+  scostato[order(ordine)]
+}
+
+#' Manda a capo un blocco di testo sulla larghezza della figura. Titoli, sottotitoli e
+#' caption di questo repo sono lunghi — provenienza, fasce, cautele — e una riga che
+#' supera la larghezza del PNG viene tagliata dal bordo senza che nulla lo segnali: il
+#' testo sparisce e la figura sembra a posto. Qui ogni riga logica (separata da "\n" nel
+#' testo di partenza) viene rimandata a capo sul budget di caratteri che entra davvero
+#' nella larghezza dichiarata; le righe già corte restano dove sono, quindi gli "a capo"
+#' scritti a mano per il ritmo del testo sopravvivono.
+#' `larghezza` è la STESSA che si passa a salva(): tenerle legate è ciò che impedisce di
+#' rimpicciolire una figura e scoprire il taglio solo guardando il PNG.
+#' I due budget vengono da una misura sui rispettivi corpi con Lato: il sottotitolo sta a
+#' rel 0,92 su base 12, la caption a rel 0,72, quindi nella stessa larghezza ci stanno
+#' meno caratteri di sottotitolo che di caption.
+#' ponytail: è una stima in caratteri, non una misura del testo renderizzato; se una
+#' figura userà un corpo diverso, passare da strwrap a strwidth() su un device aperto.
+CARATTERI_PER_CM <- c(sottotitolo = 5.5, didascalia = 6.6)
+
+a_capo <- function(testo, larghezza, corpo) {
+  budget <- floor(CARATTERI_PER_CM[[corpo]] * larghezza)
+  righe <- strsplit(testo, "\n", fixed = TRUE)[[1]]
+  paste(vapply(righe, function(r) paste(strwrap(r, width = budget), collapse = "\n"),
+               character(1), USE.NAMES = FALSE),
+        collapse = "\n")
+}
+
+sommario <- function(testo, larghezza) a_capo(testo, larghezza, "sottotitolo")
+didascalia <- function(testo, larghezza) a_capo(testo, larghezza, "didascalia")
 
 #' Esporta la figura in PNG 300dpi e SVG, come richiesto dalle convenzioni del repo.
 #' svglite/ragg non compilano su questa macchina (mancano gli header di sistema):

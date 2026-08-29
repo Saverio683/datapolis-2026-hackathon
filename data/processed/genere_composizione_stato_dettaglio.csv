@@ -1,433 +1,433 @@
-territorio,nome_territorio,anno,genere,stato,quota
-082006,Bagheria,2018,F,occupati,4.7
-082006,Bagheria,2018,M,occupati,11.5
-082006,Bagheria,2018,T,occupati,8.2
-082006,Bagheria,2019,F,occupati,5.2
-082006,Bagheria,2019,M,occupati,11.8
-082006,Bagheria,2019,T,occupati,8.6
-082006,Bagheria,2021,F,occupati,6.2
-082006,Bagheria,2021,M,occupati,13.8
-082006,Bagheria,2021,T,occupati,10.1
-082006,Bagheria,2022,F,occupati,7.7
-082006,Bagheria,2022,M,occupati,15.4
-082006,Bagheria,2022,T,occupati,11.7
-082006,Bagheria,2023,F,occupati,8.0
-082006,Bagheria,2023,M,occupati,15.2
-082006,Bagheria,2023,T,occupati,11.7
-082006,Bagheria,2024,F,occupati,8.2
-082006,Bagheria,2024,M,occupati,16.5
-082006,Bagheria,2024,T,occupati,12.4
-082053,Palermo,2018,F,occupati,6.3
-082053,Palermo,2018,M,occupati,12.0
-082053,Palermo,2018,T,occupati,9.3
-082053,Palermo,2019,F,occupati,6.9
-082053,Palermo,2019,M,occupati,12.1
-082053,Palermo,2019,T,occupati,9.6
-082053,Palermo,2021,F,occupati,7.5
-082053,Palermo,2021,M,occupati,13.9
-082053,Palermo,2021,T,occupati,10.8
-082053,Palermo,2022,F,occupati,8.6
-082053,Palermo,2022,M,occupati,15.3
-082053,Palermo,2022,T,occupati,12.0
-082053,Palermo,2023,F,occupati,9.2
-082053,Palermo,2023,M,occupati,15.5
-082053,Palermo,2023,T,occupati,12.4
-082053,Palermo,2024,F,occupati,9.6
-082053,Palermo,2024,M,occupati,16.5
-082053,Palermo,2024,T,occupati,13.2
-IT,Italia,2018,F,occupati,14.1
-IT,Italia,2018,M,occupati,22.3
-IT,Italia,2018,T,occupati,18.4
-IT,Italia,2019,F,occupati,14.5
-IT,Italia,2019,M,occupati,23.0
-IT,Italia,2019,T,occupati,18.9
-IT,Italia,2021,F,occupati,15.0
-IT,Italia,2021,M,occupati,24.8
-IT,Italia,2021,T,occupati,20.1
-IT,Italia,2022,F,occupati,16.4
-IT,Italia,2022,M,occupati,26.1
-IT,Italia,2022,T,occupati,21.5
-IT,Italia,2023,F,occupati,16.9
-IT,Italia,2023,M,occupati,26.4
-IT,Italia,2023,T,occupati,21.9
-IT,Italia,2024,F,occupati,17.3
-IT,Italia,2024,M,occupati,26.9
-IT,Italia,2024,T,occupati,22.3
-ITG1,Sicilia,2018,F,occupati,7.5
-ITG1,Sicilia,2018,M,occupati,14.8
-ITG1,Sicilia,2018,T,occupati,11.3
-ITG1,Sicilia,2019,F,occupati,8.0
-ITG1,Sicilia,2019,M,occupati,15.4
-ITG1,Sicilia,2019,T,occupati,11.8
-ITG1,Sicilia,2021,F,occupati,8.4
-ITG1,Sicilia,2021,M,occupati,17.2
-ITG1,Sicilia,2021,T,occupati,13.0
-ITG1,Sicilia,2022,F,occupati,9.3
-ITG1,Sicilia,2022,M,occupati,18.6
-ITG1,Sicilia,2022,T,occupati,14.2
-ITG1,Sicilia,2023,F,occupati,9.9
-ITG1,Sicilia,2023,M,occupati,19.3
-ITG1,Sicilia,2023,T,occupati,14.8
-ITG1,Sicilia,2024,F,occupati,10.4
-ITG1,Sicilia,2024,M,occupati,20.3
-ITG1,Sicilia,2024,T,occupati,15.6
-082006,Bagheria,2018,F,in cerca,17.6
-082006,Bagheria,2018,M,in cerca,18.6
-082006,Bagheria,2018,T,in cerca,18.1
-082006,Bagheria,2019,F,in cerca,17.1
-082006,Bagheria,2019,M,in cerca,19.3
-082006,Bagheria,2019,T,in cerca,18.2
-082006,Bagheria,2021,F,in cerca,9.0
-082006,Bagheria,2021,M,in cerca,12.2
-082006,Bagheria,2021,T,in cerca,10.6
-082006,Bagheria,2022,F,in cerca,9.1
-082006,Bagheria,2022,M,in cerca,11.0
-082006,Bagheria,2022,T,in cerca,10.1
-082006,Bagheria,2023,F,in cerca,10.3
-082006,Bagheria,2023,M,in cerca,12.5
-082006,Bagheria,2023,T,in cerca,11.4
-082006,Bagheria,2024,F,in cerca,6.9
-082006,Bagheria,2024,M,in cerca,8.9
-082006,Bagheria,2024,T,in cerca,7.9
-082053,Palermo,2018,F,in cerca,18.8
-082053,Palermo,2018,M,in cerca,20.4
-082053,Palermo,2018,T,in cerca,19.6
-082053,Palermo,2019,F,in cerca,17.7
-082053,Palermo,2019,M,in cerca,20.0
-082053,Palermo,2019,T,in cerca,18.9
-082053,Palermo,2021,F,in cerca,8.7
-082053,Palermo,2021,M,in cerca,11.8
-082053,Palermo,2021,T,in cerca,10.3
-082053,Palermo,2022,F,in cerca,9.0
-082053,Palermo,2022,M,in cerca,11.1
-082053,Palermo,2022,T,in cerca,10.0
-082053,Palermo,2023,F,in cerca,8.4
-082053,Palermo,2023,M,in cerca,10.7
-082053,Palermo,2023,T,in cerca,9.6
-082053,Palermo,2024,F,in cerca,7.2
-082053,Palermo,2024,M,in cerca,9.3
-082053,Palermo,2024,T,in cerca,8.3
-IT,Italia,2018,F,in cerca,10.9
-IT,Italia,2018,M,in cerca,11.3
-IT,Italia,2018,T,in cerca,11.1
-IT,Italia,2019,F,in cerca,9.7
-IT,Italia,2019,M,in cerca,10.3
-IT,Italia,2019,T,in cerca,10.0
-IT,Italia,2021,F,in cerca,7.0
-IT,Italia,2021,M,in cerca,7.4
-IT,Italia,2021,T,in cerca,7.2
-IT,Italia,2022,F,in cerca,6.3
-IT,Italia,2022,M,in cerca,6.5
-IT,Italia,2022,T,in cerca,6.4
-IT,Italia,2023,F,in cerca,6.1
-IT,Italia,2023,M,in cerca,6.3
-IT,Italia,2023,T,in cerca,6.2
-IT,Italia,2024,F,in cerca,5.9
-IT,Italia,2024,M,in cerca,6.4
-IT,Italia,2024,T,in cerca,6.2
-ITG1,Sicilia,2018,F,in cerca,15.9
-ITG1,Sicilia,2018,M,in cerca,17.1
-ITG1,Sicilia,2018,T,in cerca,16.5
-ITG1,Sicilia,2019,F,in cerca,15.3
-ITG1,Sicilia,2019,M,in cerca,17.0
-ITG1,Sicilia,2019,T,in cerca,16.2
-ITG1,Sicilia,2021,F,in cerca,7.9
-ITG1,Sicilia,2021,M,in cerca,10.2
-ITG1,Sicilia,2021,T,in cerca,9.1
-ITG1,Sicilia,2022,F,in cerca,8.3
-ITG1,Sicilia,2022,M,in cerca,9.8
-ITG1,Sicilia,2022,T,in cerca,9.1
-ITG1,Sicilia,2023,F,in cerca,7.9
-ITG1,Sicilia,2023,M,in cerca,9.4
-ITG1,Sicilia,2023,T,in cerca,8.7
-ITG1,Sicilia,2024,F,in cerca,6.6
-ITG1,Sicilia,2024,M,in cerca,8.3
-ITG1,Sicilia,2024,T,in cerca,7.5
-082006,Bagheria,2018,F,studenti,57.4
-082006,Bagheria,2018,M,studenti,51.0
-082006,Bagheria,2018,T,studenti,54.1
-082006,Bagheria,2019,F,studenti,62.1
-082006,Bagheria,2019,M,studenti,55.4
-082006,Bagheria,2019,T,studenti,58.7
-082006,Bagheria,2021,F,studenti,63.9
-082006,Bagheria,2021,M,studenti,56.5
-082006,Bagheria,2021,T,studenti,60.1
-082006,Bagheria,2022,F,studenti,64.5
-082006,Bagheria,2022,M,studenti,57.8
-082006,Bagheria,2022,T,studenti,61.1
-082006,Bagheria,2023,F,studenti,60.9
-082006,Bagheria,2023,M,studenti,54.4
-082006,Bagheria,2023,T,studenti,57.6
-082006,Bagheria,2024,F,studenti,65.1
-082006,Bagheria,2024,M,studenti,56.4
-082006,Bagheria,2024,T,studenti,60.7
-082053,Palermo,2018,F,studenti,59.6
-082053,Palermo,2018,M,studenti,54.6
-082053,Palermo,2018,T,studenti,57.0
-082053,Palermo,2019,F,studenti,61.8
-082053,Palermo,2019,M,studenti,56.6
-082053,Palermo,2019,T,studenti,59.1
-082053,Palermo,2021,F,studenti,66.6
-082053,Palermo,2021,M,studenti,60.6
-082053,Palermo,2021,T,studenti,63.5
-082053,Palermo,2022,F,studenti,67.3
-082053,Palermo,2022,M,studenti,61.3
-082053,Palermo,2022,T,studenti,64.2
-082053,Palermo,2023,F,studenti,67.1
-082053,Palermo,2023,M,studenti,61.0
-082053,Palermo,2023,T,studenti,63.9
-082053,Palermo,2024,F,studenti,66.8
-082053,Palermo,2024,M,studenti,59.8
-082053,Palermo,2024,T,studenti,63.2
-IT,Italia,2018,F,studenti,64.8
-IT,Italia,2018,M,studenti,56.9
-IT,Italia,2018,T,studenti,60.7
-IT,Italia,2019,F,studenti,66.8
-IT,Italia,2019,M,studenti,58.1
-IT,Italia,2019,T,studenti,62.3
-IT,Italia,2021,F,studenti,67.4
-IT,Italia,2021,M,studenti,58.3
-IT,Italia,2021,T,studenti,62.7
-IT,Italia,2022,F,studenti,68.5
-IT,Italia,2022,M,studenti,59.2
-IT,Italia,2022,T,studenti,63.6
-IT,Italia,2023,F,studenti,68.4
-IT,Italia,2023,M,studenti,58.8
-IT,Italia,2023,T,studenti,63.4
-IT,Italia,2024,F,studenti,67.8
-IT,Italia,2024,M,studenti,57.4
-IT,Italia,2024,T,studenti,62.3
-ITG1,Sicilia,2018,F,studenti,60.1
-ITG1,Sicilia,2018,M,studenti,52.3
-ITG1,Sicilia,2018,T,studenti,56.0
-ITG1,Sicilia,2019,F,studenti,63.0
-ITG1,Sicilia,2019,M,studenti,54.9
-ITG1,Sicilia,2019,T,studenti,58.8
-ITG1,Sicilia,2021,F,studenti,66.0
-ITG1,Sicilia,2021,M,studenti,57.2
-ITG1,Sicilia,2021,T,studenti,61.4
-ITG1,Sicilia,2022,F,studenti,67.1
-ITG1,Sicilia,2022,M,studenti,58.4
-ITG1,Sicilia,2022,T,studenti,62.6
-ITG1,Sicilia,2023,F,studenti,67.6
-ITG1,Sicilia,2023,M,studenti,58.6
-ITG1,Sicilia,2023,T,studenti,62.9
-ITG1,Sicilia,2024,F,studenti,67.8
-ITG1,Sicilia,2024,M,studenti,57.0
-ITG1,Sicilia,2024,T,studenti,62.2
-082006,Bagheria,2018,F,casalinghe/i,12.4
-082006,Bagheria,2018,M,casalinghe/i,0.8
-082006,Bagheria,2018,T,casalinghe/i,6.4
-082006,Bagheria,2019,F,casalinghe/i,10.9
-082006,Bagheria,2019,M,casalinghe/i,0.9
-082006,Bagheria,2019,T,casalinghe/i,5.7
-082006,Bagheria,2021,F,casalinghe/i,14.8
-082006,Bagheria,2021,M,casalinghe/i,1.5
-082006,Bagheria,2021,T,casalinghe/i,8.0
-082006,Bagheria,2022,F,casalinghe/i,12.8
-082006,Bagheria,2022,M,casalinghe/i,1.4
-082006,Bagheria,2022,T,casalinghe/i,6.9
-082006,Bagheria,2023,F,casalinghe/i,14.6
-082006,Bagheria,2023,M,casalinghe/i,1.8
-082006,Bagheria,2023,T,casalinghe/i,8.1
-082006,Bagheria,2024,F,casalinghe/i,13.4
-082006,Bagheria,2024,M,casalinghe/i,1.7
-082006,Bagheria,2024,T,casalinghe/i,7.4
-082053,Palermo,2018,F,casalinghe/i,9.9
-082053,Palermo,2018,M,casalinghe/i,0.7
-082053,Palermo,2018,T,casalinghe/i,5.1
-082053,Palermo,2019,F,casalinghe/i,9.7
-082053,Palermo,2019,M,casalinghe/i,0.8
-082053,Palermo,2019,T,casalinghe/i,5.1
-082053,Palermo,2021,F,casalinghe/i,12.5
-082053,Palermo,2021,M,casalinghe/i,1.4
-082053,Palermo,2021,T,casalinghe/i,6.8
-082053,Palermo,2022,F,casalinghe/i,10.2
-082053,Palermo,2022,M,casalinghe/i,1.1
-082053,Palermo,2022,T,casalinghe/i,5.5
-082053,Palermo,2023,F,casalinghe/i,10.9
-082053,Palermo,2023,M,casalinghe/i,1.4
-082053,Palermo,2023,T,casalinghe/i,6.0
-082053,Palermo,2024,F,casalinghe/i,11.3
-082053,Palermo,2024,M,casalinghe/i,1.4
-082053,Palermo,2024,T,casalinghe/i,6.2
-IT,Italia,2018,F,casalinghe/i,5.0
-IT,Italia,2018,M,casalinghe/i,0.3
-IT,Italia,2018,T,casalinghe/i,2.5
-IT,Italia,2019,F,casalinghe/i,4.6
-IT,Italia,2019,M,casalinghe/i,0.4
-IT,Italia,2019,T,casalinghe/i,2.4
-IT,Italia,2021,F,casalinghe/i,5.7
-IT,Italia,2021,M,casalinghe/i,0.6
-IT,Italia,2021,T,casalinghe/i,3.0
-IT,Italia,2022,F,casalinghe/i,4.6
-IT,Italia,2022,M,casalinghe/i,0.4
-IT,Italia,2022,T,casalinghe/i,2.4
-IT,Italia,2023,F,casalinghe/i,4.4
-IT,Italia,2023,M,casalinghe/i,0.5
-IT,Italia,2023,T,casalinghe/i,2.4
-IT,Italia,2024,F,casalinghe/i,4.6
-IT,Italia,2024,M,casalinghe/i,0.6
-IT,Italia,2024,T,casalinghe/i,2.5
-ITG1,Sicilia,2018,F,casalinghe/i,9.9
-ITG1,Sicilia,2018,M,casalinghe/i,0.7
-ITG1,Sicilia,2018,T,casalinghe/i,5.1
-ITG1,Sicilia,2019,F,casalinghe/i,9.1
-ITG1,Sicilia,2019,M,casalinghe/i,0.8
-ITG1,Sicilia,2019,T,casalinghe/i,4.8
-ITG1,Sicilia,2021,F,casalinghe/i,12.0
-ITG1,Sicilia,2021,M,casalinghe/i,1.4
-ITG1,Sicilia,2021,T,casalinghe/i,6.5
-ITG1,Sicilia,2022,F,casalinghe/i,10.0
-ITG1,Sicilia,2022,M,casalinghe/i,1.0
-ITG1,Sicilia,2022,T,casalinghe/i,5.3
-ITG1,Sicilia,2023,F,casalinghe/i,9.9
-ITG1,Sicilia,2023,M,casalinghe/i,1.2
-ITG1,Sicilia,2023,T,casalinghe/i,5.4
-ITG1,Sicilia,2024,F,casalinghe/i,10.1
-ITG1,Sicilia,2024,M,casalinghe/i,1.2
-ITG1,Sicilia,2024,T,casalinghe/i,5.5
-082006,Bagheria,2018,F,altra condizione,7.9
-082006,Bagheria,2018,M,altra condizione,17.9
-082006,Bagheria,2018,T,altra condizione,13.0
-082006,Bagheria,2019,F,altra condizione,4.7
-082006,Bagheria,2019,M,altra condizione,12.3
-082006,Bagheria,2019,T,altra condizione,8.6
-082006,Bagheria,2021,F,altra condizione,6.1
-082006,Bagheria,2021,M,altra condizione,15.7
-082006,Bagheria,2021,T,altra condizione,11.1
-082006,Bagheria,2022,F,altra condizione,5.8
-082006,Bagheria,2022,M,altra condizione,14.0
-082006,Bagheria,2022,T,altra condizione,10.0
-082006,Bagheria,2023,F,altra condizione,6.1
-082006,Bagheria,2023,M,altra condizione,15.8
-082006,Bagheria,2023,T,altra condizione,11.0
-082006,Bagheria,2024,F,altra condizione,6.4
-082006,Bagheria,2024,M,altra condizione,16.1
-082006,Bagheria,2024,T,altra condizione,11.3
-082053,Palermo,2018,F,altra condizione,5.3
-082053,Palermo,2018,M,altra condizione,12.2
-082053,Palermo,2018,T,altra condizione,8.8
-082053,Palermo,2019,F,altra condizione,3.8
-082053,Palermo,2019,M,altra condizione,10.2
-082053,Palermo,2019,T,altra condizione,7.1
-082053,Palermo,2021,F,altra condizione,4.6
-082053,Palermo,2021,M,altra condizione,12.0
-082053,Palermo,2021,T,altra condizione,8.5
-082053,Palermo,2022,F,altra condizione,4.8
-082053,Palermo,2022,M,altra condizione,11.1
-082053,Palermo,2022,T,altra condizione,8.0
-082053,Palermo,2023,F,altra condizione,4.4
-082053,Palermo,2023,M,altra condizione,11.2
-082053,Palermo,2023,T,altra condizione,7.9
-082053,Palermo,2024,F,altra condizione,5.0
-082053,Palermo,2024,M,altra condizione,12.5
-082053,Palermo,2024,T,altra condizione,8.9
-IT,Italia,2018,F,altra condizione,5.1
-IT,Italia,2018,M,altra condizione,9.0
-IT,Italia,2018,T,altra condizione,7.2
-IT,Italia,2019,F,altra condizione,4.3
-IT,Italia,2019,M,altra condizione,8.0
-IT,Italia,2019,T,altra condizione,6.2
-IT,Italia,2021,F,altra condizione,4.9
-IT,Italia,2021,M,altra condizione,8.7
-IT,Italia,2021,T,altra condizione,6.9
-IT,Italia,2022,F,altra condizione,4.1
-IT,Italia,2022,M,altra condizione,7.5
-IT,Italia,2022,T,altra condizione,5.9
-IT,Italia,2023,F,altra condizione,4.1
-IT,Italia,2023,M,altra condizione,7.7
-IT,Italia,2023,T,altra condizione,6.0
-IT,Italia,2024,F,altra condizione,4.4
-IT,Italia,2024,M,altra condizione,8.5
-IT,Italia,2024,T,altra condizione,6.5
-ITG1,Sicilia,2018,F,altra condizione,6.5
-ITG1,Sicilia,2018,M,altra condizione,14.9
-ITG1,Sicilia,2018,T,altra condizione,10.9
-ITG1,Sicilia,2019,F,altra condizione,4.5
-ITG1,Sicilia,2019,M,altra condizione,11.7
-ITG1,Sicilia,2019,T,altra condizione,8.2
-ITG1,Sicilia,2021,F,altra condizione,5.5
-ITG1,Sicilia,2021,M,altra condizione,13.7
-ITG1,Sicilia,2021,T,altra condizione,9.8
-ITG1,Sicilia,2022,F,altra condizione,5.1
-ITG1,Sicilia,2022,M,altra condizione,11.7
-ITG1,Sicilia,2022,T,altra condizione,8.6
-ITG1,Sicilia,2023,F,altra condizione,4.5
-ITG1,Sicilia,2023,M,altra condizione,11.2
-ITG1,Sicilia,2023,T,altra condizione,8.0
-ITG1,Sicilia,2024,F,altra condizione,5.1
-ITG1,Sicilia,2024,M,altra condizione,12.7
-ITG1,Sicilia,2024,T,altra condizione,9.1
-082006,Bagheria,2018,F,pensione,0.1
-082006,Bagheria,2018,M,pensione,0.2
-082006,Bagheria,2018,T,pensione,0.1
-082006,Bagheria,2019,F,pensione,0.1
-082006,Bagheria,2019,M,pensione,0.3
-082006,Bagheria,2019,T,pensione,0.2
-082006,Bagheria,2021,F,pensione,0.1
-082006,Bagheria,2021,M,pensione,0.3
-082006,Bagheria,2021,T,pensione,0.2
-082006,Bagheria,2022,F,pensione,0.1
-082006,Bagheria,2022,M,pensione,0.3
-082006,Bagheria,2022,T,pensione,0.2
-082006,Bagheria,2023,F,pensione,0.1
-082006,Bagheria,2023,M,pensione,0.3
-082006,Bagheria,2023,T,pensione,0.2
-082006,Bagheria,2024,F,pensione,0.1
-082006,Bagheria,2024,M,pensione,0.4
-082006,Bagheria,2024,T,pensione,0.3
-082053,Palermo,2018,F,pensione,0.1
-082053,Palermo,2018,M,pensione,0.2
-082053,Palermo,2018,T,pensione,0.1
-082053,Palermo,2019,F,pensione,0.1
-082053,Palermo,2019,M,pensione,0.2
-082053,Palermo,2019,T,pensione,0.2
-082053,Palermo,2021,F,pensione,0.1
-082053,Palermo,2021,M,pensione,0.2
-082053,Palermo,2021,T,pensione,0.1
-082053,Palermo,2022,F,pensione,0.1
-082053,Palermo,2022,M,pensione,0.3
-082053,Palermo,2022,T,pensione,0.2
-082053,Palermo,2023,F,pensione,0.1
-082053,Palermo,2023,M,pensione,0.3
-082053,Palermo,2023,T,pensione,0.2
-082053,Palermo,2024,F,pensione,0.1
-082053,Palermo,2024,M,pensione,0.4
-082053,Palermo,2024,T,pensione,0.3
-IT,Italia,2018,F,pensione,0.1
-IT,Italia,2018,M,pensione,0.1
-IT,Italia,2018,T,pensione,0.1
-IT,Italia,2019,F,pensione,0.1
-IT,Italia,2019,M,pensione,0.2
-IT,Italia,2019,T,pensione,0.1
-IT,Italia,2021,F,pensione,0.1
-IT,Italia,2021,M,pensione,0.2
-IT,Italia,2021,T,pensione,0.2
-IT,Italia,2022,F,pensione,0.1
-IT,Italia,2022,M,pensione,0.3
-IT,Italia,2022,T,pensione,0.2
-IT,Italia,2023,F,pensione,0.1
-IT,Italia,2023,M,pensione,0.2
-IT,Italia,2023,T,pensione,0.2
-IT,Italia,2024,F,pensione,0.1
-IT,Italia,2024,M,pensione,0.3
-IT,Italia,2024,T,pensione,0.2
-ITG1,Sicilia,2018,F,pensione,0.1
-ITG1,Sicilia,2018,M,pensione,0.2
-ITG1,Sicilia,2018,T,pensione,0.2
-ITG1,Sicilia,2019,F,pensione,0.1
-ITG1,Sicilia,2019,M,pensione,0.3
-ITG1,Sicilia,2019,T,pensione,0.2
-ITG1,Sicilia,2021,F,pensione,0.1
-ITG1,Sicilia,2021,M,pensione,0.3
-ITG1,Sicilia,2021,T,pensione,0.2
-ITG1,Sicilia,2022,F,pensione,0.1
-ITG1,Sicilia,2022,M,pensione,0.4
-ITG1,Sicilia,2022,T,pensione,0.2
-ITG1,Sicilia,2023,F,pensione,0.1
-ITG1,Sicilia,2023,M,pensione,0.3
-ITG1,Sicilia,2023,T,pensione,0.2
-ITG1,Sicilia,2024,F,pensione,0.1
-ITG1,Sicilia,2024,M,pensione,0.5
-ITG1,Sicilia,2024,T,pensione,0.3
+territorio,nome_territorio,anno,genere,stato,quota,persone,destinazione
+082006,Bagheria,2018,F,occupati,4.7,142.0,dentro lavoro o studio
+082006,Bagheria,2018,M,occupati,11.5,370.0,dentro lavoro o studio
+082006,Bagheria,2018,T,occupati,8.2,512.0,dentro lavoro o studio
+082006,Bagheria,2019,F,occupati,5.2,154.0,dentro lavoro o studio
+082006,Bagheria,2019,M,occupati,11.8,373.0,dentro lavoro o studio
+082006,Bagheria,2019,T,occupati,8.6,527.0,dentro lavoro o studio
+082006,Bagheria,2021,F,occupati,6.2,176.0,dentro lavoro o studio
+082006,Bagheria,2021,M,occupati,13.8,419.0,dentro lavoro o studio
+082006,Bagheria,2021,T,occupati,10.1,595.0,dentro lavoro o studio
+082006,Bagheria,2022,F,occupati,7.7,219.0,dentro lavoro o studio
+082006,Bagheria,2022,M,occupati,15.4,467.0,dentro lavoro o studio
+082006,Bagheria,2022,T,occupati,11.7,686.0,dentro lavoro o studio
+082006,Bagheria,2023,F,occupati,8.0,231.0,dentro lavoro o studio
+082006,Bagheria,2023,M,occupati,15.2,455.0,dentro lavoro o studio
+082006,Bagheria,2023,T,occupati,11.7,686.0,dentro lavoro o studio
+082006,Bagheria,2024,F,occupati,8.2,236.0,dentro lavoro o studio
+082006,Bagheria,2024,M,occupati,16.5,498.0,dentro lavoro o studio
+082006,Bagheria,2024,T,occupati,12.4,734.0,dentro lavoro o studio
+082053,Palermo,2018,F,occupati,6.3,2174.0,dentro lavoro o studio
+082053,Palermo,2018,M,occupati,12.0,4391.0,dentro lavoro o studio
+082053,Palermo,2018,T,occupati,9.3,6565.0,dentro lavoro o studio
+082053,Palermo,2019,F,occupati,6.9,2342.0,dentro lavoro o studio
+082053,Palermo,2019,M,occupati,12.1,4352.0,dentro lavoro o studio
+082053,Palermo,2019,T,occupati,9.6,6694.0,dentro lavoro o studio
+082053,Palermo,2021,F,occupati,7.5,2427.0,dentro lavoro o studio
+082053,Palermo,2021,M,occupati,13.9,4772.0,dentro lavoro o studio
+082053,Palermo,2021,T,occupati,10.8,7199.0,dentro lavoro o studio
+082053,Palermo,2022,F,occupati,8.6,2801.0,dentro lavoro o studio
+082053,Palermo,2022,M,occupati,15.3,5237.0,dentro lavoro o studio
+082053,Palermo,2022,T,occupati,12.0,8038.0,dentro lavoro o studio
+082053,Palermo,2023,F,occupati,9.2,2999.0,dentro lavoro o studio
+082053,Palermo,2023,M,occupati,15.5,5329.0,dentro lavoro o studio
+082053,Palermo,2023,T,occupati,12.4,8328.0,dentro lavoro o studio
+082053,Palermo,2024,F,occupati,9.6,3133.0,dentro lavoro o studio
+082053,Palermo,2024,M,occupati,16.5,5683.0,dentro lavoro o studio
+082053,Palermo,2024,T,occupati,13.2,8816.0,dentro lavoro o studio
+IT,Italia,2018,F,occupati,14.1,392972.0,dentro lavoro o studio
+IT,Italia,2018,M,occupati,22.3,678852.0,dentro lavoro o studio
+IT,Italia,2018,T,occupati,18.4,1071824.0,dentro lavoro o studio
+IT,Italia,2019,F,occupati,14.5,404460.0,dentro lavoro o studio
+IT,Italia,2019,M,occupati,23.0,697746.0,dentro lavoro o studio
+IT,Italia,2019,T,occupati,18.9,1102206.0,dentro lavoro o studio
+IT,Italia,2021,F,occupati,15.0,416292.0,dentro lavoro o studio
+IT,Italia,2021,M,occupati,24.8,746126.0,dentro lavoro o studio
+IT,Italia,2021,T,occupati,20.1,1162418.0,dentro lavoro o studio
+IT,Italia,2022,F,occupati,16.4,458524.0,dentro lavoro o studio
+IT,Italia,2022,M,occupati,26.1,794188.0,dentro lavoro o studio
+IT,Italia,2022,T,occupati,21.5,1252712.0,dentro lavoro o studio
+IT,Italia,2023,F,occupati,16.9,475260.0,dentro lavoro o studio
+IT,Italia,2023,M,occupati,26.4,809131.0,dentro lavoro o studio
+IT,Italia,2023,T,occupati,21.9,1284391.0,dentro lavoro o studio
+IT,Italia,2024,F,occupati,17.3,487633.0,dentro lavoro o studio
+IT,Italia,2024,M,occupati,26.9,831827.0,dentro lavoro o studio
+IT,Italia,2024,T,occupati,22.3,1319460.0,dentro lavoro o studio
+ITG1,Sicilia,2018,F,occupati,7.5,19411.0,dentro lavoro o studio
+ITG1,Sicilia,2018,M,occupati,14.8,41530.0,dentro lavoro o studio
+ITG1,Sicilia,2018,T,occupati,11.3,60941.0,dentro lavoro o studio
+ITG1,Sicilia,2019,F,occupati,8.0,20244.0,dentro lavoro o studio
+ITG1,Sicilia,2019,M,occupati,15.4,42314.0,dentro lavoro o studio
+ITG1,Sicilia,2019,T,occupati,11.8,62558.0,dentro lavoro o studio
+ITG1,Sicilia,2021,F,occupati,8.4,20693.0,dentro lavoro o studio
+ITG1,Sicilia,2021,M,occupati,17.2,45806.0,dentro lavoro o studio
+ITG1,Sicilia,2021,T,occupati,13.0,66499.0,dentro lavoro o studio
+ITG1,Sicilia,2022,F,occupati,9.3,22947.0,dentro lavoro o studio
+ITG1,Sicilia,2022,M,occupati,18.6,49618.0,dentro lavoro o studio
+ITG1,Sicilia,2022,T,occupati,14.2,72565.0,dentro lavoro o studio
+ITG1,Sicilia,2023,F,occupati,9.9,24320.0,dentro lavoro o studio
+ITG1,Sicilia,2023,M,occupati,19.3,51168.0,dentro lavoro o studio
+ITG1,Sicilia,2023,T,occupati,14.8,75488.0,dentro lavoro o studio
+ITG1,Sicilia,2024,F,occupati,10.4,25326.0,dentro lavoro o studio
+ITG1,Sicilia,2024,M,occupati,20.3,53848.0,dentro lavoro o studio
+ITG1,Sicilia,2024,T,occupati,15.6,79174.0,dentro lavoro o studio
+082006,Bagheria,2018,F,in cerca,17.6,534.0,fuori ma in cerca
+082006,Bagheria,2018,M,in cerca,18.6,596.0,fuori ma in cerca
+082006,Bagheria,2018,T,in cerca,18.1,1130.0,fuori ma in cerca
+082006,Bagheria,2019,F,in cerca,17.1,509.0,fuori ma in cerca
+082006,Bagheria,2019,M,in cerca,19.3,607.0,fuori ma in cerca
+082006,Bagheria,2019,T,in cerca,18.2,1116.0,fuori ma in cerca
+082006,Bagheria,2021,F,in cerca,9.0,255.8,fuori ma in cerca
+082006,Bagheria,2021,M,in cerca,12.2,371.6,fuori ma in cerca
+082006,Bagheria,2021,T,in cerca,10.6,627.4,fuori ma in cerca
+082006,Bagheria,2022,F,in cerca,9.1,260.5,fuori ma in cerca
+082006,Bagheria,2022,M,in cerca,11.0,335.2,fuori ma in cerca
+082006,Bagheria,2022,T,in cerca,10.1,595.7,fuori ma in cerca
+082006,Bagheria,2023,F,in cerca,10.3,296.6,fuori ma in cerca
+082006,Bagheria,2023,M,in cerca,12.5,375.0,fuori ma in cerca
+082006,Bagheria,2023,T,in cerca,11.4,671.6,fuori ma in cerca
+082006,Bagheria,2024,F,in cerca,6.9,197.9,fuori ma in cerca
+082006,Bagheria,2024,M,in cerca,8.9,269.5,fuori ma in cerca
+082006,Bagheria,2024,T,in cerca,7.9,467.4,fuori ma in cerca
+082053,Palermo,2018,F,in cerca,18.8,6441.0,fuori ma in cerca
+082053,Palermo,2018,M,in cerca,20.4,7435.0,fuori ma in cerca
+082053,Palermo,2018,T,in cerca,19.6,13876.0,fuori ma in cerca
+082053,Palermo,2019,F,in cerca,17.7,5988.0,fuori ma in cerca
+082053,Palermo,2019,M,in cerca,20.0,7172.0,fuori ma in cerca
+082053,Palermo,2019,T,in cerca,18.9,13160.0,fuori ma in cerca
+082053,Palermo,2021,F,in cerca,8.7,2811.5,fuori ma in cerca
+082053,Palermo,2021,M,in cerca,11.8,4069.8,fuori ma in cerca
+082053,Palermo,2021,T,in cerca,10.3,6881.2,fuori ma in cerca
+082053,Palermo,2022,F,in cerca,9.0,2918.0,fuori ma in cerca
+082053,Palermo,2022,M,in cerca,11.1,3786.6,fuori ma in cerca
+082053,Palermo,2022,T,in cerca,10.0,6704.6,fuori ma in cerca
+082053,Palermo,2023,F,in cerca,8.4,2744.5,fuori ma in cerca
+082053,Palermo,2023,M,in cerca,10.7,3664.2,fuori ma in cerca
+082053,Palermo,2023,T,in cerca,9.6,6408.8,fuori ma in cerca
+082053,Palermo,2024,F,in cerca,7.2,2344.2,fuori ma in cerca
+082053,Palermo,2024,M,in cerca,9.3,3209.2,fuori ma in cerca
+082053,Palermo,2024,T,in cerca,8.3,5553.4,fuori ma in cerca
+IT,Italia,2018,F,in cerca,10.9,305732.0,fuori ma in cerca
+IT,Italia,2018,M,in cerca,11.3,343119.0,fuori ma in cerca
+IT,Italia,2018,T,in cerca,11.1,648851.0,fuori ma in cerca
+IT,Italia,2019,F,in cerca,9.7,270840.0,fuori ma in cerca
+IT,Italia,2019,M,in cerca,10.3,312951.0,fuori ma in cerca
+IT,Italia,2019,T,in cerca,10.0,583791.0,fuori ma in cerca
+IT,Italia,2021,F,in cerca,7.0,193252.4,fuori ma in cerca
+IT,Italia,2021,M,in cerca,7.4,222575.6,fuori ma in cerca
+IT,Italia,2021,T,in cerca,7.2,415828.0,fuori ma in cerca
+IT,Italia,2022,F,in cerca,6.3,175745.0,fuori ma in cerca
+IT,Italia,2022,M,in cerca,6.5,196861.6,fuori ma in cerca
+IT,Italia,2022,T,in cerca,6.4,372606.6,fuori ma in cerca
+IT,Italia,2023,F,in cerca,6.1,171322.9,fuori ma in cerca
+IT,Italia,2023,M,in cerca,6.3,193849.2,fuori ma in cerca
+IT,Italia,2023,T,in cerca,6.2,365172.1,fuori ma in cerca
+IT,Italia,2024,F,in cerca,5.9,166957.5,fuori ma in cerca
+IT,Italia,2024,M,in cerca,6.4,197726.8,fuori ma in cerca
+IT,Italia,2024,T,in cerca,6.2,364684.4,fuori ma in cerca
+ITG1,Sicilia,2018,F,in cerca,15.9,41101.0,fuori ma in cerca
+ITG1,Sicilia,2018,M,in cerca,17.1,47833.0,fuori ma in cerca
+ITG1,Sicilia,2018,T,in cerca,16.5,88934.0,fuori ma in cerca
+ITG1,Sicilia,2019,F,in cerca,15.3,39001.0,fuori ma in cerca
+ITG1,Sicilia,2019,M,in cerca,17.0,46651.0,fuori ma in cerca
+ITG1,Sicilia,2019,T,in cerca,16.2,85652.0,fuori ma in cerca
+ITG1,Sicilia,2021,F,in cerca,7.9,19429.6,fuori ma in cerca
+ITG1,Sicilia,2021,M,in cerca,10.2,27280.6,fuori ma in cerca
+ITG1,Sicilia,2021,T,in cerca,9.1,46710.2,fuori ma in cerca
+ITG1,Sicilia,2022,F,in cerca,8.3,20373.1,fuori ma in cerca
+ITG1,Sicilia,2022,M,in cerca,9.8,26042.8,fuori ma in cerca
+ITG1,Sicilia,2022,T,in cerca,9.1,46415.9,fuori ma in cerca
+ITG1,Sicilia,2023,F,in cerca,7.9,19382.8,fuori ma in cerca
+ITG1,Sicilia,2023,M,in cerca,9.4,25044.7,fuori ma in cerca
+ITG1,Sicilia,2023,T,in cerca,8.7,44427.5,fuori ma in cerca
+ITG1,Sicilia,2024,F,in cerca,6.6,16054.3,fuori ma in cerca
+ITG1,Sicilia,2024,M,in cerca,8.3,22056.6,fuori ma in cerca
+ITG1,Sicilia,2024,T,in cerca,7.5,38110.9,fuori ma in cerca
+082006,Bagheria,2018,F,studenti,57.4,1742.0,dentro lavoro o studio
+082006,Bagheria,2018,M,studenti,51.0,1636.0,dentro lavoro o studio
+082006,Bagheria,2018,T,studenti,54.1,3378.0,dentro lavoro o studio
+082006,Bagheria,2019,F,studenti,62.1,1853.0,dentro lavoro o studio
+082006,Bagheria,2019,M,studenti,55.4,1745.0,dentro lavoro o studio
+082006,Bagheria,2019,T,studenti,58.7,3598.0,dentro lavoro o studio
+082006,Bagheria,2021,F,studenti,63.9,1822.5,dentro lavoro o studio
+082006,Bagheria,2021,M,studenti,56.5,1716.2,dentro lavoro o studio
+082006,Bagheria,2021,T,studenti,60.1,3538.7,dentro lavoro o studio
+082006,Bagheria,2022,F,studenti,64.5,1837.4,dentro lavoro o studio
+082006,Bagheria,2022,M,studenti,57.8,1755.6,dentro lavoro o studio
+082006,Bagheria,2022,T,studenti,61.1,3593.0,dentro lavoro o studio
+082006,Bagheria,2023,F,studenti,60.9,1755.2,dentro lavoro o studio
+082006,Bagheria,2023,M,studenti,54.4,1630.4,dentro lavoro o studio
+082006,Bagheria,2023,T,studenti,57.6,3385.6,dentro lavoro o studio
+082006,Bagheria,2024,F,studenti,65.1,1875.3,dentro lavoro o studio
+082006,Bagheria,2024,M,studenti,56.4,1705.9,dentro lavoro o studio
+082006,Bagheria,2024,T,studenti,60.7,3581.2,dentro lavoro o studio
+082053,Palermo,2018,F,studenti,59.6,20452.0,dentro lavoro o studio
+082053,Palermo,2018,M,studenti,54.6,19900.0,dentro lavoro o studio
+082053,Palermo,2018,T,studenti,57.0,40352.0,dentro lavoro o studio
+082053,Palermo,2019,F,studenti,61.8,20849.0,dentro lavoro o studio
+082053,Palermo,2019,M,studenti,56.6,20288.0,dentro lavoro o studio
+082053,Palermo,2019,T,studenti,59.1,41137.0,dentro lavoro o studio
+082053,Palermo,2021,F,studenti,66.6,21454.6,dentro lavoro o studio
+082053,Palermo,2021,M,studenti,60.6,20859.2,dentro lavoro o studio
+082053,Palermo,2021,T,studenti,63.5,42313.8,dentro lavoro o studio
+082053,Palermo,2022,F,studenti,67.3,21866.5,dentro lavoro o studio
+082053,Palermo,2022,M,studenti,61.3,20988.3,dentro lavoro o studio
+082053,Palermo,2022,T,studenti,64.2,42854.7,dentro lavoro o studio
+082053,Palermo,2023,F,studenti,67.1,21832.0,dentro lavoro o studio
+082053,Palermo,2023,M,studenti,61.0,20962.6,dentro lavoro o studio
+082053,Palermo,2023,T,studenti,63.9,42794.7,dentro lavoro o studio
+082053,Palermo,2024,F,studenti,66.8,21830.7,dentro lavoro o studio
+082053,Palermo,2024,M,studenti,59.8,20548.6,dentro lavoro o studio
+082053,Palermo,2024,T,studenti,63.2,42379.3,dentro lavoro o studio
+IT,Italia,2018,F,studenti,64.8,1810128.0,dentro lavoro o studio
+IT,Italia,2018,M,studenti,56.9,1732750.0,dentro lavoro o studio
+IT,Italia,2018,T,studenti,60.7,3542878.0,dentro lavoro o studio
+IT,Italia,2019,F,studenti,66.8,1866004.0,dentro lavoro o studio
+IT,Italia,2019,M,studenti,58.1,1764365.0,dentro lavoro o studio
+IT,Italia,2019,T,studenti,62.3,3630369.0,dentro lavoro o studio
+IT,Italia,2021,F,studenti,67.4,1869043.5,dentro lavoro o studio
+IT,Italia,2021,M,studenti,58.3,1758061.9,dentro lavoro o studio
+IT,Italia,2021,T,studenti,62.7,3627105.3,dentro lavoro o studio
+IT,Italia,2022,F,studenti,68.5,1914685.9,dentro lavoro o studio
+IT,Italia,2022,M,studenti,59.2,1798161.1,dentro lavoro o studio
+IT,Italia,2022,T,studenti,63.6,3712846.9,dentro lavoro o studio
+IT,Italia,2023,F,studenti,68.4,1922487.9,dentro lavoro o studio
+IT,Italia,2023,M,studenti,58.8,1799996.9,dentro lavoro o studio
+IT,Italia,2023,T,studenti,63.4,3722484.8,dentro lavoro o studio
+IT,Italia,2024,F,studenti,67.8,1913562.7,dentro lavoro o studio
+IT,Italia,2024,M,studenti,57.4,1771763.9,dentro lavoro o studio
+IT,Italia,2024,T,studenti,62.3,3685326.6,dentro lavoro o studio
+ITG1,Sicilia,2018,F,studenti,60.1,155078.0,dentro lavoro o studio
+ITG1,Sicilia,2018,M,studenti,52.3,146415.0,dentro lavoro o studio
+ITG1,Sicilia,2018,T,studenti,56.0,301493.0,dentro lavoro o studio
+ITG1,Sicilia,2019,F,studenti,63.0,160253.0,dentro lavoro o studio
+ITG1,Sicilia,2019,M,studenti,54.9,150764.0,dentro lavoro o studio
+ITG1,Sicilia,2019,T,studenti,58.8,311017.0,dentro lavoro o studio
+ITG1,Sicilia,2021,F,studenti,66.0,162345.9,dentro lavoro o studio
+ITG1,Sicilia,2021,M,studenti,57.2,152729.9,dentro lavoro o studio
+ITG1,Sicilia,2021,T,studenti,61.4,315075.8,dentro lavoro o studio
+ITG1,Sicilia,2022,F,studenti,67.1,164837.9,dentro lavoro o studio
+ITG1,Sicilia,2022,M,studenti,58.4,155484.0,dentro lavoro o studio
+ITG1,Sicilia,2022,T,studenti,62.6,320321.9,dentro lavoro o studio
+ITG1,Sicilia,2023,F,studenti,67.6,165432.7,dentro lavoro o studio
+ITG1,Sicilia,2023,M,studenti,58.6,155610.1,dentro lavoro o studio
+ITG1,Sicilia,2023,T,studenti,62.9,321042.9,dentro lavoro o studio
+ITG1,Sicilia,2024,F,studenti,67.8,164862.2,dentro lavoro o studio
+ITG1,Sicilia,2024,M,studenti,57.0,151500.1,dentro lavoro o studio
+ITG1,Sicilia,2024,T,studenti,62.2,316362.3,dentro lavoro o studio
+082006,Bagheria,2018,F,casalinghe/i,12.4,376.0,fuori e non in cerca
+082006,Bagheria,2018,M,casalinghe/i,0.8,25.0,fuori e non in cerca
+082006,Bagheria,2018,T,casalinghe/i,6.4,401.0,fuori e non in cerca
+082006,Bagheria,2019,F,casalinghe/i,10.9,324.0,fuori e non in cerca
+082006,Bagheria,2019,M,casalinghe/i,0.9,28.0,fuori e non in cerca
+082006,Bagheria,2019,T,casalinghe/i,5.7,352.0,fuori e non in cerca
+082006,Bagheria,2021,F,casalinghe/i,14.8,421.4,fuori e non in cerca
+082006,Bagheria,2021,M,casalinghe/i,1.5,47.0,fuori e non in cerca
+082006,Bagheria,2021,T,casalinghe/i,8.0,468.4,fuori e non in cerca
+082006,Bagheria,2022,F,casalinghe/i,12.8,364.1,fuori e non in cerca
+082006,Bagheria,2022,M,casalinghe/i,1.4,41.2,fuori e non in cerca
+082006,Bagheria,2022,T,casalinghe/i,6.9,405.3,fuori e non in cerca
+082006,Bagheria,2023,F,casalinghe/i,14.6,421.1,fuori e non in cerca
+082006,Bagheria,2023,M,casalinghe/i,1.8,55.4,fuori e non in cerca
+082006,Bagheria,2023,T,casalinghe/i,8.1,476.4,fuori e non in cerca
+082006,Bagheria,2024,F,casalinghe/i,13.4,386.8,fuori e non in cerca
+082006,Bagheria,2024,M,casalinghe/i,1.7,50.2,fuori e non in cerca
+082006,Bagheria,2024,T,casalinghe/i,7.4,437.1,fuori e non in cerca
+082053,Palermo,2018,F,casalinghe/i,9.9,3401.0,fuori e non in cerca
+082053,Palermo,2018,M,casalinghe/i,0.7,238.0,fuori e non in cerca
+082053,Palermo,2018,T,casalinghe/i,5.1,3639.0,fuori e non in cerca
+082053,Palermo,2019,F,casalinghe/i,9.7,3258.0,fuori e non in cerca
+082053,Palermo,2019,M,casalinghe/i,0.8,294.0,fuori e non in cerca
+082053,Palermo,2019,T,casalinghe/i,5.1,3552.0,fuori e non in cerca
+082053,Palermo,2021,F,casalinghe/i,12.5,4020.0,fuori e non in cerca
+082053,Palermo,2021,M,casalinghe/i,1.4,495.3,fuori e non in cerca
+082053,Palermo,2021,T,casalinghe/i,6.8,4515.3,fuori e non in cerca
+082053,Palermo,2022,F,casalinghe/i,10.2,3314.5,fuori e non in cerca
+082053,Palermo,2022,M,casalinghe/i,1.1,364.8,fuori e non in cerca
+082053,Palermo,2022,T,casalinghe/i,5.5,3679.3,fuori e non in cerca
+082053,Palermo,2023,F,casalinghe/i,10.9,3537.8,fuori e non in cerca
+082053,Palermo,2023,M,casalinghe/i,1.4,491.5,fuori e non in cerca
+082053,Palermo,2023,T,casalinghe/i,6.0,4029.3,fuori e non in cerca
+082053,Palermo,2024,F,casalinghe/i,11.3,3701.1,fuori e non in cerca
+082053,Palermo,2024,M,casalinghe/i,1.4,479.7,fuori e non in cerca
+082053,Palermo,2024,T,casalinghe/i,6.2,4180.8,fuori e non in cerca
+IT,Italia,2018,F,casalinghe/i,5.0,138881.0,fuori e non in cerca
+IT,Italia,2018,M,casalinghe/i,0.3,9723.0,fuori e non in cerca
+IT,Italia,2018,T,casalinghe/i,2.5,148604.0,fuori e non in cerca
+IT,Italia,2019,F,casalinghe/i,4.6,127675.0,fuori e non in cerca
+IT,Italia,2019,M,casalinghe/i,0.4,10717.0,fuori e non in cerca
+IT,Italia,2019,T,casalinghe/i,2.4,138392.0,fuori e non in cerca
+IT,Italia,2021,F,casalinghe/i,5.7,158426.3,fuori e non in cerca
+IT,Italia,2021,M,casalinghe/i,0.6,17943.0,fuori e non in cerca
+IT,Italia,2021,T,casalinghe/i,3.0,176369.3,fuori e non in cerca
+IT,Italia,2022,F,casalinghe/i,4.6,128820.5,fuori e non in cerca
+IT,Italia,2022,M,casalinghe/i,0.4,13462.9,fuori e non in cerca
+IT,Italia,2022,T,casalinghe/i,2.4,142283.4,fuori e non in cerca
+IT,Italia,2023,F,casalinghe/i,4.4,123759.4,fuori e non in cerca
+IT,Italia,2023,M,casalinghe/i,0.5,15237.9,fuori e non in cerca
+IT,Italia,2023,T,casalinghe/i,2.4,138997.3,fuori e non in cerca
+IT,Italia,2024,F,casalinghe/i,4.6,129451.7,fuori e non in cerca
+IT,Italia,2024,M,casalinghe/i,0.6,17417.1,fuori e non in cerca
+IT,Italia,2024,T,casalinghe/i,2.5,146868.8,fuori e non in cerca
+ITG1,Sicilia,2018,F,casalinghe/i,9.9,25680.0,fuori e non in cerca
+ITG1,Sicilia,2018,M,casalinghe/i,0.7,1849.0,fuori e non in cerca
+ITG1,Sicilia,2018,T,casalinghe/i,5.1,27529.0,fuori e non in cerca
+ITG1,Sicilia,2019,F,casalinghe/i,9.1,23165.0,fuori e non in cerca
+ITG1,Sicilia,2019,M,casalinghe/i,0.8,2165.0,fuori e non in cerca
+ITG1,Sicilia,2019,T,casalinghe/i,4.8,25330.0,fuori e non in cerca
+ITG1,Sicilia,2021,F,casalinghe/i,12.0,29609.1,fuori e non in cerca
+ITG1,Sicilia,2021,M,casalinghe/i,1.4,3807.0,fuori e non in cerca
+ITG1,Sicilia,2021,T,casalinghe/i,6.5,33416.1,fuori e non in cerca
+ITG1,Sicilia,2022,F,casalinghe/i,10.0,24611.9,fuori e non in cerca
+ITG1,Sicilia,2022,M,casalinghe/i,1.0,2730.3,fuori e non in cerca
+ITG1,Sicilia,2022,T,casalinghe/i,5.3,27342.2,fuori e non in cerca
+ITG1,Sicilia,2023,F,casalinghe/i,9.9,24324.0,fuori e non in cerca
+ITG1,Sicilia,2023,M,casalinghe/i,1.2,3288.6,fuori e non in cerca
+ITG1,Sicilia,2023,T,casalinghe/i,5.4,27612.6,fuori e non in cerca
+ITG1,Sicilia,2024,F,casalinghe/i,10.1,24486.6,fuori e non in cerca
+ITG1,Sicilia,2024,M,casalinghe/i,1.2,3294.8,fuori e non in cerca
+ITG1,Sicilia,2024,T,casalinghe/i,5.5,27781.4,fuori e non in cerca
+082006,Bagheria,2018,F,altra condizione,7.9,241.0,fuori e non in cerca
+082006,Bagheria,2018,M,altra condizione,17.9,573.0,fuori e non in cerca
+082006,Bagheria,2018,T,altra condizione,13.0,814.0,fuori e non in cerca
+082006,Bagheria,2019,F,altra condizione,4.7,141.0,fuori e non in cerca
+082006,Bagheria,2019,M,altra condizione,12.3,389.0,fuori e non in cerca
+082006,Bagheria,2019,T,altra condizione,8.6,530.0,fuori e non in cerca
+082006,Bagheria,2021,F,altra condizione,6.1,174.4,fuori e non in cerca
+082006,Bagheria,2021,M,altra condizione,15.7,477.1,fuori e non in cerca
+082006,Bagheria,2021,T,altra condizione,11.1,651.5,fuori e non in cerca
+082006,Bagheria,2022,F,altra condizione,5.8,164.0,fuori e non in cerca
+082006,Bagheria,2022,M,altra condizione,14.0,426.2,fuori e non in cerca
+082006,Bagheria,2022,T,altra condizione,10.0,590.2,fuori e non in cerca
+082006,Bagheria,2023,F,altra condizione,6.1,175.6,fuori e non in cerca
+082006,Bagheria,2023,M,altra condizione,15.8,474.0,fuori e non in cerca
+082006,Bagheria,2023,T,altra condizione,11.0,649.6,fuori e non in cerca
+082006,Bagheria,2024,F,altra condizione,6.4,183.1,fuori e non in cerca
+082006,Bagheria,2024,M,altra condizione,16.1,485.3,fuori e non in cerca
+082006,Bagheria,2024,T,altra condizione,11.3,668.3,fuori e non in cerca
+082053,Palermo,2018,F,altra condizione,5.3,1808.0,fuori e non in cerca
+082053,Palermo,2018,M,altra condizione,12.2,4435.0,fuori e non in cerca
+082053,Palermo,2018,T,altra condizione,8.8,6243.0,fuori e non in cerca
+082053,Palermo,2019,F,altra condizione,3.8,1293.0,fuori e non in cerca
+082053,Palermo,2019,M,altra condizione,10.2,3660.0,fuori e non in cerca
+082053,Palermo,2019,T,altra condizione,7.1,4953.0,fuori e non in cerca
+082053,Palermo,2021,F,altra condizione,4.6,1498.0,fuori e non in cerca
+082053,Palermo,2021,M,altra condizione,12.0,4138.5,fuori e non in cerca
+082053,Palermo,2021,T,altra condizione,8.5,5636.5,fuori e non in cerca
+082053,Palermo,2022,F,altra condizione,4.8,1553.4,fuori e non in cerca
+082053,Palermo,2022,M,altra condizione,11.1,3788.6,fuori e non in cerca
+082053,Palermo,2022,T,altra condizione,8.0,5342.0,fuori e non in cerca
+082053,Palermo,2023,F,altra condizione,4.4,1418.6,fuori e non in cerca
+082053,Palermo,2023,M,altra condizione,11.2,3849.5,fuori e non in cerca
+082053,Palermo,2023,T,altra condizione,7.9,5268.1,fuori e non in cerca
+082053,Palermo,2024,F,altra condizione,5.0,1632.7,fuori e non in cerca
+082053,Palermo,2024,M,altra condizione,12.5,4301.8,fuori e non in cerca
+082053,Palermo,2024,T,altra condizione,8.9,5934.5,fuori e non in cerca
+IT,Italia,2018,F,altra condizione,5.1,142582.0,fuori e non in cerca
+IT,Italia,2018,M,altra condizione,9.0,274850.0,fuori e non in cerca
+IT,Italia,2018,T,altra condizione,7.2,417432.0,fuori e non in cerca
+IT,Italia,2019,F,altra condizione,4.3,120899.0,fuori e non in cerca
+IT,Italia,2019,M,altra condizione,8.0,243046.0,fuori e non in cerca
+IT,Italia,2019,T,altra condizione,6.2,363945.0,fuori e non in cerca
+IT,Italia,2021,F,altra condizione,4.9,135374.3,fuori e non in cerca
+IT,Italia,2021,M,altra condizione,8.7,263424.9,fuori e non in cerca
+IT,Italia,2021,T,altra condizione,6.9,398799.2,fuori e non in cerca
+IT,Italia,2022,F,altra condizione,4.1,115567.8,fuori e non in cerca
+IT,Italia,2022,M,altra condizione,7.5,226811.1,fuori e non in cerca
+IT,Italia,2022,T,altra condizione,5.9,342378.8,fuori e non in cerca
+IT,Italia,2023,F,altra condizione,4.1,116098.9,fuori e non in cerca
+IT,Italia,2023,M,altra condizione,7.7,234274.3,fuori e non in cerca
+IT,Italia,2023,T,altra condizione,6.0,350373.2,fuori e non in cerca
+IT,Italia,2024,F,altra condizione,4.4,122866.3,fuori e non in cerca
+IT,Italia,2024,M,altra condizione,8.5,262111.3,fuori e non in cerca
+IT,Italia,2024,T,altra condizione,6.5,384977.6,fuori e non in cerca
+ITG1,Sicilia,2018,F,altra condizione,6.5,16727.0,fuori e non in cerca
+ITG1,Sicilia,2018,M,altra condizione,14.9,41823.0,fuori e non in cerca
+ITG1,Sicilia,2018,T,altra condizione,10.9,58550.0,fuori e non in cerca
+ITG1,Sicilia,2019,F,altra condizione,4.5,11375.0,fuori e non in cerca
+ITG1,Sicilia,2019,M,altra condizione,11.7,32056.0,fuori e non in cerca
+ITG1,Sicilia,2019,T,altra condizione,8.2,43431.0,fuori e non in cerca
+ITG1,Sicilia,2021,F,altra condizione,5.5,13598.6,fuori e non in cerca
+ITG1,Sicilia,2021,M,altra condizione,13.7,36596.8,fuori e non in cerca
+ITG1,Sicilia,2021,T,altra condizione,9.8,50195.4,fuori e non in cerca
+ITG1,Sicilia,2022,F,altra condizione,5.1,12634.1,fuori e non in cerca
+ITG1,Sicilia,2022,M,altra condizione,11.7,31222.9,fuori e non in cerca
+ITG1,Sicilia,2022,T,altra condizione,8.6,43857.0,fuori e non in cerca
+ITG1,Sicilia,2023,F,altra condizione,4.5,11047.9,fuori e non in cerca
+ITG1,Sicilia,2023,M,altra condizione,11.2,29692.5,fuori e non in cerca
+ITG1,Sicilia,2023,T,altra condizione,8.0,40740.4,fuori e non in cerca
+ITG1,Sicilia,2024,F,altra condizione,5.1,12307.8,fuori e non in cerca
+ITG1,Sicilia,2024,M,altra condizione,12.7,33760.9,fuori e non in cerca
+ITG1,Sicilia,2024,T,altra condizione,9.1,46068.7,fuori e non in cerca
+082006,Bagheria,2018,F,pensione,0.1,2.0,fuori e non in cerca
+082006,Bagheria,2018,M,pensione,0.2,6.0,fuori e non in cerca
+082006,Bagheria,2018,T,pensione,0.1,8.0,fuori e non in cerca
+082006,Bagheria,2019,F,pensione,0.1,2.0,fuori e non in cerca
+082006,Bagheria,2019,M,pensione,0.3,9.0,fuori e non in cerca
+082006,Bagheria,2019,T,pensione,0.2,11.0,fuori e non in cerca
+082006,Bagheria,2021,F,pensione,0.1,1.9,fuori e non in cerca
+082006,Bagheria,2021,M,pensione,0.3,8.1,fuori e non in cerca
+082006,Bagheria,2021,T,pensione,0.2,10.1,fuori e non in cerca
+082006,Bagheria,2022,F,pensione,0.1,2.1,fuori e non in cerca
+082006,Bagheria,2022,M,pensione,0.3,9.8,fuori e non in cerca
+082006,Bagheria,2022,T,pensione,0.2,11.9,fuori e non in cerca
+082006,Bagheria,2023,F,pensione,0.1,1.6,fuori e non in cerca
+082006,Bagheria,2023,M,pensione,0.3,8.2,fuori e non in cerca
+082006,Bagheria,2023,T,pensione,0.2,9.8,fuori e non in cerca
+082006,Bagheria,2024,F,pensione,0.1,2.8,fuori e non in cerca
+082006,Bagheria,2024,M,pensione,0.4,13.1,fuori e non in cerca
+082006,Bagheria,2024,T,pensione,0.3,16.0,fuori e non in cerca
+082053,Palermo,2018,F,pensione,0.1,22.0,fuori e non in cerca
+082053,Palermo,2018,M,pensione,0.2,61.0,fuori e non in cerca
+082053,Palermo,2018,T,pensione,0.1,83.0,fuori e non in cerca
+082053,Palermo,2019,F,pensione,0.1,24.0,fuori e non in cerca
+082053,Palermo,2019,M,pensione,0.2,87.0,fuori e non in cerca
+082053,Palermo,2019,T,pensione,0.2,111.0,fuori e non in cerca
+082053,Palermo,2021,F,pensione,0.1,17.9,fuori e non in cerca
+082053,Palermo,2021,M,pensione,0.2,65.3,fuori e non in cerca
+082053,Palermo,2021,T,pensione,0.1,83.2,fuori e non in cerca
+082053,Palermo,2022,F,pensione,0.1,21.6,fuori e non in cerca
+082053,Palermo,2022,M,pensione,0.3,91.8,fuori e non in cerca
+082053,Palermo,2022,T,pensione,0.2,113.4,fuori e non in cerca
+082053,Palermo,2023,F,pensione,0.1,19.0,fuori e non in cerca
+082053,Palermo,2023,M,pensione,0.3,92.1,fuori e non in cerca
+082053,Palermo,2023,T,pensione,0.2,111.1,fuori e non in cerca
+082053,Palermo,2024,F,pensione,0.1,30.3,fuori e non in cerca
+082053,Palermo,2024,M,pensione,0.4,140.7,fuori e non in cerca
+082053,Palermo,2024,T,pensione,0.3,171.0,fuori e non in cerca
+IT,Italia,2018,F,pensione,0.1,2139.0,fuori e non in cerca
+IT,Italia,2018,M,pensione,0.1,4255.0,fuori e non in cerca
+IT,Italia,2018,T,pensione,0.1,6394.0,fuori e non in cerca
+IT,Italia,2019,F,pensione,0.1,2581.0,fuori e non in cerca
+IT,Italia,2019,M,pensione,0.2,5660.0,fuori e non in cerca
+IT,Italia,2019,T,pensione,0.1,8241.0,fuori e non in cerca
+IT,Italia,2021,F,pensione,0.1,2648.6,fuori e non in cerca
+IT,Italia,2021,M,pensione,0.2,6289.6,fuori e non in cerca
+IT,Italia,2021,T,pensione,0.2,8938.3,fuori e non in cerca
+IT,Italia,2022,F,pensione,0.1,2900.8,fuori e non in cerca
+IT,Italia,2022,M,pensione,0.3,7723.4,fuori e non in cerca
+IT,Italia,2022,T,pensione,0.2,10624.2,fuori e non in cerca
+IT,Italia,2023,F,pensione,0.1,2710.8,fuori e non in cerca
+IT,Italia,2023,M,pensione,0.2,7490.7,fuori e non in cerca
+IT,Italia,2023,T,pensione,0.2,10201.5,fuori e non in cerca
+IT,Italia,2024,F,pensione,0.1,2496.7,fuori e non in cerca
+IT,Italia,2024,M,pensione,0.3,7893.8,fuori e non in cerca
+IT,Italia,2024,T,pensione,0.2,10390.6,fuori e non in cerca
+ITG1,Sicilia,2018,F,pensione,0.1,226.0,fuori e non in cerca
+ITG1,Sicilia,2018,M,pensione,0.2,638.0,fuori e non in cerca
+ITG1,Sicilia,2018,T,pensione,0.2,864.0,fuori e non in cerca
+ITG1,Sicilia,2019,F,pensione,0.1,269.0,fuori e non in cerca
+ITG1,Sicilia,2019,M,pensione,0.3,902.0,fuori e non in cerca
+ITG1,Sicilia,2019,T,pensione,0.2,1171.0,fuori e non in cerca
+ITG1,Sicilia,2021,F,pensione,0.1,190.8,fuori e non in cerca
+ITG1,Sicilia,2021,M,pensione,0.3,694.7,fuori e non in cerca
+ITG1,Sicilia,2021,T,pensione,0.2,885.5,fuori e non in cerca
+ITG1,Sicilia,2022,F,pensione,0.1,243.0,fuori e non in cerca
+ITG1,Sicilia,2022,M,pensione,0.4,974.0,fuori e non in cerca
+ITG1,Sicilia,2022,T,pensione,0.2,1217.0,fuori e non in cerca
+ITG1,Sicilia,2023,F,pensione,0.1,169.6,fuori e non in cerca
+ITG1,Sicilia,2023,M,pensione,0.3,805.1,fuori e non in cerca
+ITG1,Sicilia,2023,T,pensione,0.2,974.7,fuori e non in cerca
+ITG1,Sicilia,2024,F,pensione,0.1,255.0,fuori e non in cerca
+ITG1,Sicilia,2024,M,pensione,0.5,1246.6,fuori e non in cerca
+ITG1,Sicilia,2024,T,pensione,0.3,1501.6,fuori e non in cerca

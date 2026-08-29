@@ -811,3 +811,176 @@ componente "in cerca" si dimezza in tutti i territori e i conteggi diventano fra
 cambio del metodo di stima del permanente, sezione 8): i *gap* fra territori restano
 confrontabili, i *livelli* delle componenti no. Da dichiarare ogni volta che si cita la
 serie di `edu_youth_states_2018_2024.csv` o la scomposizione 2018→2024.
+
+---
+
+## 11. Pendolarismo per genere - la dimensione mai scomposta
+
+Aggiunta il 2026-08-28. **Nessun download nuovo**: la tavola era già stata scaricata dal
+thread educazione (`uv run python -m pipeline.edu`, sezione 10) e usata solo nei totali
+di genere, come appendice di contesto (`edu_commuting_appendix.csv`). La dimensione
+`genere` c'era già ed è la richiesta che il thread genere aveva girato al thread mobilità
+(`docs/CONTEXT-fabio.md`).
+
+**File di partenza**: `data/processed/edu_census_commuting_long.csv`
+Schema: `territorio, anno, genere (M/F/T), destinazione (ALL/SMPUR/OMPUR), motivo (ALL/STD/WK), valore`
+Copertura: **solo 2018 e 2019**, quattro territori di confronto.
+
+Convenzione di calcolo, fissata nella cella «Il pendolarismo ha un genere» di
+`notebooks/genere.ipynb`:
+
+> quota fuori comune = `OMPUR` / `ALL` × 100, **dentro un solo motivo** (WK o STD)
+
+Verificato che `SMPUR + OMPUR == ALL` su ogni cella usata.
+
+### Trappole
+
+1. **`OMPUR` è «fuori comune», non «verso Palermo».** La tavola 2018-2019 non identifica
+   il comune di destinazione. Nessuna frase del tipo "pendolano verso Palermo" è
+   sostenibile con questa fonte: serve la matrice origine-destinazione, che qui non c'è.
+2. **Il denominatore è già condizionato al motivo.** Chi si sposta *per lavoro* un lavoro
+   ce l'ha: la quota non è contaminata dal gap occupazionale delle altre sezioni. È il
+   motivo per cui il risultato vale come conferma indipendente e non come riformulazione.
+3. **Due anni soli.** Non si aggancia alla serie 2021-2024 del resto del thread e non è
+   aggiornabile senza una rilevazione nuova. Un KPI su questa misura non è ripetibile:
+   in proposal va misurato sul dato di servizio, non sulla fonte.
+4. `M4` (mobilità studentesca, 8milaCensus 2011) è un **rapporto fuori/dentro comune**:
+   un comune con scuole proprie ha `M4` basso per costruzione. Bagheria ne ha 3 sedi
+   tecniche (anagrafe MIUR). Il 18° percentile non è di per sé un dato negativo.
+
+### Tabelle prodotte
+
+| file | contenuto |
+|---|---|
+| `genere_pendolarismo.csv` | quota fuori comune per territorio × motivo × anno × genere, con `gap_M_meno_F` |
+| `genere_mobilita_2011.csv` | `M2`/`M4`/`M6` di Bagheria con mediana e percentile sui 390 comuni (2011) |
+
+---
+
+## 12. ISTAT — Matrici del pendolarismo: la destinazione, che nessuna altra fonte dà
+
+Aggiunta il 2026-08-29, thread mobilità. **Ribalta un limite dichiarato due volte nella
+relazione** (§5 e §9: «nessuna fonte disponibile identifica Palermo come destinazione»).
+Quel limite era vero per le fonti allora usate e non lo è in generale.
+
+### Perché serviva
+
+Il censimento permanente pubblica il pendolarismo comunale solo come dentro/fuori comune.
+Verificato il 2026-08-28 sul dataflow `DF_DCSS_ISTR_LAV_PEN_2_TV_5`: la DSD ha dieci
+dimensioni, fra cui `AGE_NOCLASS`, `CUR_ACT_STAT`, `EDU_ATTAIN` e `LOC_DEST` (codelist
+`CL_PROV_DEST_Z`, 69 codici fra cui `DMPURPCT` = «comune diverso della stessa provincia,
+capoluogo»), ma **servite come valore unico**: a livello comunale e anche a `ITG1`/`IT`
+tornano solo `TOTAL`/`ALL`/`99` e `LOC_DEST` ∈ {`ALL`, `SMPUR`, `OMPUR`}, sui soli 2018 e
+2019. Le dimensioni esistono nella struttura, i dati no.
+
+### Gli endpoint
+
+| Anno | URL | Byte |
+|---|---|---|
+| 1991 | `https://www.istat.it/storage/cartografia/matrici_pendolarismo/matrici_pendolarismo_1991.zip` | 11.366.726 |
+| 2001 | `https://www.istat.it/storage/cartografia/matrici_pendolarismo/matrici_pendolarismo_2001.zip` | 14.501.471 |
+| 2011 | `https://www.istat.it/storage/cartografia/matrici_pendolarismo/matrici_pendolarismo_2011.zip` | 36.016.150 |
+| 2021 (solo lavoro) | `https://esploradati.istat.it/databrowser/DWL/PERMPOP/MATPEN/matrix_pendoLAVORO_2021.zip` | 1.573.552 |
+| 2021, leggimi | `https://esploradati.istat.it/databrowser/DWL/PERMPOP/MATPEN/leggimi_file_matrix_pendoLAVORO_2021.doc` | 48.128 |
+
+La pagina di catalogo dei primi tre è `https://www.istat.it/non-categorizzato/matrici-del-pendolarismo/`
+(i link nell'HTML sono in `http://`, il redirect a https funziona).
+
+**Il 2021 non sta lì.** È un dataflow «bulk» di IstatData, `DF_BULK_PEND_LAV_2021_1`, e
+**l'API dati risponde 404** (`doesn't contain a mapping set`): il file vero è nell'annotazione
+`ATTACHED_DATA_FILES` della struttura del dataflow, che si legge con
+`dataflow/IT1/DF_BULK_PEND_LAV_2021_1/1.0?detail=full`. Il dataflow è marcato `DATAFLOW_HIDDEN`
+e non compare navigando il databrowser: si trova solo elencando `dataflow/IT1` e cercando
+per nome. `DF_BULK_PEND_LAV_2021_2` è il leggimi, stessa meccanica.
+
+### Tracciato
+
+**2011** — tracciato fisso, 61 caratteri, 4.876.242 record, 28.871.447 individui. I campi
+sono separati da spazi e nessuna etichetta ne contiene: `str.split()` basta e non dipende
+dalle posizioni. Ordine: tipo record, tipo residenza, prov e com di residenza, sesso
+(1 = M, 2 = F), motivo (1 = studio **compresi nido, materna e formazione professionale**,
+2 = lavoro), luogo (1 = stesso comune, 2 = altro comune, 3 = estero), prov e com di
+destinazione, stato estero, mezzo (01-12), orario di uscita (1-4), tempo impiegato (1-4),
+**stima campionaria**, **conteggio esaustivo**.
+
+> **Due tipi di record e due variabili di conteggio, da non mescolare.** I record `S`
+> descrivono gli strati origine × destinazione × sesso × motivo con il conteggio
+> **esaustivo**; i record `L` riaprono gli stessi strati per mezzo, orario e durata, ma
+> quelle tre variabili nei comuni **sopra i 20.000 abitanti** — Bagheria è uno — sono
+> rilevate su campione, e il conteggio è una **stima** (valori con decimali). Il leggimi
+> ISTAT prescrive il conteggio esaustivo per tutto ciò che sta nel tipo `S` e la stima solo
+> quando servono mezzo, orario o durata. `pipeline/build.py` le scrive in due tabelle
+> separate proprio per rendere difficile confonderle.
+>
+> Nei record `S` di chi vive in **convivenza** (tipo residenza 2, 18.726 in Italia) la
+> stima è `ND`: quelle persone non hanno record `L`. Esistono anche strati con stima 0,00 e
+> conteggio esaustivo 1 — presenti nell'enumerazione, non estratti nel campione.
+
+**2001** — 3.870.728 record, 26.764.361 individui, solo residenti in famiglia. Stesso ordine
+di campi fino alla destinazione, poi un flag «si è spostato il mercoledì di riferimento»
+(0/1) e, **solo se il flag è 1**, mezzo/orario/durata. I codici mezzo non coincidono con
+quelli del 2011 (il 10 accorpa piedi, bici e altro): comparabile fra i due anni è la sola
+parte origine-destinazione, ed è l'unica che `pipeline/build.py` tiene.
+
+**1991** — tracciato in `trapen91.txt` dentro lo zip. Sei classi di mezzo invece di dodici e,
+soprattutto, «condizione professionale» 1 = *studente o altro*, che non è il motivo dello
+spostamento. La nota metodologica dichiara inoltre una **sottostima** dei flussi verso la
+«seconda corona» di province. Scaricato e conservato per completezza, **non usato**.
+
+**2021** — tab-separato con intestazione (`Prov_res, Procom_res, Prov_lav, Procom_lav,
+Pendolari`), 523.949 righe, 19.565.808 individui, comune già a sei cifre. Nessun sesso,
+nessun mezzo, nessuna età: solo la matrice OD del lavoro.
+
+> ⚠️ **Rottura di definizione fra 2011 e 2021.** Il 2011 conta chi si sposta *giornalmente*,
+> il 2021 chi si reca al lavoro *almeno tre giorni a settimana* (accomodamento post-Covid).
+> I livelli non stanno in serie. La colonna `definizione` di `pendolarismo_od_long.csv`
+> porta la dicitura riga per riga proprio perché nessuna figura possa ometterla. Confrontabile
+> è la composizione — dove vanno, su cento che escono — non il livello.
+
+### ⚠️ Nessuna età, in nessuna delle due
+
+Né la matrice né la tavola del censimento permanente hanno la dimensione età. **Il target
+15-34 del bando non è isolabile sul pendolarismo.** Il motivo dello spostamento è
+un'informazione d'età parziale e va usata come tale: chi esce dal comune per *studio* è
+quasi solo secondaria superiore e università, perché i cicli precedenti a Bagheria ci sono.
+
+### La verifica che vale come prova del tracciato
+
+Un campo sfalsato produrrebbe numeri plausibili e sbagliati. `_verifica_pendolarismo` in
+`pipeline/build.py` ricostruisce dalla matrice **sette indicatori `M` di 8milaCensus** per
+Bagheria 2011 e li confronta con i valori pubblicati: `M3` 76,1 · `M4` 19,6 · `M5` 65,2 ·
+`M6` 8,4 · `M7` 25,7 · `M8` 83,3 · `M9` 3,6 — **sette su sette alla prima cifra decimale** —
+più i totali nazionali 2011 (28.871.447) e 2021 (19.565.808) uguali a quelli dichiarati nei
+leggimi. `M1` e `M2` no: hanno al denominatore la popolazione fino a 64 anni, che nella
+matrice non c'è.
+
+Ricaduta sul **vincolo di fonti del bando**: la verifica dimostra che la matrice e
+8milaCensus sono la stessa rilevazione. La matrice è il livello sottostante da cui gli
+`M1`-`M9` sono calcolati, non una fonte alternativa. Ricaduta di merito: `M6` («mobilità
+pubblica») **esclude** l'autobus aziendale o scolastico — includendolo verrebbe 8,9 invece
+di 8,4.
+
+### Tabelle prodotte
+
+| file | contenuto |
+|---|---|
+| `pendolarismo_od_long.csv` | OD per anno, origine, destinazione, genere, motivo, luogo — origini siciliane più tutte le origini con destinazione Bagheria; 2001, 2011, 2021 |
+| `pendolarismo_mezzo_long.csv` | mezzo × orario × durata per origine, genere, motivo, luogo e destinazione-Palermo; **solo 2011, stima campionaria** |
+| `pendolarismo_benchmark_long.csv` | gli stessi flussi aggregati a Italia e Sicilia, il confronto territoriale che chiede il bando |
+| `pendolarismo_mezzi.csv` | lookup codice mezzo → etichetta e classe 8milaCensus |
+
+### Le altre due fonti del bando, ricognizione del 2026-08-29
+
+- **Open Data Sicilia** (`dati.regione.sicilia.it`, CKAN): **niente mobilità**.
+  `package_search?q=mobilita` dà 4 pacchetti, tutti di finanza pubblica; `q=pendolarismo` e
+  `q=traffico` danno 0; `q=trasporto` dà l'elenco delle aziende di TPL (2020) e i Conti
+  Pubblici Territoriali. L'unico dataset recente utile a una proposta è **PNRR - Regione
+  Siciliana** (aggiornato 2025-12-30, `43c8b77c-6981-4ed2-9ee6-d42de512862a`): progetti con
+  localizzazione comunale, cioè l'inventario di cosa è già finanziato. Non scaricato: serve
+  alla proposal, non all'analisi.
+- **Comune di Palermo** (`opendata.comune.palermo.it`, DCAT Turtle su `/dcat/dcat.php`,
+  1.683 dataset): l'unica serie di mobilità viva è il **GTFS di AMAT**, ripubblicato a ogni
+  cambio d'orario (l'ultimo del 2026-07-30). È rete **urbana**: non copre la tratta
+  Bagheria-Palermo, ma misura l'ultimo miglio a Palermo Centrale. Il thread mobilità usa il
+  file già scaricato dal thread educazione (`data/raw/edu/palermo_gtfs_2026-08-25.zip`,
+  §10), in sola lettura.

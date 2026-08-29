@@ -1,10 +1,22 @@
-# Figura 11 — istruzione e lavoro sulla stessa fascia, su base 1.000.
+# Figura 11 — istruzione e lavoro sulla stessa fascia, su base 1.000, a farfalla.
 # L'estrazione sta nel notebook («Su 1.000 ragazze»): sotto i 15 anni un diploma è
 # impossibile, quindi le diplomate 9-24 sono le diplomate 15-24; il denominatore viene
 # dalle età singole. Le due quote poggiano così sulla STESSA popolazione — ma non sono
 # incatenate: l'incrocio titolo × condizione non esiste a livello comunale, e chi lavora
-# non è un sottoinsieme di chi ha il diploma. Barre parallele, mai stadi di un funnel.
-# Il pannello destro legge l'attainment dove ha senso (18-24), come bound superiore.
+# non è un sottoinsieme di chi ha il diploma. Due misure parallele, mai stadi di un funnel.
+# L'attainment letto dove il diploma è raggiungibile (18-24) sta in fig11b.
+#
+# Perché a farfalla e non più due facet affiancati (2026-08-28). Il titolo di questa figura
+# è un confronto fra ragazze e ragazzi, e la versione a facet lo spezzava in due pannelli:
+# per vedere che a Bagheria le diplomate sono 510 contro 462 diplomati l'occhio doveva
+# saltare da un pannello all'altro tenendo a mente una lunghezza. Nelle ali i due valori
+# stanno sulla stessa riga e condividono la base — è il motivo per cui le piramidi delle età
+# funzionano: rispecchiate sì, ma con base comune, quindi il confronto resta corretto.
+# In più l'inversione fra le due misure diventa una FORMA: le ali del diploma pendono a
+# sinistra, quelle del lavoro a destra, e la forbice si vede invece di doverla dedurre.
+#
+# La scala è condivisa fra le due misure, non libera per pannello: che il lavoro sia un
+# quinto del diploma è metà del finding, e due scale separate lo cancellerebbero.
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
@@ -14,76 +26,92 @@ dati <- filter(dati, anno == anno_rif)
 
 ETICHETTA_VICINATO <- dati$nome_territorio[startsWith(dati$nome_territorio, "vicinato")][1]
 LIVELLI <- c("Bagheria", ETICHETTA_VICINATO, "Palermo", "Sicilia", "Italia")
-dati <- mutate(dati,
-               nome_territorio = factor(nome_territorio, levels = rev(LIVELLI)),
-               genere_nome = factor(ETICHETTE_GENERE[genere], levels = ETICHETTE_GENERE))
+dati <- mutate(dati, nome_territorio = factor(nome_territorio, levels = rev(LIVELLI)))
 
 v <- function(terr, gen, colonna) dati[[colonna]][dati$nome_territorio == terr & dati$genere == gen]
 
-# --- pannello A: per 1.000 residenti 15-24, diploma e lavoro in parallelo ------------
-# Due misure sulla stessa base, non due identità: grigio per il diploma (contesto),
-# vermiglio per il lavoro (il punto della figura è la conversione mancata).
-# Non il blu degli "occupati" di fig02: qui accanto c'è il pannello del genere, dove il
-# blu vuol dire "maschi", e una barra blu dentro il facet "femmine" si legge male.
-# Il vermiglio è l'emphasis della cartella (casalinghe in fig02, "peggio" in fig08) e in
-# una figura a righe-territorio funziona già come colore di categoria, non di Bagheria:
-# stessa costruzione di fig02, dove il vermiglio delle casalinghe attraversa tutte le righe.
-MISURE <- c(per_1000_diploma = "con almeno il diploma", per_1000_occupati = "al lavoro")
-COLORI_MISURA <- setNames(c("#9C9C9C", COLORI_STATO[["casalinghe/i"]]), MISURE)
+# I titoli dei pannelli portano il verso: senza, le due farfalle sono due forme e il lettore
+# deve dedurre da sé quale ala è più lunga. Le due frasi sono affermazioni sul dato, e più
+# sotto ci sono i controlli che le reggono.
+MISURE <- c(per_1000_diploma = "CON ALMENO IL DIPLOMA — l'ala delle ragazze è più lunga in tutti e cinque i territori",
+            per_1000_occupati = "AL LAVORO — si inverte: l'ala dei ragazzi è più lunga ovunque, e a Bagheria è il doppio")
 
 lungo <- dati |>
   pivot_longer(all_of(names(MISURE)), names_to = "misura", values_to = "per_1000") |>
-  mutate(misura = factor(MISURE[misura], levels = MISURE))
+  mutate(misura = factor(MISURE[misura], levels = MISURE),
+         # Il segno è la sola cosa che fa la farfalla: le femmine a sinistra dello zero, i
+         # maschi a destra. L'asse rimette i valori assoluti, così nessuno legge -510.
+         segno = if_else(genere == "F", -1, 1),
+         x = segno * per_1000)
 
-parallele <- ggplot(lungo, aes(per_1000, nome_territorio, fill = misura)) +
-  facet_wrap(~genere_nome) +
-  geom_col(position = position_dodge(width = 0.72), width = 0.6) +
-  geom_text(aes(label = per_1000), position = position_dodge(width = 0.72),
-            hjust = -0.22, size = 3.2, fontface = "bold", colour = "grey20") +
-  scale_fill_manual(values = COLORI_MISURA, name = NULL) +
-  scale_x_continuous(limits = c(0, 640), breaks = seq(0, 600, 200),
-                     expand = expansion(mult = c(0, 0.02))) +
-  labs(subtitle = paste0("Su 1.000 residenti 15-24, quante/i…\n",
-                         "stessa popolazione per le due quote, ", anno_rif),
-       x = paste0("per 1.000 residenti 15-24 (", anno_rif, ")"), y = NULL)
+#' Le due misure, appaiate per territorio: servono ai controlli e al sottotitolo.
+confronto <- dati |>
+  select(nome_territorio, genere, per_1000_diploma, per_1000_occupati) |>
+  pivot_wider(names_from = genere, values_from = c(per_1000_diploma, per_1000_occupati)) |>
+  mutate(scarto_lavoro = per_1000_occupati_M - per_1000_occupati_F,
+         rapporto_lavoro = per_1000_occupati_M / per_1000_occupati_F)
 
-# --- pannello B: attainment 18-24, dove il diploma è raggiungibile -------------------
-attainment <- ggplot(dati, aes(`almeno_diploma_18_24_bound_%`, nome_territorio)) +
-  geom_line(aes(group = nome_territorio), colour = "grey75", linewidth = 1.8,
-            lineend = "round") +
-  geom_point(aes(colour = genere), size = 4.2) +
-  geom_text(aes(label = virgola(`almeno_diploma_18_24_bound_%`, 0),
-                hjust = ifelse(genere == "F", -0.45, 1.45), colour = genere),
-            size = 3.2, fontface = "bold", show.legend = FALSE) +
-  scale_colour_manual(values = COLORI_GENERE, labels = ETICHETTE_GENERE, name = NULL) +
-  scale_x_continuous(limits = c(58, 82), breaks = seq(60, 80, 10),
-                     labels = \(x) virgola(x, 0, "%")) +
-  labs(subtitle = "Quota con almeno il diploma a 18-24 anni\nbound superiore, stessa fonte",
-       x = "% con almeno il diploma, 18-24 anni", y = NULL) +
-  theme(axis.text.y = element_blank())
+# I titoli dei pannelli affermano due cose su tutti e cinque i territori: che sul diploma
+# vincono le ragazze e che sul lavoro vincono i ragazzi. Se un'annata ribalta un territorio,
+# meglio un errore che due frasi che continuano a dirlo.
+stopifnot(all(confronto$per_1000_diploma_F > confronto$per_1000_diploma_M),
+          all(confronto$per_1000_occupati_F < confronto$per_1000_occupati_M))
 
-figura <- (parallele | attainment) +
-  plot_layout(widths = c(1.75, 1)) +
-  plot_annotation(
+# Il primato di Bagheria è nel RAPPORTO, non nella differenza: in punti per mille lo scarto
+# più largo è altrove. La versione a barre affiancate scriveva «a Bagheria è il più largo» e
+# l'ambiguità passava; qui le ali mostrano lunghezze, cioè differenze, e la frase sbagliata
+# si vedrebbe. Il controllo tiene la distinzione onesta.
+bagheria <- confronto[confronto$nome_territorio == "Bagheria", ]
+piu_largo <- confronto[which.max(confronto$scarto_lavoro), ]
+stopifnot(bagheria$rapporto_lavoro == max(confronto$rapporto_lavoro),
+          bagheria$scarto_lavoro < piu_largo$scarto_lavoro)
+
+MASSIMO <- max(lungo$per_1000)
+
+figura <- ggplot(lungo, aes(x, nome_territorio, fill = genere)) +
+  facet_wrap(~misura, ncol = 1) +
+  # La spina della farfalla: senza, le due ali sono due barre che si toccano per caso.
+  geom_vline(xintercept = 0, colour = "grey35", linewidth = 0.5) +
+  geom_col(width = 0.62) +
+  geom_text(aes(label = per_1000, hjust = if_else(genere == "F", 1.25, -0.25)),
+            size = 3.2, fontface = "bold", colour = "grey20") +
+  scale_fill_manual(values = COLORI_GENERE, labels = ETICHETTE_GENERE) +
+  # Valori assoluti sull'asse: la coordinata è firmata solo per costruire le ali.
+  scale_x_continuous(limits = c(-1, 1) * MASSIMO * 1.22, breaks = seq(-600, 600, 200),
+                     labels = abs, expand = expansion(0)) +
+  labs(
     title = "Il diploma le ragazze lo raggiungono più dei ragazzi; il lavoro, la metà",
     subtitle = paste0(
-      "Su 1.000 ragazze 15-24 di Bagheria (", anno_rif, "): ", v("Bagheria", "F", "per_1000_diploma"),
+      "Su 1.000 residenti 15-24, ", anno_rif,
+      ". Ali a confronto sulla stessa riga: ragazze a sinistra della spina, ragazzi a destra, stessa scala nei due pannelli.\n",
+      "A Bagheria su 1.000 ragazze ", v("Bagheria", "F", "per_1000_diploma"),
       " hanno almeno il diploma e ", v("Bagheria", "F", "per_1000_occupati"),
-      " lavorano. Su 1.000 coetanei: ", v("Bagheria", "M", "per_1000_diploma"),
-      " e ", v("Bagheria", "M", "per_1000_occupati"), ".\n",
-      "Le due quote vivono sulla stessa popolazione — il conteggio dei diplomi 9-24 è per costruzione quello 15-24, nessuno ha un diploma prima —\n",
-      "ma non sono stadi di un funnel: quante delle diplomate lavorino il censimento comunale non lo dice, e chi lavora può non avere il diploma.\n",
-      "A destra la fascia in cui il diploma è raggiungibile: il vantaggio femminile resta (+",
-      virgola(v("Bagheria", "F", "almeno_diploma_18_24_bound_%") - v("Bagheria", "M", "almeno_diploma_18_24_bound_%")),
-      " pp) ma il primato del 9-24 no — Sicilia e Italia stanno sopra.\n",
-      "Ciò che distingue Bagheria a ogni fascia è il distacco dal vicinato, e una conversione in lavoro che il diploma non muove."),
+      " lavorano; su 1.000 coetanei, ", v("Bagheria", "M", "per_1000_diploma"), " e ",
+      v("Bagheria", "M", "per_1000_occupati"), ". La farfalla si rovescia fra i due pannelli:\n",
+      "è la forbice del thread — il titolo c'è, il lavoro no. Il primato di Bagheria è nel rapporto, non nella distanza: i ragazzi al lavoro sono ",
+      virgola(bagheria$rapporto_lavoro, 1, "×", taglia_zero = FALSE),
+      " le ragazze,\nil valore più alto del panel, ma in punti per mille l'ala si apre di più in ",
+      piu_largo$nome_territorio, " (", piu_largo$scarto_lavoro, " contro ", bagheria$scarto_lavoro,
+      "): a Bagheria è basso il livello femminile, non solo la distanza.\n",
+      "Le due quote vivono sulla stessa popolazione — il conteggio dei diplomi 9-24 è per costruzione quello 15-24, nessuno ha un diploma prima — ma non\n",
+      "sono stadi di un funnel: quante delle diplomate lavorino il censimento comunale non lo dice, e chi lavora può non avere il diploma (fig11b per il 18-24)."),
+    x = paste0("per 1.000 residenti 15-24 dello stesso genere (", anno_rif, ")"), y = NULL,
     caption = paste0(
       "Fonte: ISTAT, Censimento permanente della popolazione - istruzione (9-24), condizione professionale (15-24), demografia per età singola (2021-2024), anno ", anno_rif, ".\n",
       "Estrazione: diplomate/i 15-24 = diplomate/i 9-24 (nessun titolo sotto i 15 anni, esatto per costruzione); denominatori dalle età singole; coerenza fra le tavole verificata nel notebook (scarto zero).\n",
-      "Il 18-24 è un bound superiore: qualche qualifica IFP si ottiene a 17 anni (stessa logica dei bounds sulle casalinghe). L'incrocio titolo × condizione non è pubblicato a livello comunale.\n",
+      "Ogni ala ha il suo denominatore — 1.000 ragazze a sinistra, 1.000 ragazzi a destra — quindi le due lunghezze sono confrontabili anche dove le due popolazioni non sono uguali.\n",
+      "Le ali partono entrambe dalla spina e condividono la base: rispecchiate, non troncate. La coordinata è negativa a sinistra solo per costruzione, l'asse riporta i valori assoluti.\n",
+      "L'incrocio titolo × condizione non è pubblicato a livello comunale: le due misure stanno in due pannelli perché non è possibile incatenarle, non per scelta grafica.\n",
       "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media dei cinque valori.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_per_1000.csv"),
-    theme = tema_figura()
+      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_per_1000.csv")
   )
 
-salva(figura, "fig11_per_1000", larghezza = 28, altezza = 15)
+# Figura a pannello unico (i due facet sono pannelli della stessa figura): titolo e
+# sottotitolo sono quelli della figura, quindi vale il tema della figura.
+figura <- figura + tema_figura() +
+  # Dopo tema_figura(), che è un tema completo e rimpiazza quello accumulato.
+  theme(panel.grid.major.y = element_blank(),
+        strip.text = element_text(face = "bold", hjust = 0, size = rel(0.92),
+                                  margin = margin(t = 6, b = 4)))
+
+salva(figura, "fig11_per_1000", larghezza = 30, altezza = 18)

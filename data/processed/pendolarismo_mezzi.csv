@@ -1,0 +1,13 @@
+mezzo,classe
+treno,collettivo
+tram,collettivo
+metropolitana,collettivo
+"autobus urbano, filobus",collettivo
+"corriera, autobus extra-urbano",collettivo
+autobus aziendale o scolastico,aziendale o scolastico
+auto privata (conducente),privato a motore
+auto privata (passeggero),privato a motore
+"motocicletta, ciclomotore, scooter",privato a motore
+bicicletta,piedi o bici
+altro mezzo,altro
+a piedi,piedi o bici

@@ -1,17 +1,18 @@
 # CONTEXT — Ale (focus genere)
 
-Stato del thread genere al 2026-08-26. Le regole condivise stanno in `CLAUDE.md`; qui solo
+Stato del thread genere al 2026-08-28. Le regole condivise stanno in `CLAUDE.md`; qui solo
 ciò che riguarda questo thread. Ogni numero citato si rigenera da una cella di
 `notebooks/genere.ipynb` — mai copiarlo a mano nella proposal.
 
 ## Stato
-`notebooks/genere.ipynb` gira top-to-bottom (sensore nbconvert ok, 2026-08-25) e contiene,
+`notebooks/genere.ipynb` gira top-to-bottom (sensore nbconvert ok, 2026-08-28) e contiene,
 in ordine: verifica di fattibilità degli incroci, serie e gap occupazionale 15-24 con CI
 (Wilson/Newcombe), doppia scala (punti e rapporto M/F), LPM (GLM binomiale link identità)
 sull'eccesso di gap **e sui livelli femminili** vs benchmark, trend OLS 2018-2024, decomposizione della popolazione
 per stato, scissione delle casalinghe, **bounds per età sulle casalinghe**, **stato civile per
 età (le casalinghe sono nubili, fonte DCIS_POPRES1)**, gap istruzione 9-24, verifica di composizione per età, quadro di sintesi, **quadrante per genere** (con
-export per le figure 5 e 6), gap in persone, **potenza statistica e MDE dei KPI**,
+export per le figure 5 e 6), **pendolarismo per genere** (la dimensione mai scomposta,
+sources.md §11), gap in persone, **potenza statistica e MDE dei KPI**,
 ritenzione di coorte per genere 2021-2024, **profilo di ritenzione per età singola +
 gruppo invisibile scisso per genere**, **transizioni annuali (robustezza della
 finestra 22-25)**, **bilancio dei giovani (platea 2029/2034 per genere)**, **audit
@@ -33,16 +34,27 @@ sintesi finale in 13 sezioni con finestre di lettura dei KPI.
 Ogni sezione si apre con una riga `📌 Risultato chiave`; la «Sintesi finale» le ricompone
 e le traduce nel template della proposal (evidenza → target → KPI → finestra di lettura).
 
-**Verifica indipendente** (2026-08-26): `uv run python -m pipeline.verifica` — 521
+**Verifica indipendente** (2026-08-28): `uv run python -m pipeline.verifica` — 650
 controlli che ricalcolano ogni numero chiave direttamente da `data/raw/` con
 implementazioni alternative (Wilson/Newcombe riscritte, LPM saturo in forma analitica,
 IRLS per il GLM a link identità, arcoseno per MDE/potenza, matching Mahalanobis rifatto, tassi 15+ ricalcolati dai 12 blocchi dei 390 comuni,
 Spearman come Pearson sui ranghi, ritenzione di coorte rifatta dal raw delle classi
 quinquennali, platea/sex ratio/stranieri/transizioni dalle età singole e dalle classi,
 stato civile dal raw POPRES coi codici sesso legacy):
-**521/521 PASS**; output salvati identici alla riesecuzione (diff nullo), CSV rigenerati
+**650/650 PASS**; output salvati identici alla riesecuzione (diff nullo), CSV rigenerati
 byte-identici. È il pin di regressione del thread: se i raw cambiano deve fallire finché
 notebook e attesi non vengono riallineati.
+
+## Bug corretti (2026-08-28)
+- `pipeline/build.py`: la shapefile ISTAT dei confini veniva letta **senza `encoding`** e
+  fiona ripiegava su latin-1 su un DBF che contiene byte UTF-8. Quindici comuni uscivano
+  mojibake in `comuni_sicilia_centroidi.csv` e `comuni_sicilia_poligoni.csv` — Cefalù,
+  Canicattì, Paternò, Basicò e altri undici. Il bug era invisibile finché nessuna figura
+  nominava quei comuni; fig04c li nomina. Fix: `encoding="utf-8"` nella `gpd.read_file`.
+  Rigenerando, il diff è esattamente 15 nomi in due file e nient'altro.
+- `viz/theme.R`: `migliaia(500)` restituiva `«5e+02»` — `format()` passa alla notazione
+  scientifica quando è più corta, e le etichette tonde sono proprio quelle a rischio.
+  Fix: `scientific = FALSE`.
 
 ## Risultati chiave
 - Gap occupazionale 2024: 8.3 punti [CI 6.6-10.0]. In punti **non è un'anomalia locale**
@@ -147,6 +159,21 @@ notebook e attesi non vengono riallineati.
   ±0.8 pp di solo rumore di conteggio e un'Italia ferma in 100.7-101.3; 5 celle su 12
   sotto quota 100. Il claim si titola sul triennio, l'anno singolo è un controllo.
 
+- **Il pendolarismo ha un genere** (nuovo, 2026-08-28, nessun fetch: la dimensione
+  `genere` era già in `edu_census_commuting_long.csv` e nessuno l'aveva scomposta — è la
+  richiesta girata a `CONTEXT-fabio.md`). Fra chi già si sposta **per lavoro**, esce dal
+  comune il **41,2% dei maschi** e il **33,0% delle femmine** (2019): **8,2 punti**, circa
+  il doppio dello scarto siciliano (4,1) e nazionale (4,7). Sullo **studio il segno si
+  inverte**: F 16,3% contro M 13,6%, **+2,7**, il vantaggio femminile più ampio del panel
+  (Sicilia +1,8, Italia +1,4). Stabile su entrambi gli anni. Il denominatore è già
+  condizionato al motivo — chi si sposta per lavoro un lavoro ce l'ha — quindi **non** è
+  un riflesso del gap occupazionale: è una conferma indipendente dello stesso punto di
+  rottura del quadrante. Contesto 2011 sui 390: `M2` 25° percentile, `M6` 36°; `M4` al 18°
+  **non** è un dato negativo (è un rapporto fuori/dentro comune e Bagheria ha scuole
+  proprie). ⚠️ `OMPUR` è «fuori comune» aggregato: **la destinazione Palermo non è
+  identificata**, e la fonte esiste solo per 2018-2019 — un KPI su questa misura non è
+  aggiornabile dalla statistica ufficiale.
+
 - **L'integrazione col thread educazione** (2026-08-27, tavole `edu_*` via
   `uv run python -m pipeline.edu`, sources.md §10; celle 🔗 nel notebook). Stessi numeri,
   due pipeline: il suo 19% T è la somma F+M della composizione per stato (scarto 0,00
@@ -210,6 +237,9 @@ lavoro e istruzione» = tutti meno occupati e studenti, per territorio e genere)
 platea: lordo, attrito demografico, netto — alimenta la cascata di fig09),
 `genere_frattura_istruzione.csv` (I5, uscita precoce, 1991-2011 con percentile
 ricalcolato in questo thread — alimenta la striscia di fig10),
+`genere_pendolarismo.csv` (quota fuori comune per territorio × motivo × anno × genere,
+con `gap_M_meno_F`) + `genere_mobilita_2011.csv` (M2/M4/M6 con mediana e percentile sui
+390) — nessuna figura li usa ancora,
 più le copie `edu_*` dal thread educazione (rigenerabili con `uv run python -m pipeline.edu`).
 
 ## Figure (R)
@@ -220,12 +250,58 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   0/6 in punti, 4/6 in rapporto, **6/6 sul livello**. È qui che si argomenta quale scala
   reggere, ed è per questo che fig05 non ripete più le serie dell'occupazione
   (erano identiche riga per riga, e qui hanno le bande).
-- `fig02_composizione_stato` — popolazione 15-24 per sei stati (casalinghe 13,4% vs 1,7%).
-  Dal 2026-08-27 lo stack è riordinato (occupati, studenti, poi i quattro stati fuori da
-  entrambi) e la barra di Bagheria porta la **graffa del proxy NEET** — «fuori da lavoro
-  e istruzione»: 26,7% F (771 ragazze), 27,1% M (818) — da
-  `genere_fuori_lavoro_istruzione.csv`; il sottotitolo aggiunge il dato nubili
-  (41 già coniugate contro 387 casalinghe, ≥89%) da `genere_stato_civile.csv`.
+- `fig02_composizione_stato` — **diagramma di Sankey** (dal 2026-08-28, prima era una barra
+  impilata con una graffa disegnata a mano): totale 15-24 → i due generi → i sei stati → tre
+  nodi d'arrivo. I nodi sono la convenzione del proxy NEET spezzata in tre — «dentro lavoro o
+  studio», «fuori ma in cerca», «fuori e non in cerca» — così l'aggregazione «fuori da lavoro
+  e istruzione» (26,7% F, 771 ragazze; 27,1% M, 818, da `genere_fuori_lavoro_istruzione.csv`)
+  si **vede** come confluenza invece di essere annotata, e il gruppo che nessuna politica
+  attiva intercetta (573 F, 549 M) diventa un nodo suo invece di una riga in caption.
+  I due nastri spessi che entrano in quel nodo hanno colori opposti nei due generi: casalinghe
+  13,4% F contro altra condizione 16,1% M — è il finding, reso struttura.
+  Le persone (non solo le quote) e il nodo d'arrivo sono colonne nuove di
+  `genere_composizione_stato_dettaglio.csv`, scritte dal notebook: senza i conteggi il primo
+  stadio sarebbe alto uguale nei due generi e direbbe il falso. **I conteggi per stato restano
+  frazionari nel CSV** — arrotondarli prima di sommarli perdeva una persona per genere e i
+  totali non combaciavano più con `genere_platea.csv`.
+  Il sottotitolo tiene il dato nubili (41 già coniugate contro 387 casalinghe, ≥89%) da
+  `genere_stato_civile.csv`.
+  I nastri sono `geom_polygon` con profilo cosinusoidale calcolato nello script — nessuna
+  dipendenza nuova (`ggalluvial` non è installato), stesso pattern dei poligoni di fig04.
+  **Trappola**: la soppressione di assi e griglia va messa DOPO `tema_figura()` — un tema
+  completo rimpiazza quello accumulato invece di aggiungersi, e messa prima sparisce.
+- `fig02b_casalinghe_territori` — **scorporo di fig02** (2026-08-28): il confronto
+  territoriale non stava nei nastri (cinque territori sono illeggibili) ed era una striscia a
+  fianco del Sankey; adesso è una figura sua. Lollipop della quota casalinghe F 15-24 su
+  cinque territori in ordine **geografico, non per valore** (la discesa è il finding, non
+  l'ordinamento): Bagheria 13,4%, vicinato 13,6%, Palermo 11,3%, Sicilia 10,1%, Italia 4,6%
+  — Bagheria vale 2,9× l'incidenza nazionale, e il vicinato sta appena peggio: il livello non
+  si ferma al confine comunale, quindi una politica che tratta il carico di cura come un
+  problema di Bagheria sbaglia bacino. Fra i ragazzi la stessa condizione è 1,7% a Bagheria e
+  0,6% in Italia: il divario è di zona, la condizione è di genere.
+  Le due figure si citano a vicenda in caption: fig02 dice da dove arriva la quota dentro la
+  popolazione, fig02b quanto lontano arriva il fenomeno.
+- `fig04c_graduatoria_390` — **nuova, 2026-08-28**: la graduatoria dei 390 comuni sul tasso
+  di occupazione femminile 15+ al 2024. Dot plot di Cleveland con **rottura**: gli 8 in cima,
+  «··· 154 comuni ···», i 7 riferimenti (Palermo, i 5 vicini, Bagheria) al loro rango vero,
+  «··· 15 comuni ···», gli 8 in fondo. Rango stampato riga per riga, mediana regionale come
+  linea verticale, **dimensione del punto = platea femminile 15+** su scala logaritmica.
+  Risultati: **Bagheria è 324ª su 390** (23,7% contro una mediana di 28,3%); tutti e cinque i
+  vicini sono sotto la mediana (dal 245° al 367°); **Palermo è l'unico riferimento sopra**
+  (29,6%, 163°) ma non è in alto. La coda alta è un blocco contiguo della **costa ionica
+  messinese** (Taormina, Letojanni, Sant'Alessio Siculo, Santa Teresa di Riva, Furci Siculo);
+  la coda bassa è tutta interna e mescola città vere (Adrano, 14.729 donne 15+) e paesi
+  minuscoli (Bompensiere, 220) — per questo il punto porta la platea.
+  **Perché non uno slopegraph**, che era la richiesta iniziale: lo slopegraph esiste per il
+  movimento fra due stati, e il movimento è già in fig04b; peggio, fra 2011 e 2024 cambiano
+  rilevazione e disegno, quindi le annate si confrontano in percentili e non in punti — uno
+  slopegraph sui livelli avrebbe mentito in silenzio. Questa figura sta su una sola annata.
+  Le righe sono ordinate per valore ma **spaziate in modo uniforme**: la distanza fra due
+  righe non è una distanza di rango, e il rango a destra è l'unica misura vera.
+  Tre `stopifnot` reggono i claim del testo: i cinque comuni ionici devono essere ancora fra
+  gli otto in cima, Palermo sopra la mediana, gli altri riferimenti sotto.
+  Colonne nuove in `genere_mappa_2011_2024.csv`: `donne_15piu_2024` (il denominatore del
+  tasso, con un assert nel notebook che lo verifica ricostruendo il tasso) e `rango_2024`.
 - `fig03_coorti` — dumbbell F/M della ritenzione di coorte.
 - `fig04_mappa_sicilia` — coropleta dei 390 comuni al **2024** (legenda dentro il pannello,
   a nord-ovest: fuori rubava altezza alla carta) + istogramma con le due distribuzioni
@@ -244,9 +320,27 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   claim in figura è il distacco dal vicinato e la mancata conversione, e la caption lo
   dichiara. Dati: `genere_forbice_quadrante.csv` + `genere_forbice_serie.csv`; banda del
   2020 condivisa con fig01 (`buco_2020()`, ora in theme.R).
-- `fig06_quadrante` — quadrante per genere 2024 (frecce M→F) | nuvola dei 390 comuni
-  2011 con gemelle evidenziate. Pannelli affiancati ed etichettati, mai uniti: fasce e
-  fonti diverse.
+- `fig06_quadrante` — quadrante per genere 2024: una freccia per territorio, dal punto
+  maschile a quello femminile. Punta in basso a destra in tutti e quattro, e a Bagheria
+  arriva più in basso di tutte.
+- `fig06b_creste_390` — **joyplot**: la distribuzione dell'occupazione femminile 15+ nei
+  390 comuni siciliani, una cresta per annata 2018-2024, con due gambi per cresta (mediana
+  regionale e Bagheria) e il percentile di Bagheria a fianco. Il finding è che i due gambi
+  restano **paralleli per sei annate**: la regione guadagna 4,0 punti di mediana, Bagheria
+  ne guadagna 4,9 e non supera mai il 17° percentile. Il tratteggio sul 2024 di Bagheria
+  cade ancora a sinistra della mediana siciliana del 2018.
+  Dal 2026-08-28 sostituisce la **nuvola dei 390 comuni al 2011** (istruzione × occupazione,
+  `genere_nuvola_390.csv`): con rho -0,24 su 390 punti quel grafico mostrava un blob senza
+  pendenza visibile e lasciava il percentile di Bagheria scritto in sottotitolo invece che
+  visto — due claim in titolo, nessuno dei due evidente. La relazione istruzione × lavoro
+  resta in fig06, dove quattro frecce la fanno vedere. Il CSV della nuvola continua a essere
+  prodotto dal notebook, che ne usa la correlazione nel testo: è la figura a essere ritirata,
+  non il calcolo.
+  Dati: `genere_creste_390.csv` (densità KDE calcolate in Python — banda unica di Silverman
+  sul pool, così le differenze di forma sono del dato e non del lisciamento) +
+  `genere_distribuzione_390.csv`. Solo censimento permanente: il 2011 di 8milaCensus resta
+  fuori, una cresta appaiata alle altre farebbe leggere lo scarto di definizione come
+  movimento della distribuzione.
 - `fig07_ritenzione_eta` — profilo di ritenzione 2021-2024 per età singola (femmine |
   maschi, quattro territori + vicinato): finestra utile 22-25 evidenziata, onde maschili
   con rientri dopo i 26. Sotto, lo **slope chart dei due decenni** (2001-2011 vs 2011-2021,
@@ -310,13 +404,54 @@ condivisi in `viz/theme.R`: Bagheria in vermiglio, genere in arancio/verde, Okab
   bordo. Si può fare solo perché le due epoche non sono già una serie unica: nessuna linea
   attraversa lo stacco, quindi non c'è una pendenza continua da falsare. Le pendenze restano
   confrontabili **dentro** ciascuna epoca, non fra le due, e la caption lo dichiara.
-- `fig11_per_1000` — istruzione e lavoro **sulla stessa fascia**: su 1.000 ragazze 15-24,
-  510 diplomate e 82 al lavoro (coetanei: 462 e 165); barre parallele sulla stessa base,
-  **mai** stadi di un funnel (l'incrocio titolo × condizione non esiste a livello comunale
-  e gli insiemi non sono annidati) | attainment 18-24 come bound superiore. Attenzione ai
-  claim: sul 18-24 il primato del vantaggio educativo **non regge** (Bagheria +5,7,
-  Sicilia +7,1, Italia +6,2) — usare il distacco dal vicinato (+5,7 contro +2,5) e la
-  mancata conversione, non il primato assoluto; la nota è in sintesi finale.
+- `fig11_per_1000` — **butterfly chart dal 2026-08-28** (prima erano barre parallele in due
+  facet affiancati F | M): istruzione e lavoro **sulla stessa fascia**, due pannelli
+  impilati — «con almeno il diploma» e «al lavoro» — e in ciascuno le ragazze a sinistra
+  della spina, i ragazzi a destra, sulla stessa riga di territorio.
+  Su 1.000 ragazze 15-24 di Bagheria: 510 diplomate e 82 al lavoro (coetanei: 462 e 165).
+  **Perché la farfalla**: il titolo della figura è un confronto F/M, e i due facet lo
+  spezzavano — per confrontare 510 e 462 l'occhio doveva saltare fra pannelli tenendo a
+  mente una lunghezza. Le ali condividono la base (la spina), quindi il confronto resta
+  corretto: è il motivo per cui le piramidi delle età funzionano. E l'inversione fra le due
+  misure diventa una **forma** — le ali del diploma pendono a sinistra, quelle del lavoro a
+  destra: la forbice si vede invece di doverla dedurre.
+  Scala **condivisa** fra i due pannelli, non libera: che il lavoro sia un quinto del
+  diploma è metà del finding.
+  **Claim corretto nella riscrittura**: il vecchio sottotitolo diceva che il divario nel
+  lavoro «a Bagheria è il più largo». In punti per mille è **falso** — Sicilia 99 e Italia
+  96 contro gli 83 di Bagheria. È vero **in rapporto** (2,0× contro 1,55 nazionale, il
+  valore più alto del panel). Con le barre affiancate l'ambiguità passava; con le ali, che
+  mostrano lunghezze cioè differenze, si sarebbe vista. Adesso la distinzione è esplicita e
+  un `stopifnot` la tiene onesta: Bagheria deve essere il massimo in rapporto **e** non il
+  massimo in differenza. Altri due controlli reggono i titoli dei pannelli (sul diploma
+  vincono le ragazze in tutti e cinque i territori, sul lavoro i ragazzi).
+  Restano **mai** stadi di un funnel: l'incrocio titolo × condizione non esiste a livello
+  comunale e gli insiemi non sono annidati — è la ragione per cui le due misure stanno in
+  due pannelli. Attainment 18-24 come bound superiore in fig11b. Attenzione ai claim: sul
+  18-24 il primato del vantaggio educativo **non regge** (Bagheria +5,7, Sicilia +7,1,
+  Italia +6,2) — usare il distacco dal vicinato (+5,7 contro +2,5) e la mancata conversione,
+  non il primato assoluto; la nota è in sintesi finale.
+
+- `fig03_coorti` — resta un **dumbbell**, valutato e scartato il butterfly (2026-08-28):
+  i valori stanno fra 95% e 105%, quindi non c'è uno zero vero da cui far crescere le ali
+  (o parti da 0 e le differenze spariscono, o tronchi e la barra mente); il finding è il
+  **divario** F/M, che il dumbbell codifica come distanza e il butterfly costringe a
+  ricostruire da due lunghezze opposte; e la riferimento al 100% andrebbe disegnata due
+  volte, una per ala. Scartate per lo stesso motivo la piramide delle età (ali quasi
+  simmetriche, ~300 per cella, differenze nel rumore) e la piramide del cambiamento
+  (saldi ±10 su coorti di ~300, che cambiano segno di età in età — è la ragione della
+  media mobile a tre età in fig07).
+- `fig12_pendolarismo` (nuova, 2026-08-28) — dumbbell M→F su due pannelli (lavoro |
+  studio) per i quattro territori: il verso dello scarto cambia col motivo **ovunque**,
+  quindi il claim non è il segno ma l'**ampiezza** — Bagheria ha la maggiore del panel in
+  entrambi i pannelli (8,2 punti sul lavoro, 2,7 sullo studio). Due dettagli non
+  cosmetici: l'arretramento della freccia è una **frazione** dello scarto e non un valore
+  fisso (con un fisso, ogni scarto sotto 1,2 punti produceva una freccia rivolta dalla
+  parte sbagliata — Palermo sullo studio), e i punti hanno **diametri diversi con le
+  femmine disegnate per prime**, così dove i due valori quasi coincidono si vede un anello
+  e non un dato mancante (idioma di fig03). ⚠️ In caption i tre limiti della fonte:
+  destinazione aggregata (**non** «verso Palermo»), Palermo non comparabile su questa
+  misura perché comune grande, serie ferma al 2018-2019.
 
 Tipografia: Lato dove installato (fallback al sans di sistema) e numeri all'italiana
 via `virgola()` — entrambi in `viz/theme.R`, nessuno stile inline.

@@ -1,8 +1,8 @@
 # Figura edu-06 — il gap con la Sicilia non si chiude (port R della fig06 del thread
 # educazione). Dimostratore dell'assimilazione sul branch unison: dati da
 # edu_gaps_vs_sicily.csv (pipeline/edu), tema e tipografia condivisi di theme.R.
-# Fuori dal glob di build_all.R (^fig[0-9]+_): si lancia a mano finché il team non
-# decide la numerazione delle figure educazione.
+# Dentro il glob di build_all.R: la numerazione del thread educazione è il prefisso
+# `edu_fig` (edu-01..edu-08), separata da quella del thread genere.
 #
 # Palette: qui le serie sono metriche, non territori né generi, quindi i colori
 # riservati (vermiglio Bagheria, blu/rosa genere, viola/ambra territori) non si
@@ -19,14 +19,21 @@ SPEC <- tibble::tibble(
 
 serie <- read_csv(file.path(PROCESSED, "edu_gaps_vs_sicily.csv"), show_col_types = FALSE) |>
   filter(dominio == "giovani", metrica %in% SPEC$metrica) |>
-  inner_join(SPEC, by = "metrica")
+  inner_join(SPEC, by = "metrica") |>
+  # Il 2020 manca alla fonte: la riga vuota interrompe la linea invece di farla passare
+  # sotto la striscia, dove il rettangolo opaco la nasconderebbe. Nessun valore inventato.
+  # La chiave è `nome` perché è quella che porta il colore: completare per `metrica`
+  # lascerebbe l'estetica vuota sulla riga nuova.
+  complete(nome, anno = 2018:2024)
 
-ultimi <- serie |> slice_max(anno, n = 1, by = metrica)
+# Le righe del 2020 sono vuote per costruzione: fuori dalle etichette di fine linea.
+ultimi <- serie |>
+  filter(!is.na(gap_bagheria_sicilia_pp)) |>
+  slice_max(anno, n = 1, by = nome)
 gap_occ_18 <- serie$gap_bagheria_sicilia_pp[serie$metrica == "quota_occupati" & serie$anno == 2018]
 gap_occ_24 <- serie$gap_bagheria_sicilia_pp[serie$metrica == "quota_occupati" & serie$anno == 2024]
 
-figura <- ggplot(serie, aes(anno, gap_bagheria_sicilia_pp, colour = nome)) +
-  buco_2020(-2.2) +
+figura <- ggplot(serie, aes(asse_2020(anno), gap_bagheria_sicilia_pp, colour = nome)) +
   geom_hline(yintercept = 0, linewidth = 0.5, colour = "grey30") +
   geom_line(linewidth = 1.05) +
   geom_point(size = 2) +
@@ -34,8 +41,12 @@ figura <- ggplot(serie, aes(anno, gap_bagheria_sicilia_pp, colour = nome)) +
             aes(label = paste0(nome, "  ", virgola(gap_bagheria_sicilia_pp, 1, " p.p."))),
             hjust = 0, nudge_x = 0.12, size = 3.3, fontface = "bold", show.legend = FALSE) +
   scale_colour_manual(values = setNames(SPEC$colore, SPEC$nome), guide = "none") +
-  scale_x_continuous(breaks = 2018:2024, limits = c(2018, 2026.6)) +
+  # L'asse porta le posizioni, non gli anni: il 2020 non ne ha una (manca alla fonte) e
+  # fra 2019 e 2021 resta solo la colonna vuota che la striscia grigia riempie.
+  # Il margine a destra è per le etichette di fine linea.
+  scala_2020(limits = c(asse_2020(2018), asse_2020(2024) + 2.6)) +
   scale_y_continuous(labels = function(x) virgola(x, 0)) +
+  buco_2020(-2.2, serie$anno, serie$gap_bagheria_sicilia_pp) +
   labs(
     title = "Il recupero non si è trasformato in convergenza con la Sicilia",
     subtitle = paste(

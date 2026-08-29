@@ -9,12 +9,21 @@ Output:
     codici.csv                     lookup codice SDMX -> etichetta (genere, condizione, ...)
     ottomilacensus_long.csv        99 indicatori x 1991/2001/2011
     censpop_istr_lav_long.csv      lavoro + istruzione per genere ed età, 2018-2024
+    tasso_occupazione_eta.csv      occupati / popolazione per classe d'età e genere,
+                                   2018-2024 senza il 2020 (manca il numeratore)
     censpop_popolazione_long.csv   popolazione per età singola e genere, 2018-2024
     censpop_lavoro_gemelle_long.csv        lavoro per le 10 gemelle strutturali, 2018-2024
     censpop_lavoro_15piu_sicilia_long.csv  lavoro 15+ per i 390 comuni siciliani, 2018-2024
     censpop_demografia_classi_long.csv     popolazione per classi quinquennali, 2001-2024
     popres_stato_civile_long.csv           popolazione al 1° gennaio per età, sesso e
                                            stato civile (DCIS_POPRES1, 2019-2026)
+    pendolarismo_od_long.csv       matrice origine-destinazione degli spostamenti per studio
+                                   o lavoro (censimenti 2001, 2011 e 2021), origini siciliane
+    pendolarismo_mezzo_long.csv    gli stessi spostamenti per mezzo, orario di uscita e
+                                   durata del tragitto (solo 2011, stima campionaria)
+    pendolarismo_benchmark_long.csv  gli stessi spostamenti aggregati a Italia e Sicilia,
+                                   il confronto territoriale che chiede il bando
+    pendolarismo_mezzi.csv         lookup codice mezzo -> etichetta
 
 Le descrizioni stanno nei lookup e non nelle tabelle lunghe: ripetute su ogni riga
 gonfiavano ottomilacensus_long da 4 a 40 MB. In R è una join in più.
@@ -168,6 +177,35 @@ def costruisci_censpop_istr_lav() -> pd.DataFrame:
     lungo["eta_anni"] = eta_in_anni(lungo["eta"])
     return lungo[["territorio", "anno", "tavola", "genere", "eta", "eta_anni",
                   "cittadinanza", "titolo_studio", "condizione", "valore"]]
+
+
+# Le uniche classi d'età su cui il censimento permanente pubblica la condizione
+# professionale a livello comunale. Y_GE15 è il totale, non una quinta fascia: le altre
+# quattro lo compongono, e sommarle a lui conta due volte le stesse persone.
+CLASSI_LAVORO = {"Y15-24": "15-24", "Y25-49": "25-49", "Y50-64": "50-64",
+                 "Y_GE65": "65+", "Y_GE15": "15+ (totale)"}
+
+
+def costruisci_tasso_occupazione_eta(istr_lav: pd.DataFrame) -> pd.DataFrame:
+    """Occupati (condizione 1) sulla popolazione della classe (condizione 99), per classe d'età.
+
+    Il 2020 sparisce da solo, ed è giusto così: sulla 15-24 la fonte non pubblica nessuna
+    riga, sulle altre classi pubblica solo il denominatore. Il rapporto non esiste in
+    nessuna classe, e `dropna()` lo lascia fuori invece di scrivere uno zero o un buco
+    ambiguo. Chi disegna la serie rimette la riga vuota (`complete()` in R).
+    """
+    quadro = istr_lav[
+        istr_lav["tavola"].eq("lavoro") & istr_lav["eta"].isin(list(CLASSI_LAVORO))
+        & istr_lav["cittadinanza"].eq("TOTAL") & istr_lav["titolo_studio"].eq("ALL")
+        & istr_lav["condizione"].isin(["1", "99"])
+    ].pivot_table(index=["territorio", "anno", "eta", "genere"], columns="condizione",
+                  values="valore", aggfunc="first").dropna().reset_index()
+    quadro["classe"] = quadro["eta"].map(CLASSI_LAVORO)
+    quadro["tasso_occupazione"] = 100 * quadro["1"] / quadro["99"]
+    return (quadro.rename(columns={"1": "occupati", "99": "popolazione"})
+            [["territorio", "anno", "eta", "classe", "genere", "occupati", "popolazione",
+              "tasso_occupazione"]]
+            .sort_values(["territorio", "genere", "eta", "anno"], ignore_index=True))
 
 
 def costruisci_censpop_popolazione() -> pd.DataFrame:
@@ -325,7 +363,11 @@ def costruisci_confini_sicilia() -> tuple[pd.DataFrame, pd.DataFrame]:
     import geopandas as gpd
 
     archivio = ultimo("istat_confini_comuni", ".zip")
-    comuni = gpd.read_file(f"zip://{archivio}!Com01012026_g/Com01012026_g_WGS84.shp")
+    # encoding esplicito: il DBF della shapefile ISTAT contiene byte UTF-8 ma non dichiara
+    # la codepage, e fiona ripiega su latin-1 — «Basicò» usciva «BasicÃ²», e con lui Cefalù,
+    # Canicattì, Paternò e altri undici comuni accentati.
+    comuni = gpd.read_file(f"zip://{archivio}!Com01012026_g/Com01012026_g_WGS84.shp",
+                           encoding="utf-8")
     sicilia = comuni[comuni["COD_REG"].eq(COD_REG_SICILIA)].to_crs(epsg=CRS_MAPPA)
     sicilia = sicilia.assign(geometry=sicilia.geometry.simplify(SEMPLIFICA_METRI, preserve_topology=True))
 
@@ -358,6 +400,143 @@ def costruisci_confini_sicilia() -> tuple[pd.DataFrame, pd.DataFrame]:
         "y": punti.y.round(0).astype(int).values,
     })
     return poligoni, centroidi
+
+
+# --- Matrici del pendolarismo (censimenti 2001 e 2011) ---------------------------------
+#
+# Tracciato fisso, ma i campi sono separati da spazi e nessuna etichetta contiene spazi:
+# `str.split()` basta e non dipende dalle posizioni esatte, che i due anni hanno diverse.
+#
+# 2011 - due tipi di record sulla stessa popolazione (4,9 M di righe, 28,9 M di individui):
+#   S  strati origine x destinazione x sesso x motivo, conteggio ESAUSTIVO (campo `esatto`)
+#   L  gli stessi strati aperti anche per mezzo/orario/durata, STIMA CAMPIONARIA (`stima`)
+# Nei comuni sopra i 20.000 abitanti - Bagheria è uno - le tre variabili del tipo L sono
+# rilevate su un campione: il leggimi ISTAT prescrive `esatto` per tutto ciò che sta nel
+# tipo S e `stima` solo quando servono mezzo, orario o durata. Le due tabelle in uscita
+# rispettano quella divisione, così nessuno mescola per sbaglio le due variabili.
+#
+# 2001 - un record per strato, conteggio esaustivo, e il dettaglio di mezzo/orario/durata
+# esiste solo per chi si è effettivamente spostato il mercoledì di riferimento. I codici
+# mezzo del 2001 non coincidono con quelli del 2011 (il 10 accorpa piedi, bici e altro):
+# per questo qui si tiene solo la parte origine-destinazione, comparabile fra i due anni.
+MEZZI = {
+    "01": "treno", "02": "tram", "03": "metropolitana", "04": "autobus urbano, filobus",
+    "05": "corriera, autobus extra-urbano", "06": "autobus aziendale o scolastico",
+    "07": "auto privata (conducente)", "08": "auto privata (passeggero)",
+    "09": "motocicletta, ciclomotore, scooter", "10": "bicicletta", "11": "altro mezzo",
+    "12": "a piedi",
+}
+# Le classi di 8milaCensus M5/M6/M7, ricostruite dai codici: M6 esclude il 06 (autobus
+# aziendale o scolastico), che non è servizio di linea. Verificato in _verifica_pendolarismo.
+MEZZO_CLASSE = ({c: "collettivo" for c in ("01", "02", "03", "04", "05")}
+                | {"06": "aziendale o scolastico"}
+                | {c: "privato a motore" for c in ("07", "08", "09")}
+                | {c: "piedi o bici" for c in ("10", "12")} | {"11": "altro"})
+DURATE = {"1": "fino a 15 min", "2": "16-30 min", "3": "31-60 min", "4": "oltre 60 min"}
+ORARI = {"1": "prima delle 7:15", "2": "7:15-8:14", "3": "8:15-9:14", "4": "dopo le 9:14"}
+SESSI = {"1": "M", "2": "F"}
+MOTIVI = {"1": "studio", "2": "lavoro"}
+LUOGHI = {"1": "dentro", "2": "fuori", "3": "estero"}
+PROVINCE_SICILIA = tuple(f"08{c}" for c in range(1, 10))
+BAGHERIA = "082006"
+PALERMO = "082053"
+
+
+def _righe_pendolarismo(anno: int, dentro_archivio: str):
+    """Righe della matrice con origine in Sicilia o destinazione a Bagheria.
+
+    Il file 2011 è di 307 MB: si legge in streaming dallo zip, senza mai espanderlo su disco
+    (data/raw/ resta append-only e l'archivio scaricato è l'unica copia). `split()` senza
+    argomenti va bene anche sul 2021, che è tab-separato: nessun campo contiene spazi.
+    """
+    import zipfile
+
+    nome = ("istat_matrice_pendolarismo_lavoro_2021" if anno == 2021
+            else f"istat_matrice_pendolarismo_{anno}")
+    with zipfile.ZipFile(ultimo(nome, ".zip")) as archivio:
+        with archivio.open(dentro_archivio) as flusso:
+            for riga in flusso:
+                campi = riga.decode("latin-1").split()
+                yield campi
+
+
+def costruisci_pendolarismo() -> dict[str, pd.DataFrame]:
+    def normalizza(origine, destinazione, sesso, motivo, luogo, estero):
+        # luogo 3 = all'estero: il comune di destinazione non esiste e i due campi
+        # provincia/comune portano il codice dello Stato. Non si inventa un codice ISTAT.
+        return (origine, "ESTERO" if luogo == "3" else destinazione,
+                SESSI[sesso], MOTIVI[motivo], LUOGHI[luogo])
+
+    od, mezzo, italia = [], [], []
+
+    # --- 2011 ---
+    for c in _righe_pendolarismo(2011, "MATRICE PENDOLARISMO 2011/matrix_pendo2011_10112014.txt"):
+        tipo, _res, pres, cres, sesso, motivo, luogo, pdest, cdest, estero = c[:10]
+        origine, destinazione = pres + cres, pdest + cdest
+        siciliano = pres in PROVINCE_SICILIA
+        chiave = normalizza(origine, destinazione, sesso, motivo, luogo, estero)
+        # Il benchmark nazionale e regionale che chiede il bando si accumula PRIMA del
+        # filtro: il ciclo passa comunque sui 4,9 milioni di record, e rileggere 307 MB
+        # una seconda volta per l'Italia sarebbe lavoro sprecato.
+        if tipo == "S":
+            italia.append((2011, "IT", *chiave[2:], int(c[14])))
+            if siciliano:
+                italia.append((2011, "ITG1", *chiave[2:], int(c[14])))
+        if not siciliano and destinazione != BAGHERIA:
+            continue
+        if tipo == "S":
+            # `esatto` c'è sempre; `stima` è ND per chi vive in convivenza (18.726 in Italia),
+            # che infatti non ha record di tipo L. Si tiene il conteggio esaustivo.
+            od.append((2011, *chiave, int(c[14])))
+        elif siciliano:
+            mezzo.append((origine, *chiave[2:], destinazione == PALERMO,
+                          MEZZI[c[10]], ORARI[c[11]], DURATE[c[12]], float(c[13])))
+
+    # --- 2001: un solo tipo di record, il flag "spostamento del mercoledì" è c[7] ---
+    for c in _righe_pendolarismo(2001, "matrix_pendo2001.txt"):
+        pres, cres, sesso, motivo, luogo, pdest, cdest = c[:7]
+        origine, destinazione = pres + cres, pdest + cdest
+        if pres not in PROVINCE_SICILIA and destinazione != BAGHERIA:
+            continue
+        od.append((2001, *normalizza(origine, destinazione, sesso, motivo, luogo, None), int(c[-1])))
+
+    # --- 2021: censimento permanente, solo lavoro, nessuna disaggregazione per sesso.
+    #     Tab-separato con intestazione, il comune è già a sei cifre. La definizione cambia —
+    #     "almeno tre giorni a settimana" invece di "giornalmente" — quindi i livelli 2011 e
+    #     2021 non stanno in serie: confrontabile è la composizione (dove vanno, su cento che
+    #     escono). La colonna `definizione` obbliga a dichiararlo in qualunque figura. ---
+    for c in _righe_pendolarismo(2021, "matrix_pendoLAVORO_2021.txt"):
+        if c[0] == "Prov_res":
+            continue
+        _, origine, _, destinazione, persone = c
+        luogo = "dentro" if origine == destinazione else "fuori"
+        italia.append((2021, "IT", "T", "lavoro", luogo, int(persone)))
+        if origine[:3] in PROVINCE_SICILIA:
+            italia.append((2021, "ITG1", "T", "lavoro", luogo, int(persone)))
+        if origine[:3] in PROVINCE_SICILIA or destinazione == BAGHERIA:
+            od.append((2021, origine, destinazione, "T", "lavoro", luogo, int(persone)))
+
+    colonne_od = ["anno", "origine", "destinazione", "genere", "motivo", "luogo", "persone"]
+    definizioni = {2001: "giornaliero (censimento 2001)",
+                   2011: "giornaliero (censimento 2011)",
+                   2021: "almeno 3 giorni a settimana (censimento permanente 2021)"}
+    od = (pd.DataFrame(od, columns=colonne_od)
+          .groupby(colonne_od[:-1], as_index=False)["persone"].sum()
+          .assign(definizione=lambda d: d["anno"].map(definizioni)))
+    mezzo = (pd.DataFrame(mezzo, columns=["origine", "genere", "motivo", "luogo",
+                                          "verso_palermo", "mezzo", "orario", "durata", "stima"])
+             .groupby(["origine", "genere", "motivo", "luogo", "verso_palermo",
+                       "mezzo", "orario", "durata"], as_index=False)["stima"].sum())
+    colonne_bm = ["anno", "territorio", "genere", "motivo", "luogo", "persone"]
+    benchmark = (pd.DataFrame(italia, columns=colonne_bm)
+                 .groupby(colonne_bm[:-1], as_index=False)["persone"].sum()
+                 .assign(definizione=lambda d: d["anno"].map(definizioni)))
+    mezzi = pd.DataFrame({"mezzo": list(MEZZI.values()),
+                          "classe": [MEZZO_CLASSE[c] for c in MEZZI]})
+    return {"pendolarismo_od_long.csv": od,
+            "pendolarismo_benchmark_long.csv": benchmark,
+            "pendolarismo_mezzo_long.csv": mezzo,
+            "pendolarismo_mezzi.csv": mezzi}
 
 
 def costruisci_codici(*tabelle: pd.DataFrame) -> pd.DataFrame:
@@ -423,13 +602,66 @@ def _verifica(ottomila: pd.DataFrame, istr_lav: pd.DataFrame, popolazione: pd.Da
                    eta="Y15-24", condizione="1", cittadinanza="TOTAL", titolo_studio="ALL")
     assert occupati == 419, f"occupati M 15-24 Bagheria 2021 = {occupati}, atteso 419"
 
+    tasso = costruisci_tasso_occupazione_eta(istr_lav)
+    assert not tasso["anno"].eq(2020).any(), "il 2020 non ha numeratore: non deve avere un tasso"
+    bagheria_2024 = tasso[tasso["territorio"].eq("082006") & tasso["anno"].eq(2024)
+                          & tasso["genere"].eq("T") & tasso["eta"].eq("Y15-24")]
+    assert round(bagheria_2024["tasso_occupazione"].iloc[0], 1) == 12.4, (
+        f"tasso 15-24 Bagheria 2024 = {bagheria_2024['tasso_occupazione'].iloc[0]}, atteso 12.4")
+
     giovani = popolazione[
         popolazione["territorio"].eq("082006") & popolazione["anno"].eq(2021)
         & popolazione["genere"].eq("T") & popolazione["cittadinanza"].eq("TOTAL")
         & popolazione["eta_anni"].between(15, 34)
     ]["valore"].sum()
     assert giovani == 12174, f"popolazione 15-34 Bagheria 2021 = {giovani}, attesa 12174"
-    print("   verifica ok: L4=40.1  P1=54257  occupati M 15-24=419  pop 15-34=12174")
+    print("   verifica ok: L4=40.1  P1=54257  occupati M 15-24=419  pop 15-34=12174"
+          "  tasso 15-24 2024=12,4%")
+
+
+def _verifica_pendolarismo(od: pd.DataFrame, mezzo: pd.DataFrame, benchmark: pd.DataFrame,
+                           ottomila: pd.DataFrame) -> None:
+    """La matrice ricostruisce gli indicatori M di 8milaCensus: sei su sei, alla prima cifra.
+
+    Vale come prova di correttezza dell'intero tracciato — se una colonna fosse sfalsata di
+    un campo, nessuno dei sei tornerebbe. M1 e M2 non sono qui perché hanno al denominatore
+    la popolazione fino a 64 anni, che nella matrice non c'è.
+    """
+    def pubblicato(codice):
+        riga = ottomila[ottomila["territorio"].eq(BAGHERIA) & ottomila["anno"].eq(2011)
+                        & ottomila["indicatore"].eq(codice)]
+        return riga["valore"].iloc[0]
+
+    b = od[od["anno"].eq(2011) & od["origine"].eq(BAGHERIA)]
+    per_motivo = b.pivot_table(index="motivo", columns="luogo", values="persone", aggfunc="sum")
+    attesi = {"M3": ("lavoro", pubblicato("M3")), "M4": ("studio", pubblicato("M4"))}
+    for codice, (motivo, atteso) in attesi.items():
+        nostro = round(100 * per_motivo.loc[motivo, "fuori"] / per_motivo.loc[motivo, "dentro"], 1)
+        assert nostro == atteso, f"{codice} Bagheria 2011 = {nostro}, pubblicato {atteso}"
+
+    m = mezzo[mezzo["origine"].eq(BAGHERIA)]
+    classe = m["mezzo"].map(dict(zip(MEZZI.values(), (MEZZO_CLASSE[c] for c in MEZZI))))
+    quota = lambda selezione: round(100 * m.loc[selezione, "stima"].sum() / m["stima"].sum(), 1)
+    controlli = {
+        "M5": (quota(classe.eq("privato a motore")), pubblicato("M5")),
+        "M6": (quota(classe.eq("collettivo")), pubblicato("M6")),
+        "M7": (quota(classe.eq("piedi o bici")), pubblicato("M7")),
+        "M8": (quota(m["durata"].isin(["fino a 15 min", "16-30 min"])), pubblicato("M8")),
+        "M9": (quota(m["durata"].eq("oltre 60 min")), pubblicato("M9")),
+    }
+    for codice, (nostro, atteso) in controlli.items():
+        assert nostro == atteso, f"{codice} Bagheria 2011 = {nostro}, pubblicato {atteso}"
+    # Il 2021 ha un solo controllo possibile — il totale nazionale dichiarato nel leggimi —
+    # perché nessun indicatore pubblicato lo riassume. Vale comunque: il file è tab-separato
+    # e un campo fuori posto lo farebbe saltare.
+    italia_2021 = benchmark.query("anno == 2021 and territorio == 'IT'")["persone"].sum()
+    assert italia_2021 == 19_565_808, f"pendolari Italia 2021 = {italia_2021:,}, attesi 19.565.808"
+    italia_2011 = benchmark.query("anno == 2011 and territorio == 'IT'")["persone"].sum()
+    assert italia_2011 == 28_871_447, f"pendolari Italia 2011 = {italia_2011:,}, attesi 28.871.447"
+    print("   verifica pendolarismo ok: M3=76.1 M4=19.6 e "
+          + ", ".join(f"{c}={n}" for c, (n, _) in controlli.items())
+          + f" dalla matrice 2011; totali Italia 2011 ({italia_2011:,}) e 2021 ({italia_2021:,})"
+            " uguali a quelli dichiarati nei leggimi ISTAT")
 
 
 def main() -> int:
@@ -454,9 +686,14 @@ def main() -> int:
     codici = costruisci_codici(istr_lav, popolazione, *recenti.values())
     print("- confini comunali Sicilia")
     poligoni, centroidi = costruisci_confini_sicilia()
+    print("- matrici del pendolarismo 2001 e 2011")
+    pendolarismo = costruisci_pendolarismo()
 
     print("- verifica")
     _verifica(ottomila, istr_lav, popolazione)
+    _verifica_pendolarismo(pendolarismo["pendolarismo_od_long.csv"],
+                           pendolarismo["pendolarismo_mezzo_long.csv"],
+                           pendolarismo["pendolarismo_benchmark_long.csv"], ottomila)
 
     uscite = {
         "territori.csv": territori,
@@ -464,11 +701,13 @@ def main() -> int:
         "codici.csv": codici,
         "ottomilacensus_long.csv": ottomila,
         "censpop_istr_lav_long.csv": istr_lav,
+        "tasso_occupazione_eta.csv": costruisci_tasso_occupazione_eta(istr_lav),
         "censpop_popolazione_long.csv": popolazione,
         "comuni_sicilia_poligoni.csv": poligoni,
         "comuni_sicilia_centroidi.csv": centroidi,
         **vicini,
         **recenti,
+        **pendolarismo,
     }
     print()
     for nome, tabella in uscite.items():

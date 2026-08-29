@@ -103,17 +103,24 @@ pannello_pari <- function(chiave, sottotitolo, legenda) {
     geom_segment(aes(x = MEDIANA_PARI, xend = sotto, yend = breve),
                  linewidth = 2.4, lineend = "round") +
     geom_point(size = 4.6) +
-    geom_text(aes(label = paste0(sotto, "/", N_GEMELLE)),
-              nudge_x = ifelse(sotto >= MEDIANA_PARI, 0.7, -0.7),
+    # L'etichetta si ancora al proprio bordo interno, non al proprio centro: con hjust 0.5
+    # la distanza dal pallino dipendeva dalla lunghezza del testo, e le etichette a quattro
+    # caratteri ("8/10") finivano a cavallo del pallino mentre quelle corte no. Con hjust
+    # 0/1 lo scostamento È il margine, identico per ogni etichetta.
+    geom_text(aes(label = paste0(sotto, "/", N_GEMELLE),
+                  hjust = ifelse(sotto >= MEDIANA_PARI, 0, 1)),
+              nudge_x = ifelse(sotto >= MEDIANA_PARI, 0.62, -0.62),
               size = 3.3, fontface = "bold", colour = "grey20") +
     (if (legenda) {
       list(scale_colour_manual(values = DIVERGENTE, limits = names(DIVERGENTE),
                                labels = ETICHETTE_GIUDIZIO, name = NULL),
            guides(colour = guide_legend(override.aes = list(size = 4.6))))
      } else scale_colour_manual(values = DIVERGENTE, guide = "none")) +
-    # Il limite sinistro tiene conto dell'etichetta, non solo del punto: a 0/10 il
-    # testo sta fuori dal pallino e a -1.1 veniva tagliato dal bordo del pannello.
-    scale_x_continuous(limits = c(-1.9, N_GEMELLE + 1.4), breaks = seq(0, N_GEMELLE, 2),
+    # I limiti tengono conto dell'etichetta, non solo del punto: a 0/10 il testo sta
+    # fuori dal pallino e a -1.1 veniva tagliato dal bordo del pannello. Ancorata al
+    # bordo, l'etichetta sporge di tutta la sua lunghezza oltre lo scostamento: serve
+    # un'unità in più per lato rispetto a quando era centrata.
+    scale_x_continuous(limits = c(-2.9, N_GEMELLE + 2.4), breaks = seq(0, N_GEMELLE, 2),
                        expand = expansion(mult = 0)) +
     labs(subtitle = sottotitolo,
          # I due pannelli dei pari sono adiacenti e condividono la scala: il titolo
@@ -142,11 +149,12 @@ regione <- ggplot(dati, aes(percentile_390, breve, colour = giudizio_regione)) +
   geom_segment(aes(x = 50, xend = percentile_390, yend = breve),
                linewidth = 2.4, lineend = "round") +
   geom_point(size = 4.6) +
-  geom_text(aes(label = virgola(percentile_390, 0, "°")),
-            nudge_x = ifelse(dati$percentile_390 >= 50, 7, -7),
+  geom_text(aes(label = virgola(percentile_390, 0, "°"),
+                hjust = ifelse(percentile_390 >= 50, 0, 1)),
+            nudge_x = ifelse(dati$percentile_390 >= 50, 4.5, -4.5),
             size = 3.3, fontface = "bold", colour = "grey20") +
   scale_colour_manual(values = DIVERGENTE, guide = "none") +
-  scale_x_continuous(limits = c(-11, 111), breaks = seq(0, 100, 25),
+  scale_x_continuous(limits = c(-19, 119), breaks = seq(0, 100, 25),
                      expand = expansion(mult = 0)) +
   labs(subtitle = paste0("E dentro tutta la regione\n",
                          "percentile sui ", N_REGIONE, " comuni siciliani"),
