@@ -82,15 +82,31 @@ figura <- ggplot(popolazione, aes(anno, indice_primo_anno_100, colour = territor
       ifelse(variazione("Italia") >= 0, "+", "−"), virgola(abs(variazione("Italia")), 1),
       "% dimostra che questa scala le differenze le mostra, quando ci sono."), LARGHEZZA),
     x = NULL, y = paste0("indice, ", PRIMO, " = 100"),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - popolazione residente per età singola, fascia 15-34 anni, ", PRIMO, "-", ULTIMO, ". Elaborazione: pipeline/edu (thread educazione) - data/processed/edu_youth_population_15_34.csv\n",
-      "La finestra parte dal ", PRIMO, " perché le età singole, necessarie a ricostruire la fascia 15-34, esistono solo da quell'anno: è un limite della fonte, non un ritaglio scelto qui. Le altre figure del thread usano la classe 15-24 e coprono il ", PRIMO - 3, "-", ULTIMO, ": le due finestre non sono confrontabili.\n",
-      "Lo stock NON identifica la migrazione. Una popolazione che si riduce somma nascite, morti, immigrazioni, emigrazioni e l'invecchiamento delle coorti che entrano ed escono dalla fascia: nessuna di queste componenti è isolabile da questi dati, e il numero non va citato come misura di chi se ne va.\n",
-      "Punto di partenza, ", PRIMO, ": ", paste0(inizio$territorio_nome, " ", migliaia(inizio$popolazione_15_34), collapse = "; "), " residenti 15-34.\n",
-      "L'indice serve a confrontare ritmi fra territori di dimensione molto diversa; non dice nulla sui livelli, che restano incomparabili.\n",
-      "Le etichette di fine linea sono scostate quanto basta a non sovrapporsi (Bagheria e Sicilia arrivano a ", virgola(DIVARIO, 2), " punti l'una dall'altra); i pallini stanno sul valore vero."),
-      LARGHEZZA)
+    caption = didascalia_4b(
+      mostra = paste0(
+        "popolazione residente nella fascia 15-34 anni, dal ", PRIMO, " al ", ULTIMO,
+        ", su quattro territori, espressa come numero indice con base 100 nel ", PRIMO,
+        ". L'indice serve perché quattro territori di dimensione incomparabile si confrontino sul ritmo e non sui totali: non dice nulla sui livelli, che restano incomparabili. ",
+        "È un risultato negativo e serve: il calo giovanile di Bagheria non è un'anomalia locale da spiegare con la fuga, è la demografia dell'isola."),
+      base = paste0(
+        "Popolazione di partenza nel ", PRIMO, ": ",
+        paste0(inizio$territorio_nome, " ", migliaia(inizio$popolazione_15_34), collapse = "; "),
+        " residenti di 15-34 anni. Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "La finestra parte dal ", PRIMO,
+        " perché le età singole, necessarie a ricostruire la fascia 15-34, esistono solo da quell'anno: è un limite della fonte e non un ritaglio scelto qui. ",
+        "Le altre figure del thread usano la classe 15-24 e coprono il ", PRIMO - 3, "-", ULTIMO, ": le due finestre non sono confrontabili. ",
+        "Lo stock non identifica la migrazione: una popolazione che si riduce somma nascite, morti, immigrazioni, emigrazioni e l'invecchiamento delle coorti che entrano ed escono dalla fascia, ",
+        "nessuna di queste componenti è isolabile da questi dati, e il numero non va citato come misura di chi se ne va."),
+      lettura = paste0(
+        "ogni linea è un territorio e parte da 100 nel ", PRIMO, ": la sua altezza in un'annata è quindi la variazione percentuale cumulata da quell'anno, non un valore assoluto. ",
+        "Le etichette di fine linea sono scostate in verticale quel tanto che basta a non sovrapporsi, perché Bagheria e Sicilia arrivano a ",
+        virgola(DIVARIO, 2), " punti d'indice l'una dall'altra: i pallini stanno sul valore vero, le scritte no. ",
+        "Che le due linee siano quasi sovrapposte è il finding, e che l'Italia se ne stacchi dimostra che questa scala le differenze le mostra quando ci sono."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, popolazione residente per età singola, fascia 15-34 anni, ",
+        PRIMO, "-", ULTIMO, ". Elaborazione: pipeline/edu (thread educazione), data/processed/edu_youth_population_15_34.csv."),
+      larghezza = LARGHEZZA)
   ) +
   tema_figura()
 
-salva(figura, "edu_fig08_popolazione", larghezza = LARGHEZZA, altezza = 14)
+salva(figura, "edu_fig08_popolazione", larghezza = LARGHEZZA, altezza = 19)

@@ -17,6 +17,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGH_FIGURA <- 30   # stessa misura del salvataggio: su questa il testo va a capo
+# (LARGHEZZA, più sotto, è un'altra cosa: la larghezza dei nodi del diagramma)
 ANNO <- 2024
 
 # L'ordine è quello del percorso: prima chi è dentro lavoro o studio, poi chi è fuori ma
@@ -277,7 +279,7 @@ figura <- sankey +
     title = "Stessa quota fuori da lavoro e istruzione, ragioni opposte: una ragazza su sette è casalinga",
     subtitle = paste0(
       "Dal totale ai due generi, dai sei stati della condizione professionale ai tre esiti: lo spessore di ogni nastro è il numero di persone.\n",
-      "Fuori da lavoro e istruzione — il proxy del NEET calcolabile a scala comunale — c'è più di un giovane su quattro in entrambi i generi: ",
+      "Fuori da lavoro e istruzione (il proxy del NEET calcolabile a scala comunale) c'è più di un giovane su quattro in entrambi i generi: ",
       virgola(fuori_di("F")$quota_pct), "% delle\nragazze (", migliaia(fuori_di("F")$persone),
       ") e ", virgola(fuori_di("M")$quota_pct), "% dei ragazzi (", migliaia(fuori_di("M")$persone),
       "). Ma i due nastri arrivano da monte opposto: sono casalinghe il ",
@@ -286,21 +288,38 @@ figura <- sankey +
       virgola(quota_di("Italia", "casalinghe/i")), "%), mentre l'«altra condizione» pesa il ",
       virgola(quota_di("Bagheria", "altra condizione", "M")), "% sui ragazzi contro il ",
       virgola(quota_di("Bagheria", "altra condizione")), "% sulle ragazze.\nE le casalinghe non sono spose: le già coniugate 15-24 sono ",
-      coniugate$gia_coniugate, " contro ", casalinghe_n, " casalinghe — almeno l'", NUBILI_PCT,
-      "% è nubile. Il terzo nodo — fuori anche dalla\nricerca di lavoro — raccoglie ",
+      coniugate$gia_coniugate, " contro ", casalinghe_n, " casalinghe, quindi almeno l'", NUBILI_PCT,
+      "% è nubile. Il terzo nodo (fuori anche dalla\nricerca di lavoro) raccoglie ",
       migliaia(round(nodo(DESTINAZIONI[3], "F")$persone)), " ragazze e ",
       migliaia(round(nodo(DESTINAZIONI[3], "M")$persone)), " ragazzi: è il gruppo che nessuna politica attiva intercetta, perché non si presenta a nessuno sportello."),
-    caption = paste(
-      "Fonte: ISTAT, Censimento permanente della popolazione - tavola condizione professionale, classe 15-24 anni,", paste0(ANNO, "."),
-      "\nI tre nodi d'arrivo sono la convenzione di repo («fuori da lavoro e istruzione» = tutti meno occupati e studenti), spezzata in due secondo la ricerca di lavoro:",
-      "\nnon è il NEET ISTAT 15-29, che a livello comunale esiste solo al 2011 (fig08). Il diagramma è una partizione della stessa popolazione a un solo anno,",
-      "\nnon una transizione: il censimento non segue le persone, e nessun nastro va letto come un percorso individuale nel tempo.",
-      "\nLa condizione è autodichiarata al censimento: marcatore del carico di cura, non sua misura diretta. Ogni quota è arrotondata al decimo per conto suo:",
-      "\nsommare due nodi può dare un decimo in più del totale citato qui sopra, che viene da genere_fuori_lavoro_istruzione.csv come nel resto del thread.",
-      "\nStato civile da DCIS_POPRES1 (1° gennaio 2025), fonte diversa dal censimento: denominatori coincidenti alla singola unità; non osserva convivenze né maternità.",
-      "\nIl confronto territoriale sulla quota di casalinghe - la sola statistica che discrimina Bagheria dal panel - sta in fig02b.",
-      "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_composizione_stato_dettaglio.csv (persone e nodo d'arrivo),",
-      "\ngenere_fuori_lavoro_istruzione.csv (totale del proxy), genere_casalinghe.csv e genere_stato_civile.csv (nubili)"),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "come si distribuisce la popolazione di 15-24 anni di Bagheria nell'anno ", ANNO,
+        ": dal totale ai due generi, dai sei stati della condizione professionale ai tre esiti. Lo spessore di ogni nastro è un numero di persone, non una percentuale. ",
+        "È una partizione della stessa popolazione in un solo anno, non una transizione: il censimento non segue le persone nel tempo, e nessun nastro va letto come un percorso individuale. ",
+        "Il confronto fra territori sulla quota di casalinghe, cioè la sola statistica che separa Bagheria dal panel, sta in fig02b."),
+      base = paste0(
+        "N = ", migliaia(round(TOTALE)), " residenti di 15-24 anni a Bagheria (",
+        migliaia(round(nodo_genere$persone[nodo_genere$genere == "F"])), " ragazze e ",
+        migliaia(round(nodo_genere$persone[nodo_genere$genere == "M"])), " ragazzi), anno ", ANNO,
+        ". I sei stati partizionano la popolazione senza sovrapposizioni e senza residui, e la partizione è verificata nel notebook. ",
+        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "Ogni quota è arrotondata al decimo per conto suo, quindi sommare due nodi può dare un decimo in più del totale citato nel sottotitolo, che viene da genere_fuori_lavoro_istruzione.csv come nel resto del thread. ",
+        "I tre nodi d'arrivo sono la convenzione di questo repo («fuori da lavoro e istruzione» = tutti meno occupati e studenti), spezzata in due secondo la ricerca di lavoro: non sono il NEET ISTAT 15-29, che a livello comunale esiste solo al 2011 (fig08). ",
+        "La condizione professionale è autodichiarata al censimento: è un marcatore del carico di cura, non la sua misura diretta. ",
+        "Lo stato civile usato per il calcolo delle nubili viene da una fonte diversa (DCIS_POPRES1, 1° gennaio 2025), con denominatori coincidenti alla singola unità; non osserva convivenze né maternità, e la quota di nubili è quindi un limite inferiore."),
+      lettura = paste0(
+        "si legge da sinistra a destra, in quattro colonne: il totale, i due generi, i sei stati della condizione, i tre esiti. ",
+        "Lo spessore di ogni nastro resta costante da un capo all'altro, perché il flusso si conserva e nessuno si perde per strada. ",
+        "Il colore dei nastri è lo stato di partenza, quindi dove due nastri di colore diverso entrano nello stesso nodo d'arrivo si vede da dove arriva ciascun genere. ",
+        "I nodi d'arrivo sono grigi perché sono somme e non categorie. ",
+        "L'etichetta dentro un blocco compare solo dove il blocco è abbastanza alto da contenerla: gli stati più piccoli li dice la legenda, e le loro quote stanno nel sottotitolo. ",
+        "Le posizioni verticali sono geometria del diagramma e non una scala: per questo non c'è asse e non c'è griglia."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", ANNO,
+        ", più DCIS_POPRES1 per lo stato civile. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_composizione_stato_dettaglio.csv per persone ed esiti, genere_fuori_lavoro_istruzione.csv per il totale del proxy, genere_casalinghe.csv e genere_stato_civile.csv per le nubili)."),
+      larghezza = LARGH_FIGURA),
     x = NULL, y = NULL
   ) +
   tema_figura() +
@@ -310,4 +329,4 @@ figura <- sankey +
   theme(axis.text = element_blank(), axis.ticks = element_blank(),
         panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
-salva(figura, "fig02_composizione_stato", larghezza = 30, altezza = 19)
+salva(figura, "fig02_composizione_stato", larghezza = LARGH_FIGURA, altezza = 24)

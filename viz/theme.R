@@ -271,6 +271,30 @@ a_capo <- function(testo, larghezza, corpo) {
 sommario <- function(testo, larghezza) a_capo(testo, larghezza, "sottotitolo")
 didascalia <- function(testo, larghezza) a_capo(testo, larghezza, "didascalia")
 
+#' Didascalia autosufficiente in quattro blocchi. Una figura proiettata su un palco viene
+#' letta da chi non ha il notebook accanto: deve dire da sola cosa misura, su quante
+#' persone, con che dispersione, e cosa significano le linee che non sono dati. I quattro
+#' blocchi sono sempre gli stessi e sempre in quest'ordine, così chi cerca una cosa sola
+#' (il commissario che vuole l'N, il giornalista che vuole la fonte) la trova senza
+#' leggere il resto.
+#'   mostra  - metrica, unità, trasformazioni, fascia d'età, territori, anni
+#'   base    - N per gruppo, tendenza centrale, dispersione o intervalli, test e soglie,
+#'             esclusioni e filtri applicati
+#'   lettura - decodifica di tutto ciò che non è un dato: tratteggi, bande, colori,
+#'             marcatori, soglie
+#'   fonte   - fonte con anno, più il file di data/processed/ che rigenera la figura
+#' Ogni blocco va a capo per conto suo sulla larghezza dichiarata, e fra i blocchi resta
+#' una riga vuota: senza, le quattro etichette si perdono in un muro di testo e la
+#' struttura che le rende utili sparisce.
+#' `larghezza` è la STESSA che si passa a salva(), come per didascalia().
+didascalia_4b <- function(mostra, base, lettura, fonte, larghezza) {
+  blocchi <- paste0(c("Cosa mostra: ", "Base statistica: ", "Come si legge: ", "Fonte: "),
+                    c(mostra, base, lettura, fonte))
+  paste(vapply(blocchi, didascalia, character(1), larghezza = larghezza,
+               USE.NAMES = FALSE),
+        collapse = "\n\n")
+}
+
 #' Esporta la figura in PNG 300dpi e SVG, come richiesto dalle convenzioni del repo.
 #' svglite/ragg non compilano su questa macchina (mancano gli header di sistema):
 #' si usano i device cairo di base, che coprono entrambi i formati.

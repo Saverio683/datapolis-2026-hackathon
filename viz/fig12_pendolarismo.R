@@ -9,6 +9,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 24   # stessa misura del salvataggio: su questa il testo va a capo
+
 ANNO <- 2019          # ultimo disponibile; il 2018 fa da controllo, citato nel sottotitolo
 ANNO_CONTROLLO <- 2018
 
@@ -18,8 +20,8 @@ mob <- read_csv(file.path(PROCESSED, "genere_mobilita_2011.csv"), show_col_types
 # I titoli dei pannelli dicono il verso: senza, i due scarti sono due lunghezze senza segno
 # e il lettore deve dedurre la direzione dall'ordine dei colori.
 ETICHETTE_MOTIVO <- c(
-  WK  = "PER LAVORO - esce dal comune più chi è maschio",
-  STD = "PER STUDIO - esce dal comune più chi è femmina"
+  WK  = "PER LAVORO: esce dal comune più chi è maschio",
+  STD = "PER STUDIO: esce dal comune più chi è femmina"
 )
 
 dati <- pend |>
@@ -74,27 +76,41 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
     subtitle = paste0(
       "Quota di chi esce dal comune sul totale di chi si sposta ogni giorno per quel motivo (", ANNO, ").",
       " Il verso dello scarto cambia\ncol motivo in tutti i territori: la particolarità di Bagheria è l'ampiezza, la maggiore del panel in entrambi i pannelli",
-      " -\n", virgola(scarto_di("Bagheria", "WK"), 1), " punti sul lavoro, il doppio della Sicilia (",
+      ".\n", virgola(scarto_di("Bagheria", "WK"), 1), " punti sul lavoro, il doppio della Sicilia (",
       virgola(scarto_di("Sicilia", "WK"), 1), "), e ", virgola(scarto_di("Bagheria", "STD"), 1),
       " sullo studio contro ", virgola(scarto_di("Sicilia", "STD"), 1), ".",
       "\nIl denominatore è già condizionato al motivo: chi si sposta per lavoro un lavoro ce l'ha. Lo scarto non è quindi",
-      " un\nriflesso del divario occupazionale - è una misura indipendente sullo stesso passaggio. Stabile sul ",
+      " un\nriflesso del divario occupazionale, ma una misura indipendente sullo stesso passaggio. Stabile sul ",
       ANNO_CONTROLLO, ": ", virgola(scarto_di("Bagheria", "WK", ANNO_CONTROLLO), 1, taglia_zero = FALSE),
       " e ", virgola(scarto_di("Bagheria", "STD", ANNO_CONTROLLO), 1, taglia_zero = FALSE), " punti."
     ),
     x = "residenti che escono dal comune, in % di chi si sposta per quel motivo", y = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - tavola pendolarismo, ",
-      ANNO_CONTROLLO, "-", ANNO, ".",
-      "\nLa destinazione è «fuori comune» aggregata: la fonte NON identifica il comune di arrivo. Questa figura non misura il pendolarismo verso Palermo.",
-      "\nPalermo compare con valori bassissimi perché è un comune grande e quasi tutti gli spostamenti restano al suo interno: su questa misura non è un termine di paragone.",
-      "\nLa serie esiste solo per ", ANNO_CONTROLLO, " e ", ANNO, ": non si aggancia al 2021-2024 delle altre figure e non è aggiornabile senza una rilevazione nuova.",
-      "\nContesto 2011 (8milaCensus, 390 comuni siciliani): Bagheria al ", virgola(percentile_m2, 0),
-      "° percentile per mobilità fuori comune (M2) - si esce poco in assoluto.",
-      "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_pendolarismo.csv, genere_mobilita_2011.csv"
-    )
+    caption = didascalia_4b(
+      mostra = paste0(
+        "quota di residenti che esce dal comune, in percentuale di chi si sposta ogni giorno per quel motivo, per genere e per motivo dello spostamento, anno ",
+        ANNO, ", su quattro territori. Il pannello di sopra riguarda gli spostamenti per lavoro, quello di sotto gli spostamenti per studio. ",
+        "Il denominatore è già condizionato al motivo, perché chi si sposta per lavoro un lavoro ce l'ha: lo scarto fra i generi non è quindi un riflesso del divario occupazionale di fig01 e fig05, ma una misura indipendente sullo stesso passaggio."),
+      base = paste0(
+        "La tavola esportata pubblica quote e non conteggi, quindi le numerosità assolute dietro ogni pallino non compaiono qui: stanno nella cella di estrazione di notebooks/genere.ipynb. ",
+        "Nessun intervallo di confidenza: sono quote censuarie e non stime campionarie, e nessun record è escluso. ",
+        "La serie esiste solo per il ", ANNO_CONTROLLO, " e il ", ANNO,
+        ": non si aggancia al 2021-2024 delle altre figure del thread e non è aggiornabile senza una rilevazione nuova. Il ", ANNO_CONTROLLO,
+        " serve da controllo di stabilità, citato nel sottotitolo e non disegnato. ",
+        "Palermo compare con valori bassissimi perché è un comune grande e quasi tutti gli spostamenti restano dentro il suo confine: su questa misura non è un termine di paragone, ed è un artefatto della geografia, non un dato sui palermitani."),
+      lettura = paste0(
+        "ogni riga è un territorio. Il pallino grande rosa è il valore femminile, quello piccolo blu il maschile: i diametri sono diversi apposta, così dove i due valori quasi coincidono si vede un anello e non un pallino solo. ",
+        "La freccia parte dal valore maschile e punta verso quello femminile, quindi il suo verso è la direzione dello scarto; si ferma prima del pallino di arrivo perché una punta sotto il pallino nasconderebbe proprio il verso. ",
+        "La cifra sopra la freccia è l'ampiezza dello scarto in punti percentuali, in valore assoluto. ",
+        "Bagheria è in vermiglio, gli altri territori in grigio."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola del pendolarismo, ", ANNO_CONTROLLO, "-", ANNO,
+        ". La destinazione è «fuori comune» aggregata e la fonte non identifica il comune di arrivo: questa figura non misura il pendolarismo verso Palermo, che è invece l'oggetto di mob_fig01 su un'altra fonte. ",
+        "Contesto al 2011 (8milaCensus, 390 comuni siciliani): Bagheria sta al ", virgola(percentile_m2, 0),
+        "° percentile per mobilità fuori comune (indicatore M2), cioè si esce poco in assoluto; mob_fig04 mostra che quel percentile è un effetto della taglia del comune. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_pendolarismo.csv e genere_mobilita_2011.csv)."),
+      larghezza = LARGHEZZA)
   )
 
 figura <- figura + tema_figura()
 
-salva(figura, "fig12_pendolarismo", larghezza = 24, altezza = 17)
+salva(figura, "fig12_pendolarismo", larghezza = LARGHEZZA, altezza = 21)

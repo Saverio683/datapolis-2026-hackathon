@@ -14,6 +14,8 @@ source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 # facet_wrap altrimenti ordina in alfabetico e mette le casalinghe in cima.
 ORDINE_KPI <- c("tasso di occupazione F 15-24", "quota casalinghe F 15-24")
 
+LARGHEZZA <- 24   # stessa misura del salvataggio: su questa il testo va a capo
+
 base <- read_csv(file.path(PROCESSED, "genere_base_persone.csv"), show_col_types = FALSE)
 mde <- read_csv(file.path(PROCESSED, "genere_mde.csv"), show_col_types = FALSE)
 anno <- base$anno[1]
@@ -76,14 +78,28 @@ figura <- ggplot(soglie, aes(mde_pp, finestra)) +
       "la soglia scende a ", virgola(soglia_di(3), 2), " punti e la potenza sale al ",
       virgola(potenza_di(3), 0), "%.\n",
       "Per questo i KPI primari si leggono su trienni pooled (2022-2024 contro 2025-2027), e l'anno per anno spetta a indicatori\n",
-      "di processo — utenza per età e genere — che oggi nessuno rileva."),
+      "di processo (utenza per età e genere) che oggi nessuno rileva."),
     x = "punti percentuali", y = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - condizione professionale, classe 15-24 anni, ", anno, ".\n",
-      "MDE = differenza minima rilevabile a potenza 80% e alfa 5% fra due proporzioni (trasformazione arcoseno); \"anni pooled\" = ampiezza di ciascuno dei due lati del confronto.\n",
-      "La soglia dipende dalla numerosità, che a Bagheria è di ~2.900 ragazze per annata: è un limite della rilevazione, non una debolezza dell'intervento.\n",
-      "Il delta da rilevare è quello della fig09, dove lo stesso obiettivo è tradotto in persone e messo di fronte al restringimento della platea.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mde.csv, genere_base_persone.csv")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "differenza minima rilevabile (MDE, in punti percentuali) per due indicatori della proposta, in funzione di quanti anni si mettono insieme in ciascuno dei due lati del confronto. ",
+        "È una figura di disegno della misura, non un risultato sui giovani: dice quanto deve essere grande un effetto perché una rilevazione riesca a distinguerlo da zero."),
+      base = paste0(
+        "MDE calcolata a potenza 80% e livello di significatività alfa 5%, per la differenza fra due proporzioni, con trasformazione arcoseno. ",
+        "«Anni pooled» è l'ampiezza di ciascuno dei due lati del confronto: un triennio contro un triennio, non tre anni in tutto. ",
+        "La soglia dipende dalla numerosità disponibile, che a Bagheria è di ", migliaia(base$popolazione_F_15_24[1]),
+        " ragazze di 15-24 anni nel ", anno, ": è un limite della rilevazione, non una debolezza dell'intervento. ",
+        "La potenza stampata accanto a ogni pallino è quella effettiva per il delta che il KPI promette, non la potenza nominale dell'80% con cui la soglia è calcolata."),
+      lettura = paste0(
+        "ogni riga è una finestra di lettura e la lunghezza del segmento è la soglia MDE. ",
+        "La riga tratteggiata verticale è il delta che il KPI promette (", virgola(DELTA, 2), " punti, l'allineamento a Palermo di fig09). ",
+        "Il colore è la conclusione: blu quando la soglia sta a sinistra del tratteggio, cioè la finestra vede l'effetto promesso; grigio quando la soglia lo supera e l'effetto resterebbe invisibile. ",
+        "Un segmento grigio non significa che l'intervento non funzioni, ma che quella finestra di lettura non basterebbe a dimostrarlo."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", anno,
+        ", per le numerosità di base. Il delta da rilevare è quello di fig09, dove lo stesso obiettivo è tradotto in persone e messo di fronte al restringimento della platea. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_mde.csv e genere_base_persone.csv)."),
+      larghezza = LARGHEZZA)) +
   tema_figura()
 
-salva(figura, "fig09b_potenza", larghezza = 24, altezza = 16)
+salva(figura, "fig09b_potenza", larghezza = LARGHEZZA, altezza = 19)

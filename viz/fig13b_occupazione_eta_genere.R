@@ -14,6 +14,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 26   # stessa misura del salvataggio: su questa il testo va a capo
+
 nomi <- read_csv(file.path(PROCESSED, "territori.csv"), col_types = cols(.default = "c"))
 
 RIFERIMENTO <- "Sicilia"
@@ -49,6 +51,16 @@ riga <- function(terr, cl) quadro[quadro$nome_territorio == terr & quadro$classe
 GIOVANI <- riga("Bagheria", "15-24")
 ANZIANI <- riga("Bagheria", "50-64")
 GIOVANI_RIF <- riga(RIFERIMENTO, "15-24")
+
+# I denominatori per classe e genere a Bagheria: sono la base di ogni tasso disegnato.
+N_CLASSI <- dati |>
+  filter(nome_territorio == "Bagheria", anno == ANNO) |>
+  select(classe, genere, popolazione) |>
+  pivot_wider(names_from = genere, values_from = popolazione) |>
+  arrange(classe) |>
+  mutate(testo = paste0(classe, " ", migliaia(round(F)), " donne e ",
+                        migliaia(round(M)), " uomini")) |>
+  pull(testo) |> paste(collapse = "; ")
 
 testata <- quadro |>
   filter(nome_territorio == "Bagheria") |>
@@ -86,8 +98,8 @@ figura <- ggplot(serie, aes(asse_2020(anno), tasso_occupazione,
     subtitle = paste0(
       "Quota di occupati sulla popolazione della classe, per genere, ", PRIMO, "-", ANNO,
       ". Bagheria a tratto pieno, ", RIFERIMENTO, " tratteggiata.\n",
-      "In punti il divario cresce con l'età — da ", virgola(GIOVANI$gap_pp, 1),
-      " pp sui 15-24 a ", virgola(ANZIANI$gap_pp, 1), " pp sui 50-64 — ma cresce ovunque. ",
+      "In punti il divario cresce con l'età (da ", virgola(GIOVANI$gap_pp, 1),
+      " pp sui 15-24 a ", virgola(ANZIANI$gap_pp, 1), " pp sui 50-64), ma cresce ovunque. ",
       "Quello che distingue Bagheria è il rapporto:\n",
       virgola(GIOVANI$rapporto, 2, "×", taglia_zero = FALSE), " già a 15-24 contro ",
       virgola(GIOVANI_RIF$rapporto, 2, "×", taglia_zero = FALSE), " in ", RIFERIMENTO,
@@ -95,16 +107,31 @@ figura <- ggplot(serie, aes(asse_2020(anno), tasso_occupazione,
       "non si apre dopo i vent'anni: a vent'anni c'è già, e in punti sembra piccolo solo ",
       "perché a quell'età lavorano in pochi."),
     x = NULL, y = NULL, colour = NULL, linetype = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - condizione professionale, ", PRIMO, "-", ANNO, ".\n",
-      "Tasso = occupati / popolazione della classe e del genere (condizione 1 su condizione 99), non sulle sole forze di lavoro: comprende\n",
-      "studenti e inattivi, e per questo la classe 15-24 sta strutturalmente bassa per entrambi i generi.\n",
-      "Il colore è il genere, il tratto è il territorio: sono due codifiche indipendenti. Sul grafico stanno due territori su quattro perché\n",
-      "sedici linee non si leggono - Palermo e Italia stanno nel CSV, e il rapporto M/F di Bagheria è il più alto dei quattro in tutte le classi.\n",
-      "Il 2020 manca alla fonte: sulla 15-24 non c'è nessuna riga, sulle altre classi c'è solo il denominatore. La striscia grigia occupa il buco,\n",
-      "le linee sono interrotte e non interpolate.\n",
-      "Elaborazione: pipeline/build.py - data/processed/tasso_occupazione_eta.csv (fig13 è la stessa tavola a generi uniti)")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "tasso di occupazione per genere, cioè occupati in percentuale della popolazione della stessa classe d'età e dello stesso genere, dal ",
+        PRIMO, " al ", ANNO, ", sulle quattro classi d'età pubblicate a livello comunale. ",
+        "Sul grafico stanno due territori, Bagheria e ", RIFERIMENTO,
+        ": con quattro territori le linee diventerebbero sedici e i pannelli illeggibili. ",
+        "Il tasso è calcolato sulla popolazione della classe e non sulle sole forze di lavoro, quindi comprende studenti e inattivi, ",
+        "e per questo la classe 15-24 sta strutturalmente bassa per entrambi i generi."),
+      base = paste0(
+        "Denominatori di Bagheria nel ", ANNO, " (", N_CLASSI,
+        "). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "Il divario è dichiarato su due scale perché dicono cose diverse: in punti percentuali nell'intestazione di ogni pannello, in rapporto fra i due tassi nel sottotitolo. ",
+        "Il rapporto è la misura che non dipende dal livello generale della classe, ed è quella su cui Bagheria risulta il territorio più sbilanciato dei quattro in tutte e quattro le classi (verifica sui quattro territori nel notebook, non disegnata qui). ",
+        "Il 2020 manca alla fonte: sulla classe 15-24 non esiste nessuna riga, sulle altre classi esiste solo il denominatore. La serie è interrotta e nessun valore è interpolato."),
+      lettura = paste0(
+        "ci sono due codifiche indipendenti e vanno lette insieme: il colore è il genere (rosa le femmine, blu i maschi) e il tratto è il territorio (pieno Bagheria, tratteggiato ",
+        RIFERIMENTO, "). Il rosa e il blu qui non stanno per un territorio, ed è la ragione per cui nessun territorio li usa nelle altre figure. ",
+        "Ogni pannello è una classe d'età, e la cifra nella sua intestazione è il divario fra maschi e femmine a Bagheria in punti percentuali nell'ultima annata. ",
+        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: dove c'è la striscia non c'è misura. ",
+        "Sull'asse orizzontale sono etichettate solo la prima annata, il 2021 e l'ultima; le posizioni restano quelle di tutte le annate."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, ", PRIMO, "-", ANNO,
+        ". Elaborazione: pipeline/build.py (data/processed/tasso_occupazione_eta.csv; fig13 è la stessa tavola a generi uniti)."),
+      larghezza = LARGHEZZA)) +
   tema_figura() +
   theme(panel.spacing.x = unit(1.1, "lines"))
 
-salva(figura, "fig13b_occupazione_eta_genere", larghezza = 26, altezza = 15)
+salva(figura, "fig13b_occupazione_eta_genere", larghezza = LARGHEZZA, altezza = 19)

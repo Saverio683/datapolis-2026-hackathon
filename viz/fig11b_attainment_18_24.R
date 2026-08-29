@@ -11,6 +11,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 22   # stessa misura del salvataggio: su questa il testo va a capo
+
 dati <- read_csv(file.path(PROCESSED, "genere_per_1000.csv"), show_col_types = FALSE)
 anno_rif <- max(dati$anno)
 dati <- filter(dati, anno == anno_rif)
@@ -25,6 +27,13 @@ divario <- function(terr) v(terr, "F") - v(terr, "M")
 
 # I due claim del titolo, letti dal dato: il vantaggio femminile c'è ovunque, ma sul
 # 18-24 Bagheria non è più in testa. Se cambiassero, le frasi vanno riscritte.
+# I denominatori della fascia disegnata: senza, cinque percentuali su territori di taglia
+# diversissima non dicono su quante persone poggiano.
+enne <- function(terr, gen) dati$pop_18_24[dati$nome_territorio == terr & dati$genere == gen]
+N_TERRITORI <- paste(vapply(LIVELLI, function(t)
+  paste0(t, " ", migliaia(round(enne(t, "F"))), " ragazze e ",
+         migliaia(round(enne(t, "M"))), " ragazzi"), character(1)), collapse = "; ")
+
 divari <- sapply(LIVELLI, divario)
 sopra_bagheria <- LIVELLI[sapply(LIVELLI, \(t) v(t, "F")) > v("Bagheria", "F")]
 stopifnot(all(divari > 0), length(sopra_bagheria) > 0)
@@ -49,7 +58,7 @@ figura <- ggplot(dati, aes(.data[[QUOTA]], nome_territorio)) +
     subtitle = paste0(
       "Quota con almeno il diploma a 18-24 anni, ", anno_rif,
       ": la fascia in cui il titolo è raggiungibile, quindi chi non ha ancora\n",
-      "finito la scuola non pesa sul denominatore. Il vantaggio femminile regge in tutti e cinque i territori — a Bagheria vale\n",
+      "finito la scuola non pesa sul denominatore. Il vantaggio femminile regge in tutti e cinque i territori, e a Bagheria vale\n",
       "+", virgola(divario("Bagheria")), " punti (", virgola(v("Bagheria", "F"), 0, "%"),
       " contro ", virgola(v("Bagheria", "M"), 0, "%"),
       "), il più ampio del panel. Ma sul livello Bagheria non è più in testa:\n",
@@ -57,13 +66,26 @@ figura <- ggplot(dati, aes(.data[[QUOTA]], nome_territorio)) +
       " stanno sopra. È il limite del claim educativo: a distinguere Bagheria non è quanto\n",
       "le ragazze studiano, ma che il titolo non si converta in lavoro (fig11)."),
     x = "% con almeno il diploma, 18-24 anni", y = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - istruzione, anno ", anno_rif, ".\n",
-      "Il 18-24 è un bound superiore: qualche qualifica IFP si ottiene a 17 anni, quindi la quota vera è al più questa (stessa logica dei bounds sulle casalinghe in fig02).\n",
-      "Fascia diversa dal 15-24 su cui stanno le altre figure del thread e dal 9-24 della serie storica (fig05b): le tre misure non si sommano e non vanno lette in sequenza.\n",
-      "L'incrocio titolo di studio × condizione professionale non è pubblicato a livello comunale: da qui non si ricava quante delle diplomate lavorino.\n",
-      "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media dei cinque valori.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_per_1000.csv")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "quota di residenti di 18-24 anni con almeno il diploma, in percentuale dei coetanei della stessa fascia e dello stesso genere, anno ",
+        anno_rif, ", su cinque territori. È un controllo di robustezza del claim educativo: sulla fascia 18-24 il titolo è già raggiungibile, ",
+        "quindi chi non ha ancora finito la scuola non pesa sul denominatore come accade sul 9-24."),
+      base = paste0(
+        "Denominatori: ", N_TERRITORI,
+        ". Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. Una sola annata, quindi nessuna tendenza. ",
+        "Il valore è un limite superiore e non una stima puntuale: qualche qualifica professionale si consegue a 17 anni, quindi la quota vera è al più quella disegnata (stessa logica dei limiti sulle casalinghe in fig02). ",
+        "La fascia 18-24 è diversa sia dalla classe 15-24 su cui stanno le altre figure del thread sia dalla fascia 9-24 della serie storica di fig05b: le tre misure non si sommano e non vanno lette in sequenza. ",
+        "L'incrocio fra titolo di studio e condizione professionale non è pubblicato a livello comunale, quindi da questa figura non si ricava quante delle diplomate lavorino."),
+      lettura = paste0(
+        "ogni riga è un territorio e il segmento grigio unisce i due generi: la sua lunghezza è il divario. ",
+        "Il pallino rosa è il valore femminile, quello blu il maschile, e la cifra accanto a ciascuno è il suo valore, stampata all'esterno per non coprire il pallino. ",
+        "L'ordine delle righe è geografico, dal comune al paese, non per valore. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media delle cinque quote."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola istruzione, anno ", anno_rif,
+        ". Elaborazione: notebooks/genere.ipynb (data/processed/genere_per_1000.csv)."),
+      larghezza = LARGHEZZA)) +
   tema_figura()
 
-salva(figura, "fig11b_attainment_18_24", larghezza = 22, altezza = 14)
+salva(figura, "fig11b_attainment_18_24", larghezza = LARGHEZZA, altezza = 18)

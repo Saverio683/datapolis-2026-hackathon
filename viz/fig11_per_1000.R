@@ -20,6 +20,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 30   # stessa misura del salvataggio: su questa il testo va a capo
+
 dati <- read_csv(file.path(PROCESSED, "genere_per_1000.csv"), show_col_types = FALSE)
 anno_rif <- max(dati$anno)
 dati <- filter(dati, anno == anno_rif)
@@ -33,8 +35,8 @@ v <- function(terr, gen, colonna) dati[[colonna]][dati$nome_territorio == terr &
 # I titoli dei pannelli portano il verso: senza, le due farfalle sono due forme e il lettore
 # deve dedurre da sé quale ala è più lunga. Le due frasi sono affermazioni sul dato, e più
 # sotto ci sono i controlli che le reggono.
-MISURE <- c(per_1000_diploma = "CON ALMENO IL DIPLOMA — l'ala delle ragazze è più lunga in tutti e cinque i territori",
-            per_1000_occupati = "AL LAVORO — si inverte: l'ala dei ragazzi è più lunga ovunque, e a Bagheria è il doppio")
+MISURE <- c(per_1000_diploma = "CON ALMENO IL DIPLOMA: l'ala delle ragazze è più lunga in tutti e cinque i territori",
+            per_1000_occupati = "AL LAVORO: si inverte, l'ala dei ragazzi è più lunga ovunque, e a Bagheria è il doppio")
 
 lungo <- dati |>
   pivot_longer(all_of(names(MISURE)), names_to = "misura", values_to = "per_1000") |>
@@ -66,6 +68,12 @@ piu_largo <- confronto[which.max(confronto$scarto_lavoro), ]
 stopifnot(bagheria$rapporto_lavoro == max(confronto$rapporto_lavoro),
           bagheria$scarto_lavoro < piu_largo$scarto_lavoro)
 
+# I denominatori veri dietro la base 1.000: senza, «su 1.000 ragazze» non dice se dietro
+# ci siano tremila persone o tre milioni, e su cinque territori la differenza è tutta lì.
+N_TERRITORI <- paste(vapply(LIVELLI, function(t) paste0(t, " ",
+    migliaia(round(v(t, "F", "pop_15_24"))), " ragazze e ",
+    migliaia(round(v(t, "M", "pop_15_24"))), " ragazzi"), character(1)), collapse = "; ")
+
 MASSIMO <- max(lungo$per_1000)
 
 figura <- ggplot(lungo, aes(x, nome_territorio, fill = genere)) +
@@ -88,22 +96,38 @@ figura <- ggplot(lungo, aes(x, nome_territorio, fill = genere)) +
       " hanno almeno il diploma e ", v("Bagheria", "F", "per_1000_occupati"),
       " lavorano; su 1.000 coetanei, ", v("Bagheria", "M", "per_1000_diploma"), " e ",
       v("Bagheria", "M", "per_1000_occupati"), ". La farfalla si rovescia fra i due pannelli:\n",
-      "è la forbice del thread — il titolo c'è, il lavoro no. Il primato di Bagheria è nel rapporto, non nella distanza: i ragazzi al lavoro sono ",
+      "è la forbice del thread (il titolo c'è, il lavoro no). Il primato di Bagheria è nel rapporto, non nella distanza: i ragazzi al lavoro sono ",
       virgola(bagheria$rapporto_lavoro, 1, "×", taglia_zero = FALSE),
       " le ragazze,\nil valore più alto del panel, ma in punti per mille l'ala si apre di più in ",
       piu_largo$nome_territorio, " (", piu_largo$scarto_lavoro, " contro ", bagheria$scarto_lavoro,
       "): a Bagheria è basso il livello femminile, non solo la distanza.\n",
-      "Le due quote vivono sulla stessa popolazione — il conteggio dei diplomi 9-24 è per costruzione quello 15-24, nessuno ha un diploma prima — ma non\n",
+      "Le due quote vivono sulla stessa popolazione (il conteggio dei diplomi 9-24 è per costruzione quello 15-24, perché nessuno ha un diploma prima), ma non\n",
       "sono stadi di un funnel: quante delle diplomate lavorino il censimento comunale non lo dice, e chi lavora può non avere il diploma (fig11b per il 18-24)."),
     x = paste0("per 1.000 residenti 15-24 dello stesso genere (", anno_rif, ")"), y = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - istruzione (9-24), condizione professionale (15-24), demografia per età singola (2021-2024), anno ", anno_rif, ".\n",
-      "Estrazione: diplomate/i 15-24 = diplomate/i 9-24 (nessun titolo sotto i 15 anni, esatto per costruzione); denominatori dalle età singole; coerenza fra le tavole verificata nel notebook (scarto zero).\n",
-      "Ogni ala ha il suo denominatore — 1.000 ragazze a sinistra, 1.000 ragazzi a destra — quindi le due lunghezze sono confrontabili anche dove le due popolazioni non sono uguali.\n",
-      "Le ali partono entrambe dalla spina e condividono la base: rispecchiate, non troncate. La coordinata è negativa a sinistra solo per costruzione, l'asse riporta i valori assoluti.\n",
-      "L'incrocio titolo × condizione non è pubblicato a livello comunale: le due misure stanno in due pannelli perché non è possibile incatenarle, non per scelta grafica.\n",
-      "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media dei cinque valori.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_per_1000.csv")
+    caption = didascalia_4b(
+      mostra = paste0(
+        "due misure sulla stessa popolazione di 15-24 anni, entrambe riportate a base 1.000 residenti dello stesso genere, anno ",
+        anno_rif, ", su cinque territori. In alto quante persone hanno almeno il diploma, in basso quante lavorano. ",
+        "La base 1.000 è una normalizzazione, non un conteggio: serve a rendere confrontabili territori di taglia diversissima. ",
+        "L'attainment letto sulla fascia in cui il diploma è già raggiungibile (18-24) sta in fig11b."),
+      base = paste0(
+        "Denominatori effettivi: ", N_TERRITORI, ", riferiti al ", anno_rif,
+        ". Ogni ala ha il suo denominatore (1.000 ragazze a sinistra, 1.000 ragazzi a destra), quindi le due lunghezze restano confrontabili anche dove le due popolazioni non sono uguali. ",
+        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. Una sola annata, quindi nessuna tendenza. ",
+        "Estrazione: i diplomati 15-24 coincidono con i diplomati 9-24, perché nessuno consegue un titolo prima dei 15 anni; i denominatori vengono dalle età singole e la coerenza fra le tavole è verificata nel notebook con scarto zero. ",
+        "L'incrocio fra titolo di studio e condizione professionale non è pubblicato a livello comunale: le due misure stanno in due pannelli perché non è possibile incatenarle, non per scelta grafica. ",
+        "Chi lavora non è quindi un sottoinsieme di chi ha il diploma, e i due pannelli non sono stadi di un percorso."),
+      lettura = paste0(
+        "ogni riga è un territorio e la linea verticale scura al centro è la spina della farfalla, cioè lo zero. ",
+        "L'ala rosa verso sinistra è il valore femminile, quella blu verso destra il maschile: la coordinata è negativa a sinistra solo per costruire la farfalla, e l'asse riporta i valori assoluti. ",
+        "Le due ali partono entrambe dalla spina e condividono la base, quindi sono rispecchiate e non troncate, ed è ciò che rende corretto confrontarle a colpo d'occhio. ",
+        "La scala orizzontale è la stessa nei due pannelli, apposta: che il lavoro sia una frazione del diploma è metà del finding, e due scale libere lo cancellerebbero. ",
+        "Il rovesciamento della forma fra il pannello di sopra e quello di sotto è la forbice. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media dei cinque valori."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola istruzione (fascia 9-24 anni), tavola della condizione professionale (classe 15-24 anni) e demografia per età singola per i denominatori, anno ",
+        anno_rif, ". Elaborazione: notebooks/genere.ipynb (data/processed/genere_per_1000.csv)."),
+      larghezza = LARGHEZZA)
   )
 
 # Figura a pannello unico (i due facet sono pannelli della stessa figura): titolo e
@@ -114,4 +138,4 @@ figura <- figura + tema_figura() +
         strip.text = element_text(face = "bold", hjust = 0, size = rel(0.92),
                                   margin = margin(t = 6, b = 4)))
 
-salva(figura, "fig11_per_1000", larghezza = 30, altezza = 18)
+salva(figura, "fig11_per_1000", larghezza = LARGHEZZA, altezza = 22)

@@ -18,6 +18,7 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 28   # stessa misura del salvataggio: su questa il testo va a capo
 ANNO <- 2024
 
 # --- Ordine delle categorie ------------------------------------------------------------
@@ -51,6 +52,15 @@ composizione <- read_csv(file.path(PROCESSED, "genere_composizione_stato_dettagl
 vicinato <- read_csv(file.path(PROCESSED, "genere_composizione_stato_dettaglio_vicini.csv"),
                      show_col_types = FALSE)
 ETICHETTA_VICINATO <- vicinato$nome_territorio[1]
+
+# I denominatori dietro le percentuali: una barra al 100% nasconde per costruzione quante
+# persone ci siano dietro, e su cinque territori di taglia diversissima è la prima domanda.
+platea <- read_csv(file.path(PROCESSED, "genere_platea.csv"), show_col_types = FALSE)
+N_TERRITORI <- paste(vapply(ORDINE, function(t) paste0(t, " ",
+    migliaia(platea$platea_2024[platea$nome_territorio == t & platea$genere == "F"]),
+    " ragazze e ",
+    migliaia(platea$platea_2024[platea$nome_territorio == t & platea$genere == "M"]),
+    " ragazzi"), character(1)), collapse = "; ")
 
 # Ordine geografico, non per valore: dal comune al paese, così la colonna si legge come uno
 # zoom che si allarga. Rovesciato sull'asse y perché ggplot dispone dal basso.
@@ -121,8 +131,8 @@ denti <- graffa |> reframe(x = c(x0, 1), .by = genere)
 
 etichetta_graffa <- graffa |>
   mutate(testo = paste0("fuori da lavoro e istruzione: ",
-                        virgola(quota_pct, suffisso = "%", taglia_zero = FALSE), " — ",
-                        migliaia(persone), if_else(genere == "F", " ragazze", " ragazzi")))
+                        virgola(quota_pct, suffisso = "%", taglia_zero = FALSE), " (",
+                        migliaia(persone), if_else(genere == "F", " ragazze)", " ragazzi)")))
 
 # --- Numeri del testo --------------------------------------------------------------------
 # Nessuna cifra scritta a mano: ogni numero del titolo e del sottotitolo si rilegge qui.
@@ -180,7 +190,7 @@ figura <- ggplot(barre, aes(q, nome_territorio, fill = stato)) +
       virgola(q("Bagheria", "casalinghe/i", "F")), "% contro ",
       virgola(q("Italia", "casalinghe/i", "F")), "%:\n",
       virgola(BUCO_F), " punti persi da una parte, ", virgola(scarto("casalinghe/i", "F")),
-      " ritrovati dall'altra. E non è che a Bagheria si studi di più - le studentesse sono ",
+      " ritrovati dall'altra. E non è che a Bagheria si studi di più, perché le studentesse sono ",
       virgola(q("Bagheria", "studenti", "F")), "% contro ",
       virgola(q("Italia", "studenti", "F")), "%.\n",
       "Sui ragazzi il buco di occupazione è quasi identico (", virgola(BUCO_M),
@@ -189,20 +199,30 @@ figura <- ggplot(barre, aes(q, nome_territorio, fill = stato)) +
       "Stesso divario, destinazioni diverse. Il vicinato segue Bagheria o sta peggio su entrambe le voci: ",
       "il confine comunale non è dove cambia il fenomeno."),
     x = NULL, y = NULL,
-    caption = paste(
-      "Fonte: ISTAT, Censimento permanente della popolazione - tavola condizione professionale, classe 15-24 anni,", paste0(ANNO, "."),
-      "\nOrdine delle categorie: in una barra impilata solo i segmenti ancorati a un bordo sono confrontabili fra righe - gli altri partono da un offset diverso in ogni riga.",
-      "\nPer questo 'occupati' sta a sinistra e 'casalinghe/i' a destra: sono le due voci del confronto. Le altre quattro si leggono dentro un territorio, non fra territori.",
-      "\nEtichette solo sui segmenti che le reggono (quota >=", paste0(virgola(SOGLIA_ETICHETTA), "%):"),
-      "sotto, il testo è più largo del segmento e sconfina su quelli accanto.",
-      "\nLe quote sono arrotondate al decimo alla fonte e possono sommare a 100,1: la barra normalizza per allineare i bordi, l'etichetta resta il numero pubblicato.",
-      "\nLa graffa aggrega i quattro stati oltre 'studenti' - la convenzione di repo ('fuori da lavoro e istruzione' = tutti meno occupati e studenti), non il",
-      "\nNEET ISTAT 15-29, che a scala comunale esiste solo al 2011. Il totale viene da genere_fuori_lavoro_istruzione.csv: sommare qui le quote già arrotondate darebbe un decimo in più.",
-      "\nLa condizione è autodichiarata al censimento: marcatore del carico di cura, non sua misura diretta. Ordine geografico, non per valore.",
-      "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media delle cinque quote.",
-      "\nLa stessa partizione su Bagheria sola, con i tre esiti aggregati e i conteggi, sta in fig02; il dettaglio sulle sole casalinghe in fig02b.",
-      "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_composizione_stato_dettaglio.csv,",
-      "\ngenere_composizione_stato_dettaglio_vicini.csv (vicinato aggregato)")
+    caption = didascalia_4b(
+      mostra = paste0(
+        "composizione della condizione professionale della classe 15-24 anni, in percentuale della popolazione della classe, anno ",
+        ANNO, ", su cinque territori e separatamente per genere. Ogni barra somma 100, quindi la figura mostra come si ridistribuisce la stessa popolazione e non i livelli assoluti. ",
+        "La stessa partizione su Bagheria sola, con i tre esiti aggregati e i conteggi, sta in fig02; il dettaglio sulle sole casalinghe in fig02b."),
+      base = paste0(
+        "Denominatori (residenti 15-24 al ", ANNO, "): ", N_TERRITORI,
+        ". Per il vicinato i conteggi dei cinque comuni sono sommati prima delle quote, non è la media delle cinque quote. ",
+        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. Una sola annata, quindi nessuna tendenza. ",
+        "Le quote sono arrotondate al decimo alla fonte e possono sommare a 100,1: la barra normalizza per allineare i bordi, mentre l'etichetta resta il numero pubblicato. ",
+        "Il totale «fuori da lavoro e istruzione» che la graffa aggrega viene da genere_fuori_lavoro_istruzione.csv, perché sommare qui le quote già arrotondate darebbe un decimo in più. ",
+        "La condizione è autodichiarata al censimento: è un marcatore del carico di cura, non la sua misura diretta."),
+      lettura = paste0(
+        "in una barra impilata solo i segmenti ancorati a un bordo sono confrontabili fra righe, perché gli altri partono da un offset diverso in ogni riga. ",
+        "Per questo l'ordine delle categorie non è narrativo: «occupati» sta al bordo sinistro e «casalinghe/i» al destro, e sono le due voci del confronto fra territori; ",
+        "le altre quattro si leggono dentro un territorio, non fra territori. ",
+        "L'ordine delle righe è geografico e non per valore, dal comune al paese. ",
+        "La graffa in cima aggrega i quattro stati oltre «studenti»: è la convenzione di questo repo («fuori da lavoro e istruzione» = tutti meno occupati e studenti), non il NEET ISTAT 15-29, che a scala comunale esiste solo al 2011. ",
+        "L'etichetta compare solo sui segmenti che la reggono (quota di almeno ", virgola(SOGLIA_ETICHETTA), "%): sotto quella soglia il testo è più largo del segmento e sconfinerebbe su quelli accanto. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", ANNO,
+        ". Elaborazione: notebooks/genere.ipynb (data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv per il vicinato aggregato e genere_platea.csv per i denominatori)."),
+      larghezza = LARGHEZZA)
   ) +
   tema_figura() +
   theme(
@@ -215,4 +235,4 @@ figura <- ggplot(barre, aes(q, nome_territorio, fill = stato)) +
     panel.spacing.y = unit(1.1, "lines")
   )
 
-salva(figura, "fig02c_composizione_territori", larghezza = 28, altezza = 20)
+salva(figura, "fig02c_composizione_territori", larghezza = LARGHEZZA, altezza = 24)

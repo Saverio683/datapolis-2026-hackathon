@@ -13,6 +13,20 @@ larghi <- read_csv(file.path(PROCESSED, "mob_ribaltamento_territori.csv"),
                    col_types = cols(territorio = "c", .default = "d"))
 comuni <- read_csv(file.path(PROCESSED, "mob_ribaltamento_390.csv"),
                    col_types = cols(territorio = "c", nome = "c", .default = "d"))
+# I pendolari di Bagheria: la base su cui poggiano le quote del pannello di sinistra.
+pendolari <- read_csv(file.path(PROCESSED, "mob_treno_390.csv"), show_col_types = FALSE)
+N_BAGHERIA <- pendolari$pendolari[pendolari$territorio == "082006"]
+
+# Il controllo su una rilevazione diversa: la stessa misura sul censimento permanente,
+# letta dal file invece che ricopiata a mano nel sottotitolo.
+controllo <- read_csv(file.path(PROCESSED, "genere_pendolarismo.csv"), show_col_types = FALSE) |>
+  filter(anno == min(anno)) |>
+  select(nome_territorio, motivo, gap_M_meno_F) |>
+  pivot_wider(names_from = motivo, values_from = gap_M_meno_F) |>
+  mutate(ribaltamento = (-STD) - (-WK))
+ANNO_CONTROLLO <- min(read_csv(file.path(PROCESSED, "genere_pendolarismo.csv"),
+                               show_col_types = FALSE)$anno)
+ctrl <- function(t) virgola(controllo$ribaltamento[controllo$nome_territorio == t], 1)
 
 ORDINE_T <- larghi$territorio           # già ordinato dal notebook: Bagheria per prima
 BAG <- "082006"
@@ -105,19 +119,36 @@ figura <- (pendenza | distribuzione) +
       "Il salto fra le due misure vale ", virgola(larghi$ribaltamento[1], 1),
       " punti a Bagheria, contro ", virgola(larghi$ribaltamento[larghi$territorio == 'Sicilia'], 1),
       " in Sicilia e ", virgola(larghi$ribaltamento[larghi$territorio == 'Italia'], 1), " in Italia: due volte e mezza.\n",
-      "Il denominatore è già condizionato al motivo — chi si sposta per lavoro un lavoro ce l'ha — ",
+      "Il denominatore è già condizionato al motivo (chi si sposta per lavoro un lavoro ce l'ha), ",
       "quindi non è il divario occupazionale visto da un'altra angolazione,\n",
       "ma una misura indipendente sullo stesso passaggio.\n",
-      "La stessa misura sul censimento permanente 2018-2019 — altra rilevazione, sette anni dopo — dà per Bagheria +11,3 contro +5,6 siciliano."),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT — Matrice del pendolarismo, censimento della popolazione 2011. Conteggio esaustivo (record di tipo S): non è una stima campionaria e non ha errore di campionamento.\n",
-      "Misura: quota di chi esce dal comune sul totale di chi si sposta quotidianamente per quel motivo, calcolata separatamente per femmine e maschi; il valore riportato è F − M.\n",
-      "La matrice non ha la dimensione età: il target 15-34 del bando non è isolabile. Chi esce dal comune per studio è però quasi solo secondaria superiore e università, ",
-      "perché a Bagheria i cicli precedenti ci sono tutti.\n",
-      "Nel pannello di sinistra le etichette di fine linea sono scostate in verticale per non sovrapporsi: i punti stanno sul valore vero, le scritte no.\n",
-      "«5 comuni vicini» sono Santa Flavia, Ficarazzi, Villabate, Casteldaccia e Misilmeri, aggregati. I 390 comuni sono quelli ai confini 2011, l'universo usato da tutti i thread del progetto.\n",
-      "Elaborazione: notebooks/mobilita.ipynb — data/processed/mob_ribaltamento.csv, mob_ribaltamento_territori.csv, mob_ribaltamento_390.csv"),
-      LARGHEZZA),
+      "La stessa misura sul censimento permanente del ", ANNO_CONTROLLO,
+      ", cioè un'altra rilevazione sette anni dopo, dà per Bagheria +", ctrl("Bagheria"),
+      " contro +", ctrl("Sicilia"), " siciliano."),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "scarto fra femmine e maschi nella propensione a uscire dal comune, misurato separatamente per i due motivi dello spostamento. ",
+        "La misura è la quota di chi esce dal comune sul totale di chi si sposta quotidianamente per quel motivo, calcolata per genere; il valore riportato è femmine meno maschi, in punti percentuali. ",
+        "Il pannello di sinistra confronta cinque territori sui due motivi; quello di destra colloca Bagheria nella distribuzione dei 390 comuni siciliani del «ribaltamento», cioè lo scarto sullo studio meno lo scarto sul lavoro. ",
+        "Il denominatore è già condizionato al motivo, perché chi si sposta per lavoro un lavoro ce l'ha: non è quindi il divario occupazionale visto da un'altra angolazione, ma una misura indipendente sullo stesso passaggio."),
+      base = paste0(
+        "N = ", migliaia(round(N_BAGHERIA)), " pendolari a Bagheria e 390 comuni siciliani ai confini del 2011, l'universo usato da tutti i thread del progetto. ",
+        "Conteggio esaustivo da matrice origine-destinazione (record di tipo S): non è una stima campionaria, non ha errore di campionamento e non porta intervallo di confidenza. Nessuna esclusione. ",
+        "La matrice non ha la dimensione dell'età: il target 15-34 del bando non è isolabile su questa fonte. Chi esce dal comune per studio è però quasi solo secondaria superiore e università, perché a Bagheria i cicli precedenti ci sono tutti. ",
+        "Controllo su una rilevazione indipendente: la stessa misura sul censimento permanente del ", ANNO_CONTROLLO,
+        " dà ", ctrl("Bagheria"), " punti a Bagheria contro ", ctrl("Sicilia"), " in Sicilia, quindi il segno e l'ordine di grandezza si replicano sette anni dopo con un altro disegno di rilevazione. ",
+        "Nessun test di significatività: con un conteggio esaustivo il confronto è fra popolazioni, non fra stime."),
+      lettura = paste0(
+        "nel pannello di sinistra ogni linea è un territorio e la sua pendenza è il finding: unisce lo scarto sullo studio a quello sul lavoro, e il cambio di segno è il ribaltamento. ",
+        "Bagheria è in vermiglio e a tratto spesso, gli altri quattro territori sono grigi perché servono a mostrare che il ribaltamento esiste ovunque e che quello che cambia è l'ampiezza. ",
+        "La riga orizzontale chiara è lo zero, cioè la parità fra i generi. Le etichette di fine linea sono scostate in verticale quel tanto che basta a non sovrapporsi: i punti stanno sul valore vero, le scritte no. ",
+        "Nel pannello di destra ogni barra conta i comuni con quel valore di ribaltamento; la riga grigia è la mediana dei 390 comuni e quella vermiglia è Bagheria, con il suo percentile. ",
+        "«5 comuni vicini» è l'aggregato di Santa Flavia, Ficarazzi, Villabate, Casteldaccia e Misilmeri."),
+      fonte = paste0(
+        "ISTAT, Matrice del pendolarismo, censimento della popolazione 2011, più il Censimento permanente della popolazione del ",
+        ANNO_CONTROLLO, " per il controllo. ",
+        "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_ribaltamento.csv, mob_ribaltamento_territori.csv, mob_ribaltamento_390.csv, mob_treno_390.csv per i denominatori e genere_pendolarismo.csv per il controllo)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura())
 
-salva(figura, "mob_fig02_ribaltamento", larghezza = LARGHEZZA, altezza = 17)
+salva(figura, "mob_fig02_ribaltamento", larghezza = LARGHEZZA, altezza = 22)

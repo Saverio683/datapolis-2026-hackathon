@@ -3,6 +3,9 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+# Larghezza dichiarata una volta: il testo va a capo sulla stessa misura del salvataggio.
+LARGHEZZA <- 24
+
 # Il vicinato aggregato come quinta riga: coorti dei cinque comuni sommate e poi il
 # rapporto (nel notebook), stessa metrica della fig07.
 vicinato <- read_csv(file.path(PROCESSED, "genere_coorti_vicini.csv"), show_col_types = FALSE)
@@ -16,6 +19,21 @@ dati <- bind_rows(
   mutate(nome_territorio = factor(nome_territorio, levels = rev(LIVELLI))) |>
   pivot_wider(id_cols = c(nome_territorio, coorte), names_from = genere,
               values_from = `ritenzione_%`, names_prefix = "rit_")
+
+# I denominatori: quante persone c'erano nella coorte del 2021, cioè la base di ogni
+# rapporto disegnato. Le età singole della fig07 sono la stessa fonte, raggruppate qui
+# nelle tre classi quinquennali che la figura mostra.
+enne_coorti <- read_csv(file.path(PROCESSED, "genere_ritenzione_eta.csv"),
+                        show_col_types = FALSE) |>
+  filter(nome_territorio == "Bagheria", eta_2021 >= 15, eta_2021 <= 29) |>
+  mutate(coorte = paste0(5 * (eta_2021 %/% 5), "-", 5 * (eta_2021 %/% 5) + 4, " nel 2021")) |>
+  summarise(n = sum(n_2021), .by = c(coorte, genere)) |>
+  arrange(coorte, genere)
+N_COORTI <- paste(sprintf("%s: %s femmine e %s maschi",
+                          sub(" nel .*", "", unique(enne_coorti$coorte)),
+                          migliaia(enne_coorti$n[enne_coorti$genere == "F"]),
+                          migliaia(enne_coorti$n[enne_coorti$genere == "M"])),
+                  collapse = "; ")
 
 # Serve al sottotitolo: la coorte in cui Bagheria e vicinato divergono.
 COORTE_CHIAVE <- "25-29 nel 2021"
@@ -72,16 +90,31 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
                             ", nel vicinato salgono a ", virgola(ritenzione_F(ETICHETTA_VICINATO), 1, "%"),
                             ": non è di zona.")),
     x = "residenti nel 2024 in % della coorte 2021", y = NULL,
-    caption = paste("Fonte: ISTAT, Censimento permanente della popolazione - età singole, 2021 e 2024.",
-                    "\nMisura netta su tre anni: comprende chi arriva, non distingue le destinazioni e include l'aggiustamento",
-                    "post-censuario delle stime.\nSi leggono i pattern rispetto al riferimento nazionale, non i decimali:",
-                    "\ni valori stampati a lato di ogni punto sono la stessa quota in % della coorte 2021.",
-                    "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: coorti sommate prima del rapporto, non media dei cinque rapporti.",
-                    "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_coorti.csv, genere_coorti_vicini.csv")
+    caption = didascalia_4b(
+      mostra = paste0(
+        "quota della coorte del 2021 ancora residente tre anni dopo, in percentuale della coorte di partenza (base 100 = coorte del 2021), ",
+        "per genere e per classe quinquennale d'età, su cinque territori. È una misura netta di saldo: comprende sia chi parte sia chi arriva, ",
+        "non distingue le destinazioni e incorpora l'aggiustamento post-censuario delle stime di popolazione. ",
+        "Lo stesso fenomeno per età singola, che individua la finestra esatta, sta in fig07."),
+      base = paste0(
+        "Denominatori delle tre coorti di Bagheria nel 2021 (", N_COORTI,
+        "). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. Nessun record escluso. ",
+        "I valori sono quote grezze, senza lisciamento: la scala è però stretta di pochi punti, quindi si leggono i pattern rispetto al riferimento nazionale e non i decimali. ",
+        "Per il vicinato le coorti dei cinque comuni sono sommate prima del rapporto, non è la media dei cinque rapporti."),
+      lettura = paste0(
+        "la riga tratteggiata verticale a 100% è la parità: a sinistra la coorte si è ridotta, a destra è cresciuta. ",
+        "Ogni riga è un territorio e ogni pannello una coorte. Il segmento grigio unisce i due generi dello stesso territorio, e la sua lunghezza è il divario. ",
+        "Il pallino grande rosa è il valore femminile, quello piccolo blu il maschile: i diametri sono diversi apposta, così dove i due valori coincidono si vede un anello e non un dato mancante. ",
+        "I numeri stampati ai lati del segmento sono gli stessi valori dei pallini che toccano, messi all'esterno per non sovrapporsi. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, età singole, anni 2021 e 2024. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_coorti.csv, genere_coorti_vicini.csv e genere_ritenzione_eta.csv per i denominatori)."),
+      larghezza = LARGHEZZA)
   )
 
 # Figura a pannello unico: titolo e sottotitolo qui sono quelli della figura, non di un
 # pannello, quindi vale il tema della figura (vedi la gerarchia in theme.R).
 figura <- figura + tema_figura()
 
-salva(figura, "fig03_coorti", larghezza = 24, altezza = 18)
+salva(figura, "fig03_coorti", larghezza = LARGHEZZA, altezza = 21)

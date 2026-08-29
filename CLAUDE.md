@@ -79,7 +79,15 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 - Un tema ggplot condiviso in `viz/theme.R` — caricato da ogni script, mai stili inline duplicati.
 - Palette: colorblind-safe (viridis per continue, Okabe-Ito per categoriche). Per il genere si usano blu (M) e rosa (F) — scelta del team del 2026-08-26, per la lettura immediata: i due valori restano dentro Okabe-Ito (`#0072B2` e `#CC79A7`), quindi la coppia è ancora distinguibile in protanopia e deuteranopia. Di conseguenza nessun territorio usa quei due colori: Palermo è viola, Sicilia ambra.
 - Tipografia delle figure: tre livelli, una sola famiglia. Titolo della figura e sottotitolo prendono `tema_figura()`, i titoli dei singoli pannelli restano su `tema_datapolis()`. Mai un secondo font: solo Lato ha un fallback verificato e cairo converte comunque il testo in tracciati nell'SVG.
-- Ogni figura: titolo che enuncia il finding (non la variabile), fonte + anno in caption, export sia PNG 300dpi sia SVG in `figures/`.
+- Ogni figura: titolo che enuncia il finding (non la variabile), export sia PNG 300dpi sia SVG in `figures/`.
+- **Didascalia autosufficiente, quattro blocchi** — `didascalia_4b()` in `viz/theme.R`, obbligatorio su ogni figura. Chi guarda dal fondo della sala non ha il notebook accanto: la figura deve dire da sola cosa misura, su quante persone, con che dispersione, e cosa significano le linee che non sono dati.
+  - `mostra`: metrica, unità, trasformazioni, fascia d'età, territori, anni. Anche cosa la figura **non** dice, e quale altra figura lo dice.
+  - `base`: N per gruppo, tendenza centrale, dispersione o intervalli **con il metodo esplicito** (Wilson sui tassi, Newcombe sulla differenza M−F, bootstrap sui residui, tutti al 95%), test e soglie, esclusioni e filtri. Dove non c'è incertezza campionaria si scrive perché (conteggi censuari, non stime).
+  - `lettura`: decodifica di tutto ciò che non è un dato — tratteggi, bande, strisce del dato mancante, colori, diametri, scale logaritmiche, ordinamenti non per valore.
+  - `fonte`: fonte con anno, più il file di `data/processed/` che rigenera la figura.
+- Ogni script dichiara `LARGHEZZA <- n` una volta e la passa sia a `didascalia_4b()` sia a `salva()`: legate, un testo tagliato dal bordo del PNG non può passare inosservato. Alzare `altezza` quando la didascalia cresce.
+- **Niente em-dash nel testo renderizzato**: parentesi tonde, due punti o virgole. Italiano formale. I commenti nel codice sono esenti.
+- La regola «nessuna cifra scritta a mano» vale anche per titoli, sottotitoli e didascalie: ogni numero si legge da `data/processed/` dentro lo script.
 - Mappe: confini ISTAT ufficiali (shapefile/GeoJSON delle unità amministrative), CRS documentato nello script.
   - `sf` **non è installabile** senza root (servono GDAL/GEOS/PROJ di sistema): la geometria la fa geopandas in `pipeline/build.py`, che esporta i poligoni come tabella di vertici già proiettata (`comuni_sicilia_poligoni.csv`, EPSG:32633). In R si disegna con `geom_polygon(group = interaction(territorio, parte), subgroup = anello, rule = "evenodd")` — `parte` separa le isole, `anello` i buchi. Esempio completo: `viz/fig04_mappa_sicilia.R`.
 

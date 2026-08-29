@@ -126,7 +126,7 @@ figura <- ggplot(dati, aes(vantaggio, riga, colour = territorio_nome)) +
     subtitle = sommario(paste0(
       "Sei indicatori del censimento 2011, disposti lungo la catena che porta dalla competenza di base all'ingresso nel lavoro. Lo zero è Bagheria:\n",
       "ogni pallino dice di quanti punti quel territorio sta MEGLIO di Bagheria, con il segno già ribaltato dove scendere è meglio (uscita precoce, NEET).\n",
-      "Sulla licenza media Bagheria è davanti a Palermo e alla Sicilia — è l'unica riga con pallini a sinistra dello zero. Sulle altre ",
+      "Sulla licenza media Bagheria è davanti a Palermo e alla Sicilia, ed è l'unica riga con pallini a sinistra dello zero. Sulle altre ",
       N_INDIETRO, " tutti e tre i riferimenti\n",
       "le stanno davanti, e la sola distanza dalla Sicilia vale ", virgola(valore_sicilia("I5"), 1),
       " punti sull'uscita precoce, ", virgola(valore_sicilia("L4"), 1), " sul NEET e ",
@@ -134,16 +134,26 @@ figura <- ggplot(dati, aes(vantaggio, riga, colour = territorio_nome)) +
       "Il problema non è arrivare alla licenza media: è quello che succede subito dopo."), LARGHEZZA),
     x = "punti percentuali di vantaggio sul valore di Bagheria (verso già uniformato)",
     y = NULL,
-    caption = didascalia(paste0(
-      "Fonte: ISTAT, 8milaCensus, censimento 2011. Elaborazione: pipeline/edu (thread educazione) - data/processed/edu_historical_benchmarks_2011.csv, edu_historical_bagheria.csv\n",
-      "Le fasce d'età sono diverse per indicatore e sono scritte in ogni riga: i sei valori NON sono momenti successivi della stessa coorte e la figura non descrive un percorso individuale.\n",
-      "La \"catena\" è l'ordine logico dei passaggi, non una serie storica né una coorte seguita nel tempo.\n",
-      "Il vantaggio è in punti percentuali favorevoli: valore del riferimento meno valore di Bagheria dove salire è meglio, l'opposto dove salire è peggio. Un pallino a destra significa sempre \"il riferimento sta meglio\".\n",
-      "I punti non sono confrontabili in ampiezza fra righe con basi diverse: si confrontano il segno e l'ordine dei riferimenti, non la lunghezza di una riga contro quella di un'altra.\n",
-      "L'etichetta numerica è solo sulla Sicilia, il benchmark citato nel testo; Palermo e Italia si leggono sull'asse.\n",
-      "Diploma/laurea 25-64 e titolo universitario 30-34 sono gli stessi indicatori della figura edu-01, qui al solo livello 2011: là interessa il movimento nel tempo, qui la posizione rispetto ai riferimenti."), LARGHEZZA)
+    caption = didascalia_4b(
+      mostra = paste0(
+        "distanza fra Bagheria e tre territori di riferimento (Palermo, Sicilia e Italia) su sei indicatori del censimento 2011, disposti nell'ordine logico dei passaggi dalla scuola al lavoro. ",
+        "Il valore disegnato è il vantaggio in punti percentuali favorevoli: valore del riferimento meno valore di Bagheria dove salire è meglio, e l'opposto dove salire è peggio, così che un pallino a destra significhi sempre che il riferimento sta meglio. ",
+        "La «catena» è l'ordine logico dei passaggi, non una serie storica né una coorte seguita nel tempo."),
+      base = paste0(
+        "Un solo anno di rilevazione (censimento 2011) e tre riferimenti per indicatore. ",
+        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "Le fasce d'età sono diverse per indicatore e sono scritte in ogni riga: i sei valori non sono momenti successivi della stessa coorte, e la figura non descrive un percorso individuale. ",
+        "Le righe hanno basi diverse e i punti non sono confrontabili in ampiezza fra righe: si confrontano il segno e l'ordine dei riferimenti, non la lunghezza di una riga contro quella di un'altra. ",
+        "Diploma o laurea 25-64 e titolo universitario 30-34 sono gli stessi indicatori della figura edu_fig01, qui al solo livello 2011: là interessa il movimento nel tempo, qui la posizione rispetto ai riferimenti."),
+      lettura = paste0(
+        "ogni riga è un indicatore e i tre pallini sono i tre riferimenti. La riga verticale allo zero è la parità con Bagheria: a destra dello zero il riferimento sta meglio, a sinistra Bagheria sta meglio. ",
+        "L'etichetta numerica compare solo sulla Sicilia, che è il riferimento citato nel testo; Palermo e Italia si leggono sull'asse."),
+      fonte = paste0(
+        "ISTAT, 8milaCensus, censimento 2011. ",
+        "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_historical_benchmarks_2011.csv e edu_historical_bagheria.csv."),
+      larghezza = LARGHEZZA)
   ) +
   tema_figura() +
   theme(panel.grid.major.y = element_blank())
 
-salva(figura, "edu_fig02_catena_2011", larghezza = LARGHEZZA, altezza = 17)
+salva(figura, "edu_fig02_catena_2011", larghezza = LARGHEZZA, altezza = 22)

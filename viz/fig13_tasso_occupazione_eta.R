@@ -13,19 +13,25 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 26   # stessa misura del salvataggio: su questa il testo va a capo
+
 nomi <- read_csv(file.path(PROCESSED, "territori.csv"),
                  col_types = cols(.default = "c"))
 
 # Il 2020 non c'è nella tavola: sulla 15-24 la fonte non pubblica nessuna riga, sulle
 # altre classi pubblica solo il denominatore. `complete()` rimette la riga vuota, che
 # serve a interrompere le linee sul buco invece di farle passare sopra (theme.R).
-dati <- read_csv(file.path(PROCESSED, "tasso_occupazione_eta.csv"),
-                 col_types = cols(territorio = "c", eta = "c", classe = "c",
-                                  genere = "c", .default = "d")) |>
+# `grezzo` tiene anche numeratore e denominatore: al grafico servono solo i tassi, alla
+# didascalia servono le numerosità, e buttarle via qui vorrebbe dire riaprire il file dopo.
+grezzo <- read_csv(file.path(PROCESSED, "tasso_occupazione_eta.csv"),
+                   col_types = cols(territorio = "c", eta = "c", classe = "c",
+                                    genere = "c", .default = "d")) |>
   filter(genere == "T", eta != "Y_GE15") |>
   left_join(nomi[c("territorio", "nome_territorio")], by = "territorio") |>
   mutate(nome_territorio = factor(nome_territorio, levels = ORDINE),
-         classe = factor(classe, levels = c("15-24", "25-49", "50-64", "65+"))) |>
+         classe = factor(classe, levels = c("15-24", "25-49", "50-64", "65+")))
+
+dati <- grezzo |>
   select(classe, nome_territorio, anno, tasso_occupazione) |>
   complete(classe, nome_territorio, anno = full_seq(anno, 1))
 
@@ -41,6 +47,14 @@ foto <- dati |>
 # Il finding regge solo se Bagheria sta sotto la Sicilia dappertutto: se una classe
 # passasse sopra, il titolo direbbe una cosa che la figura non mostra.
 stopifnot(all(foto$gap_pp < 0))
+
+# Le numerosità delle quattro classi a Bagheria nell'ultima annata: sono i denominatori
+# di ogni punto disegnato sulla linea vermiglia.
+N_CLASSI <- grezzo |>
+  filter(nome_territorio == "Bagheria", anno == max(anno)) |>
+  arrange(classe) |>
+  mutate(testo = paste0(classe, " ", migliaia(round(popolazione)))) |>
+  pull(testo) |> paste(collapse = ", ")
 
 PIU_LARGO <- foto$classe[which.min(foto$gap_pp)]     # il divario più ampio in punti
 PIU_LARGO_REL <- foto$classe[which.min(foto$gap_rel)] # ...e in percentuale sulla base
@@ -100,15 +114,29 @@ figura <- ggplot(dati, aes(asse_2020(anno), tasso_occupazione, colour = nome_ter
       "il ", virgola(abs(GIOVANI$gap_rel), 0), "% dell'occupazione della classe: in ",
       "termini relativi la più distante dalla Sicilia resta proprio il ", PIU_LARGO_REL, "."),
     x = NULL, y = NULL, colour = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - condizione professionale, ", PRIMO, "-", ANNO, ". Totale maschi e femmine.\n",
-      "Tasso = occupati / popolazione della classe (condizione 1 su condizione 99), non sulle sole forze di lavoro: comprende studenti e inattivi,\n",
-      "e per questo la classe 15-24 sta strutturalmente bassa ovunque. Le classi sono le uniche pubblicate a livello comunale: il 15-34 del bando\n",
-      "non è ricostruibile da qui, e il totale 15+ non si disegna perché somma le quattro classi invece di affiancarsi a loro.\n",
-      "Il 2020 manca alla fonte: sulla 15-24 non c'è nessuna riga, sulle altre classi c'è solo il denominatore. La striscia grigia occupa il buco,\n",
-      "le linee sono interrotte e non interpolate.\n",
-      "Elaborazione: pipeline/build.py - data/processed/tasso_occupazione_eta.csv (contiene anche il dettaglio per genere)")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "tasso di occupazione, cioè occupati in percentuale della popolazione della stessa classe d'età, dal ", PRIMO, " al ", ANNO,
+        ", su quattro territori e su tutte e quattro le classi d'età pubblicate a livello comunale. Totale di maschi e femmine; ",
+        "la stessa tavola aperta per genere sta in fig13b. Il tasso è calcolato sulla popolazione della classe e non sulle sole forze di lavoro, ",
+        "quindi comprende studenti e inattivi: è la ragione per cui la classe 15-24 sta strutturalmente bassa in tutti i territori, e non un dato anomalo."),
+      base = paste0(
+        "Denominatori di Bagheria nel ", ANNO, " (", N_CLASSI,
+        " persone). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "Le quattro classi sono le uniche pubblicate a livello comunale dal censimento permanente: la fascia 15-34 del bando non è ricostruibile da qui, ",
+        "e il totale 15+ non è disegnato perché somma le quattro classi invece di affiancarsi a loro. ",
+        "Il 2020 manca alla fonte: sulla classe 15-24 non esiste nessuna riga, sulle altre classi esiste solo il denominatore. La serie è interrotta e nessun valore è interpolato."),
+      lettura = paste0(
+        "ogni pannello è una classe d'età, e la cifra nella sua intestazione è il divario di Bagheria rispetto alla Sicilia in punti percentuali nell'ultima annata. ",
+        "L'area vermiglio chiaro dentro ogni pannello è il cuneo fra Bagheria e la Sicilia: la sua altezza è la distanza fra le due linee, non un intervallo di confidenza. ",
+        "Bagheria è in vermiglio a tratto pieno perché è il soggetto, i tre riferimenti sono a tratto sottile. ",
+        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: dove c'è la striscia non c'è misura. ",
+        "Sull'asse orizzontale sono etichettate solo la prima annata, il 2021 e l'ultima, perché con quattro pannelli affiancati sei etichette si sovrappongono; le posizioni restano quelle di tutte le annate."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, ", PRIMO, "-", ANNO,
+        ". Elaborazione: pipeline/build.py (data/processed/tasso_occupazione_eta.csv, che contiene anche il dettaglio per genere)."),
+      larghezza = LARGHEZZA)) +
   tema_figura() +
   theme(panel.spacing.x = unit(1.1, "lines"))
 
-salva(figura, "fig13_tasso_occupazione_eta", larghezza = 26, altezza = 15)
+salva(figura, "fig13_tasso_occupazione_eta", larghezza = LARGHEZZA, altezza = 19)

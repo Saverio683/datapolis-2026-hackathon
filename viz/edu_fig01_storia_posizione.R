@@ -77,7 +77,18 @@ dati <- mutate(dati, metrica = factor(metrica, levels = rev(ordine)))
 livelli <- dati |>
   select(metrica, sfavorevole, anno, valore) |>
   pivot_wider(names_from = anno, values_from = valore, names_prefix = "a") |>
-  arrange(metrica)
+  arrange(metrica) |>
+  # Estremi su tutti e tre i censimenti, non solo sui due che il claim confronta: su NEET
+  # e occupazione il 2001 cade FUORI dall'intervallo 1991-2011 (il NEET sale a 47,7 e poi
+  # scende a 40,1), quindi un segmento fermato agli estremi lascia la tacca a mezz'aria.
+  mutate(x_min = pmin(a1991, a2001, a2011), x_max = pmax(a1991, a2001, a2011))
+
+# Le due colonne dei valori: posizioni fisse a destra del massimo osservato (47,7), non
+# appese ai cerchi. Appese erano su pmin/pmax, cioe' sui lati, non sugli anni: il grassetto
+# finiva sull'estremo destro e quindi sul 1991 nelle righe che scendono (uscita precoce,
+# NEET). In colonna la seconda cifra e' sempre il 2011, in tutte e cinque le righe.
+COL_1991 <- 55
+COL_2011 <- 62
 
 # La freccia punta dove sta il 2011; il verso "buono" cambia per indicatore e si dice
 # nell'etichetta di riga, non nel colore: sono cinque miglioramenti su cinque, un colore
@@ -88,24 +99,27 @@ ETICHETTE_RIGA <- setNames(paste0(livelli$metrica, "\n", livelli$etichetta_verso
                            as.character(livelli$metrica))
 
 pannello_livelli <- ggplot(livelli, aes(y = metrica)) +
-  geom_segment(aes(x = a1991, xend = a2011), linewidth = 2.4, colour = "grey85",
+  # La barra e' l'escursione della quota sui tre censimenti, non il salto 1991->2011: cosi'
+  # la tacca del 2001 ci sta sempre sopra. I due cerchi restano gli anni che il claim
+  # confronta, ed e' li' che si legge il verso.
+  geom_segment(aes(x = x_min, xend = x_max), linewidth = 2.4, colour = "grey85",
                lineend = "round") +
-  # Il 2001 come tacca sul segmento: dice che il percorso è graduale senza rubare
-  # l'attenzione ai due estremi, che sono quelli che il claim confronta.
+  # Il 2001 come tacca sulla barra: dice che il percorso ha una forma senza rubare
+  # l'attenzione ai due estremi. Dove sporge oltre entrambi, quella e' l'informazione.
   geom_point(aes(x = a2001), size = 2.1, colour = "grey62") +
   geom_point(aes(x = a1991), size = 4.2, shape = 21, stroke = 1.1, colour = "grey55",
              fill = "white") +
   geom_point(aes(x = a2011), size = 4.6, colour = COLORI_TERRITORIO[["Bagheria"]]) +
-  geom_text(aes(x = pmin(a1991, a2011), label = virgola(pmin(a1991, a2011), 1, "%")),
-            hjust = 1, nudge_x = -1.4, size = 3.1, colour = "grey45") +
-  geom_text(aes(x = pmax(a1991, a2011), label = virgola(pmax(a1991, a2011), 1, "%")),
-            hjust = 0, nudge_x = 1.4, size = 3.1, fontface = "bold", colour = "grey20") +
-  scale_x_continuous(limits = c(-2, 54), breaks = seq(0, 40, 10),
+  geom_text(aes(label = virgola(a1991, 1, "%")), x = COL_1991,
+            hjust = 1, size = 3.1, colour = "grey45") +
+  geom_text(aes(label = virgola(a2011, 1, "%")), x = COL_2011,
+            hjust = 1, size = 3.1, fontface = "bold", colour = "grey20") +
+  scale_x_continuous(limits = c(-2, COL_2011 + 1), breaks = seq(0, 40, 10),
                      labels = function(x) virgola(x, 0, "%"),
                      expand = expansion(mult = 0)) +
   scale_y_discrete(labels = ETICHETTE_RIGA) +
   labs(subtitle = paste0("I livelli migliorano, tutti e ", N, "\n",
-                         "quota osservata a Bagheria: cerchio vuoto 1991, tacca 2001, pieno 2011"),
+                         "cerchio vuoto 1991, tacca 2001, pieno 2011; a destra 1991 e 2011"),
        x = "quota della popolazione di riferimento", y = NULL)
 
 # --- pannello B: la posizione fra i 390 comuni siciliani -----------------------------
@@ -146,10 +160,10 @@ figura <- (pannello_livelli | pannello_posizione) +
                    " gli indicatori educativi, e su tutti e ", N, " scivola indietro"),
     subtitle = sommario(paste0(
       "Tre censimenti, 1991-2011. A sinistra quanto è cambiata la quota; a destra dove si colloca Bagheria fra i 390 comuni siciliani, ribaltando il percentile\n",
-      "dove salire è peggio, così che in alto significhi sempre \"davanti\". Il capitale umano cresce di più di tutto — diploma o laurea fra i 25-64enni passa da ",
+      "dove salire è peggio, così che in alto significhi sempre \"davanti\". Il capitale umano cresce di più di tutto: diploma o laurea fra i 25-64enni passa da ",
       virgola(cambio$valore_1991[cambio$indicatore == "I6"], 1), "%\n",
       "a ", virgola(cambio$valore_2011[cambio$indicatore == "I6"], 1),
-      "% — ma la Sicilia cresce di più: quello stesso indicatore scende dal ",
+      "%, ma la Sicilia cresce di più, e quello stesso indicatore scende dal ",
       virgola(primi$percentile_fav[primi$indicatore == "I6"], 0), "° al ",
       virgola(ultimi$percentile_fav[ultimi$indicatore == "I6"], 0), "° percentile.\n",
       "L'occupazione giovanile è il caso limite: ",
@@ -159,14 +173,27 @@ figura <- (pannello_livelli | pannello_posizione) +
       virgola(cambio$valore_2011[cambio$indicatore == "L14"], 1),
       "%) valgono un crollo dal ", virgola(primi$percentile_fav[primi$indicatore == "L14"], 0),
       "° al ", virgola(ultimi$percentile_fav[ultimi$indicatore == "L14"], 0), "° percentile."), LARGHEZZA),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT, 8milaCensus - censimenti 1991, 2001, 2011. Fasce diverse per indicatore, indicate nel nome.\n",
-      "Percentile favorevole = percentile fra i 390 comuni siciliani, ribaltato (100 − p) su uscita precoce e NEET, dove il valore alto è sfavorevole.\n",
-      "Dopo il ribaltamento un percentile alto significa sempre \"davanti agli altri comuni\". Le etichette di fine linea sono scostate quanto basta a non sovrapporsi; i pallini stanno sul valore vero.\n",
-      "Migliorare e arretrare non sono in contraddizione: la quota di Bagheria sale, quella della mediana regionale sale di più. La figura misura la seconda cosa, che è quella che una policy di convergenza deve spostare.\n",
-      "Il confronto è fermo al 2011: 8milaCensus non prosegue oltre, e le tavole 2018-2024 hanno definizioni diverse. I due periodi non formano una serie continua e non vanno letti come tale.\n",
-      "Elaborazione: pipeline/edu (thread educazione) - data/processed/edu_historical_bagheria.csv, edu_historical_change_1991_2011.csv"), LARGHEZZA),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "posizione di Bagheria fra i comuni siciliani su ", N,
+        " indicatori di istruzione e lavoro, ai tre censimenti decennali 1991, 2001 e 2011. ",
+        "Il valore disegnato è un percentile favorevole, cioè la posizione di Bagheria fra i 390 comuni siciliani, ribaltata (100 meno il percentile) sugli indicatori dove il valore alto è sfavorevole, come uscita precoce e NEET. ",
+        "Dopo il ribaltamento un percentile alto significa sempre «davanti agli altri comuni». ",
+        "Migliorare e arretrare non sono in contraddizione: la quota di Bagheria sale, quella della mediana regionale sale di più, e la figura misura la seconda cosa, che è quella che una politica di convergenza deve spostare."),
+      base = paste0(
+        "N = 390 comuni siciliani per ciascun censimento, che è la popolazione su cui il percentile è calcolato. ",
+        "Nessun intervallo di confidenza: sono ranghi calcolati su conteggi censuari, non stime campionarie, e nessun comune è escluso. ",
+        "Le fasce d'età sono diverse da indicatore a indicatore e sono indicate nel nome di ciascuno. ",
+        "Il confronto si ferma al 2011: 8milaCensus non prosegue oltre, e le tavole 2018-2024 hanno definizioni diverse, quindi i due periodi non formano una serie continua e non vanno letti come tale."),
+      lettura = paste0(
+        "ogni riga è un indicatore e ogni linea segue Bagheria attraverso i tre censimenti: la pendenza è il movimento in graduatoria, non il movimento del valore. ",
+        "Le etichette di fine linea sono scostate in verticale quel tanto che basta a non sovrapporsi: i pallini stanno sul valore vero, le scritte no. ",
+        "Il nome di ogni riga porta il verso dell'indicatore, così non serve ricordarsi quale direzione sia quella buona."),
+      fonte = paste0(
+        "ISTAT, 8milaCensus, censimenti 1991, 2001 e 2011. ",
+        "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_historical_bagheria.csv e edu_historical_change_1991_2011.csv."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
-salva(figura, "edu_fig01_storia_posizione", larghezza = LARGHEZZA, altezza = 16)
+salva(figura, "edu_fig01_storia_posizione", larghezza = LARGHEZZA, altezza = 21)

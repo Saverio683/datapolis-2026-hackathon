@@ -16,6 +16,8 @@
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
 # --- i dati: la fotografia del quadrante, tutta sulla fascia 15-24 ----------------------
+LARGHEZZA <- 22   # stessa misura del salvataggio: su questa il testo va a capo
+
 quadrante <- read_csv(file.path(PROCESSED, "genere_forbice_quadrante.csv"),
                       col_types = cols(territorio = "c", nome_territorio = "c", .default = "d"))
 
@@ -23,6 +25,12 @@ ETICHETTA_VICINATO <- grep("^vicinato", unique(quadrante$nome_territorio), value
 stopifnot(length(ETICHETTA_VICINATO) == 1)
 COLORI <- c(COLORI_TERRITORIO, setNames(COLORE_VICINATO, ETICHETTA_VICINATO))
 ANNO <- max(quadrante$anno)
+
+# I denominatori dei due assi: cinque punti su un piano non dicono su quante persone
+# poggiano, e i cinque territori hanno taglie che vanno da migliaia a milioni.
+basi <- read_csv(file.path(PROCESSED, "genere_per_1000.csv"), show_col_types = FALSE) |>
+  filter(anno == ANNO)
+enne <- function(terr, g) basi$pop_15_24[basi$nome_territorio == terr & basi$genere == g]
 
 foto <- filter(quadrante, anno == ANNO)
 valore <- function(terr, colonna) foto[[colonna]][foto$nome_territorio == terr]
@@ -90,7 +98,7 @@ pann_a <- ggplot(foto, aes(vantaggio_diploma_15_24_pp, tasso_occupazione_F,
 figura <- pann_a +
   plot_annotation(
     title = "Il capitale umano che Bagheria spreca di più è femminile",
-    subtitle = paste0(
+    subtitle = sommario(paste0(
       "Anno ", ANNO, ", fascia 15-24: le ragazze di Bagheria superano i coetanei nel diploma (+",
       virgola(valore("Bagheria", "vantaggio_diploma_15_24_pp")), " punti) e hanno\n",
       "il tasso di occupazione più basso del panel (",
@@ -100,21 +108,35 @@ figura <- pann_a +
       "femminile) ma un vantaggio educativo di appena +",
       virgola(valore(ETICHETTA_VICINATO, "vantaggio_diploma_15_24_pp")),
       " punti: lo svantaggio occupazionale è di zona, la forbice è di Bagheria.\n",
-      "Bagheria è sola nell'angolo in basso a destra — più istruite della mediana, meno occupate. Come ci sia arrivata sta in fig05b."),
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione — istruzione (9-24 anni), condizione professionale (15-24),\n",
-      "demografia per età singola (denominatori), anno ", ANNO, ".\n",
-      "Il quadrante sta sulla stessa popolazione 15-24: diplomate/i 15-24 = 9-24 per costruzione (nessun titolo sotto i 15;\n",
-      "coerenza fra le tavole verificata nel notebook, scarto zero).\n",
-      "La stessa forbice nel tempo sta in fig05b, ma sul vantaggio 9-24, l'unico disponibile dal 2018: le due misure non si\n",
-      "sommano e non vanno lette in serie. Sulla fascia 15-24 il primato del vantaggio educativo è un pareggio con la Sicilia,\n",
-      "e sul bound 18-24 non regge (fig11b): il claim è il distacco dal vicinato e la mancata conversione.\n",
-      "Il rapporto M/F e le tre scale dell'occupazione stanno in fig01; qui l'occupazione è il livello femminile,\n",
-      "la scala che regge in ogni annata.\n",
-      "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi i tassi, non media dei cinque\n",
-      "tassi. Guide del quadrante: mediane dei cinque valori mostrati.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_forbice_quadrante.csv (fotografia 15-24)"),
+      "Bagheria è sola nell'angolo in basso a destra (più istruite della mediana, meno occupate). Come ci sia arrivata sta in fig05b."), LARGHEZZA),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "posizione dei cinque territori sul piano che incrocia istruzione e lavoro delle ragazze, anno ", ANNO,
+        ", tutto sulla classe 15-24 anni. Sull'asse orizzontale il vantaggio educativo femminile, cioè quanti punti percentuali separano la quota di diplomate da quella dei diplomati; ",
+        "sull'asse verticale il tasso di occupazione femminile, in percentuale delle coetanee residenti. ",
+        "È una fotografia di un solo anno: la stessa forbice nel tempo sta in fig05b."),
+      base = paste0(
+        "Denominatori della classe 15-24 nel ", ANNO, ": ",
+        paste(vapply(foto$nome_territorio, function(t) paste0(t, " ", migliaia(round(enne(t, "F"))),
+              " ragazze e ", migliaia(round(enne(t, "M"))), " ragazzi"), character(1)), collapse = "; "),
+        ". Per il vicinato i conteggi dei cinque comuni sono sommati e solo dopo si calcolano i tassi, non è la media dei cinque tassi. ",
+        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "Il quadrante sta tutto sulla stessa popolazione 15-24, perché i diplomati 15-24 coincidono per costruzione con i diplomati 9-24: nessuno consegue un titolo prima dei 15 anni, e la coerenza fra le due tavole è verificata nel notebook con scarto zero. ",
+        "Limiti del claim, dichiarati: su questa fascia il primato del vantaggio educativo è un pareggio con la Sicilia, e sul limite superiore 18-24 non regge (fig11b). ",
+        "Il claim è quindi il distacco dal vicinato e la mancata conversione, non il primato assoluto. ",
+        "La serie nel tempo di fig05b sta sul vantaggio 9-24, l'unico disponibile dal 2018: le due misure non si sommano e non vanno lette in sequenza."),
+      lettura = paste0(
+        "ogni punto è un territorio, e Bagheria è il punto vermiglio più grande. ",
+        "Le due linee tratteggiate chiare sono le mediane dei cinque valori disegnati, e dividono il piano in quadranti: l'angolo in basso a destra è «più istruite della mediana e meno occupate», ed è dove Bagheria sta da sola. ",
+        "La linea tratteggiata verticale allo zero è la parità educativa fra ragazze e ragazzi: a destra di quella riga le ragazze sono più istruite dei coetanei. ",
+        "Con cinque punti la mediana coincide con il punto centrale, quindi due territori siedono esattamente sulle guide: è corretto e non un errore di disegno. ",
+        "L'etichetta accanto a ogni punto ripete i suoi due valori. Il rapporto fra tasso maschile e femminile non è su questo piano: le tre scale del divario stanno in fig01, e qui l'occupazione è il livello femminile, la scala che regge in ogni annata."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola istruzione, tavola della condizione professionale e demografia per età singola per i denominatori, anno ", ANNO, ". ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_forbice_quadrante.csv e genere_per_1000.csv per i denominatori)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
-salva(figura, "fig05_forbice", larghezza = 22, altezza = 17)
+salva(figura, "fig05_forbice", larghezza = LARGHEZZA, altezza = 22)

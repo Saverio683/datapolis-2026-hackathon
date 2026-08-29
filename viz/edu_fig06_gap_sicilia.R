@@ -12,6 +12,18 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+# Stessa misura del salvataggio: su questa il testo va a capo.
+LARGHEZZA <- 26
+
+# I denominatori della classe, per la didascalia: una differenza in punti non dice
+# quante persone ci siano sotto, e su due territori di taglia opposta è la prima domanda.
+stati <- read_csv(file.path(PROCESSED, "edu_youth_states_2018_2024.csv"),
+                  show_col_types = FALSE)
+enne <- function(t) stati$popolazione[stati$territorio_nome == t &
+                                        stati$anno == max(stati$anno)]
+N_BAG <- enne("Bagheria")
+N_SIC <- enne("Sicilia")
+
 SPEC <- tibble::tibble(
   metrica = c("quota_fuori_lavoro_studio", "quota_inattivi_non_studenti", "quota_occupati"),
   nome = c("fuori da lavoro e studio", "inattivi non studenti", "occupazione"),
@@ -54,13 +66,28 @@ figura <- ggplot(serie, aes(asse_2020(anno), gap_bagheria_sicilia_pp, colour = n
       paste0("\nL'occupazione resta ", virgola(abs(gap_occ_24), 1), " punti sotto (era ",
              virgola(abs(gap_occ_18), 1), " nel 2018); inattività e area fuori da lavoro e studio restano sopra."),
       "\nIl confronto in differenze regge alla rottura di misura 2019-2021 (comune a tutti i territori);",
-      "\ni livelli delle singole componenti no — per questo qui si mostrano solo i gap."),
+      "\ni livelli delle singole componenti no, ed è la ragione per cui qui si mostrano solo i divari."),
     x = NULL, y = "Bagheria − Sicilia (punti percentuali)",
-    caption = paste(
-      "Fonte: ISTAT, Censimento permanente della popolazione - condizione professionale, classe 15-24 anni, 2018-2024 (2020 non pubblicato).",
-      "\nPer l'occupazione un gap negativo è sfavorevole; per inattivi e fuori da lavoro e studio è sfavorevole un gap positivo.",
-      "\nElaborazione: pipeline/edu (thread educazione) - data/processed/edu_gaps_vs_sicily.csv")
+    caption = didascalia_4b(
+      mostra = paste0(
+        "differenza fra Bagheria e la Sicilia, in punti percentuali, su tre misure della classe 15-24 anni, dal 2018 al 2024: ",
+        "tasso di occupazione, quota di inattivi non studenti e quota fuori da lavoro e studio. ",
+        "La figura mostra i divari e non i livelli, ed è una scelta di misura: il confronto in differenze regge alla rottura di misura fra il 2019 e il 2021, che è comune a tutti i territori, mentre i livelli delle singole componenti no."),
+      base = paste0(
+        "Denominatori della classe 15-24 nell'ultima annata: ", migliaia(round(N_BAG)),
+        " residenti a Bagheria e ", migliaia(round(N_SIC)), " in Sicilia. ",
+        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
+        "Il 2020 non è pubblicato nella tavola lavoro e non è interpolato. ",
+        "Fra il 2019 e il 2021 il censimento permanente cambia la definizione di «in cerca di occupazione»: è la ragione per cui la figura si limita alle differenze. Nessuna esclusione di record."),
+      lettura = paste0(
+        "la riga orizzontale allo zero è la parità con la Sicilia, e la distanza di ogni punto da quella riga è il divario di quell'annata. ",
+        "Il verso favorevole cambia da misura a misura, e va letto insieme al nome: per l'occupazione un divario negativo è sfavorevole a Bagheria, mentre per gli inattivi non studenti e per l'area fuori da lavoro e studio è sfavorevole un divario positivo. ",
+        "La striscia grigia verticale occupa l'annata mancante: dove c'è la striscia non c'è misura."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, 2018-2024. ",
+        "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_gaps_vs_sicily.csv (con edu_youth_states_2018_2024.csv per i denominatori)."),
+      larghezza = LARGHEZZA)
   ) +
   tema_figura()
 
-salva(figura, "edu_fig06_gap_sicilia", larghezza = 26, altezza = 15)
+salva(figura, "edu_fig06_gap_sicilia", larghezza = LARGHEZZA, altezza = 19)

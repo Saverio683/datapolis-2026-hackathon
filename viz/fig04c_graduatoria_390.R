@@ -20,6 +20,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 28   # stessa misura del salvataggio: su questa il testo va a capo
+
 QUANTI <- 8      # quanti comuni nominare in cima e quanti in fondo
 X_MIN <- 12      # da dove partono le linee guida: sotto il minimo regionale
 X_VALORE <- 41.5 # colonna del tasso, fuori dai dati
@@ -158,22 +160,32 @@ figura <- ggplot(punti, aes(occ_2024, y)) +
       riferimento("Palermo")$rango_2024, "°), ma non è in alto.\n",
       "La coda alta è un blocco geografico, non una lista di casi: ",
       paste(IONICI, collapse = ", "), "\nsono comuni contigui della costa ionica messinese.",
-      " La coda bassa è tutta interna — ma mescola città vere come ", citta_coda$nome_comune,
+      " La coda bassa è tutta interna, ma mescola città vere come ", citta_coda$nome_comune,
       " (", migliaia(citta_coda$donne_15piu_2024), " donne 15+)\ne paesi minuscoli come ",
       paese_coda$nome_comune, " (", migliaia(paese_coda$donne_15piu_2024),
       "), dove il tasso è instabile: è la ragione per cui il punto ha la dimensione della platea."),
     x = NULL, y = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione (", ANNO,
-      "), tavola condizione professionale, classe 15 anni e più. Tasso di occupazione femminile.\n",
-      "Fascia diversa dalle serie 15-24 del thread: è l'indicatore di lungo periodo (L11 del codebook 8milaCensus), contesto e non termine di paragone.\n",
-      "Le righe sono ordinate per valore ma spaziate in modo uniforme: fra due righe adiacenti possono starci decine di comuni, e il rango a destra\n",
-      "è l'unica misura della distanza. Le righe di rottura dicono quanti comuni stanno nel salto.\n",
-      "La linea guida parte da ", X_MIN, "% e non da zero e non è una barra: porta l'occhio dal nome al punto, la sua lunghezza non è una quantità.\n",
-      "Dimensione del punto: residenti femmine 15+, scala logaritmica su tre ordini di grandezza — è un ordine di grandezza, non una quantità leggibile.\n",
-      N, " comuni ai confini 2011, gli stessi di fig04 e fig04b. Fuori Misiliscemi, istituito nel 2021 da Trapani.\n",
-      "Dove stanno questi comuni sulla carta lo mostra fig04; se la graduatoria del 2011 predica quella di oggi, fig04b.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mappa_2011_2024.csv (tasso, rango, platea femminile) e genere_distribuzione_390.csv (mediana)")
+    caption = didascalia_4b(
+      mostra = paste0(
+        "graduatoria dei ", N, " comuni siciliani per tasso di occupazione femminile sulla popolazione di 15 anni e più, anno ", ANNO,
+        ". Sono nominati gli ", QUANTI, " comuni in cima e gli ", QUANTI,
+        " in fondo, più i sette territori di riferimento del thread (Bagheria, i cinque comuni vicini e Palermo) collocati al loro rango. ",
+        "Una sola annata, quindi nessun confronto fra rilevazioni diverse e nessun movimento: il movimento sta in fig04b, la geografia in fig04."),
+      base = paste0(
+        "N = ", N, " comuni ai confini del 2011, gli stessi di fig04 e fig04b. Misiliscemi, istituito nel 2021 per distacco da Trapani, è l'unica esclusione. ",
+        "Nessun intervallo di confidenza sui singoli comuni: sono conteggi censuari e non stime campionarie. ",
+        "Nei comuni piccoli il tasso resta però instabile, perché poche persone spostano molti punti percentuali: è la ragione per cui il punto porta la dimensione della platea, e va tenuta presente leggendo le due code. ",
+        "La fascia è quella di lungo periodo (15 anni e più, l'indicatore L11 del codebook 8milaCensus), diversa dalle serie 15-24 del thread: è contesto e non un termine di paragone."),
+      lettura = paste0(
+        "le righe sono ordinate per valore ma spaziate in modo uniforme, quindi la distanza verticale fra due righe non misura niente: fra due righe adiacenti possono starci decine di comuni, e il rango stampato a destra è l'unica misura della distanza. ",
+        "Le righe punteggiate di rottura dicono quanti comuni stanno dentro ciascun salto. ",
+        "La linea guida colorata parte da ", X_MIN, "% e non da zero, e non è una barra: serve solo a portare l'occhio dal nome al punto, e la sua lunghezza non è una quantità. ",
+        "Il diametro del punto è il numero di residenti femmine di 15 anni e più, su scala logaritmica che copre tre ordini di grandezza: è un ordine di grandezza, non una quantità leggibile a occhio. ",
+        "La riga tratteggiata verticale è la mediana regionale. Il colore dice il ruolo e non il valore: Bagheria in vermiglio e in maiuscolo, i cinque comuni vicini in verde acqua, Palermo in viola, i comuni delle due code in grigio scuro."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, popolazione di 15 anni e più, anno ", ANNO,
+        ". Elaborazione: notebooks/genere.ipynb (data/processed/genere_mappa_2011_2024.csv per tasso, rango e platea femminile, genere_distribuzione_390.csv per la mediana)."),
+      larghezza = LARGHEZZA)
   ) +
   theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank())
 
@@ -184,4 +196,4 @@ figura <- figura + tema_figura() +
   theme(panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank(),
         axis.text.y = element_text(hjust = 0, colour = "grey20"))
 
-salva(figura, "fig04c_graduatoria_390", larghezza = 28, altezza = 23)
+salva(figura, "fig04c_graduatoria_390", larghezza = LARGHEZZA, altezza = 27)

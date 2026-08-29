@@ -9,6 +9,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 29   # stessa misura del salvataggio: su questa il testo va a capo
+
 madri <- read_csv(file.path(PROCESSED, "genere_gap_madri.csv"), show_col_types = FALSE)
 madri_recente <- read_csv(file.path(PROCESSED, "genere_madri_recente.csv"), show_col_types = FALSE)
 gemelle <- read_csv(file.path(PROCESSED, "genere_pretrend_gemelle.csv"), show_col_types = FALSE)
@@ -200,34 +202,64 @@ confronto <- ggplot(banda, aes(x, group = epoca)) +
                          "occupazione femminile 15+, banda = 1°-3° quartile"),
        x = NULL, y = "tasso di occupazione femminile (%)")
 
+# I numeri del sottotitolo, letti dalle stesse tabelle che alimentano i pannelli: nessuna
+# cifra scritta a mano, così la frase non può sopravvivere a un dato che non la sostiene.
+pct <- function(ind, an) {
+  v <- percentili$percentile_390[percentili$indicatore == ind & percentili$anno == an]
+  virgola(v, 0, "°")
+}
+SCARTI_PERM <- banda |>
+  filter(epoca == PERMANENTE) |>
+  mutate(scarto = bagheria - gemelle_mediana)
+SCARTO_MIN <- virgola(max(SCARTI_PERM$scarto))   # il meno negativo: la distanza più corta
+SCARTO_MAX <- virgola(min(SCARTI_PERM$scarto))
+ANNI_PERM <- range(SCARTI_PERM$anno)
+
 figura <- ((posizione / striscia + plot_layout(heights = c(1, 0.32))) | confronto) +
   plot_layout(widths = c(1.15, 1)) +
   plot_annotation(
     title = "Il muro si alza fra il 2001 e il 2011, e nel 2024 è ancora lì",
     subtitle = paste0(
-      "Fra il 1991 e il 2011 le donne di Bagheria entrano nel lavoro, ma il mercato non le assorbe: l'occupazione femminile scende al 12° percentile.\n",
-      "Il censimento permanente mostra che dopo il 2011 è peggiorata ancora - 8° percentile nel 2018 - e che al 2024 ha recuperato solo in parte, al 17°.\n",
-      "Fra il 2011 e il 2024 l'occupazione maschile risale dal 15° al 30° percentile, mentre la partecipazione femminile continua a scendere, dal 32° al 17°:\n",
-      "la lettura del 2011, un mercato ristretto per tutti, al 2024 non regge più - gli uomini recuperano e le donne no.\n",
-      "Rispetto alle gemelle strutturali lo scarto non si è chiuso: -1,7 punti nel 2011, fra -2,1 e -3,1 in ogni anno dal 2018 al 2024.\n",
+      "Fra il 1991 e il 2011 le donne di Bagheria entrano nel lavoro, ma il mercato non le assorbe: l'occupazione femminile scende al ",
+      pct("L11", 2011), " percentile.\n",
+      "Il censimento permanente mostra che dopo il 2011 è peggiorata ancora (", pct("L11", 2018),
+      " percentile nel 2018) e che al 2024 ha recuperato solo in parte, al ", pct("L11", 2024), ".\n",
+      "Fra il 2011 e il 2024 l'occupazione maschile risale dal ", pct("L10", 2011), " al ", pct("L10", 2024),
+      " percentile, mentre la partecipazione femminile continua a scendere, dal ", pct("L2", 2011),
+      " al ", pct("L2", 2024), ":\n",
+      "la lettura del 2011, un mercato ristretto per tutti, al 2024 non regge più, perché gli uomini recuperano e le donne no.\n",
+      "Rispetto alle gemelle strutturali lo scarto non si è chiuso: ", virgola(scarto_2011),
+      " punti nel 2011, e fra ", SCARTO_MIN, " e ", SCARTO_MAX, " in ogni anno dal ",
+      ANNI_PERM[1], " al ", ANNI_PERM[2], ".\n",
       "Nello stesso decennio peggiora anche l'istruzione, e in modo indipendente dal lavoro: l'uscita precoce dalla scuola passa dal ",
       virgola(frattura$percentile_390[frattura$anno == 2001], 0, "°"), " al ",
       virgola(frattura$percentile_390[frattura$anno == 2011], 0, "° percentile"), ".\n",
       "Due domini diversi, due indicatori diversi, la stessa datazione: il 2001-2011 non è un artefatto della misura del lavoro.\n",
-      "Per la proposal: la frattura è databile e non si richiude da sola - e il pre-periodo del disegno di valutazione adesso è misurato, non assunto."),
-    caption = paste0(
-      "Fonte: ISTAT - 8milaCensus (censimenti 1991, 2001, 2011) e Censimento permanente (2018-2024, il 2020 manca alla fonte). Popolazione 15 anni e più.\n",
-      "L'asse del tempo non è in scala: 1991-2011 compresso, 2018-2024 allungato, per dare spazio agli anni con più rilevazioni. Le pendenze si leggono dentro ciascuna epoca, non fra le due.\n",
-      "Due rilevazioni con disegni diversi: universale a questionario la prima, campionaria sui registri la seconda. Nessuna linea attraversa lo stacco fra le due epoche.\n",
-      "Il percentile è un rango calcolato dentro l'anno, quindi assorbe lo scarto di definizione fra le fonti; i livelli assoluti no, e infatti nel pannello destro le due epoche restano separate.\n",
-      "Cautela su partecipazione e disoccupazione femminile: fra il 2019 e il 2021 il permanente cambia la misura di 'in cerca di occupazione' (a Bagheria la disoccupazione F cala di 15,5 punti, in Italia di 4,5).\n",
-      "Occupazione maschile e femminile non ne risentono. Il differenziale educativo M/F si ferma al 2011: 8milaCensus lo calcola sulla popolazione 6+, il permanente non ha una classe 15+ sull'istruzione.\n",
-      "390 comuni ai confini 2011 in entrambe le epoche (Misiliscemi, istituito nel 2021, resta fuori per non cambiare il denominatore).\n",
-      "Gemelle = i 10 comuni più simili a Bagheria per dimensione, densità, età, stranieri, abitazioni e distanza da Palermo (matching Mahalanobis su variabili non-esito, nel notebook).\n",
-      "L'uscita precoce (indicatore I5, 8milaCensus) è la quota di 15-24enni con la sola licenza media fuori da scuola e formazione: verso opposto al pannello sopra, per questo ha scala e striscia sue.\n",
-      "I suoi percentili, ricalcolati in questo thread, coincidono con quelli del thread educazione su tutte e 18 le coppie indicatore x anno (scarto massimo 0,00).\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_gap_madri.csv, genere_madri_recente.csv, genere_pretrend_gemelle.csv, genere_pretrend_gemelle_recente.csv, genere_frattura_istruzione.csv"),
+      "Per la proposal: la frattura è databile e non si richiude da sola, e il pre-periodo del disegno di valutazione adesso è misurato invece che assunto."),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "tre letture della stessa frattura, allineate sullo stesso asse del tempo. In alto a sinistra la posizione di Bagheria nella distribuzione dei 390 comuni siciliani, in percentile, su quattro indicatori del mercato del lavoro; ",
+        "sotto, la stessa frattura vista dall'istruzione con l'uscita precoce dalla scuola; a destra il tasso di occupazione femminile di Bagheria dentro il suo gruppo di dieci comuni gemelli, in punti percentuali. ",
+        "I primi due pannelli sono in percentile e il terzo in livello: sono unità diverse e non vanno confrontate fra loro."),
+      base = paste0(
+        "N = 390 comuni ai confini del 2011 in entrambe le epoche (Misiliscemi, istituito nel 2021, resta fuori per non cambiare il denominatore) e 10 comuni nel gruppo delle gemelle. ",
+        "Gemelle = i dieci comuni più simili a Bagheria per dimensione, densità, struttura per età, stranieri, abitazioni e distanza da Palermo, appaiati con distanza di Mahalanobis su variabili che non sono esiti. ",
+        "Due rilevazioni con disegni diversi: universale a questionario i censimenti 1991-2011, campionaria sui registri il censimento permanente 2018-2024. Nessuna linea attraversa lo stacco fra le due, e nessun valore è interpolato; il 2020 manca alla fonte. ",
+        "Il percentile è un rango calcolato dentro l'anno e assorbe quindi lo scarto di definizione fra le fonti; i livelli assoluti no, ed è la ragione per cui nel pannello destro le due epoche restano separate. ",
+        "Cautela di misura: fra il 2019 e il 2021 il censimento permanente cambia la definizione di «in cerca di occupazione» (a Bagheria la disoccupazione femminile cala di 15,5 punti, in Italia di 4,5), quindi le due serie grigie vanno lette con prudenza in quel tratto; occupazione maschile e femminile non ne risentono. ",
+        "Il differenziale educativo fra maschi e femmine non è in figura perché esiste solo fino al 2011: 8milaCensus lo calcola sulla popolazione di 6 anni e più, e il permanente non pubblica una classe 15 e più sull'istruzione. ",
+        "I percentili dell'uscita precoce, ricalcolati in questo thread, coincidono con quelli del thread educazione su tutte e 18 le coppie indicatore per anno, con scarto massimo 0,00."),
+      lettura = paste0(
+        "l'asse del tempo non è in scala: il tratto 1991-2011 è compresso e il tratto 2018-2024 allungato, per dare spazio agli anni con più rilevazioni. Le pendenze si leggono dentro ciascuna epoca, mai fra un'epoca e l'altra. ",
+        "La striscia grigia verticale al centro di ogni pannello è lo stacco fra le due rilevazioni: non è un'annata mancante, è un cambio di fonte, e nessuna linea lo attraversa. ",
+        "Nei due pannelli di sinistra la riga orizzontale a 50 è la mediana regionale. Nel pannello in alto lo spessore è enfasi e non un dato: occupazione femminile (vermiglio) e maschile (blu) sono le due serie del finding, partecipazione e disoccupazione femminile restano grigie perché sono contesto. ",
+        "La striscia in basso ha verso opposto ai pannelli sopra, e per questo ha scala e asse propri: l'uscita precoce dalla scuola è un indicatore negativo, quindi più in alto significa peggio. ",
+        "Nel pannello di destra la banda grigia è l'intervallo fra il primo e il terzo quartile delle dieci gemelle, cioè la loro metà centrale, e non è un intervallo di confidenza; la linea grigia dentro la banda è la loro mediana e quella vermiglia è Bagheria."),
+      fonte = paste0(
+        "ISTAT, 8milaCensus (censimenti 1991, 2001 e 2011) e Censimento permanente della popolazione (2018-2024), popolazione di 15 anni e più; per la striscia, l'indicatore I5 di 8milaCensus, cioè la quota di 15-24enni con la sola licenza media e fuori da scuola e formazione. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_gap_madri.csv, genere_madri_recente.csv, genere_pretrend_gemelle.csv, genere_pretrend_gemelle_recente.csv e genere_frattura_istruzione.csv)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
-salva(figura, "fig10_muro_recente", larghezza = 29, altezza = 21)
+salva(figura, "fig10_muro_recente", larghezza = LARGHEZZA, altezza = 26)

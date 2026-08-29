@@ -51,6 +51,13 @@ stopifnot(abs(aggregato$variazione_conteggio -
                 sum(stati$variazione_conteggio[stati$metrica %in%
                                                  c("in_cerca", "inattivi_non_studenti")])) < 0.01)
 
+# La coorte che fa da denominatore alla scomposizione: senza, «meno 130 persone» non dice
+# se sia un decimo o un centesimo della fascia.
+coorte <- read_csv(file.path(PROCESSED, "edu_youth_states_2018_2024.csv"),
+                   show_col_types = FALSE) |>
+  filter(territorio_nome == "Bagheria")
+enne_coorte <- function(a) coorte$popolazione[coorte$anno == a]
+
 DA <- unique(stati$anno_iniziale)
 A <- unique(stati$anno_finale)
 stopifnot(length(DA) == 1, length(A) == 1)
@@ -108,18 +115,34 @@ figura <- ggplot(cascata, aes(persone, voce, fill = voce)) +
       ", e di questi ", migliaia(round(abs(popolazione("inattivi_non_studenti")))),
       " li toglie soltanto la coorte più piccola: il tasso si muove di ",
       migliaia(round(tasso("inattivi_non_studenti"))), " persone.\n",
-      "Il nucleo che non cerca non si è riattivato — si è quasi solo rimpicciolito con la demografia."), LARGHEZZA),
+      "Il nucleo che non cerca non si è riattivato: si è quasi solo rimpicciolito con la demografia."), LARGHEZZA),
     x = paste0("persone, ", DA, " → ", A), y = NULL,
-    caption = didascalia(paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - condizione professionale, classe 15-24 anni, ", DA, " e ", A, ". Il 2020 non è pubblicato ma non entra qui: la scomposizione confronta i due estremi del periodo.\n",
-      "Scomposizione shift-share sui due estremi: effetto popolazione = variazione della coorte a tasso ", DA, " fermo; effetto tasso = variazione del tasso applicata alla coorte ", A, ". La somma è esatta, non approssimata (controllo nel notebook).\n",
-      "I quattro stati sono esaustivi, ma le variazioni in persone NON sommano a zero: la coorte 15-24 si è ristretta nel periodo, e la loro somma è esattamente l'effetto demografico complessivo. A sommare a zero sono gli effetti di tasso, perché le quattro quote fanno 100% in entrambe le annate.\n",
-      "\"Fuori da lavoro e studio\" non ha un pannello perché è la somma di \"in cerca\" e \"inattivi non studenti\": vale ",
-      sprintf("%+.0f", aggregato$variazione_conteggio), " persone, ma affiancarlo alle sue componenti le conterebbe due volte.\n",
-      "Le persone sono ricostruite dalle quote pubblicate e possono avere frazioni di unità: qui sono arrotondate all'intero. La scomposizione è aritmetica, non un modello, e non attribuisce cause al di là del denominatore.\n",
-      "Elaborazione: pipeline/edu (thread educazione) - data/processed/edu_change_decomposition_2018_2024.csv"), LARGHEZZA)
+    caption = didascalia_4b(
+      mostra = paste0(
+        "scomposizione della variazione del numero di 15-24enni di Bagheria in ciascuno dei quattro stati della condizione professionale, fra il ",
+        DA, " e il ", A, ", in persone. Ogni variazione è divisa in due parti: quanto è dovuto al restringimento della coorte e quanto al cambiamento del tasso. ",
+        "È aritmetica, non un modello: non attribuisce cause al di là del denominatore."),
+      base = paste0(
+        "Coorte di riferimento: ", migliaia(round(enne_coorte(DA))), " residenti di 15-24 anni nel ", DA,
+        " e ", migliaia(round(enne_coorte(A))), " nel ", A, ". ",
+        "Scomposizione shift-share sui due estremi del periodo: l'effetto popolazione è la variazione della coorte a tasso ", DA,
+        " fermo, l'effetto tasso è la variazione del tasso applicata alla coorte ", A, "; la somma è esatta e non approssimata, con controllo nel notebook. ",
+        "Il 2020 non è pubblicato ma non entra qui, perché la scomposizione confronta i due estremi del periodo. ",
+        "I quattro stati sono esaustivi, ma le variazioni in persone non sommano a zero, perché la coorte 15-24 si è ristretta nel periodo: la loro somma è esattamente l'effetto demografico complessivo. ",
+        "A sommare a zero sono invece gli effetti di tasso, perché le quattro quote fanno 100% in entrambe le annate. ",
+        "Le persone sono ricostruite dalle quote pubblicate e possono avere frazioni di unità: qui sono arrotondate all'intero. ",
+        "«Fuori da lavoro e studio» non ha un pannello perché è la somma di «in cerca» e «inattivi non studenti»: vale ",
+        sprintf("%+.0f", aggregato$variazione_conteggio), " persone, ma affiancarlo alle sue componenti le conterebbe due volte."),
+      lettura = paste0(
+        "ogni pannello è uno stato e le barre si leggono in cascata: il grigio è l'effetto del restringimento della coorte, il colore è l'effetto del cambiamento del tasso, e la barra vermiglia è la variazione totale, cioè la somma esatta delle due. ",
+        "La riga verticale allo zero separa le variazioni negative dalle positive. ",
+        "Un effetto di popolazione grande con un effetto di tasso piccolo significa che quello stato non si è svuotato per un cambiamento di comportamento, ma perché ci sono meno giovani."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", DA, " e ", A,
+        ". Elaborazione: pipeline/edu (thread educazione), data/processed/edu_change_decomposition_2018_2024.csv (con edu_youth_states_2018_2024.csv per la coorte)."),
+      larghezza = LARGHEZZA)
   ) +
   tema_figura() +
   theme(panel.spacing.x = unit(1.6, "lines"), panel.spacing.y = unit(1.1, "lines"))
 
-salva(figura, "edu_fig04_scomposizione", larghezza = LARGHEZZA, altezza = 18)
+salva(figura, "edu_fig04_scomposizione", larghezza = LARGHEZZA, altezza = 23)

@@ -8,6 +8,10 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+# Una costante sola per la larghezza: il testo va a capo esattamente sulla misura con cui
+# la figura viene salvata, altrimenti il taglio si scopre guardando il PNG.
+LARGHEZZA <- 34
+
 # Il vicinato entra aggregato, come in tutte le altre figure: una serie sola con la sua
 # banda, non cinque linee. Sui conteggi sommati dei cinque comuni l'intervallo si stringe
 # abbastanza da reggere il confronto con Bagheria; le serie per singolo comune restano nel
@@ -26,6 +30,17 @@ dati <- bind_rows(
   # Il 2020 manca alla fonte sulla classe 15-24: la riga vuota interrompe la linea invece
   # di farla passare dritta sopra il buco. Nessun valore inventato.
   complete(nome_territorio, anno = 2018:2024)
+
+# I denominatori della classe 15-24, cioè l'N su cui poggiano tutti e tre i pannelli.
+# Stessa base che il notebook usa per i tassi: qui si legge, non si ricalcola.
+platea <- read_csv(file.path(PROCESSED, "genere_platea.csv"),
+                   col_types = cols(territorio = "c", nome_territorio = "c",
+                                    genere = "c", .default = "d"))
+enne <- function(terr) {
+  riga <- function(g) platea$platea_2024[platea$nome_territorio == terr & platea$genere == g]
+  paste0(terr, " ", migliaia(riga("F")), " femmine e ", migliaia(riga("M")), " maschi")
+}
+N_TERRITORI <- paste(vapply(ORDINE, enne, character(1)), collapse = "; ")
 
 ULTIMO_ANNO <- max(dati$anno[!is.na(dati$rapporto_M_F)])
 valore_di <- function(territorio, colonna) {
@@ -156,18 +171,34 @@ figura <- guide_area() / (punti | rapporto | livello) +
       virgola(valore_di("Bagheria", "tasso_F"), 1, "%"),
       " nel ", ULTIMO_ANNO, ") è il minimo del panel in tutti gli anni misurati.\n",
       "È il livello, non il divario, il claim da portare nella proposal."),
-    caption = paste("Fonte: ISTAT, Censimento permanente della popolazione - tavola condizione professionale, classe 15-24 anni.",
-                    "\nIl gap in punti è compresso dai livelli bassi: dove lavorano poche persone di entrambi i generi la differenza assoluta è piccola anche a parità di svantaggio relativo.",
-                    "\nBande (solo primo pannello): intervallo di confidenza 95% di Newcombe sulla differenza fra i due tassi.",
-                    "Il 2020 manca alla fonte sulla classe 15-24: la linea è interrotta, non interpolata.",
-                    paste0("\nSul livello Bagheria è ultima in ogni annata, ma per poco: nel ", MARGINE$anno, " sono ",
-                           virgola(MARGINE$bagheria, 1, "%", taglia_zero = FALSE), " contro ",
-                           virgola(MARGINE$secondo, 1, "%", taglia_zero = FALSE),
-                           ". A distinguere Bagheria è il livello, non lo scarto in graduatoria."),
-                    "\nVicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi i tassi, non media dei cinque tassi.",
-                    "\nLe serie dei singoli comuni stanno in genere_gap_occupazione_ci_vicini.csv: su 10-28 mila abitanti gli intervalli sono larghi il quintuplo.",
-                    "\nElaborazione: notebooks/genere.ipynb - data/processed/genere_gap_occupazione_ci.csv, genere_gap_occupazione_ci_vicini.csv"),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "tasso di occupazione della classe 15-24 anni, letto su tre scale diverse della stessa disuguaglianza, dal 2018 al ",
+        ULTIMO_ANNO, ", su cinque territori. A sinistra il divario in punti percentuali (tasso maschile meno tasso femminile), ",
+        "al centro il rapporto fra i due tassi (quante volte il tasso maschile contiene quello femminile), a destra il livello femminile ",
+        "(occupate ogni 100 coetanee residenti). Le tre scale misurano lo stesso fenomeno e ordinano i territori in modo diverso: non si sommano e non si convertono l'una nell'altra."),
+      base = paste0(
+        "Denominatori della classe 15-24 al ", ULTIMO_ANNO, ": ", N_TERRITORI,
+        ". Per il vicinato i conteggi dei cinque comuni sono sommati prima del rapporto, così l'intervallo si stringe abbastanza da reggere il confronto con Bagheria. ",
+        "Bande, solo sul primo pannello: intervallo di confidenza al 95% di Newcombe sulla differenza fra due proporzioni, costruito sui limiti di Wilson dei due tassi. ",
+        "Sul secondo e sul terzo pannello non c'è banda, perché l'intervallo esportato è quello della differenza e non quello del rapporto o dei singoli tassi: ricalcolarlo in R sposterebbe una trasformazione fuori dalla pipeline. ",
+        "Il 2020 manca alla fonte sulla classe 15-24 in tutti i territori: la serie è interrotta e nessun valore è interpolato. ",
+        "I conteggi «in N annate su M» sotto ogni pannello sono contati sui valori disegnati, non stimati."),
+      lettura = paste0(
+        "la striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: dove c'è la striscia non c'è misura. ",
+        "Nel pannello centrale la riga tratteggiata orizzontale a 1,0 è la parità fra i due tassi. ",
+        "Bagheria è in vermiglio, Palermo in viola, la Sicilia in ambra, l'Italia in grigio, il vicinato in verde acqua; blu e rosa restano riservati a maschi e femmine nelle altre figure di questa cartella. ",
+        "Il divario in punti è compresso dai livelli bassi: dove lavorano poche persone di entrambi i generi la differenza assoluta resta piccola anche a parità di svantaggio relativo, ed è la ragione per cui il primo pannello mette Bagheria in posizione apparentemente buona. ",
+        "Sul livello Bagheria è ultima in ogni annata, ma per poco: nel ", MARGINE$anno, " sono ",
+        virgola(MARGINE$bagheria, 1, "%", taglia_zero = FALSE), " contro ",
+        virgola(MARGINE$secondo, 1, "%", taglia_zero = FALSE),
+        ", quindi a distinguere Bagheria è il livello, non lo scarto in graduatoria. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi; le serie dei singoli comuni stanno in genere_gap_occupazione_ci_vicini.csv, dove su 10-28 mila abitanti gli intervalli sono larghi il quintuplo."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, 2018-",
+        ULTIMO_ANNO, ". Elaborazione: notebooks/genere.ipynb (data/processed/genere_gap_occupazione_ci.csv, genere_gap_occupazione_ci_vicini.csv e genere_platea.csv)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
-salva(figura, "fig01_gap_tre_scale", larghezza = 34, altezza = 15)
+salva(figura, "fig01_gap_tre_scale", larghezza = LARGHEZZA, altezza = 19)

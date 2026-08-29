@@ -19,6 +19,17 @@ bagheria <- filter(comuni, territorio == BAG)
 percentile_grezzo <- 100 * mean(comuni$quota_fuori < bagheria$quota_fuori)
 percentile_residuo <- 100 * mean(comuni$residuo < bagheria$residuo)
 
+# Il vicino che il sottotitolo usa come contrasto: piccolo e con quota alta. Si legge dal
+# dato invece di essere scritto a mano, così se la classifica cambia cambia anche la frase.
+# Stessi filtri di `vicini_30`, che è definito più sotto per le etichette del pannello A:
+# provincia di Palermo, entro 30 km dal capoluogo e con una platea che regge il confronto.
+# Senza la soglia sui pendolari il massimo cade su comuni da poche centinaia di pendolari,
+# dove la quota è rumore e il contrasto non dice niente.
+CONTRASTO <- comuni |>
+  filter(substr(territorio, 1, 3) == "082", km_capoluogo <= 30, pendolari >= 2000,
+         territorio != BAG) |>
+  slice_max(quota_fuori, n = 1)
+
 # --- A: la nuvola --------------------------------------------------------------------
 # Asse x logaritmico perché il modello è in log della distanza: la curva attesa deve
 # apparire come la retta che è, altrimenti la figura e il modello dicono cose diverse.
@@ -95,21 +106,37 @@ figura <- (nuvola | posizione) +
     subtitle = paste0(
       "Il dato grezzo mette Bagheria al ", virgola(percentile_grezzo, 0, "° percentile"),
       " dei 381 comuni siciliani non capoluogo per quota di chi esce a lavorare.\n",
-      "Sembra un'anomalia, e i vicini la rafforzano: Ficarazzi manda fuori tre pendolari su quattro, Bagheria due su cinque.\n",
+      "Sembra un'anomalia, e i vicini la rafforzano: ", CONTRASTO$nome, " manda fuori il ",
+      virgola(CONTRASTO$quota_fuori, 0, "%"), " dei suoi pendolari, Bagheria il ",
+      virgola(bagheria$quota_fuori, 0, "%"), ".\n",
       "Ma fuori comune si va per mancanza di lavoro dentro, e Bagheria è il comune più grande della corona: ",
-      "12.000 pendolari contro i 3.000 di Ficarazzi.\n",
-      "Controllando distanza e dimensione — due variabili geografiche, non di comportamento — il residuo è di ",
+      migliaia(round(bagheria$pendolari)), " pendolari contro i ",
+      migliaia(round(CONTRASTO$pendolari)), " di ", CONTRASTO$nome, ".\n",
+      "Controllando distanza e dimensione, che sono due variabili geografiche e non di comportamento, il residuo è di ",
       virgola(bagheria$residuo, 1), " punti e il percentile sale al ",
       virgola(percentile_residuo, 0, "°"), ".\n",
       "La particolarità di Bagheria non è quanto si muove: è chi si muove, e per quale motivo (figure 2 e 3)."),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT — Matrice del pendolarismo, censimento permanente 2021 (motivo lavoro), origine-destinazione comune per comune, conteggio esaustivo.\n",
-      "Modello: minimi quadrati di quota_fuori su log(distanza dal capoluogo) e log(pendolari del comune), errori standard HC3, n = 381 comuni non capoluogo, R² = 0,31. ",
-      "Entrambi i coefficienti sono negativi e significativi.\n",
-      "Il modello serve a togliere di mezzo taglia e posizione, non a spiegare la mobilità: due regressori geografici, nessuna pretesa causale. ",
-      "I nove capoluoghi sono esclusi perché per loro la misura non è definita.\n",
-      "Distanza in linea d'aria fra i centroidi ISTAT (EPSG:32633): non è distanza stradale né tempo di viaggio, e per i comuni montani la sottostima.\n",
-      "Elaborazione: notebooks/mobilita.ipynb — data/processed/mob_taglia_distanza.csv, mob_curva_attesa.csv"), LARGHEZZA),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "quota di pendolari che esce dal comune per lavoro, in percentuale dei pendolari del comune, messa in relazione con la distanza dal capoluogo di provincia. ",
+        "Il pannello A mostra tutti i comuni non capoluogo e le curve del valore atteso; il pannello B mostra la posizione di Bagheria prima e dopo il controllo. ",
+        "La figura serve a togliere di mezzo un claim, non a stabilirne uno: dice che «Bagheria si muove poco» è una lettura sbagliata di un numero giusto."),
+      base = paste0(
+        "N = 381 comuni siciliani non capoluogo. I nove capoluoghi sono esclusi perché per loro la misura non è definita: è l'unica esclusione. ",
+        "Conteggio esaustivo da matrice origine-destinazione, non stima campionaria. ",
+        "Modello: regressione lineare ai minimi quadrati della quota di uscita sul logaritmo della distanza dal capoluogo e sul logaritmo del numero di pendolari del comune, ",
+        "con errori standard robusti all'eteroschedasticità (HC3), n = 381, R quadro = 0,31. Entrambi i coefficienti sono negativi e statisticamente significativi. ",
+        "Il modello serve a togliere di mezzo taglia e posizione, non a spiegare la mobilità: sono due regressori geografici e non c'è nessuna pretesa causale. ",
+        "La distanza è in linea d'aria fra i centroidi ISTAT (EPSG:32633): non è distanza stradale né tempo di viaggio, e per i comuni montani la sottostima."),
+      lettura = paste0(
+        "nel pannello A ogni punto grigio è un comune e Bagheria è il punto vermiglio. Il diametro del punto è il numero di pendolari del comune, cioè proprio la variabile che spiega l'apparente anomalia: si vede a occhio che i comuni grandi stanno in basso. ",
+        "L'asse orizzontale è logaritmico perché il modello è nel logaritmo della distanza: così il valore atteso appare come la retta che è. ",
+        "Le due linee scure sono il valore atteso dal modello a due taglie fissate, e non una interpolazione dei punti: la distanza fra le due curve è quanto la sola taglia sposta l'atteso. ",
+        "Nel pannello B ogni barra conta i comuni, e le due righe vermiglie sono Bagheria prima del controllo (quota grezza) e dopo (residuo del modello): il salto fra le due posizioni è il finding."),
+      fonte = paste0(
+        "ISTAT, Matrice del pendolarismo, censimento permanente 2021, motivo lavoro, origine-destinazione comune per comune. ",
+        "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_taglia_distanza.csv e mob_curva_attesa.csv)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura())
 
-salva(figura, "mob_fig04_taglia_distanza", larghezza = LARGHEZZA, altezza = 18)
+salva(figura, "mob_fig04_taglia_distanza", larghezza = LARGHEZZA, altezza = 23)

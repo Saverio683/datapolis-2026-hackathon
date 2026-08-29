@@ -14,6 +14,8 @@ source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 # Stessa coorte seguita per dieci anni, due volte. Le classi quinquennali permettono solo
 # passi di cinque anni: il decennio è due classi avanti, ed è la scala più corta che copra
 # sia il 2001-2011 sia il 2011-2021.
+LARGHEZZA <- 26   # stessa misura del salvataggio: su questa il testo va a capo
+
 decennale <- read_csv(file.path(PROCESSED, "genere_ritenzione_decennale.csv"),
                       col_types = cols(territorio = "c", nome_territorio = "c",
                                        genere = "c", eta_da = "c", eta_a = "c",
@@ -31,6 +33,30 @@ stopifnot(!anyNA(decenni$nome_territorio),
           setequal(levels(droplevels(decenni$nome_territorio)), ORDINE))
 
 SPESSORI <- c(Bagheria = 1.2, Palermo = 0.55, Sicilia = 0.55, Italia = 0.55)
+
+# Le numerosità delle coorti di partenza a Bagheria: sono il denominatore di ogni punto
+# disegnato, e senza di loro la percentuale non dice su quante persone poggia.
+N_COORTI <- decenni |>
+  filter(nome_territorio == "Bagheria") |>
+  select(periodo, genere, n_da) |>
+  pivot_wider(names_from = genere, values_from = n_da) |>
+  arrange(periodo) |>
+  mutate(testo = paste0(periodo, ": ", migliaia(femmine), " ragazze e ",
+                        migliaia(maschi), " ragazzi")) |>
+  pull(testo) |> paste(collapse = "; ")
+
+# Il controllo a cinque anni dentro la sola rilevazione permanente, letto dallo stesso file
+# invece che ricopiato: se i dati cambiano, la didascalia cambia con loro.
+cinque_anni <- function(terr) {
+  r <- decennale[decennale$nome_territorio == terr & decennale$anni == 5 &
+                   decennale$eta_da == "Y20-24" & decennale$genere == "F" &
+                   decennale$anno_da %in% c(2018, 2019), ]
+  r <- r[order(r$anno_da), ]
+  list(periodi = paste0(r$anno_da, "-", r$anno_a, collapse = " e "),
+       valori = paste(virgola(r$ritenzione_pct, 1, "%"), collapse = " e "))
+}
+CTRL_BAG <- cinque_anni("Bagheria")
+CTRL_ITA <- cinque_anni("Italia")
 
 bagheria_decenni <- filter(decenni, nome_territorio == "Bagheria")
 salto <- bagheria_decenni |>
@@ -70,23 +96,40 @@ figura <- ggplot(decenni, aes(periodo, ritenzione_pct, colour = nome_territorio,
   labs(
     title = "La falla si è aperta nel decennio 2011-2021:\nprima Bagheria tratteneva la coorte meglio di Palermo e Sicilia",
     subtitle = paste0(
-      "La stessa coorte — chi aveva 15-19 anni all'inizio — seguita per dieci anni, due volte. Il tratteggio a 100 è la coorte che si conserva.\n",
+      "La stessa coorte (chi aveva 15-19 anni all'inizio) seguita per dieci anni, due volte. Il tratteggio a 100 è la coorte che si conserva.\n",
       "Tre anni di dati non basterebbero a chiamarla fuga (fig07), dieci sì. Nel 2001-2011 le ragazze di Bagheria arrivavano a ",
       virgola(valore("femmine", "prima"), 1, "%"), ", sopra\n",
-      "Sicilia e Palermo; nel decennio successivo scendono a ", virgola(valore("femmine", "dopo"), 1, "%"), " — ",
-      virgola(scarto_di("femmine")), " punti. Sui ragazzi il calo è di ", virgola(scarto_di("maschi")),
+      "Sicilia e Palermo; nel decennio successivo scendono a ", virgola(valore("femmine", "dopo"), 1, "%"), " (",
+      virgola(scarto_di("femmine")), " punti). Sui ragazzi il calo è di ", virgola(scarto_di("maschi")),
       " punti e li porta sotto Palermo.\n",
       "È lo stesso decennio in cui si alza il muro dell'occupazione femminile (fig10): la frattura è databile, e non si è richiusa da sola."),
     x = NULL, y = "coorte dopo dieci anni",
-    caption = paste0(
-      "Fonte: ISTAT - classi quinquennali dei censimenti 2001 e 2011 e del Censimento permanente 2021 (DF_DCSS_POP_DEMCITMIG_TV_1 le serve tutte e tre).\n",
-      "Il decennio 2011-2021 ha una gamba per rilevazione: il 2011 è decennale, il 2021 permanente. La distorsione nota va nel verso prudente - il censimento 2011\n",
-      "contò meno dell'anagrafe, quindi sta al denominatore del decennio che crolla e al numeratore di quello che tiene: il divario fra i due decenni è una stima per difetto.\n",
-      "Controlli interni al solo permanente sulla stessa coorte a cinque anni (2018-2023 e 2019-2024): la perdita si concentra sulla transizione 20-24 → 25-29,\n",
-      "femmine 92,8% e 93,3% a Bagheria contro ~102% in Italia. Tutti i periodi stanno in data/processed/genere_ritenzione_decennale.csv.\n",
-      "Il vicinato non compare: le classi quinquennali sono state scaricate solo per i quattro territori di confronto. Per età singola sta invece in fig07.\n",
-      "Palermo è il controfattuale dichiarato del disegno di valutazione (notebook, sezione «Trend paralleli»).\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_ritenzione_decennale.csv")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "quota della coorte di partenza ancora residente dieci anni dopo, in percentuale della coorte iniziale, per genere e per quattro territori. ",
+        "La coorte è sempre la stessa classe d'età (15-19 anni all'inizio del decennio) seguita due volte, nel 2001-2011 e nel 2011-2021. ",
+        "È una misura netta di saldo, che comprende sia chi parte sia chi arriva. Questa figura dice da quando si perde; a che età si perde lo dice fig07."),
+      base = paste0(
+        "Coorti di partenza a Bagheria (", N_COORTI,
+        "). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
+        "Il decennio 2011-2021 ha una gamba per rilevazione, perché il 2011 è censimento decennale e il 2021 censimento permanente: le due non sono la stessa misura. ",
+        "La distorsione nota va però nel verso prudente, perché il censimento 2011 contò meno dell'anagrafe e sta quindi al denominatore del decennio che crolla e al numeratore di quello che tiene: ",
+        "il divario fra i due decenni è una stima per difetto, non per eccesso. ",
+        "Controllo dentro la sola rilevazione permanente, sulla stessa coorte a cinque anni (", CTRL_BAG$periodi,
+        "): sulla transizione dalla classe 20-24 alla 25-29 le femmine di Bagheria stanno a ", CTRL_BAG$valori,
+        " contro ", CTRL_ITA$valori, " dell'Italia, quindi il verso regge anche senza mescolare le due rilevazioni."),
+      lettura = paste0(
+        "la riga tratteggiata orizzontale a 100% è la coorte che si conserva: sopra è cresciuta, sotto si è ridotta. ",
+        "Ogni pannello è un genere e ogni linea un territorio, fra i due decenni: la pendenza della linea è il finding, non il livello. ",
+        "Bagheria è in vermiglio a tratto pieno perché è il soggetto, i tre riferimenti sono a tratto sottile. ",
+        "I valori in cifre sono stampati solo su Bagheria: con quattro etichette per estremo il pannello diventerebbe illeggibile. ",
+        "Il vicinato non compare perché le classi quinquennali sono state scaricate solo per i quattro territori di confronto. ",
+        "Palermo è il controfattuale dichiarato del disegno di valutazione (notebook, sezione «Trend paralleli»)."),
+      fonte = paste0(
+        "ISTAT, classi quinquennali dei censimenti 2001 e 2011 e del Censimento permanente 2021 (il dataflow DF_DCSS_POP_DEMCITMIG_TV_1 le serve tutte e tre). ",
+        "Tutti i periodi disponibili, compresi quelli non disegnati, stanno in data/processed/genere_ritenzione_decennale.csv. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_ritenzione_decennale.csv)."),
+      larghezza = LARGHEZZA)) +
   tema_figura()
 
-salva(figura, "fig07b_decennio", larghezza = 26, altezza = 16)
+salva(figura, "fig07b_decennio", larghezza = LARGHEZZA, altezza = 20)

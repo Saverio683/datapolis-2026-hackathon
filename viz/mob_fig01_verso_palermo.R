@@ -37,7 +37,15 @@ forma <- aes(x, y, group = interaction(territorio, parte), subgroup = anello)
 # caption, non nascosto in una nota.
 SCENE <- tibble::tibble(
   anno = c(2011, 2021), motivo = c("studio", "lavoro"),
-  etichetta = c("Per studiare — censimento 2011", "Per lavorare — censimento permanente 2021"))
+  etichetta = c("Per studiare (censimento 2011)", "Per lavorare (censimento permanente 2021)"))
+
+# Le numerosità delle due scene: quante persone escono davvero dal comune. Una quota senza
+# la sua base non dice se dietro «due su tre» ci siano duecento persone o duemila.
+uscenti <- function(scena) sum(flussi$persone[flussi$anno == scena$anno &
+                                                flussi$motivo == scena$motivo])
+N_SCENE <- paste(vapply(seq_len(nrow(SCENE)), function(i)
+  paste0(SCENE$motivo[i], " ", SCENE$anno[i], ": ", migliaia(round(uscenti(SCENE[i, ]))),
+         " persone"), character(1)), collapse = "; ")
 
 quota_dentro <- function(scena) {
   riga <- filter(flussi, anno == scena$anno, motivo == scena$motivo, destinazione == "082053")
@@ -107,17 +115,30 @@ figura <- (pannello(1) | pannello(2)) +
       "Il secondo comune di destinazione non arriva al 7%: non esiste una seconda direzione.\n",
       "Su entrambe le misure Bagheria sta oltre il 90° percentile dei 381 comuni siciliani non capoluogo\n",
       "per quota di chi esce diretta al proprio capoluogo di provincia."),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT — Matrici del pendolarismo, censimento della popolazione 2011 (studio) e censimento permanente 2021 (lavoro). ",
-      "Origine-destinazione comune per comune, conteggio esaustivo.\n",
-      "Le due annate NON stanno in serie: il 2011 conta chi si sposta giornalmente, il 2021 chi si reca al lavoro almeno tre giorni a settimana, e il 2021 copre il solo motivo lavoro. ",
-      "Si confronta la composizione (dove vanno, su cento che escono), mai il livello.\n",
-      "Il riquadro è il corridoio Bagheria-Palermo, 65 x 36 km: contiene le destinazioni che valgono il 90% del flusso, ",
-      "e la quota rimasta fuori è annotata in ciascun pannello.\n",
-      "Spessore e opacità delle linee proporzionali al numero di persone. Le linee sono rette fra i centroidi comunali, non percorsi: ",
-      "dicono quanti e verso dove, non per quale strada.\n",
-      "Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, EPSG:32633 (WGS 84 / UTM 33N).\n",
-      "Elaborazione: notebooks/mobilita.ipynb — data/processed/mob_flussi_bagheria.csv"), LARGHEZZA),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "dove vanno i residenti di Bagheria che escono dal comune, per motivo dello spostamento. ",
+        "A sinistra chi esce per studiare (censimento 2011), a destra chi esce per lavorare (censimento permanente 2021). ",
+        "Ogni linea unisce Bagheria a un comune di destinazione, e la percentuale accanto a ciascuna meta è la quota di chi esce che va lì. ",
+        "È la risposta letterale alla domanda del bando sul pendolarismo verso Palermo, con il nome del comune di arrivo."),
+      base = paste0(
+        "N = ", N_SCENE, ", cioè il totale di chi esce dal comune per quel motivo in quell'anno. ",
+        "Conteggio esaustivo da matrice origine-destinazione, non stima campionaria: non c'è errore di campionamento e non c'è intervallo di confidenza. ",
+        "Le due annate non stanno in serie e non vanno confrontate in livello: il 2011 conta chi si sposta giornalmente, il 2021 chi si reca al lavoro almeno tre giorni a settimana, e il 2021 copre il solo motivo lavoro. ",
+        "Si confronta la composizione, cioè dove vanno su cento che escono, mai quanti escono. ",
+        "La matrice non ha la dimensione dell'età: il target 15-34 del bando non è isolabile su questa fonte. ",
+        "Chi esce per studio è però quasi solo secondaria superiore e università, perché a Bagheria i cicli precedenti ci sono tutti."),
+      lettura = paste0(
+        "spessore e opacità di ogni linea sono proporzionali al numero di persone, e la dimensione del pallino sulla destinazione lo è al numero di arrivi. ",
+        "Le linee sono rette fra i centroidi comunali e non percorsi reali: dicono quanti e verso dove, non per quale strada. ",
+        "Il riquadro è il corridoio Bagheria-Palermo, 65 per 36 km, e contiene le destinazioni che valgono il 90% del flusso; ",
+        "la quota rimasta fuori dal riquadro è annotata in basso a sinistra in ciascun pannello, invece di essere disegnata come una linea che esce dal bordo. ",
+        "Sono nominate le prime cinque destinazioni di ogni scena. Il punto vermiglio è Bagheria, origine di tutte le linee."),
+      fonte = paste0(
+        "ISTAT, Matrici del pendolarismo, censimento della popolazione 2011 (studio) e censimento permanente 2021 (lavoro), origine-destinazione comune per comune. ",
+        "Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, sistema di riferimento EPSG:32633 (WGS 84 / UTM 33N). ",
+        "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_flussi_bagheria.csv)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura())
 
-salva(figura, "mob_fig01_verso_palermo", larghezza = LARGHEZZA, altezza = 17)
+salva(figura, "mob_fig01_verso_palermo", larghezza = LARGHEZZA, altezza = 21)

@@ -10,6 +10,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 24   # stessa misura del salvataggio: su questa il testo va a capo
+
 creste <- read_csv(file.path(PROCESSED, "genere_creste_390.csv"),
                    col_types = cols(anno = "i", .default = "d"))
 # Bagheria, mediana e percentile di ogni annata: la stessa tabella che alimenta fig04.
@@ -121,19 +123,37 @@ figura <- ggplot() +
       " e Bagheria da ", virgola(PRIMO$bagheria, 1, "%"), " a ", virgola(ULTIMO$bagheria, 1, "%"),
       ": guadagna più della mediana\n",
       "(+", virgola(PASSO_BAG, 1, taglia_zero = FALSE), " punti contro +", virgola(PASSO_MED, 1, taglia_zero = FALSE),
-      ") e non supera mai il ", round(max(distrib$percentile)), "° percentile — il quinto più basso della regione.\n",
+      ") e non supera mai il ", round(max(distrib$percentile)), "° percentile, cioè il quinto più basso della regione.\n",
       "Il tratteggio è il ", max(ANNI), " di Bagheria: cade ancora a sinistra della mediana siciliana del ", min(ANNI), "."),
     x = "tasso di occupazione femminile, 15 anni e più",
     y = NULL,
-    caption = paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione - tavola condizione professionale, popolazione 15 anni e più, 390 comuni siciliani.\n",
-      "Il 2020 manca alla fonte: sei annate, non sette. Nessuna interpolazione, la cresta di quell'anno semplicemente non c'è.\n",
-      "Il 2011 (8milaCensus) resta fuori: è un'altra rilevazione, e una cresta appaiata alle altre farebbe leggere lo scarto di definizione\n",
-      "come movimento della distribuzione. Il confronto fra le due epoche sta in fig04 e fig04b, dove lo stacco è dichiarato.\n",
-      "Le creste sono stime di densità con banda unica (Silverman sul pool delle sei annate), così le differenze di forma sono del dato\n",
-      "e non del lisciamento; area 1 per ciascuna e scala comune, quindi anche le altezze si confrontano.\n",
-      "Fascia e anno diversi dalle serie 15-24 del thread: contesto regionale, non termine di paragone.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_creste_390.csv, genere_distribuzione_390.csv")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "distribuzione del tasso di occupazione femminile fra i comuni siciliani, una curva per anno, dal ", min(ANNI), " al ", max(ANNI),
+        ". Ogni curva è una stima di densità sui comuni di quell'anno, non una serie storica: il tempo scorre dal basso verso l'alto, ",
+        "e lo scivolamento verso destra è l'aumento generale dell'occupazione femminile in tutta la regione. ",
+        "La stessa relazione sui quattro territori di confronto sta in fig06."),
+      base = paste0(
+        "N = 390 comuni siciliani per ciascuna delle ", length(ANNI), " annate disegnate. ",
+        "Le curve sono stime di densità per nucleo con banda unica, scelta con la regola di Silverman sul pool delle annate: ",
+        "così le differenze di forma sono del dato e non del lisciamento. Ogni curva ha area 1 e la scala verticale è comune, quindi anche le altezze si confrontano fra annate; ",
+        "non c'è normalizzazione per singola curva, che farebbe sembrare alta un'annata dispersa quanto una concentrata. ",
+        "Il 2020 manca alla fonte: le annate sono ", length(ANNI), " e non sette, e la curva di quell'anno semplicemente non esiste, senza interpolazione. ",
+        "Il 2011 di 8milaCensus resta fuori perché è un'altra rilevazione, e una curva appaiata alle altre farebbe leggere lo scarto di definizione come movimento della distribuzione; ",
+        "il confronto fra le due epoche sta in fig04 e fig04b, dove lo stacco è dichiarato. ",
+        "Nessun intervallo di confidenza: la densità descrive i 390 comuni osservati, non stima una popolazione più ampia."),
+      lettura = paste0(
+        "ogni curva grigia è un'annata, etichettata sull'asse verticale, e le annate sono impilate dal ", min(ANNI), " in basso al ", max(ANNI), " in alto. ",
+        "Dentro ogni curva ci sono due gambi verticali: quello scuro è la mediana regionale, quello vermiglio è Bagheria, con il suo percentile scritto a fianco. ",
+        "La distanza fra i due gambi è il finding, e resta la stessa per tutte le annate. ",
+        "La linea punteggiata verticale è il valore di Bagheria nel ", max(ANNI),
+        " e attraversa tutta la pila: serve a vedere che cade ancora a sinistra della mediana siciliana del ", min(ANNI), ". ",
+        "Le etichette «Bagheria» e «mediana siciliana» compaiono una volta sola, sulla curva in cima: sotto, i gambi si riconoscono dal colore."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, popolazione di 15 anni e più, 390 comuni siciliani, ",
+        min(ANNI), "-", max(ANNI), ". Fascia e anni sono diversi dalle serie 15-24 del thread: è contesto regionale, non un termine di paragone. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_creste_390.csv e genere_distribuzione_390.csv)."),
+      larghezza = LARGHEZZA)) +
   tema_figura()
 
-salva(figura, "fig06b_creste_390", larghezza = 24, altezza = 17)
+salva(figura, "fig06b_creste_390", larghezza = LARGHEZZA, altezza = 21)

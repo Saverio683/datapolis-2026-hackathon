@@ -140,7 +140,7 @@ capacita <- ggplot(dati, aes(y = specifica)) +
   scale_y_discrete(expand = expansion(add = c(0.6, 0.85))) +
   labs(subtitle = paste0("E quanto quel numero vale\n",
                          "R² in campione (vuoto) → in validazione incrociata (pieno)"),
-       x = "R² — sotto zero il modello prevede peggio della media", y = NULL) +
+       x = "R² (sotto zero il modello prevede peggio della media)", y = NULL) +
   theme(axis.text.y = element_blank())
 
 figura <- (residui | capacita) +
@@ -153,21 +153,33 @@ figura <- (residui | capacita) +
       N_TRAINING, " comuni siciliani con Bagheria esclusa. A sinistra: tutti e sei i residui sono sfavorevoli e nessun intervallo tocca lo zero.\n",
       "A destra il motivo per cui questa resta una pagina d'appendice. Sull'occupazione il R² in validazione vale ",
       paste(virgola(sort(r2_occupazione), 2, taglia_zero = FALSE), collapse = ", "),
-      ": ", N_INAFFIDABILI, " di quei tre modelli prevedono peggio di chi rispondesse sempre la media — hanno il pallino vuoto — e il terzo, a ",
+      ": ", N_INAFFIDABILI, " di quei tre modelli prevedono peggio di chi rispondesse sempre la media (sono quelli col pallino vuoto) e il terzo, a ",
       virgola(max(r2_occupazione), 2, taglia_zero = FALSE),
       ", non fa molto meglio. Su quell'esito il residuo ha un segno leggibile e nessuna grandezza citabile.\n",
       "Sul NEET storico la capacità predittiva è moderata (",
       virgola(min(r2_neet), 2, taglia_zero = FALSE), "-", virgola(max(r2_neet), 2, taglia_zero = FALSE),
       "), e lì il residuo si legge come misura, restando descrittivo."), LARGHEZZA),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT, 8milaCensus, censimento 2011. Elaborazione: pipeline/edu (thread educazione) - data/processed/edu_model_robustness_2011.csv, edu_historical_bagheria.csv\n",
-      "Regressioni ECOLOGICHE fra comuni, mai causali. Il residuo dice che Bagheria si discosta dai comuni con tratti simili, non che un tratto produca l'esito, e non stima l'effetto di una politica né quello del titolo di studio su una persona.\n",
-      "Bagheria è esclusa dall'addestramento in tutte le specifiche: il valore previsto è quello che gli altri ", N_TRAINING, " comuni le assegnerebbero senza averla mai vista. Intervalli bootstrap al 95%; R² in validazione incrociata a 10 fold.\n",
-      "Residuo in punti favorevoli: osservato meno previsto dove salire è meglio (occupazione), il segno opposto dove salire è peggio (NEET). Gli estremi dell'intervallo si ribaltano e si scambiano insieme al residuo, così il basso resta il basso.\n",
-      "Il R² in validazione incrociata può essere negativo, e qui lo è: significa che sui dati non visti il modello sbaglia più di una costante pari alla media. Non è un R² \"piccolo\", è un modello senza contenuto predittivo, e nessun numero che ne esce va riportato come quantità.\n",
-      "Le tre specifiche aggiungono variabili una sull'altra (istruzione; + mobilità; + contesto territoriale) e non sono modelli alternativi da mettere in gara: servono a vedere se il segno del residuo sopravvive a specifiche diverse, che è l'unica domanda a cui questa pagina risponde."),
-      LARGHEZZA),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "quanto Bagheria si discosta dal valore che un modello, addestrato sugli altri comuni siciliani, le assegnerebbe. ",
+        "A sinistra il residuo (osservato meno previsto) su due esiti del censimento 2011 e tre specifiche ciascuno; a destra la capacità predittiva di ognuno di quei modelli. ",
+        "I due pannelli vanno letti insieme: il primo dice il segno dello scarto, il secondo dice se quel numero abbia una grandezza citabile."),
+      base = paste0(
+        "N = ", N_TRAINING, " comuni siciliani nell'addestramento, con Bagheria sempre esclusa: il valore previsto è quello che gli altri comuni le assegnerebbero senza averla mai vista. ",
+        "Intervalli di confidenza bootstrap al 95% sul residuo; capacità predittiva misurata come R quadro in validazione incrociata a 10 falde, cioè su dati mai visti in addestramento. ",
+        "Sono regressioni ecologiche fra comuni e mai causali: il residuo dice che Bagheria si discosta dai comuni con tratti simili, non che un tratto produca l'esito, e non stima l'effetto di una politica né quello del titolo di studio su una persona. ",
+        "Il residuo è in punti favorevoli, cioè osservato meno previsto dove salire è meglio (occupazione) e il segno opposto dove salire è peggio (NEET); gli estremi dell'intervallo si ribaltano e si scambiano insieme al residuo, così il basso resta il basso. ",
+        "L'R quadro in validazione incrociata può essere negativo, e su alcuni modelli qui lo è: significa che sui dati non visti il modello sbaglia più di una costante pari alla media. Non è un R quadro «piccolo», è un modello senza contenuto predittivo, e nessun numero che ne esce va riportato come quantità. ",
+        "Le tre specifiche aggiungono variabili una sull'altra (istruzione, poi mobilità, poi contesto territoriale) e non sono modelli alternativi da mettere in gara: servono a vedere se il segno del residuo sopravvive a specifiche diverse, che è l'unica domanda a cui questa pagina risponde."),
+      lettura = paste0(
+        "nel pannello di sinistra ogni riga è una specifica e la barra orizzontale è l'intervallo di confidenza al 95% del residuo: che nessun intervallo tocchi lo zero significa che lo scarto è nella stessa direzione in tutte le specifiche. ",
+        "Nel pannello di destra il pallino pieno segnala un modello con capacità predittiva positiva, il pallino vuoto un modello che sui dati non visti fa peggio della semplice media: davanti a un pallino vuoto il residuo della riga corrispondente si legge solo come segno, mai come misura. ",
+        "La riga verticale allo zero separa i due casi."),
+      fonte = paste0(
+        "ISTAT, 8milaCensus, censimento 2011. ",
+        "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_model_robustness_2011.csv e edu_historical_bagheria.csv."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
-salva(figura, "edu_fig09_appendice_modelli", larghezza = LARGHEZZA, altezza = 20)
+salva(figura, "edu_fig09_appendice_modelli", larghezza = LARGHEZZA, altezza = 25)

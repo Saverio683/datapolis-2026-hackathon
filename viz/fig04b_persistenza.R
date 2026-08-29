@@ -10,6 +10,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 21   # stessa misura del salvataggio: su questa il testo va a capo
+
 comuni <- read_csv(file.path(PROCESSED, "genere_mappa_2011_2024.csv"),
                    col_types = cols(territorio = "c", nome_comune = "c", ruolo = "c",
                                     .default = "d"))
@@ -80,20 +82,38 @@ figura <- ggplot(comuni, aes(pct_2011, pct_2024)) +
       virgola(bagheria$pct_2011, 0, "\u00b0"), " al ", virgola(bagheria$pct_2024, 0, "\u00b0"),
       " percentile: in tredici anni\nil livello \u00e8 salito (fig04), la posizione no."),
     x = paste0("percentile ", BASE), y = paste0("percentile ", ANNO),
-    caption = paste0(
-      "Fonte: ISTAT - 8milaCensus, indicatore L11 (censimento ", BASE,
-      ") e Censimento permanente della popolazione (", ANNO, ").\n",
-      "Tasso di occupazione femminile, popolazione 15 anni e pi\u00f9.\n",
-      "Il confronto \u00e8 fra percentili e non fra punti percentuali di proposito: le due rilevazioni hanno disegni\n",
-      "diversi (universale a questionario la prima, campionaria sui registri la seconda), il livello ne risente,\n",
-      "il rango dentro l'anno molto meno perch\u00e9 lo scarto sposta tutti i comuni nello stesso verso.\n",
-      "Il rho dentro il solo censimento permanente (2018 contro ", ANNO,
-      ") \u00e8 pi\u00f9 alto: la parte di scarto dovuta\nal cambio di fonte \u00e8 quella differenza, ed \u00e8 piccola.\n",
-      "390 comuni ai confini ", BASE, " in entrambe le annate; Misiliscemi, istituito nel 2021 da Trapani, resta\n",
-      "fuori perch\u00e9 nel ", BASE, " non esisteva.\n",
-      "Fascia e anno diversi dalle serie 15-24 del thread: contesto di lungo periodo, non termine di paragone.\n",
-      "Dove Bagheria stia nella distribuzione siciliana, e come si sia mossa tutta l'isola, sta in fig04.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mappa_2011_2024.csv, genere_distribuzione_390.csv")) +
+    caption = didascalia_4b(
+      mostra = paste0(
+        "posizione di ogni comune siciliano nella graduatoria regionale del tasso di occupazione femminile, espressa in percentile, ",
+        "nel ", BASE, " sull'asse orizzontale e nel ", ANNO, " sull'asse verticale. ",
+        "È un'affermazione di metodo e non di geografia: dice quanto duri una posizione, non dove stia Bagheria. ",
+        "Dove Bagheria stia nella distribuzione siciliana, e come si sia mossa tutta l'isola, sta in fig04."),
+      base = paste0(
+        "N = ", migliaia(nrow(comuni)), " comuni, presi ai confini del ", BASE,
+        " in entrambe le annate. Misiliscemi, istituito nel 2021 per distacco da Trapani, è escluso perché nel ", BASE,
+        " non esisteva: è l'unica esclusione. ",
+        "L'associazione fra le due graduatorie è misurata con il coefficiente di correlazione per ranghi di Spearman, rho = ",
+        virgola(prima$rho_vs_2024, 3), " fra ", BASE, " e ", ANNO, ", e rho = ", virgola(riga(2018)$rho_vs_2024, 3),
+        " dentro la sola rilevazione permanente (2018 contro ", ANNO,
+        "): la differenza fra i due valori è la parte di scarto attribuibile al cambio di fonte, ed è piccola. ",
+        "Il confronto è fra percentili e non fra punti percentuali di proposito, perché le due rilevazioni hanno disegni diversi ",
+        "(universale a questionario la prima, campionaria sui registri la seconda): il livello ne risente, il rango dentro l'anno molto meno, ",
+        "perché lo scarto sposta tutti i comuni nello stesso verso. ",
+        "Nessun intervallo di confidenza sui singoli punti: sono posizioni in graduatoria, non stime con errore."),
+      lettura = paste0(
+        "ogni punto grigio è un comune. La retta tratteggiata è la diagonale, cioè «stessa posizione nelle due annate»: ",
+        "sopra la diagonale stanno i comuni risaliti in graduatoria, sotto quelli scesi, e più un punto è lontano dalla retta più si è mosso. ",
+        "Il quadrato grigio in basso a sinistra è il quintile più basso in entrambe le annate: ",
+        virgola(prima$quintile_basso_ancora_tale_nel_2024_pct, 0, "%"), " di chi ci stava nel ", BASE, " ci sta ancora nel ", ANNO, ". ",
+        "Bagheria è il punto vermiglio, i ", nrow(vicini), " comuni vicini sono in verde acqua, e stanno tutti dentro il quadrato: ",
+        "il richiamo di Bagheria esce a destra perché un'etichetta dentro il mucchio coprirebbe altri comuni. ",
+        "Gli assi non sono forzati a un quadrato: il rapporto lo danno le dimensioni della figura, e la diagonale resta comunque disegnata come retta di riferimento."),
+      fonte = paste0(
+        "ISTAT, 8milaCensus, indicatore L11 (censimento ", BASE, ") e Censimento permanente della popolazione (", ANNO,
+        "), tasso di occupazione femminile sulla popolazione di 15 anni e più. ",
+        "Fascia e anni sono diversi dalle serie 15-24 del thread: è contesto di lungo periodo, non un termine di paragone. ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_mappa_2011_2024.csv e genere_distribuzione_390.csv)."),
+      larghezza = LARGHEZZA)) +
   tema_figura()
 
-salva(figura, "fig04b_persistenza", larghezza = 21, altezza = 20)
+salva(figura, "fig04b_persistenza", larghezza = LARGHEZZA, altezza = 24)

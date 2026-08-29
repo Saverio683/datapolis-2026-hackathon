@@ -147,15 +147,29 @@ figura <- wrap_plots(lapply(METRICHE, pannello), nrow = 1) +
       anni_testo(RIT[[METRICHE[[1]]]]), " sul diploma, ",
       anni_testo(RIT[[METRICHE[[2]]]]),
       " sull'occupazione. Il territorio non è fermo, è in ritardo."), LARGHEZZA),
-    caption = didascalia(paste0(
-      "Fonte: ISTAT, Censimento permanente della popolazione, classe 25-49 anni, ", PRIMO, "-", ULTIMO, ". Elaborazione: pipeline/edu (thread educazione) - data/processed/edu_gaps_vs_sicily.csv\n",
-      "NON è l'occupazione dei diplomati. I due pannelli vengono da due tavole aggregate distinte sulla stessa fascia d'età: la figura dice se il territorio avanza su entrambe le dimensioni, non se sia lo stesso individuo a essere diplomato e occupato. L'incrocio titolo × condizione non esiste nei dati comunali pubblici.\n",
-      "Il ", buchi$anno, " c'è nella tavola istruzione e manca in quella lavoro: nel pannello destro la linea è interrotta, non interpolata. L'asse degli anni resta lineare in entrambi i pannelli perché il buco riguarda una sola delle due misure e i due pannelli devono restare allineati.\n",
-      "Il ritardo è letto sui punti osservati ed è per difetto: il tratteggio parte dalla prima annata in cui la Sicilia sta già al livello di Bagheria ", ULTIMO,
-      ", quindi il sorpasso vero è avvenuto prima, in un punto fra due rilevazioni che non si stima.\n",
-      "La fascia 25-49 è quella dove le due tavole condividono l'età; è più larga del target 15-34 dell'hackathon e non va confusa con le serie 15-24 delle altre figure del thread."),
-      LARGHEZZA),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "due misure della classe 25-49 anni a Bagheria e in Sicilia, una per pannello, sullo stesso asse degli anni, dal ",
+        PRIMO, " al ", ULTIMO, ": a sinistra la quota con almeno il diploma, a destra il tasso di occupazione, entrambe in percentuale della popolazione della classe. ",
+        "La figura dice se il territorio avanza su entrambe le dimensioni e quanto sia indietro rispetto alla Sicilia, non se sia lo stesso individuo a essere diplomato e occupato. ",
+        "I due pannelli vengono infatti da due tavole aggregate distinte sulla stessa fascia d'età, e l'incrocio fra titolo di studio e condizione professionale non esiste nei dati comunali pubblici: questa non è l'occupazione dei diplomati."),
+      base = paste0(
+        "Due territori e ", ULTIMO - PRIMO + 1, " annate nominali. Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
+        "Il ", buchi$anno, " esiste nella tavola istruzione e manca in quella lavoro: nel pannello destro la linea è interrotta e nessun valore è interpolato. ",
+        "L'asse degli anni resta lineare in entrambi i pannelli perché il buco riguarda una sola delle due misure e i due pannelli devono restare allineati. ",
+        "Il ritardo misurato dal tratteggio è letto sui punti osservati ed è una stima per difetto: il tratteggio parte dalla prima annata in cui la Sicilia sta già al livello che Bagheria raggiunge nel ",
+        ULTIMO, ", quindi il sorpasso vero è avvenuto prima, in un punto fra due rilevazioni che qui non si stima. ",
+        "La fascia 25-49 è quella dove le due tavole condividono l'età: è più larga del target 15-34 dell'hackathon e non va confusa con le serie 15-24 delle altre figure del thread."),
+      lettura = paste0(
+        "in ogni pannello le due linee sono Bagheria e la Sicilia sullo stesso asse degli anni, quindi la distanza verticale fra le due in un'annata è il divario di quell'annata. ",
+        "La linea tratteggiata orizzontale porta il livello di Bagheria nel ", ULTIMO,
+        " indietro nel tempo fino all'annata in cui la Sicilia lo aveva già raggiunto: la sua lunghezza è il ritardo in anni, ed è la quantità che il titolo enuncia. ",
+        "I due pannelli hanno scale verticali proprie, perché misurano cose diverse: le altezze non vanno confrontate fra pannelli, solo le distanze dentro ciascuno."),
+      fonte = paste0(
+        "ISTAT, Censimento permanente della popolazione, tavola istruzione e tavola della condizione professionale, classe 25-49 anni, ",
+        PRIMO, "-", ULTIMO, ". Elaborazione: pipeline/edu (thread educazione), data/processed/edu_gaps_vs_sicily.csv."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
-salva(figura, "edu_fig05_forbice_25_49", larghezza = LARGHEZZA, altezza = 16)
+salva(figura, "edu_fig05_forbice_25_49", larghezza = LARGHEZZA, altezza = 21)

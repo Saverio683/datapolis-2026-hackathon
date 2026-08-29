@@ -9,6 +9,8 @@
 
 source(file.path(if (dir.exists("viz")) "viz" else ".", "theme.R"))
 
+LARGHEZZA <- 26   # stessa misura del salvataggio: su questa il testo va a capo
+
 confini <- read_csv(file.path(PROCESSED, "genere_mappa_occupazione_femminile.csv"),
                     col_types = cols(territorio = "c", nome_comune = "c", .default = "d"))
 # Un valore per comune alle due estremità della serie: la geometria sta nel file dei
@@ -226,25 +228,39 @@ figura <- carta / spostamento +
       virgola(palermo$occ_2024, 1, "%"), ").\n",
       "E non è una fotografia scaduta: la graduatoria del ", BASE, " predice quella del ", ANNO,
       " (rho di Spearman ", virgola(prima$rho_vs_2024, 3), ", in fig04b)."),
-    caption = paste0(
-      "Fonte: ISTAT - 8milaCensus, indicatore L11 (censimento ", BASE,
-      ") e Censimento permanente della popolazione (2018-", ANNO, ", il 2020 manca alla fonte).\n",
-      "Tasso di occupazione femminile, popolazione 15 anni e più. Due rilevazioni con disegni diversi: universale a questionario la prima,\n",
-      "campionaria sui registri la seconda. Il livello ne risente, il rango dentro l'anno molto meno, perché lo scarto di definizione sposta\n",
-      "tutti i comuni nello stesso verso: per questo il confronto fra le due annate, in fig04b, usa percentili e non punti percentuali.\n",
-      "Fascia e anno diversi dalle serie 15-24 del thread: contesto di lungo periodo, non termine di paragone.\n",
-      "390 comuni ai confini ", BASE, " in entrambe le annate. In grigio Misiliscemi, istituito nel 2021 da Trapani: nel ", BASE,
-      " non esisteva, il dato\nnon gli è attribuibile ed è fuori dai 390.\n",
-      "Il riquadro è centrato sulla terraferma, non sull'estensione con le isole minori: restano fuori Lampedusa e Linosa, Pantelleria e Marettimo,\n",
-      "che sono nel dato e nella distribuzione qui sotto. Ustica, Levanzo, Favignana e le Eolie sono in carta.\n",
-      "Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, EPSG:32633 (WGS 84 / UTM 33N).\n",
-      "Etichettati sulla carta Bagheria (bordo vermiglio) e i cinque comuni più vicini (bordo scuro, distanza fra i centroidi, tutti entro 8 km):\n",
-      "una graffa sola per tutti e sei, perché a questa scala i loro poligoni sono un punto e sei richiami distinti non distinguerebbero niente.\n",
-      "Palermo (bordo viola) ha il richiamo suo: non è un vicino ma il termine di paragone. Gli estremi regionali si leggono agli estremi dell'istogramma.\n",
-      "Elaborazione: notebooks/genere.ipynb - data/processed/genere_mappa_occupazione_femminile.csv, genere_mappa_2011_2024.csv, genere_distribuzione_390.csv"),
+    caption = didascalia_4b(
+      mostra = paste0(
+        "tasso di occupazione femminile sulla popolazione di 15 anni e più, per comune siciliano, anno ", ANNO,
+        ". In alto la carta dell'isola, in basso la distribuzione dello stesso indicatore confrontata con quella del ", BASE,
+        ". Il finding è la differenza fra livello e posizione: il livello di Bagheria sale, il suo rango fra i comuni quasi no. ",
+        "Che la graduatoria del ", BASE, " predica quella del ", ANNO, " è un'affermazione di metodo e sta in fig04b; la graduatoria con i nomi sta in fig04c."),
+      base = paste0(
+        "N = 390 comuni ai confini del ", BASE,
+        " in entrambe le annate. Misiliscemi, istituito nel 2021 per distacco da Trapani, è disegnato in grigio e resta fuori dai 390: nel ", BASE,
+        " non esisteva e il dato non gli è attribuibile. È l'unica esclusione. ",
+        "Nessun intervallo di confidenza sui singoli comuni: sono conteggi censuari e non stime campionarie; nei comuni piccoli il tasso resta però instabile, perché poche persone spostano molti punti percentuali. ",
+        "Le due annate vengono da due rilevazioni con disegni diversi (universale a questionario il censimento ", BASE,
+        ", campionaria sui registri il permanente): il livello ne risente, il rango dentro l'anno molto meno, perché lo scarto di definizione sposta tutti i comuni nello stesso verso. ",
+        "Per questo il confronto fra le due annate, in fig04b, usa percentili e non punti percentuali. ",
+        "La fascia (15 anni e più) e gli anni sono diversi dalle serie 15-24 del thread: è contesto di lungo periodo, non un termine di paragone."),
+      lettura = paste0(
+        "sulla carta il colore è il valore, su scala continua viridis: più chiaro significa occupazione femminile più alta, e la stessa scala vale per le barre dell'istogramma sotto. ",
+        "Sono etichettati Bagheria (bordo vermiglio) e i cinque comuni più vicini per distanza fra i centroidi (bordo scuro, tutti entro 8 km): a questa scala i loro poligoni sono un punto, quindi le sei righe sono raccolte da una graffa sola in mare, ordinate per valore decrescente. ",
+        "Palermo ha bordo viola e un richiamo suo perché non è un vicino ma il termine di paragone. Gli estremi regionali non sono etichettati sulla carta, perché cambiano comune fra le due annate, e si leggono agli estremi dell'istogramma. ",
+        "Nell'istogramma le barre piene sono il ", ANNO, " e il profilo grigio vuoto è il ", BASE,
+        ": sono sovrapposti e non affiancati perché il finding è lo scorrimento dell'intera distribuzione. ",
+        "Le linee verticali tratteggiate sono i valori del ", BASE, " e quelle piene i valori del ", ANNO,
+        ", in vermiglio per Bagheria e in grigio per la mediana regionale; la freccia vermiglia misura quanto Bagheria si è spostata. ",
+        "Il riquadro della carta è centrato sulla terraferma e non sull'estensione con tutte le isole minori: restano fuori Lampedusa e Linosa, Pantelleria e Marettimo, che sono comunque nel dato e nell'istogramma, mentre Ustica, Levanzo, Favignana e le Eolie sono in carta."),
+      fonte = paste0(
+        "ISTAT, 8milaCensus, indicatore L11 (censimento ", BASE, ") e Censimento permanente della popolazione (2018-", ANNO,
+        ", il 2020 manca alla fonte), tasso di occupazione femminile sulla popolazione di 15 anni e più. ",
+        "Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, sistema di riferimento EPSG:32633 (WGS 84 / UTM 33N). ",
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_mappa_occupazione_femminile.csv, genere_mappa_2011_2024.csv e genere_distribuzione_390.csv)."),
+      larghezza = LARGHEZZA),
     theme = tema_figura()
   )
 
 # Più alta dell'originale: coord_equal vincola la carta dall'altezza, quindi l'altezza
 # del pannello è ciò che decide quanto la Sicilia riempie i 26 cm di larghezza.
-salva(figura, "fig04_mappa_sicilia", larghezza = 26, altezza = 35)
+salva(figura, "fig04_mappa_sicilia", larghezza = LARGHEZZA, altezza = 39)
