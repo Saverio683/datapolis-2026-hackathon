@@ -3,7 +3,7 @@
 Documento di progetto, scritto il 2026-08-28. Tiene le decisioni che la relazione di
 accompagnamento non deve rimettere in discussione: la tesi, le tre figure, e i limiti
 che si dichiarano invece di nasconderli. **La relazione completa che ne discende è
-`docs/RELAZIONE_DATAPOLIS.md`** (scritta il 2026-08-28): se una decisione cambia qui,
+`docs/RELAZIONE_DATAPOLIS.md`** (scritta il 2026-08-28, aggiornata il 2026-08-29): se una decisione cambia qui,
 va riportata anche lì.
 
 Regola che vale ovunque qui dentro: **nessuna cifra si scrive a mano**. Ogni numero
@@ -183,11 +183,11 @@ tavola dello zip viaggia da sola con la propria didascalia.
 | `fig05_forbice` | tavola 2.6 | **intera**, in appendice |
 | `fig09_kpi_finestra` | tavola 4.5 | **intera**, in appendice |
 
-⚠️ **Una discrepanza da sanare**: il percentile del divario di pendolarismo sul lavoro è
-**13° sui 381 comuni non capoluogo** (notebook, cella 18) ma **15° sui 390** della tavola
-condivisa `mob_ribaltamento_390.csv`. `docs/CONTEXT-fabio.md` scrive «13° percentile dei
-390 comuni», che è la combinazione sbagliata delle due. La scheda 3 dichiara entrambi i
-denominatori; il testo di CONTEXT-fabio va corretto.
+✅ **Discrepanza sanata (2026-08-29)**: il percentile del divario di pendolarismo sul lavoro
+è **13° sui 381 comuni non capoluogo** (notebook, cella 18) e **15° sui 390** della tavola
+condivisa `mob_ribaltamento_390.csv`. La combinazione sbagliata «13° dei 390», comparsa in
+`docs/CONTEXT-fabio.md`, `docs/POLICY_PONTE_19.md` §4-bis e `docs/RELAZIONE_DATAPOLIS.md`
+§5.2, è stata corretta dichiarando entrambi i denominatori; la scheda 3 già li dichiarava.
 
 ## 4. Mappa brief → evidenza
 
@@ -227,5 +227,5 @@ denominatori; il testo di CONTEXT-fabio va corretto.
 
 - [x] sensore `nbconvert` sui quattro notebook, verde il 2026-08-29
 - [x] `Rscript viz/build_all.R` dopo l'ultima modifica ai `data/processed/` — 37 figure, il 2026-08-29 (il glob ora prende anche il prefisso `mob_`)
-- [x] `uv run python -m pipeline.verifica` — 701/701 PASS il 2026-08-29 (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
-- [ ] rigenerare `docs/RELAZIONE_DATAPOLIS.docx`: è fermo alla versione del 2026-08-28, prima della correzione della sezione 5
+- [x] `uv run python -m pipeline.verifica` — 743/743 PASS il 2026-08-29 (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
+- [x] rigenerare `docs/RELAZIONE_DATAPOLIS.docx` — rigenerato il 2026-08-29 dal .md corrente (37 figure, didascalie da `figures/didascalie.csv`), dopo le cuciture pre-invio

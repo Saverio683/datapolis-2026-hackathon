@@ -135,41 +135,34 @@ figura <- (waffle | attrito) +
   plot_layout(widths = c(1, 0.9)) +
   plot_annotation(
     title = "Quaranta ragazze: il KPI è realistico, ma la demografia se lo riprende",
-    subtitle = paste0(
-      "Oggi ", occupate, " ragazze 15-24 su ", migliaia(popolazione),
+    subtitle = sommario(paste0(
+      "Il KPI della proposta tradotto in persone: a sinistra le ", migliaia(popolazione), " ragazze di 15-24 anni di Bagheria nel ", anno,
+      ", una per una, divise fra chi lavora oggi e i traguardi successivi; a destra lo stesso obiettivo messo di fronte al restringimento della platea nei due orizzonti della proposta. ",
+      "Non c'è nessun modello: è aritmetica sulla stessa popolazione, letta due volte. Quanto debba essere grande un effetto perché una rilevazione riesca a vederlo sta in fig09b.\n",
+      "Oggi ", occupate, " ragazze su ", migliaia(popolazione),
       " lavorano. Allineare il tasso femminile a quello di Palermo vuol dire +",
       delta("tasso femminile di Palermo"), " occupate: il KPI realistico a 2-3 anni.\n",
       "La parità con i coetanei ne vorrebbe +", delta("parità con i coetanei maschi di Bagheria"),
       ", il tasso nazionale +", delta("tasso femminile dell'Italia"),
       ": quelli non sono obiettivi, sono la misura del problema.\n",
-      "E il +", delta("tasso femminile di Palermo"), " non è quello che si vedrà alla scadenza: la platea 2029 è già nata ed è più piccola, così lo stesso tasso obiettivo\n",
+      "E il +", delta("tasso femminile di Palermo"), " vale già meno alla scadenza: la platea 2029 è già nata ed è più piccola, così lo stesso tasso obiettivo\n",
       "ne vale ", sprintf("%+.0f", kpi$kpi_netto[1]), " al ", kpi$orizzonte[1], " e ", sprintf("%+.0f", kpi$kpi_netto[2]), " al ", kpi$orizzonte[2],
-      ". Il target va scritto in tasso e non in teste, oppure riparametrato ogni anno sulla platea corrente."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "il KPI della proposta tradotto in persone. A sinistra le ragazze di 15-24 anni di Bagheria nel ", anno,
-        ", una per una, divise fra chi lavora oggi e i traguardi successivi; a destra lo stesso obiettivo confrontato con il restringimento della platea nei due orizzonti della proposta. ",
-        "Non c'è nessun modello: è aritmetica sulla stessa popolazione, letta due volte. ",
-        "Quanto debba essere grande un effetto perché una rilevazione riesca a vederlo sta in fig09b."),
-      base = paste0(
-        "N = ", migliaia(popolazione), " ragazze di 15-24 anni residenti a Bagheria nel ", anno,
-        ", di cui ", occupate, " occupate. Le platee del ", kpi$orizzonte[1], " (", migliaia(platea$platea_2029),
-        ") e del ", kpi$orizzonte[2], " (", migliaia(platea$platea_2034),
-        ") contano ragazze già nate e già residenti oggi: sono un tetto che si restringe, non una previsione demografica, e non incorporano né migrazioni né nascite future. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
-        "I quadratini del pannello sinistro sono arrotondati alla decina, mentre i totali in legenda no: la somma dei quadratini può quindi scostarsi di poche unità dai totali. ",
-        "Le due misure dell'attrito demografico non coincidono e non vanno confuse, perché ciascuna si misura al tasso a cui la si applica: a tasso ", anno,
-        " fermo la sola demografia toglie ", virgola(abs(tetto$delta_vs_2024[1]), 0), " occupate al ", kpi$orizzonte[1], " e ",
-        virgola(abs(tetto$delta_vs_2024[2]), 0), " al ", kpi$orizzonte[2], " (lo scenario «non si fa niente»), mentre al tasso obiettivo di Palermo (",
-        virgola(kpi$tasso_obiettivo_pct[1], 2), "%) ne toglie ", virgola(abs(kpi$attrito_demografico[1]), 0), " e ",
-        virgola(abs(kpi$attrito_demografico[2]), 0), ", che è il numero disegnato nel pannello destro."),
+      ". Il target va scritto in tasso e non in teste, oppure riparametrato ogni anno sulla platea corrente."), LARGH_FIGURA),
+    caption = didascalia_2b(
       lettura = paste0(
         "nel pannello sinistro ogni quadratino vale ", UNITA,
         " ragazze e il blocco intero è la popolazione femminile 15-24. I colori sono una rampa ordinata su una tinta sola, non categorie: ",
         "il vermiglio pieno è chi lavora oggi, le tinte via via più chiare sono i traguardi successivi (allineamento a Palermo, parità con i coetanei, tasso nazionale) e il grigio è chi resta comunque fuori. ",
-        "Le classi sono cumulative, quindi ogni fascia va letta come «e in più». ",
+        "Le classi sono cumulative, quindi ogni fascia va letta come «e in più»; i quadratini sono arrotondati alla decina mentre i totali in legenda no, e la somma può scostarsi di poche unità. ",
         "Nel pannello destro ogni faccia è un orizzonte e le tre barre si leggono in cascata: l'obiettivo sulla platea di oggi in arancio, quanto la platea si restringe in grigio (valore negativo, barra verso sinistra), quello che resta in vermiglio. ",
-        "La riga verticale grigia è lo zero. La lettura sta tutta nel confronto fra le due facce."),
+        "La riga verticale grigia è lo zero. La lettura sta tutta nel confronto fra le due facce. ",
+        "Le platee del ", kpi$orizzonte[1], " (", migliaia(platea$platea_2029), ") e del ", kpi$orizzonte[2], " (", migliaia(platea$platea_2034),
+        ") contano ragazze già nate e già residenti oggi: sono un tetto che si restringe, non una previsione demografica. ",
+        "Le due misure dell'attrito non coincidono, perché ciascuna si misura al tasso a cui la si applica: a tasso ", anno,
+        " fermo la sola demografia toglie ", virgola(abs(tetto$delta_vs_2024[1]), 0), " occupate al ", kpi$orizzonte[1], " e ",
+        virgola(abs(tetto$delta_vs_2024[2]), 0), " al ", kpi$orizzonte[2], " (lo scenario «non si fa niente»), mentre al tasso obiettivo di Palermo (",
+        virgola(kpi$tasso_obiettivo_pct[1], 2), "%) ne toglie ", virgola(abs(kpi$attrito_demografico[1]), 0), " e ",
+        virgola(abs(kpi$attrito_demografico[2]), 0), ", che è il numero disegnato nel pannello destro."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", anno,
         ", e demografia per età singola per le platee future. ",

@@ -135,9 +135,11 @@ figura <- wrap_plots(lapply(METRICHE, pannello), nrow = 1) +
     title = paste0("Bagheria cresce su istruzione e lavoro, ma nel ", ULTIMO,
                    " è dove la Sicilia era già anni prima"),
     subtitle = sommario(paste0(
-      "Due misure della stessa fascia 25-49, una per pannello, sullo stesso asse degli anni: il ",
-      PRIMO, " di Bagheria e quello della Sicilia stanno sulla stessa verticale, e la distanza fra le due linee è il divario di quell'annata.\n",
-      "Bagheria sale su tutte e due e il divario non si allarga, ma non aggancia mai: nel ", ULTIMO,
+      "Due misure della classe 25-49 anni a Bagheria e in Sicilia, una per pannello, sullo stesso asse degli anni, dal ", PRIMO, " al ", ULTIMO,
+      ": a sinistra la quota con almeno il diploma, a destra il tasso di occupazione, entrambe in percentuale della popolazione della classe. ",
+      "Il ", PRIMO, " di Bagheria e quello della Sicilia stanno sulla stessa verticale, e la distanza fra le due linee è il divario di quell'annata. ",
+      "I due pannelli vengono da due tavole aggregate distinte, quindi la figura dice se il territorio avanza su entrambe le dimensioni, non se sia lo stesso individuo a essere diplomato e occupato.\n",
+      "Bagheria sale su tutte e due e il divario resta stabile, ma la Sicilia resta avanti: nel ", ULTIMO,
       " è al ", virgola(valore_di(METRICHE[[1]], "Bagheria", ULTIMO), 1, "%"),
       " di diplomati contro ", virgola(valore_di(METRICHE[[1]], "Sicilia", ULTIMO), 1, "%"),
       " e al ", virgola(valore_di(METRICHE[[2]], "Bagheria", ULTIMO), 1, "%"),
@@ -146,25 +148,17 @@ figura <- wrap_plots(lapply(METRICHE, pannello), nrow = 1) +
       " indietro fino all'annata in cui la Sicilia lo aveva già raggiunto: ",
       anni_testo(RIT[[METRICHE[[1]]]]), " sul diploma, ",
       anni_testo(RIT[[METRICHE[[2]]]]),
-      " sull'occupazione. Il territorio non è fermo, è in ritardo."), LARGHEZZA),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "due misure della classe 25-49 anni a Bagheria e in Sicilia, una per pannello, sullo stesso asse degli anni, dal ",
-        PRIMO, " al ", ULTIMO, ": a sinistra la quota con almeno il diploma, a destra il tasso di occupazione, entrambe in percentuale della popolazione della classe. ",
-        "La figura dice se il territorio avanza su entrambe le dimensioni e quanto sia indietro rispetto alla Sicilia, non se sia lo stesso individuo a essere diplomato e occupato. ",
-        "I due pannelli vengono infatti da due tavole aggregate distinte sulla stessa fascia d'età, e l'incrocio fra titolo di studio e condizione professionale non esiste nei dati comunali pubblici: questa non è l'occupazione dei diplomati."),
-      base = paste0(
-        "Due territori e ", ULTIMO - PRIMO + 1, " annate nominali. Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
-        "Il ", buchi$anno, " esiste nella tavola istruzione e manca in quella lavoro: nel pannello destro la linea è interrotta e nessun valore è interpolato. ",
-        "L'asse degli anni resta lineare in entrambi i pannelli perché il buco riguarda una sola delle due misure e i due pannelli devono restare allineati. ",
-        "Il ritardo misurato dal tratteggio è letto sui punti osservati ed è una stima per difetto: il tratteggio parte dalla prima annata in cui la Sicilia sta già al livello che Bagheria raggiunge nel ",
-        ULTIMO, ", quindi il sorpasso vero è avvenuto prima, in un punto fra due rilevazioni che qui non si stima. ",
-        "La fascia 25-49 è quella dove le due tavole condividono l'età: è più larga del target 15-34 dell'hackathon e non va confusa con le serie 15-24 delle altre figure del thread."),
+      " sull'occupazione. Il territorio si muove, con anni di ritardo."), LARGHEZZA),
+    caption = didascalia_2b(
       lettura = paste0(
         "in ogni pannello le due linee sono Bagheria e la Sicilia sullo stesso asse degli anni, quindi la distanza verticale fra le due in un'annata è il divario di quell'annata. ",
         "La linea tratteggiata orizzontale porta il livello di Bagheria nel ", ULTIMO,
         " indietro nel tempo fino all'annata in cui la Sicilia lo aveva già raggiunto: la sua lunghezza è il ritardo in anni, ed è la quantità che il titolo enuncia. ",
-        "I due pannelli hanno scale verticali proprie, perché misurano cose diverse: le altezze non vanno confrontate fra pannelli, solo le distanze dentro ciascuno."),
+        "Il ritardo è letto sui punti osservati ed è una stima per difetto, perché il sorpasso vero è avvenuto prima, in un punto fra due rilevazioni che qui non si stima. ",
+        "I due pannelli hanno scale verticali proprie, perché misurano cose diverse: le altezze non vanno confrontate fra pannelli, solo le distanze dentro ciascuno. ",
+        "Il ", buchi$anno, " esiste nella tavola istruzione e manca in quella lavoro: nel pannello destro la linea è interrotta e nessun valore è interpolato, mentre l'asse resta lineare in entrambi perché i due pannelli devono restare allineati. ",
+        "L'incrocio fra titolo di studio e condizione professionale non esiste nei dati comunali pubblici: questa non è l'occupazione dei diplomati. ",
+        "La fascia 25-49 è quella dove le due tavole condividono l'età: è più larga del target 15-34 dell'hackathon e resta separata dalle serie 15-24 delle altre figure del thread."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola istruzione e tavola della condizione professionale, classe 25-49 anni, ",
         PRIMO, "-", ULTIMO, ". Elaborazione: pipeline/edu (thread educazione), data/processed/edu_gaps_vs_sicily.csv."),

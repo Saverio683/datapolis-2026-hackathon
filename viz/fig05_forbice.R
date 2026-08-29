@@ -97,11 +97,13 @@ pann_a <- ggplot(foto, aes(vantaggio_diploma_15_24_pp, tasso_occupazione_F,
 # dirlo mentre spiegava anche il resto.
 figura <- pann_a +
   plot_annotation(
-    title = "Il capitale umano che Bagheria spreca di più è femminile",
+    title = "Il capitale umano che Bagheria manca di più è femminile",
     subtitle = sommario(paste0(
-      "Anno ", ANNO, ", fascia 15-24: le ragazze di Bagheria superano i coetanei nel diploma (+",
-      virgola(valore("Bagheria", "vantaggio_diploma_15_24_pp")), " punti) e hanno\n",
-      "il tasso di occupazione più basso del panel (",
+      "Posizione dei cinque territori sul piano che incrocia istruzione e lavoro delle ragazze, anno ", ANNO,
+      ", tutto sulla classe 15-24: sull'asse orizzontale il vantaggio educativo femminile, cioè quanti punti percentuali separano la quota di diplomate da quella dei diplomati, ",
+      "sull'asse verticale il tasso di occupazione femminile in percentuale delle coetanee residenti. È la fotografia di un solo anno; la stessa forbice nel tempo sta in fig05b.\n",
+      "Le ragazze di Bagheria superano i coetanei nel diploma (+",
+      virgola(valore("Bagheria", "vantaggio_diploma_15_24_pp")), " punti) e hanno il tasso di occupazione più basso del panel (",
       virgola(valore("Bagheria", "tasso_occupazione_F"), 1, "%"),
       "). Il vicinato ha lo stesso mercato del lavoro (",
       virgola(valore(ETICHETTA_VICINATO, "tasso_occupazione_F"), 1, "%"), " di occupazione\n",
@@ -109,31 +111,17 @@ figura <- pann_a +
       virgola(valore(ETICHETTA_VICINATO, "vantaggio_diploma_15_24_pp")),
       " punti: lo svantaggio occupazionale è di zona, la forbice è di Bagheria.\n",
       "Bagheria è sola nell'angolo in basso a destra (più istruite della mediana, meno occupate). Come ci sia arrivata sta in fig05b."), LARGHEZZA),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "posizione dei cinque territori sul piano che incrocia istruzione e lavoro delle ragazze, anno ", ANNO,
-        ", tutto sulla classe 15-24 anni. Sull'asse orizzontale il vantaggio educativo femminile, cioè quanti punti percentuali separano la quota di diplomate da quella dei diplomati; ",
-        "sull'asse verticale il tasso di occupazione femminile, in percentuale delle coetanee residenti. ",
-        "È una fotografia di un solo anno: la stessa forbice nel tempo sta in fig05b."),
-      base = paste0(
-        "Denominatori della classe 15-24 nel ", ANNO, ": ",
-        paste(vapply(foto$nome_territorio, function(t) paste0(t, " ", migliaia(round(enne(t, "F"))),
-              " ragazze e ", migliaia(round(enne(t, "M"))), " ragazzi"), character(1)), collapse = "; "),
-        ". Per il vicinato i conteggi dei cinque comuni sono sommati e solo dopo si calcolano i tassi, non è la media dei cinque tassi. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Il quadrante sta tutto sulla stessa popolazione 15-24, perché i diplomati 15-24 coincidono per costruzione con i diplomati 9-24: nessuno consegue un titolo prima dei 15 anni, e la coerenza fra le due tavole è verificata nel notebook con scarto zero. ",
-        "Limiti del claim, dichiarati: su questa fascia il primato del vantaggio educativo è un pareggio con la Sicilia, e sul limite superiore 18-24 non regge (fig11b). ",
-        "Il claim è quindi il distacco dal vicinato e la mancata conversione, non il primato assoluto. ",
-        "La serie nel tempo di fig05b sta sul vantaggio 9-24, l'unico disponibile dal 2018: le due misure non si sommano e non vanno lette in sequenza."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni punto è un territorio, e Bagheria è il punto vermiglio più grande. ",
         "Le due linee tratteggiate chiare sono le mediane dei cinque valori disegnati, e dividono il piano in quadranti: l'angolo in basso a destra è «più istruite della mediana e meno occupate», ed è dove Bagheria sta da sola. ",
         "La linea tratteggiata verticale allo zero è la parità educativa fra ragazze e ragazzi: a destra di quella riga le ragazze sono più istruite dei coetanei. ",
         "Con cinque punti la mediana coincide con il punto centrale, quindi due territori siedono esattamente sulle guide: è corretto e non un errore di disegno. ",
-        "L'etichetta accanto a ogni punto ripete i suoi due valori. Il rapporto fra tasso maschile e femminile non è su questo piano: le tre scale del divario stanno in fig01, e qui l'occupazione è il livello femminile, la scala che regge in ogni annata."),
+        "L'etichetta accanto a ogni punto ripete i suoi due valori. Il rapporto fra tasso maschile e femminile non è su questo piano: le tre scale del divario stanno in fig01, e qui l'occupazione è il livello femminile, la scala che regge in ogni annata. ",
+        "Sul vantaggio educativo Bagheria pareggia con la Sicilia, e sul limite superiore 18-24 il primato passa ad altri (fig11b): il claim della figura è il distacco dal vicinato e la mancata conversione, non il primato assoluto. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi, con i conteggi sommati prima dei tassi: sono i tassi del blocco, non la media dei cinque tassi."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola istruzione, tavola della condizione professionale e demografia per età singola per i denominatori, anno ", ANNO, ". ",
-        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi. ",
         "Elaborazione: notebooks/genere.ipynb (data/processed/genere_forbice_quadrante.csv e genere_per_1000.csv per i denominatori)."),
       larghezza = LARGHEZZA),
     theme = tema_figura()

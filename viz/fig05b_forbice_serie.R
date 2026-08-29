@@ -95,38 +95,25 @@ figura <- ggplot(protagonisti, aes(asse_2020(anno), valore, colour = nome_territ
   buco_2020(y = 2.2, lungo$anno, lungo$valore) +
   labs(
     title = "Dal 2021 il vantaggio educativo delle ragazze\nsi allarga solo a Bagheria",
-    subtitle = paste0(
-      "Quanti punti separano la quota di diplomate da quella dei diplomati, ", PRIMO, "-", ANNO,
-      ", fascia 9-24. Sopra lo zero le ragazze sono più istruite.\n",
+    subtitle = sommario(paste0(
+      "Quanti punti percentuali separano la quota di ragazze da quella di ragazzi con almeno il diploma, sulla fascia 9-24 anni, dal ",
+      PRIMO, " al ", ANNO, ", su cinque territori: sopra lo zero le ragazze sono più istruite dei coetanei. ",
+      "La fascia è il 9-24 perché è l'unica pubblicata a livello comunale su tutta la serie, quindi misura una cosa vicina ma non la stessa della fotografia 15-24 di fig05: i due numeri restano separati.\n",
       "Bagheria e i cinque comuni vicini partivano appaiati (+", virgola(apertura$bagheria),
       " e +", virgola(apertura$vicinato), " nel ", PRIMO,
-      "): dal 2021 il cuneo si apre, e nel ", ANNO, " sono\n",
-      "+", virgola(chiusura$bagheria), " contro +", virgola(chiusura$vicinato), ". ",
-      CONTEGGIO, ", quindi non è un tratto di zona. In nessuna di queste annate\n",
-      "il vantaggio si converte in lavoro (fig05)."),
+      "): dal 2021 il cuneo si apre, e nel ", ANNO, " sono +", virgola(chiusura$bagheria),
+      " contro +", virgola(chiusura$vicinato), ". ",
+      CONTEGGIO, ", quindi è un tratto di Bagheria e non di zona. In tutte queste annate il vantaggio resta fuori dal mercato del lavoro (fig05)."), LARGHEZZA),
     # Titolo d'asse corto: ruotato è alto quanto il testo, e per esteso finiva addosso
     # all'ultima riga del sottotitolo. Cosa misura lo dice già la prima riga lì sopra.
     x = NULL, y = "punti (F − M)",
-    caption = didascalia_4b(
-      mostra = paste0(
-        "differenza in punti percentuali fra la quota di ragazze e la quota di ragazzi con almeno il diploma, sulla fascia 9-24 anni, dal ",
-        PRIMO, " al ", ANNO, ", su cinque territori. Sopra lo zero le ragazze sono più istruite dei coetanei. ",
-        "La fascia è il 9-24 perché è l'unica pubblicata a livello comunale su tutta la serie: la fotografia della fig05, che sta sulla 15-24, ",
-        "misura una cosa vicina ma non la stessa, e i due numeri non vanno sommati né letti in sequenza."),
-      base = paste0(
-        "Denominatori della fascia 9-24 a Bagheria nel ", ANNO, ": ",
-        migliaia(round(enne_9_24("Bagheria", "F"))), " ragazze e ",
-        migliaia(round(enne_9_24("Bagheria", "M"))), " ragazzi. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
-        "Il 2020 manca alla fonte su ogni classe che contenga i 15-24, in tutti i territori: la serie è interrotta e nessun valore è interpolato. ",
-        "Per il vicinato i conteggi dei cinque comuni sono sommati prima della quota, non è la media delle cinque quote. ",
-        "Attenzione al denominatore: la fascia 9-24 include bambini che non hanno ancora l'età del diploma, quindi il livello della quota non va letto come tasso di diplomati; ",
-        "a essere confrontabile fra territori e nel tempo è la differenza fra i generi, che è ciò che la figura disegna."),
+    caption = didascalia_2b(
       lettura = paste0(
         "l'area vermiglio chiaro è il cuneo fra Bagheria e il vicinato, cioè quanto le due lame si sono aperte: la sua altezza è la distanza fra le due linee, non un intervallo di confidenza. ",
         "Bagheria è in vermiglio a tratto pieno, il vicinato in verde acqua; Palermo, Sicilia e Italia restano in grigio perché sono contesto, e si identificano dall'etichetta a fine linea. ",
-        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: dove c'è la striscia non c'è misura. ",
-        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi."),
+        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: il 2020 manca alla fonte su ogni classe che contenga i 15-24, in tutti i territori, e nessun valore è interpolato. ",
+        "La fascia 9-24 include bambini che non hanno ancora l'età del diploma, quindi il livello della quota non va letto come tasso di diplomati: a essere confrontabile fra territori e nel tempo è la differenza fra i generi, che è ciò che la figura disegna. ",
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi, con i conteggi sommati prima della quota."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola istruzione, fascia 9-24 anni, ", PRIMO, "-", ANNO, ". ",
         "Elaborazione: notebooks/genere.ipynb (data/processed/genere_forbice_serie.csv e genere_istruzione.csv per i denominatori)."),

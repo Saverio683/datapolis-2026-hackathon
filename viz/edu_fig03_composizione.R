@@ -113,11 +113,14 @@ figura <- ggplot(disegnabile, aes(asse_2020(anno), quota, fill = stato)) +
   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
   buco_2020(50, serie$anno, serie$quota) +
   labs(
-    title = "Fra i giovani di Bagheria si svuota la ricerca di lavoro, non l'inattività",
+    title = "Fra i giovani di Bagheria si svuota la ricerca di lavoro, mentre l'inattività tiene",
     subtitle = sommario(paste0(
-      "Composizione dei 15-24enni di Bagheria, 2018-2024. La pila è appoggiata sugli inattivi non studenti, cioè il segmento di cui parla il claim, perché\n",
-      "nella pila solo la banda che tocca lo zero ha uno spessore confrontabile fra annate. Sopra ci sta chi cerca lavoro: insieme sono l'area \"fuori da\n",
-      "lavoro e studio\", il cui bordo superiore è la linea tratteggiata. In sei anni la quota di chi cerca crolla dal ",
+      "Composizione della condizione professionale dei 15-24enni di Bagheria, in percentuale della popolazione della classe, dal ",
+      ANNI_STATI[1], " al ", ANNI_STATI[2],
+      ": i quattro stati sono esaustivi e si escludono a vicenda, quindi sommano al 100% in ogni annata rilevata. ",
+      "La pila è appoggiata sugli inattivi non studenti, cioè il segmento di cui parla il claim, perché nella pila solo la banda che tocca lo zero ha uno spessore confrontabile fra annate.\n",
+      "Sopra ci sta chi cerca lavoro: insieme sono l'area \"fuori da lavoro e studio\", il cui bordo superiore è la linea tratteggiata, ",
+      "e che è la somma dei due stati alla base e non un quinto stato. In sei anni la quota di chi cerca crolla dal ",
       virgola(quota_di("in cerca di lavoro", 2018), 1), "% al ",
       virgola(quota_di("in cerca di lavoro", 2024), 1), "%,\n",
       "mentre gli inattivi non studenti passano dal ",
@@ -125,27 +128,19 @@ figura <- ggplot(disegnabile, aes(asse_2020(anno), quota, fill = stato)) +
       virgola(quota_di("inattivi non studenti", 2024), 1),
       "%: la banda alla base è la stessa di sei anni fa."), LARGHEZZA),
     x = NULL, y = "quota dei 15-24enni residenti",
-    caption = didascalia_4b(
-      mostra = paste0(
-        "composizione della condizione professionale dei 15-24enni di Bagheria, in percentuale della popolazione della classe, dal ",
-        ANNI_STATI[1], " al ", ANNI_STATI[2],
-        ". I quattro stati sono esaustivi e si escludono a vicenda, quindi sommano al 100% in ogni annata rilevata. ",
-        "«Fuori da lavoro e studio» non è un quinto stato ma la somma dei due alla base della pila, ed è disegnato come confine proprio per questo."),
-      base = paste0(
-        "Denominatori: ", migliaia(round(enne_anno(ANNI_STATI[1]))), " residenti di 15-24 anni nel ", ANNI_STATI[1],
-        " e ", migliaia(round(enne_anno(ANNI_STATI[2]))), " nel ", ANNI_STATI[2],
-        ". Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Il 2020 non è pubblicato nella tavola lavoro e non è interpolato. ",
-        "«Inattivi non studenti» sono i 15-24enni che non lavorano, non cercano e non sono in istruzione: non è il NEET ISTAT 15-29, che a livello comunale non è calcolabile su queste annate, e le due misure non vanno messe nella stessa serie. ",
-        "Poiché la composizione somma sempre a 100, una banda che si assottiglia può farlo perché quel gruppo si riduce o perché un altro cresce: la scomposizione fra i due effetti sta in edu_fig04."),
+    caption = didascalia_2b(
       lettura = paste0(
         "la pila è appoggiata sugli inattivi non studenti, cioè il segmento di cui parla il claim, così che la sua banda parta dalla linea di base e il suo spessore si legga senza doverlo misurare a metà pila. ",
         "Lo spessore verticale di ogni banda in un'annata è la quota di quello stato in quell'anno. ",
         "Le etichette numeriche riportano la prima e l'ultima annata, mentre le intermedie si leggono sullo spessore delle bande. ",
-        "La striscia grigia verticale occupa l'annata mancante: l'asse si comprime e dove c'è la striscia non c'è misura."),
+        "La striscia grigia verticale occupa l'annata mancante: l'asse si comprime, dove c'è la striscia non c'è misura, e il 2020 non è interpolato. ",
+        "Poiché la composizione somma sempre a 100, una banda che si assottiglia può farlo perché quel gruppo si riduce o perché un altro cresce: la scomposizione fra i due effetti sta in edu_fig04. ",
+        "«Inattivi non studenti» sono i 15-24enni che non lavorano, non cercano e non sono in istruzione: vanno letti per quello, non come il NEET ISTAT 15-29, che a livello comunale non è calcolabile su queste annate."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ",
-        ANNI_STATI[1], "-", ANNI_STATI[2], ". Elaborazione: pipeline/edu (thread educazione), data/processed/edu_youth_states_2018_2024.csv."),
+        ANNI_STATI[1], "-", ANNI_STATI[2], " (", migliaia(round(enne_anno(ANNI_STATI[1]))), " residenti nel ",
+        ANNI_STATI[1], " e ", migliaia(round(enne_anno(ANNI_STATI[2]))), " nel ", ANNI_STATI[2],
+        "). Elaborazione: pipeline/edu (thread educazione), data/processed/edu_youth_states_2018_2024.csv."),
       larghezza = LARGHEZZA)
   ) +
   tema_figura()

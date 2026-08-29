@@ -109,34 +109,30 @@ figura <- (pannello(1) | pannello(2)) +
     # una stima sul corpo del testo, e su 30 cm di larghezza sbordava di una decina di
     # caratteri per riga — il taglio avviene al bordo del PNG e nulla lo segnala.
     subtitle = paste0(
+      "Dove vanno i residenti di Bagheria che escono dal comune, per motivo dello spostamento: a sinistra\n",
+      "chi esce per studiare (censimento 2011), a destra chi esce per lavorare (censimento permanente 2021).\n",
+      "Ogni linea unisce Bagheria a un comune di destinazione, e la percentuale accanto a ciascuna meta è\n",
+      "la quota di chi esce che va lì: è la risposta letterale alla domanda del bando sul pendolarismo,\n",
+      "con il nome del comune di arrivo.\n",
       "Nove studenti su dieci che escono dal comune vanno a Palermo (",
       virgola(quota_dentro(SCENE[1, ]), 1, "%"), "), e due lavoratori su tre (",
       virgola(quota_dentro(SCENE[2, ]), 1, "%"), ").\n",
-      "Il secondo comune di destinazione non arriva al 7%: non esiste una seconda direzione.\n",
+      "Il secondo comune di destinazione resta sotto il 7%: la direzione è una sola.\n",
       "Su entrambe le misure Bagheria sta oltre il 90° percentile dei 381 comuni siciliani non capoluogo\n",
       "per quota di chi esce diretta al proprio capoluogo di provincia."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "dove vanno i residenti di Bagheria che escono dal comune, per motivo dello spostamento. ",
-        "A sinistra chi esce per studiare (censimento 2011), a destra chi esce per lavorare (censimento permanente 2021). ",
-        "Ogni linea unisce Bagheria a un comune di destinazione, e la percentuale accanto a ciascuna meta è la quota di chi esce che va lì. ",
-        "È la risposta letterale alla domanda del bando sul pendolarismo verso Palermo, con il nome del comune di arrivo."),
-      base = paste0(
-        "N = ", N_SCENE, ", cioè il totale di chi esce dal comune per quel motivo in quell'anno. ",
-        "Conteggio esaustivo da matrice origine-destinazione, non stima campionaria: non c'è errore di campionamento e non c'è intervallo di confidenza. ",
-        "Le due annate non stanno in serie e non vanno confrontate in livello: il 2011 conta chi si sposta giornalmente, il 2021 chi si reca al lavoro almeno tre giorni a settimana, e il 2021 copre il solo motivo lavoro. ",
-        "Si confronta la composizione, cioè dove vanno su cento che escono, mai quanti escono. ",
-        "La matrice non ha la dimensione dell'età: il target 15-34 del bando non è isolabile su questa fonte. ",
-        "Chi esce per studio è però quasi solo secondaria superiore e università, perché a Bagheria i cicli precedenti ci sono tutti."),
+    caption = didascalia_2b(
       lettura = paste0(
         "spessore e opacità di ogni linea sono proporzionali al numero di persone, e la dimensione del pallino sulla destinazione lo è al numero di arrivi. ",
         "Le linee sono rette fra i centroidi comunali e non percorsi reali: dicono quanti e verso dove, non per quale strada. ",
         "Il riquadro è il corridoio Bagheria-Palermo, 65 per 36 km, e contiene le destinazioni che valgono il 90% del flusso; ",
         "la quota rimasta fuori dal riquadro è annotata in basso a sinistra in ciascun pannello, invece di essere disegnata come una linea che esce dal bordo. ",
-        "Sono nominate le prime cinque destinazioni di ogni scena. Il punto vermiglio è Bagheria, origine di tutte le linee."),
+        "Sono nominate le prime cinque destinazioni di ogni scena. Il punto vermiglio è Bagheria, origine di tutte le linee. ",
+        "Le due annate stanno una per pannello e non in serie: il 2011 conta chi si sposta giornalmente, il 2021 chi si reca al lavoro almeno tre giorni a settimana, e il 2021 copre il solo motivo lavoro. ",
+        "Si confronta la composizione, cioè dove vanno su cento che escono, mai quanti escono. ",
+        "La matrice non ha la dimensione dell'età, quindi il target 15-34 del bando non è isolabile su questa fonte; chi esce per studio è però quasi solo secondaria superiore e università, perché a Bagheria i cicli precedenti ci sono tutti."),
       fonte = paste0(
-        "ISTAT, Matrici del pendolarismo, censimento della popolazione 2011 (studio) e censimento permanente 2021 (lavoro), origine-destinazione comune per comune. ",
-        "Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, sistema di riferimento EPSG:32633 (WGS 84 / UTM 33N). ",
+        "ISTAT, Matrici del pendolarismo, censimento della popolazione 2011 (studio) e censimento permanente 2021 (lavoro), origine-destinazione comune per comune, su ",
+        N_SCENE, ". Confini: ISTAT, unità amministrative generalizzate al 01/01/2026, sistema di riferimento EPSG:32633 (WGS 84 / UTM 33N). ",
         "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_flussi_bagheria.csv)."),
       larghezza = LARGHEZZA),
     theme = tema_figura())

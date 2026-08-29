@@ -69,35 +69,27 @@ figura <- ggplot(territori, aes(quota, nome_territorio, colour = colore)) +
   # Aria a destra per l'etichetta del valore, che sta fuori dal pallino.
   scale_x_continuous(expand = expansion(mult = c(0, 0.16))) +
   labs(
-    title = "Le casalinghe non sono un'anomalia di Bagheria: il vicinato sta anche peggio",
-    subtitle = paste0(
-      "Quota di ragazze 15-24 che si dichiarano casalinghe, ", ANNO, ". A Bagheria sono ",
-      virgola(quota_di("Bagheria")), "% (", casalinghe_n, " ragazze) e nei cinque comuni\n",
-      "più vicini ",  virgola(quota_di(ETICHETTA_VICINATO)),
-      "%: il livello non si ferma al confine comunale. Palermo è a ",
+    title = "La quota di casalinghe è un tratto di zona: il vicinato di Bagheria arriva ancora più in alto",
+    subtitle = sommario(paste0(
+      "Quota di ragazze di 15-24 anni che al censimento si dichiarano casalinghe, in percentuale delle coetanee residenti, su cinque territori, anno ", ANNO,
+      ". La condizione è autodichiarata, quindi va letta come marcatore del carico di cura e non come la sua misura diretta, e non dice chi sia la persona accudita; da dove arrivi questa quota dentro la popolazione 15-24 di Bagheria, e dove porti, lo mostra fig02.\n",
+      "A Bagheria sono ", virgola(quota_di("Bagheria")), "% (", casalinghe_n,
+      " ragazze) e nei cinque comuni più vicini ",  virgola(quota_di(ETICHETTA_VICINATO)),
+      "%: il livello prosegue oltre il confine comunale. Palermo è a ",
       virgola(quota_di("Palermo")), "%, la Sicilia a ", virgola(quota_di("Sicilia")),
       "%, l'Italia a ", virgola(quota_di("Italia")), "%, quindi Bagheria vale ",
       virgola(RAPPORTO, 1, "×", taglia_zero = FALSE),
-      "\nl'incidenza nazionale. Fra i ragazzi la stessa condizione pesa l'",
+      " l'incidenza nazionale. Fra i ragazzi la stessa condizione pesa l'",
       virgola(quota_di("Bagheria", "M")), "% a Bagheria e lo ",
-      virgola(quota_di("Italia", "M")), "% in Italia: il divario è di zona, la condizione è di genere."),
+      virgola(quota_di("Italia", "M")), "% in Italia: il divario è di zona, la condizione è di genere."), LARGHEZZA),
     x = NULL, y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "quota di ragazze di 15-24 anni che al censimento si dichiarano casalinghe, in percentuale delle coetanee residenti, anno ",
-        ANNO, ", su cinque territori. La condizione è autodichiarata: è un marcatore del carico di cura, non la sua misura diretta, ",
-        "e non dice nulla su chi sia la persona accudita. Da dove arrivi questa quota dentro la popolazione 15-24 di Bagheria, e dove porti, lo mostra fig02."),
-      base = paste0(
-        "Denominatori (ragazze 15-24 residenti al ", ANNO, "): ", N_TERRITORI,
-        ". A Bagheria il numeratore è di ", casalinghe_n, " ragazze. ",
-        "Per il vicinato i conteggi dei cinque comuni sono sommati prima della quota, non è la media delle cinque quote. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Un solo anno, quindi la figura non misura una tendenza: la serie completa sta in genere_composizione_stato_dettaglio.csv."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni riga è un territorio e la lunghezza del segmento è la quota, ripetuta in cifre a destra del pallino. ",
         "L'ordine delle righe è geografico e non per valore, dal comune al paese: la discesa da Bagheria all'Italia è il finding, non l'effetto dell'ordinamento. ",
         "I colori sono quelli che i territori portano in tutta la cartella (Bagheria in vermiglio, il vicinato in verde acqua, Palermo in viola, la Sicilia in ambra, l'Italia in grigio) e non codificano nessuna variabile in più. ",
-        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi."),
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi, con i conteggi sommati prima della quota: è la quota del blocco, non la media delle cinque quote. ",
+        "Una sola annata, quindi la figura è una fotografia e non una tendenza: la serie completa sta in genere_composizione_stato_dettaglio.csv."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", ANNO, ". ",
         "Elaborazione: notebooks/genere.ipynb (data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv per il vicinato aggregato, genere_casalinghe.csv per il conteggio e genere_platea.csv per i denominatori)."),

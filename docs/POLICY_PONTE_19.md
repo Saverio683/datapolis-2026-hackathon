@@ -2,7 +2,7 @@
 
 ## Servizio comunale di transizione e riattivazione, 18-25, con due finestre di ingaggio
 
-Versione unificata di progetto, 2026-08-28. Sostituisce, ai fini della proposal, la
+Versione unificata di progetto, 2026-08-28, aggiornata il 2026-08-29. Sostituisce, ai fini della proposal, la
 versione del solo thread educazione (`docs/edu/POLICY_PONTE_19_BAGHERIA.md`, rigenerata
 dalla pipeline: **non modificarla a mano**). Rispetto a quella cambia in quattro punti, tutti
 derivati dai dati e non da preferenze di design:
@@ -181,7 +181,8 @@ del gap occupazionale: è una conferma indipendente dello stesso punto di rottur
 Il thread mobilità lo **replica su un censimento diverso**: sulla matrice origine-destinazione
 2011 (conteggio esaustivo, altra tavola e altro denominatore) il divario è **+2,6 punti** sullo
 studio e **−12,1** sul lavoro, un ribaltamento di **14,7 punti** contro 6,0 in Sicilia, 6,5 in
-Italia e 1,9 nel Comune di Palermo, con Bagheria al **13° percentile dei 390**. E lo **controlla**:
+Italia e 1,9 nel Comune di Palermo, con Bagheria al **13° percentile dei 381 comuni non
+capoluogo** (15° sui 390). E lo **controlla**:
 tenendo fermi tasso di occupazione femminile e divario occupazionale il residuo passa da −8,7 a
 **−7,0 punti**. Che il divario di pendolarismo non sia un riflesso di quello occupazionale non è
 più solo un argomento sul denominatore: è misurato.
@@ -228,7 +229,7 @@ lato femminile la leva non è il collegamento.
 Quello che resta di genere, e che i dati mostrano, è un'altra cosa:
 
 - **il mezzo**: fra chi esce da Bagheria il treno vale il **31,5%** degli spostamenti delle donne e il **16,4%** di quelli degli uomini (mezzo privato 63,7% contro 79,0%). Il canale femminile verso Palermo è collettivo, quello maschile è l'auto;
-- **l'orario**: prima delle 7:15 esce il **65,0%** degli uomini e il **54,4%** delle donne, e il **43,8%** delle donne impiega 31-60 minuti contro il 36,2% degli uomini, per 17 km. Sullo studio la differenza quasi scompare: **la divergenza oraria nasce col lavoro**.
+- **l'orario**: prima delle 7:15 esce il **65,0%** degli uomini e il **54,4%** delle donne, e il **43,8%** delle donne impiega 31-60 minuti contro il 36,1% degli uomini, per 17 km. Sullo studio la differenza quasi scompare: **la divergenza oraria nasce col lavoro**.
 
 Quindi F2 non finanzia trasporto: **vincola il servizio**, e costa istruttoria invece che budget.
 
@@ -242,11 +243,14 @@ l'offerta di lavoro, non il trasporto (sotto, nel decision gate).
 → `mob_mezzo_genere.csv`, `mob_orario_genere.csv`, `mob_sintesi.csv`, mob_fig03
 
 **F3 - Domanda: la leva che il Comune ha già in mano.**
-Clausola di assunzione nelle gare e nelle concessioni comunali riferita a **residenti donne
-22-25**, con verifica dell'esito a 6 e 12 mesi; l'audit dei datori della sezione 4D
-raccoglie le posizioni reali su cui la clausola può mordere. È l'unica delle tre componenti
-che non richiede una struttura nuova: è uno strumento amministrativo esistente riorientato
-su un target dichiarato.
+Criteri **premiali** di pari opportunità nelle gare e nelle concessioni comunali - il modello
+normativo esiste: l'art. 47 del DL 77/2021 lega gli appalti PNRR ad assunzioni di donne e di
+under 36 - orientati qui alle **donne 22-25**, con verifica dell'esito a 6 e 12 mesi; l'audit
+dei datori della sezione 4D raccoglie le posizioni reali su cui il criterio può mordere.
+Premialità, non riserva né requisito di residenza: un vincolo di residenza nelle gare sarebbe
+giuridicamente fragile, quindi il radicamento locale dell'esito si misura a valle, non si
+impone in gara. È l'unica delle tre componenti che non richiede una struttura nuova: è uno
+strumento amministrativo esistente riorientato su un target dichiarato.
 ⚠️ Il volume è piccolo per costruzione: F3 rende la domanda **verificabile**, non la crea.
 
 ### Target e capacità
@@ -291,7 +295,7 @@ e su quella misura «fuori comune» è aggregato. La matrice origine-destinazion
 Palermo ma è ferma ai censimenti (e il 2021 è senza sesso), quindi non regge una lettura
 annuale.
 
-**F3**: procedure con clausola attiva, assunzioni di residenti donne 22-25 verificate a 6 e
+**F3**: procedure con criterio premiale attivo, assunzioni di donne 22-25 residenti verificate a 6 e
 12 mesi, quota sul totale degli affidamenti del periodo.
 
 ⚠️ **In tasso e non in teste, e qui più che altrove.** La platea femminile 15-24 passa da
@@ -313,7 +317,7 @@ teste si annullerebbe da solo, e sul lato femminile più in fretta.
 
 - Non identifica le 387: il censimento è aggregato, nessuna lista nominativa esiste o va costruita.
 - Non attribuisce la condizione di casalinga a una scelta né a un vincolo familiare osservato. Lo stato civile esclude il matrimonio precoce come canale, ma non osserva convivenze né maternità.
-- Non afferma che le ragazze si spostino «verso Palermo»: la fonte dà «fuori comune» aggregato e si ferma al 2019.
+- Non afferma un flusso femminile «verso Palermo» corrente: la destinazione per genere esiste solo al 2011 (matrice ISTAT), la serie annuale 2018-2019 dà «fuori comune» aggregato e il 2021 non ha il sesso. Il KPI di F2 si legge sul dato di servizio (sezione 6).
 - Non promette che F3 sposti da sola il KPI di popolazione: rende la domanda verificabile, il resto resta appeso a F1 e F2.
 - Non propone interventi sul trasporto. L'ipotesi è stata testata sui 390 comuni e respinta, il treno di Bagheria è al 97° percentile siciliano, e «portare il treno a Bagheria» risolverebbe un problema che non esiste.
 - Non sostiene alcuna tesi di segregazione per indirizzo di studio. L'anagrafe MIUR dà le sedi, non gli iscritti per genere e indirizzo: il dato non esiste, e senza quello «gli indirizzi femminili non convertono» resta un'ipotesi, non un'evidenza.
@@ -443,7 +447,9 @@ misurata sul triennio.
   servizio lo creerà.
 - Non attribuisce il calo della popolazione 15-34 a emigrazione misurata: la ritenzione di
   coorte è un **saldo netto senza destinazione**.
-- Non afferma un pendolarismo "verso Palermo": la fonte dà «fuori comune» aggregato.
+- Non mette in serie il pendolarismo «verso Palermo»: la destinazione c'è (matrice
+  origine-destinazione ISTAT, sezione 4-bis), ma è ferma ai censimenti, il 2021 non ha il
+  sesso e la serie annuale per genere dà solo «fuori comune» aggregato.
 - Non attribuisce l'inattività a una singola causa non osservata.
 - Non tratta la finestra 22-25 come un dato annuale: è una lettura pooled su triennio,
   con oscillazioni fino a 8 pp sulla singola età.

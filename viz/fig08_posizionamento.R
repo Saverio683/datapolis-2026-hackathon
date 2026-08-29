@@ -170,37 +170,21 @@ figura <- guide_area() /
   ((strutturali | istruiti | regione) + plot_layout(widths = c(1.34, 1, 1.06))) +
   plot_layout(heights = c(0.07, 1), guides = "collect") +
   plot_annotation(
-    title = "Sei indicatori su otto non dipendono da quali pari si scelgono; l'occupazione femminile sì",
-    subtitle = paste0(
-      "Due gruppi di comuni simili a Bagheria, costruiti su variabili diverse e con un solo comune in comune (", condivisi$nome_comune[1],
+    title = "Sei indicatori su otto tengono qualunque gruppo di pari si scelga; l'occupazione femminile cambia lettura",
+    subtitle = sommario(paste0(
+      "Posizione di Bagheria su otto indicatori del censimento 2011, letta con tre riferimenti diversi: nei primi due pannelli quanti comuni del gruppo di pari stanno sotto Bagheria su quell'indicatore, ",
+      "nel terzo il percentile di Bagheria fra tutti i comuni siciliani. La domanda è quale conclusione sopravviva al cambio di definizione di «comune simile». ",
+      "I due gruppi sono costruiti su variabili diverse e hanno un solo comune in comune (", condivisi$nome_comune[1],
       "): quello che sopravvive a entrambi si può affermare.\n",
       "Reggono a tutte e due le letture i tre tratti che contano per la proposal: la disoccupazione femminile alta (", conta("L7", "gemelle"), "/", N_GEMELLE,
       " in entrambi), l'occupazione giovanile bassa (", conta("L14", "gemelle"), "/", N_GEMELLE, "),\n",
-      "e soprattutto i giovani che vivono da soli: nessun comune, di nessuno dei due gruppi, ne ha meno. Quella è l'autonomia mancata, ed è il tratto proprio di Bagheria.\n",
+      "e soprattutto i giovani che vivono da soli: Bagheria ne ha meno di ogni comune dei due gruppi. Quella è l'autonomia mancata, ed è il tratto proprio di Bagheria.\n",
       "Cambia invece proprio il claim centrale del thread: sull'occupazione femminile fra i pari strutturali Bagheria è nella norma (", conta("L11", "gemelle"), "/", N_GEMELLE,
       ", dentro i quartili),\n",
-      "fra i comuni ugualmente scolarizzati è penultima (", conta("L11", "istruiti"), "/", N_GEMELLE, ", sotto il primo quartile). Non è uno svantaggio di fascia: a pari istruzione, il lavoro femminile non arriva.\n",
+      "fra i comuni ugualmente scolarizzati è penultima (", conta("L11", "istruiti"), "/", N_GEMELLE, ", sotto il primo quartile). È uno svantaggio che resta a pari istruzione: il lavoro femminile non arriva.\n",
       "Concorde il modello del thread educazione: sull'occupazione giovanile Bagheria sta ", virgola(abs(modello$residuo_bagheria), 1),
-      " punti sotto il valore atteso dai suoi tratti territoriali (un segno, non una misura: le cautele stanno in didascalia)."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "posizione di Bagheria su otto indicatori del censimento 2011, letta con tre riferimenti diversi. ",
-        "Nei primi due pannelli il valore disegnato è quanti comuni del gruppo di pari stanno sotto Bagheria su quell'indicatore; nel terzo è il percentile di Bagheria fra tutti i comuni siciliani. ",
-        "La domanda della figura è quale conclusione sopravviva al cambio di definizione di «comune simile»: gli indicatori su cui i primi due pannelli concordano si possono affermare, gli altri dipendono da chi si sceglie come pari."),
-      base = paste0(
-        "N = ", N_GEMELLE, " comuni nel gruppo dei pari strutturali, ", N_ISTRUITI,
-        " nel gruppo dei pari per istruzione e ", N_REGIONE, " comuni nel confronto regionale. ",
-        "Pari strutturali = i comuni più simili per dimensione, densità, struttura per età, stranieri, abitazioni e distanza da Palermo, appaiati con distanza di Mahalanobis su variabili che non sono esiti; ",
-        "il gruppo regge il cambio di metodo di appaiamento (", conta("L11", "gemelle"), " concordanze su ", N_GEMELLE, " e 6 su ", N_GEMELLE, " con gli altri due metodi provati). ",
-        "Pari per istruzione = i comuni appaiati dal thread educazione con un disegno indipendente, con caliper di popolazione da 0,5 a 2 volte su tutta l'isola e distanza che include il profilo educativo (indicatori I5, I6, I7) ed esclude gli esiti. ",
-        "I due gruppi condividono un solo comune (", condivisi$nome_comune[1],
-        "), e non è un difetto di nessuno dei due: rispondono a domande diverse e non vanno mai fusi in una classifica sola. ",
-        "Il residuo del modello citato nel sottotitolo (occupazione 15-29 osservata meno prevista dai tratti territoriali) vale ",
-        virgola(modello$residuo_bagheria, 1), " punti, con intervallo di confidenza bootstrap al 95% da ",
-        virgola(modello$residuo_ci95_basso, 1), " a ", virgola(modello$residuo_ci95_alto, 1),
-        ", ma il modello ha un R quadro in validazione incrociata a 10 falde di ", virgola(modello$r2_cv_10fold, 2),
-        ", cioè spiega quasi nulla: va letto come conferma di segno insieme agli altri pannelli, mai come effetto attribuibile al comune, e in nessun caso come nesso causale. ",
-        "Nessuna esclusione di comuni. Le fasce d'età cambiano da indicatore a indicatore, come le pubblica la fonte: 15 anni e più per occupazione e disoccupazione femminile, 6 anni e più per il differenziale educativo, 15-29 per NEET e occupazione giovanile, totale delle famiglie per giovani soli e coppie con figli, totale dei residenti per la mobilità."),
+      " punti sotto il valore atteso dai suoi tratti territoriali (un segno, non una misura: le cautele stanno in didascalia)."), LARGHEZZA),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni riga è un indicatore e i tre pannelli vanno letti in orizzontale, sulla stessa riga. ",
         "La riga verticale grigia è il riferimento: la mediana del gruppo di pari nei primi due pannelli (", MEDIANA_PARI,
@@ -209,9 +193,15 @@ figura <- guide_area() /
         "vermiglio quando Bagheria sta peggio del riferimento, blu quando sta meglio, grigio quando è nella norma oppure quando l'indicatore non ha un verso «buono», e in quel caso il nome porta un asterisco. ",
         "Il pallino mostra sempre la posizione, anche quando è grigio. Il verso di ciascun indicatore è fissato nel notebook ed è una scelta interpretativa dichiarata, non un dato. ",
         "L'ordine delle righe è quello del primo pannello: che il secondo non scenda in modo monotono è il finding, e non serve nessun marcatore in più per vederlo. ",
-        "Che il differenziale educativo cambi lettura fra i due pannelli è atteso e non è un finding, perché il secondo gruppo è appaiato anche sull'istruzione e quindi su quell'asse è simile per costruzione."),
+        "Che il differenziale educativo cambi lettura fra i due pannelli è atteso e non è un finding, perché il secondo gruppo è appaiato anche sull'istruzione e quindi su quell'asse è simile per costruzione. ",
+        "Pari strutturali = i ", N_GEMELLE, " comuni più simili per dimensione, densità, struttura per età, stranieri, abitazioni e distanza da Palermo; pari per istruzione = i ", N_ISTRUITI,
+        " comuni appaiati dal thread educazione con un disegno indipendente, che include il profilo educativo ed esclude gli esiti: rispondono a domande diverse e non vanno mai fusi in una classifica sola. ",
+        "Il residuo del modello citato nel sottotitolo vale ", virgola(modello$residuo_bagheria, 1), " punti (intervallo bootstrap al 95% da ",
+        virgola(modello$residuo_ci95_basso, 1), " a ", virgola(modello$residuo_ci95_alto, 1), "), ma con un R quadro in validazione incrociata di ",
+        virgola(modello$r2_cv_10fold, 2), " va letto come conferma di segno insieme agli altri pannelli, mai come effetto attribuibile al comune. ",
+        "Le fasce d'età cambiano da indicatore a indicatore, come le pubblica la fonte: 15 anni e più per occupazione e disoccupazione femminile, 6 anni e più per il differenziale educativo, 15-29 per NEET e occupazione giovanile, totale delle famiglie per giovani soli e coppie con figli, totale dei residenti per la mobilità."),
       fonte = paste0(
-        "ISTAT, 8milaCensus, censimento 2011. Anno e fasce sono diversi dalle serie 15-24 del thread: è il gruppo di controllo storico, mai un termine di paragone con il censimento permanente 2018-2024. ",
+        "ISTAT, 8milaCensus, censimento 2011, ", N_REGIONE, " comuni siciliani. Anno e fasce sono diversi dalle serie 15-24 del thread: è il gruppo di controllo storico, mai un termine di paragone con il censimento permanente 2018-2024. ",
         "Elaborazione: notebooks/genere.ipynb (data/processed/genere_posizionamento.csv e genere_pari_lenti.csv) e pipeline/edu (data/processed/edu_model_robustness_2011.csv)."),
       larghezza = LARGHEZZA),
     theme = tema_figura()

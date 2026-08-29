@@ -271,25 +271,20 @@ a_capo <- function(testo, larghezza, corpo) {
 sommario <- function(testo, larghezza) a_capo(testo, larghezza, "sottotitolo")
 didascalia <- function(testo, larghezza) a_capo(testo, larghezza, "didascalia")
 
-#' Didascalia autosufficiente in quattro blocchi. Una figura proiettata su un palco viene
-#' letta da chi non ha il notebook accanto: deve dire da sola cosa misura, su quante
-#' persone, con che dispersione, e cosa significano le linee che non sono dati. I quattro
-#' blocchi sono sempre gli stessi e sempre in quest'ordine, così chi cerca una cosa sola
-#' (il commissario che vuole l'N, il giornalista che vuole la fonte) la trova senza
-#' leggere il resto.
-#'   mostra  - metrica, unità, trasformazioni, fascia d'età, territori, anni
-#'   base    - N per gruppo, tendenza centrale, dispersione o intervalli, test e soglie,
-#'             esclusioni e filtri applicati
-#'   lettura - decodifica di tutto ciò che non è un dato: tratteggi, bande, colori,
+#' Didascalia autosufficiente in due blocchi. Una figura proiettata su un palco viene
+#' letta da chi non ha il notebook accanto: deve dire da sola cosa significano le linee
+#' che non sono dati, e da dove viene il numero. Cosa la figura misura lo dice il
+#' sottotitolo, che sta in alto e a corpo pieno: e' la prima cosa che si legge, ed e'
+#' li' che serve.
+#'   lettura - decodifica di tutto cio' che non e' un dato: tratteggi, bande, colori,
 #'             marcatori, soglie
-#'   fonte   - fonte con anno, più il file di data/processed/ che rigenera la figura
+#'   fonte   - fonte con anno, piu' il file di data/processed/ che rigenera la figura
 #' Ogni blocco va a capo per conto suo sulla larghezza dichiarata, e fra i blocchi resta
-#' una riga vuota: senza, le quattro etichette si perdono in un muro di testo e la
-#' struttura che le rende utili sparisce.
-#' `larghezza` è la STESSA che si passa a salva(), come per didascalia().
-didascalia_4b <- function(mostra, base, lettura, fonte, larghezza) {
-  blocchi <- paste0(c("Cosa mostra: ", "Base statistica: ", "Come si legge: ", "Fonte: "),
-                    c(mostra, base, lettura, fonte))
+#' una riga vuota: senza, le due etichette si perdono in un muro di testo e la struttura
+#' che le rende utili sparisce.
+#' `larghezza` e' la STESSA che si passa a salva(), come per didascalia().
+didascalia_2b <- function(lettura, fonte, larghezza) {
+  blocchi <- paste0(c("Come si legge: ", "Fonte: "), c(lettura, fonte))
   paste(vapply(blocchi, didascalia, character(1), larghezza = larghezza,
                USE.NAMES = FALSE),
         collapse = "\n\n")

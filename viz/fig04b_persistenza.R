@@ -71,35 +71,20 @@ figura <- ggplot(comuni, aes(pct_2011, pct_2024)) +
   scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25)) +
   labs(
     title = paste0("La graduatoria del ", BASE, " predice quella del ", ANNO, ":\n",
-                   "il posizionamento non \u00e8 una fotografia scaduta"),
-    subtitle = paste0(
-      "Ogni punto \u00e8 uno dei 390 comuni siciliani, con il suo percentile di occupazione femminile\n",
-      "nelle due annate. Sulla diagonale stanno i comuni che in graduatoria non si sono mossi:\n",
+                   "il posizionamento è una fotografia ancora valida"),
+    subtitle = sommario(paste0(
+      "Posizione di ogni comune siciliano nella graduatoria regionale del tasso di occupazione femminile, espressa in percentile: ",
+      "nel ", BASE, " sull'asse orizzontale e nel ", ANNO, " sull'asse verticale. È un'affermazione di metodo e non di geografia, ",
+      "perché dice quanto duri una posizione; dove stia Bagheria nella distribuzione siciliana, e come si sia mossa tutta l'isola, sta in fig04.\n",
+      "Ogni punto è uno dei 390 comuni. Sulla diagonale stanno i comuni che in graduatoria hanno tenuto il posto: ",
       "la nuvola le sta stretta attorno (rho di Spearman ", virgola(prima$rho_vs_2024, 3), ").\n",
-      "Nel quadrato in basso a sinistra il quintile pi\u00f9 povero di lavoro femminile: ",
-      virgola(prima$quintile_basso_ancora_tale_nel_2024_pct, 0, "%"), " di chi ci stava\n",
-      "nel ", BASE, " ci sta ancora. Bagheria \u00e8 fra quelli, dal ",
-      virgola(bagheria$pct_2011, 0, "\u00b0"), " al ", virgola(bagheria$pct_2024, 0, "\u00b0"),
-      " percentile: in tredici anni\nil livello \u00e8 salito (fig04), la posizione no."),
+      "Nel quadrato in basso a sinistra il quintile più povero di lavoro femminile: ",
+      virgola(prima$quintile_basso_ancora_tale_nel_2024_pct, 0, "%"), " di chi ci stava nel ", BASE,
+      " ci sta ancora. Bagheria è fra quelli, dal ",
+      virgola(bagheria$pct_2011, 0, "°"), " al ", virgola(bagheria$pct_2024, 0, "°"),
+      " percentile: in tredici anni il livello è salito (fig04), la posizione ha tenuto."), LARGHEZZA),
     x = paste0("percentile ", BASE), y = paste0("percentile ", ANNO),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "posizione di ogni comune siciliano nella graduatoria regionale del tasso di occupazione femminile, espressa in percentile, ",
-        "nel ", BASE, " sull'asse orizzontale e nel ", ANNO, " sull'asse verticale. ",
-        "È un'affermazione di metodo e non di geografia: dice quanto duri una posizione, non dove stia Bagheria. ",
-        "Dove Bagheria stia nella distribuzione siciliana, e come si sia mossa tutta l'isola, sta in fig04."),
-      base = paste0(
-        "N = ", migliaia(nrow(comuni)), " comuni, presi ai confini del ", BASE,
-        " in entrambe le annate. Misiliscemi, istituito nel 2021 per distacco da Trapani, è escluso perché nel ", BASE,
-        " non esisteva: è l'unica esclusione. ",
-        "L'associazione fra le due graduatorie è misurata con il coefficiente di correlazione per ranghi di Spearman, rho = ",
-        virgola(prima$rho_vs_2024, 3), " fra ", BASE, " e ", ANNO, ", e rho = ", virgola(riga(2018)$rho_vs_2024, 3),
-        " dentro la sola rilevazione permanente (2018 contro ", ANNO,
-        "): la differenza fra i due valori è la parte di scarto attribuibile al cambio di fonte, ed è piccola. ",
-        "Il confronto è fra percentili e non fra punti percentuali di proposito, perché le due rilevazioni hanno disegni diversi ",
-        "(universale a questionario la prima, campionaria sui registri la seconda): il livello ne risente, il rango dentro l'anno molto meno, ",
-        "perché lo scarto sposta tutti i comuni nello stesso verso. ",
-        "Nessun intervallo di confidenza sui singoli punti: sono posizioni in graduatoria, non stime con errore."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni punto grigio è un comune. La retta tratteggiata è la diagonale, cioè «stessa posizione nelle due annate»: ",
         "sopra la diagonale stanno i comuni risaliti in graduatoria, sotto quelli scesi, e più un punto è lontano dalla retta più si è mosso. ",
@@ -107,7 +92,11 @@ figura <- ggplot(comuni, aes(pct_2011, pct_2024)) +
         virgola(prima$quintile_basso_ancora_tale_nel_2024_pct, 0, "%"), " di chi ci stava nel ", BASE, " ci sta ancora nel ", ANNO, ". ",
         "Bagheria è il punto vermiglio, i ", nrow(vicini), " comuni vicini sono in verde acqua, e stanno tutti dentro il quadrato: ",
         "il richiamo di Bagheria esce a destra perché un'etichetta dentro il mucchio coprirebbe altri comuni. ",
-        "Gli assi non sono forzati a un quadrato: il rapporto lo danno le dimensioni della figura, e la diagonale resta comunque disegnata come retta di riferimento."),
+        "Gli assi non sono forzati a un quadrato: il rapporto lo danno le dimensioni della figura, e la diagonale resta comunque disegnata come retta di riferimento. ",
+        "Gli assi portano percentili e non punti percentuali di proposito, perché le due rilevazioni hanno disegni diversi (universale a questionario la prima, campionaria sui registri la seconda): ",
+        "il livello ne risente, il rango dentro l'anno molto meno, e i due valori di rho lo mostrano (", virgola(prima$rho_vs_2024, 3),
+        " fra ", BASE, " e ", ANNO, ", ", virgola(riga(2018)$rho_vs_2024, 3), " dentro la sola rilevazione permanente). ",
+        "Misiliscemi, istituito nel 2021 per distacco da Trapani, è l'unica esclusione dai ", migliaia(nrow(comuni)), " comuni disegnati."),
       fonte = paste0(
         "ISTAT, 8milaCensus, indicatore L11 (censimento ", BASE, ") e Censimento permanente della popolazione (", ANNO,
         "), tasso di occupazione femminile sulla popolazione di 15 anni e più. ",

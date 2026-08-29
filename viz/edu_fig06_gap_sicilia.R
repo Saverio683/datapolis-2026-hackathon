@@ -60,31 +60,23 @@ figura <- ggplot(serie, aes(asse_2020(anno), gap_bagheria_sicilia_pp, colour = n
   scale_y_continuous(labels = function(x) virgola(x, 0)) +
   buco_2020(-2.2, serie$anno, serie$gap_bagheria_sicilia_pp) +
   labs(
-    title = "Il recupero non si è trasformato in convergenza con la Sicilia",
-    subtitle = paste(
-      "Giovani 15-24, differenza Bagheria − Sicilia in punti percentuali, 2018-2024.",
-      paste0("\nL'occupazione resta ", virgola(abs(gap_occ_24), 1), " punti sotto (era ",
-             virgola(abs(gap_occ_18), 1), " nel 2018); inattività e area fuori da lavoro e studio restano sopra."),
-      "\nIl confronto in differenze regge alla rottura di misura 2019-2021 (comune a tutti i territori);",
-      "\ni livelli delle singole componenti no, ed è la ragione per cui qui si mostrano solo i divari."),
+    title = "Bagheria recupera, e il divario con la Sicilia resta dov'era",
+    subtitle = sommario(paste0(
+      "Differenza fra Bagheria e la Sicilia, in punti percentuali, su tre misure della classe 15-24 anni, dal 2018 al 2024: ",
+      "tasso di occupazione, quota di inattivi non studenti e quota fuori da lavoro e studio. ",
+      "La figura mostra i divari e non i livelli, ed è una scelta di misura: il confronto in differenze regge alla rottura di misura fra il 2019 e il 2021, comune a tutti i territori, mentre i livelli delle singole componenti no.\n",
+      "L'occupazione resta ", virgola(abs(gap_occ_24), 1), " punti sotto (era ",
+      virgola(abs(gap_occ_18), 1), " nel 2018); inattività e area fuori da lavoro e studio restano sopra."), LARGHEZZA),
     x = NULL, y = "Bagheria − Sicilia (punti percentuali)",
-    caption = didascalia_4b(
-      mostra = paste0(
-        "differenza fra Bagheria e la Sicilia, in punti percentuali, su tre misure della classe 15-24 anni, dal 2018 al 2024: ",
-        "tasso di occupazione, quota di inattivi non studenti e quota fuori da lavoro e studio. ",
-        "La figura mostra i divari e non i livelli, ed è una scelta di misura: il confronto in differenze regge alla rottura di misura fra il 2019 e il 2021, che è comune a tutti i territori, mentre i livelli delle singole componenti no."),
-      base = paste0(
-        "Denominatori della classe 15-24 nell'ultima annata: ", migliaia(round(N_BAG)),
-        " residenti a Bagheria e ", migliaia(round(N_SIC)), " in Sicilia. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
-        "Il 2020 non è pubblicato nella tavola lavoro e non è interpolato. ",
-        "Fra il 2019 e il 2021 il censimento permanente cambia la definizione di «in cerca di occupazione»: è la ragione per cui la figura si limita alle differenze. Nessuna esclusione di record."),
+    caption = didascalia_2b(
       lettura = paste0(
         "la riga orizzontale allo zero è la parità con la Sicilia, e la distanza di ogni punto da quella riga è il divario di quell'annata. ",
         "Il verso favorevole cambia da misura a misura, e va letto insieme al nome: per l'occupazione un divario negativo è sfavorevole a Bagheria, mentre per gli inattivi non studenti e per l'area fuori da lavoro e studio è sfavorevole un divario positivo. ",
-        "La striscia grigia verticale occupa l'annata mancante: dove c'è la striscia non c'è misura."),
+        "La striscia grigia verticale occupa l'annata mancante: dove c'è la striscia non c'è misura, e il 2020 non è interpolato. ",
+        "Fra il 2019 e il 2021 il censimento permanente cambia la definizione di «in cerca di occupazione»: è la ragione per cui la figura si limita alle differenze."),
       fonte = paste0(
-        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, 2018-2024. ",
+        "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, 2018-2024 (",
+        migliaia(round(N_BAG)), " residenti a Bagheria e ", migliaia(round(N_SIC)), " in Sicilia nell'ultima annata). ",
         "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_gaps_vs_sicily.csv (con edu_youth_states_2018_2024.csv per i denominatori)."),
       larghezza = LARGHEZZA)
   ) +

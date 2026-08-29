@@ -95,34 +95,28 @@ figura <- ggplot(decenni, aes(periodo, ritenzione_pct, colour = nome_territorio,
   guides(colour = guide_legend(override.aes = list(linewidth = 1.1))) +
   labs(
     title = "La falla si è aperta nel decennio 2011-2021:\nprima Bagheria tratteneva la coorte meglio di Palermo e Sicilia",
-    subtitle = paste0(
-      "La stessa coorte (chi aveva 15-19 anni all'inizio) seguita per dieci anni, due volte. Il tratteggio a 100 è la coorte che si conserva.\n",
+    subtitle = sommario(paste0(
+      "Quota della coorte di partenza ancora residente dieci anni dopo, in percentuale della coorte iniziale, per genere e per quattro territori: ",
+      "sempre la stessa classe d'età (15-19 anni all'inizio del decennio) seguita due volte, nel 2001-2011 e nel 2011-2021. ",
+      "È una misura netta di saldo, che comprende sia chi parte sia chi arriva, e dice da quando si perde; a che età si perde lo dice fig07. Il tratteggio a 100 è la coorte che si conserva.\n",
       "Tre anni di dati non basterebbero a chiamarla fuga (fig07), dieci sì. Nel 2001-2011 le ragazze di Bagheria arrivavano a ",
-      virgola(valore("femmine", "prima"), 1, "%"), ", sopra\n",
-      "Sicilia e Palermo; nel decennio successivo scendono a ", virgola(valore("femmine", "dopo"), 1, "%"), " (",
-      virgola(scarto_di("femmine")), " punti). Sui ragazzi il calo è di ", virgola(scarto_di("maschi")),
+      virgola(valore("femmine", "prima"), 1, "%"), ", sopra Sicilia e Palermo; nel decennio successivo scendono a ",
+      virgola(valore("femmine", "dopo"), 1, "%"), " (", virgola(scarto_di("femmine")),
+      " punti). Sui ragazzi il calo è di ", virgola(scarto_di("maschi")),
       " punti e li porta sotto Palermo.\n",
-      "È lo stesso decennio in cui si alza il muro dell'occupazione femminile (fig10): la frattura è databile, e non si è richiusa da sola."),
+      "È lo stesso decennio in cui si alza il muro dell'occupazione femminile (fig10): la frattura è databile, ed è ancora aperta."), LARGHEZZA),
     x = NULL, y = "coorte dopo dieci anni",
-    caption = didascalia_4b(
-      mostra = paste0(
-        "quota della coorte di partenza ancora residente dieci anni dopo, in percentuale della coorte iniziale, per genere e per quattro territori. ",
-        "La coorte è sempre la stessa classe d'età (15-19 anni all'inizio del decennio) seguita due volte, nel 2001-2011 e nel 2011-2021. ",
-        "È una misura netta di saldo, che comprende sia chi parte sia chi arriva. Questa figura dice da quando si perde; a che età si perde lo dice fig07."),
-      base = paste0(
-        "Coorti di partenza a Bagheria (", N_COORTI,
-        "). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Il decennio 2011-2021 ha una gamba per rilevazione, perché il 2011 è censimento decennale e il 2021 censimento permanente: le due non sono la stessa misura. ",
-        "La distorsione nota va però nel verso prudente, perché il censimento 2011 contò meno dell'anagrafe e sta quindi al denominatore del decennio che crolla e al numeratore di quello che tiene: ",
-        "il divario fra i due decenni è una stima per difetto, non per eccesso. ",
-        "Controllo dentro la sola rilevazione permanente, sulla stessa coorte a cinque anni (", CTRL_BAG$periodi,
-        "): sulla transizione dalla classe 20-24 alla 25-29 le femmine di Bagheria stanno a ", CTRL_BAG$valori,
-        " contro ", CTRL_ITA$valori, " dell'Italia, quindi il verso regge anche senza mescolare le due rilevazioni."),
+    caption = didascalia_2b(
       lettura = paste0(
         "la riga tratteggiata orizzontale a 100% è la coorte che si conserva: sopra è cresciuta, sotto si è ridotta. ",
         "Ogni pannello è un genere e ogni linea un territorio, fra i due decenni: la pendenza della linea è il finding, non il livello. ",
         "Bagheria è in vermiglio a tratto pieno perché è il soggetto, i tre riferimenti sono a tratto sottile. ",
         "I valori in cifre sono stampati solo su Bagheria: con quattro etichette per estremo il pannello diventerebbe illeggibile. ",
+        "Il decennio 2011-2021 ha una gamba per rilevazione, perché il 2011 è censimento decennale e il 2021 censimento permanente: la distorsione nota va nel verso prudente, ",
+        "perché il censimento 2011 contò meno dell'anagrafe e sta quindi al denominatore del decennio che crolla e al numeratore di quello che tiene, e il divario fra i due decenni è una stima per difetto. ",
+        "Il controllo dentro la sola rilevazione permanente, sulla stessa coorte a cinque anni (", CTRL_BAG$periodi,
+        "), dà per le femmine di Bagheria ", CTRL_BAG$valori, " contro ", CTRL_ITA$valori,
+        " dell'Italia: il verso regge anche senza mescolare le due rilevazioni. ",
         "Il vicinato non compare perché le classi quinquennali sono state scaricate solo per i quattro territori di confronto. ",
         "Palermo è il controfattuale dichiarato del disegno di valutazione (notebook, sezione «Trend paralleli»)."),
       fonte = paste0(

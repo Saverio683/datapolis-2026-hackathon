@@ -2,10 +2,10 @@
 
 ## Relazione tecnica e proposta di intervento - DataPolis 2026, «Analisi e Visione per i Giovani di Bagheria»
 
-Bagheria, 2026-08-28. Questa relazione accompagna i tre deliverable richiesti dal
+Bagheria, 2026-08-29. Questa relazione accompagna i tre deliverable richiesti dal
 concorso: il **technical notebook** (`notebooks/analisi.ipynb`, `notebooks/genere.ipynb`,
-`notebooks/educazione.ipynb`), le **visualizzazioni** (`figures/`) e la **policy
-proposal** (`docs/POLICY_PONTE_19.md`). Le decisioni editoriali che questa relazione non
+`notebooks/educazione.ipynb`, `notebooks/mobilita.ipynb`), le **visualizzazioni**
+(`figures/`) e la **policy proposal** (`docs/POLICY_PONTE_19.md`). Le decisioni editoriali che questa relazione non
 rimette in discussione - tesi, figure candidate, limiti dichiarati - stanno in
 `docs/RELAZIONE.md`.
 
@@ -47,7 +47,7 @@ distingue da un auspicio:
 | Focus: **pendolarismo verso Palermo** | ✅ misurato con la matrice origine-destinazione ISTAT: **91,1%** di chi esce per studio e **65,1%** di chi esce per lavoro va a Palermo, e lo scarto di genere si ribalta fra i due motivi | sezione 5 |
 | NEET 15-34 | 🔴→🟡 non calcolabile a livello comunale: due misure etichettate, mai fuse | sezione 2 |
 | Proposta di intervento | ✅ Ponte 19, con KPI misurabili e finestre di lettura dichiarate | sezione 7 |
-| Technical notebook riproducibile | ✅ sensore `nbconvert` verde sui quattro notebook; 701 controlli indipendenti PASS | sezione 1 |
+| Technical notebook riproducibile | ✅ sensore `nbconvert` verde sui quattro notebook; 743 controlli indipendenti PASS | sezione 1 |
 | 2-3 data viz avanzate | ✅ tre candidate + sei di supporto | sezione 8 |
 
 I 🟡 non sono lavori a metà: sono i punti in cui i dati pubblici finiscono, dichiarati
@@ -79,7 +79,9 @@ uv run jupyter nbconvert --to notebook --execute notebooks/educazione.ipynb
 uv run jupyter nbconvert --to notebook --execute notebooks/mobilita.ipynb
 Rscript viz/build_all.R                   # tutte le figure in figures/
 uv run python -m pipeline.schede          # le quattro schede HTML di docs/schede/
-uv run python -m pipeline.verifica        # 701 controlli indipendenti
+Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didascalie.csv
+uv run python -m pipeline.relazione_docx  # questa relazione in .docx, figure incorporate
+uv run python -m pipeline.verifica        # 743 controlli indipendenti
 ```
 
 L'ordine non è arbitrario: `mobilita.ipynb` legge due tavole prodotte da
@@ -91,16 +93,16 @@ Tre proprietà non decorative:
 - **Provenance completa.** Ogni file in `data/raw/` è append-only e ha una riga in
   `docs/sources.md` con URL esatto, data e parametri. Le correzioni vivono in
   `pipeline/`, mai nei raw.
-- **Verifica indipendente.** `pipeline/verifica.py` ricalcola **701 numeri chiave
+- **Verifica indipendente.** `pipeline/verifica.py` ricalcola **743 numeri chiave
   direttamente dai raw con implementazioni alternative** (intervalli di Wilson/Newcombe
   riscritti, modello lineare di probabilità in forma analitica, matching rifatto, coorti
   dalle classi quinquennali, e un riparsing proprio della matrice del pendolarismo letta
-  in streaming dagli zip): 701/701 PASS al 2026-08-29. Se un raw cambia, il pin
+  in streaming dagli zip): 743/743 PASS al 2026-08-29. Se un raw cambia, il pin
   fallisce finché notebook e attesi non vengono riallineati.
 - **Separazione dei ruoli.** Python trasforma, R disegna: l'interfaccia sono i CSV di
   `data/processed/`, e nessuna logica di trasformazione vive negli script delle figure.
 
-### Le definizioni, fissate una volta
+### 1.1 Le definizioni, fissate una volta
 
 - **Territori**: Bagheria (`082006`), Comune di Palermo (`082053`), Sicilia (`ITG1`),
   Italia (`IT`); più i **390 comuni siciliani** per i percentili e due gruppi di comuni
@@ -119,6 +121,141 @@ Tre proprietà non decorative:
   **15-29 al 2011** (8milaCensus, `L4`) e il proxy **«fuori da lavoro e istruzione»
   15-24, 2018-2024** (censimento permanente). Fasce e definizioni diverse: affiancate,
   mai in serie.
+
+### 1.2 I dati disponibili: che cosa è stato scaricato, da dove, quando
+
+Nessuna delle cifre di questa relazione nasce da una raccolta propria: tutte vengono da
+statistica ufficiale pubblica, scaricata per via programmatica e conservata immutabile in
+`data/raw/`, con un manifesto (`data/raw/manifest.csv`) che registra per ogni file
+l'istante del download e l'URL esatto. Le fonti effettivamente entrate nell'analisi sono
+sei, più due ricognizioni chiuse con esito negativo e dichiarate come tali.
+
+| Fonte | Che cosa dà | Copertura | Ruolo |
+|---|---|---|---|
+| **ISTAT — 8milaCensus** (`ottomilacensus.istat.it`) | 99 indicatori comunali ai confini 2011, tutti i comuni siciliani più province, regioni e Italia | 1991, 2001, 2011 | Serie storica lunga, graduatorie, matching fra comuni pari |
+| **ISTAT — Censimento permanente** (IstatData, API SDMX) | Condizione professionale, titolo di studio, popolazione per età singola, popolazione per classi quinquennali, pendolarismo dentro/fuori comune | 2018-2024 | Fotografia recente, serie annuale, tutti gli incroci di genere |
+| **ISTAT — DCIS_POPRES1** (SDMX) | Popolazione residente per stato civile ed età singola | al 1.1.2025 | Verifica del canale «matrimonio precoce» (sezione 3.2) |
+| **ISTAT — Matrici del pendolarismo** | Origine-destinazione comune per comune, con sesso, motivo, mezzo, fascia oraria e durata | 1991, 2001, 2011; solo lavoro nel 2021 | La destinazione degli spostamenti (sezione 5) |
+| **ISTAT — Confini amministrativi** (cartografia) | Poligoni dei comuni, vintage 01/01/2026 | corrente | Base geografica delle mappe e delle distanze |
+| **Ministero dell'Istruzione** | Anagrafe delle sedi degli istituti tecnici (276 sedi) | a.s. 2025/26 | Canali operativi della proposta, non esiti |
+| Comune di Palermo / AMAT | GTFS della rete urbana | orario 2026 | Solo controllo dell'ultimo miglio (sezione 5.4) |
+| Open Data Regione Siciliana | Servizi al lavoro | — | **Non disponibile** al momento del run (HTTP 502): esclusa da ogni conclusione |
+
+Due precisazioni che contano più di quanto sembri.
+
+La prima: **l'assenza è documentata quanto la presenza**. La ricognizione su
+`dati.regione.sicilia.it` e su `opendata.comune.palermo.it` è tracciata in
+`docs/sources.md` con le query eseguite e i conteggi ottenuti, così che chi rifà il
+lavoro sappia dove non conviene tornare. Il portale del Comune di Palermo, per esempio,
+non è un CKAN: espone il catalogo in DCAT Turtle, e cercarvi le API standard restituisce
+404. Sono dettagli operativi, ma sono la differenza fra «non c'è» e «non l'abbiamo
+trovato».
+
+La seconda: **le fonti non sono intercambiabili**. 8milaCensus si ferma al 2011 e il
+censimento permanente comincia nel 2018; le definizioni non coincidono; fra 2019 e 2021
+c'è per di più una rottura di misura sulla componente «in cerca di occupazione». Ogni
+volta che le due fonti compaiono insieme, compaiono affiancate e etichettate con l'anno,
+mai concatenate in una serie unica.
+
+### 1.3 Dal dato grezzo alla tavola d'analisi: le trasformazioni
+
+`pipeline/build.py` trasforma i raw in un piccolo insieme di **tabelle lunghe più
+tabelle di lookup**, e null'altro: nessuna scelta di analisi è cotta dentro
+l'interfaccia, ogni thread filtra ciò che gli serve. È la ragione per cui tre analisi
+indipendenti restano confrontabili.
+
+| Tavola | Righe | Che cosa contiene |
+|---|---:|---|
+| `ottomilacensus_long.csv` | 154.737 | territorio × anno × indicatore, i tre censimenti storici |
+| `censpop_popolazione_long.csv` | 14.462 | territorio × anno × genere × età singola × stato civile × cittadinanza |
+| `censpop_istr_lav_long.csv` | 6.552 | le due tavole del censimento permanente, lavoro e istruzione, in un file solo |
+| `comuni_sicilia_poligoni.csv` | 15.702 | i vertici dei confini comunali, già proiettati |
+| `territori.csv` | 521 | anagrafica dei territori, di cui **390 comuni siciliani** |
+| `indicatori.csv` | 99 | codebook degli indicatori 8milaCensus |
+| `codici.csv` | 164 | decodifica delle dimensioni SDMX |
+
+Le operazioni non banali, tutte in `pipeline/`, mai a mano sui raw:
+
+- **Normalizzazione dei codici territoriali.** Le due fonti scrivono lo stesso comune in
+  modo diverso (8milaCensus `82006`, SDMX `082006`): tutto viene portato a sei cifre con
+  lo zero iniziale, così le tabelle si uniscono senza mappature. Sicilia e Italia restano
+  i codici SDMX `ITG1` e `IT`.
+- **Disambiguazione di «Bagheria».** Nella codelist territoriale esistono anche un
+  Sistema Locale del Lavoro e un Distretto che portano lo stesso nome: sono territori
+  diversi dal comune, ed è un errore silenzioso e plausibile. La pipeline usa solo
+  `082006`.
+- **Esclusione dei totali.** Ogni dimensione SDMX ha un codice di totale (`T` per il
+  genere, `TOTAL` per la cittadinanza, `99` per la condizione, `ALL` per il titolo) che
+  convive come riga sorella con i dettagli. Sommare senza filtrarli raddoppia i numeri:
+  la partizione è verificata cella per cella.
+- **Ricostruzione della fascia 15-34.** La classe non esiste nelle tavole: viene sommata
+  dalle età singole, e solo dove le età singole esistono, cioè dal 2021.
+- **Geometria senza `sf`.** La libreria R per i dati spaziali non è installabile su
+  questa macchina senza privilegi di sistema. La geometria la fa quindi geopandas in
+  Python, che esporta i poligoni già proiettati (EPSG:32633) come tabella di vertici; R
+  li disegna come poligoni con isole e buchi. È una scelta obbligata, ed è documentata
+  perché cambia il modo in cui si scrivono le figure.
+- **Lettura della matrice del pendolarismo.** Il tracciato è a campi fissi e senza
+  intestazione: un campo sfalsato produrrebbe numeri plausibili e sbagliati. I file
+  vengono letti in streaming dagli zip, senza mai espanderli, e il tracciato è
+  controllato per prova (sezione 5).
+- **Descrizioni fuori dalle tabelle.** Le etichette lunghe stanno nei lookup e non
+  ripetute riga per riga: da sole portavano `ottomilacensus_long` da 5 a 40 MB.
+
+### 1.4 Dalle tavole alle inferenze: i metodi
+
+Dalle tavole si ricavano quantità che nelle tavole non ci sono. Ogni passaggio usa un
+metodo dichiarato, e ogni metodo è riscritto una seconda volta, in forma diversa, dentro
+`pipeline/verifica.py`.
+
+| Domanda | Metodo | Dove |
+|---|---|---|
+| Quanto è preciso un tasso? | Intervallo di **Wilson** al 95% | tassi di occupazione, quote |
+| Quanto è preciso il divario fra due tassi? | Intervallo di **Newcombe** al 95% sulla differenza | gap M−F |
+| Il divario di Bagheria differisce da quello dei territori di confronto? | **Modello lineare di probabilità** pooled 2022-2024, con test sui coefficienti | sezione 3.1 |
+| Il divario si sta allargando? | Regressione del gap sull'anno, 2018-2024 | sezione 3.1 |
+| Rispetto a chi si misura Bagheria? | **Percentili sui 390 comuni siciliani** e due gruppi di comuni pari costruiti per **matching** su covariate strutturali, mai su esiti | sezione 2.4 |
+| La graduatoria del 2011 dice ancora qualcosa nel 2024? | **rho di Spearman** fra le due graduatorie, più la persistenza per quintili | sezione 2.3 |
+| Quanti giovani restano, e a che età se ne vanno? | **Ritenzione di coorte**: rapporto fra la stessa coorte a distanza di anni, a passo annuale e decennale | sezione 3.3 |
+| L'anomalia è del comune o della sua taglia? | Regressione su **distanza dal capoluogo e dimensione**, lettura del **residuo** | sezione 5.3 |
+| Quanto vale l'incertezza dei modelli comunali? | **Bootstrap** sui residui, più validazione incrociata | sezione 2.4 |
+| Le stime campionarie sono confrontabili con i conteggi? | **Calibrazione sui margini esatti** dei conteggi esaustivi, con errore relativo misurato | sezione 5.4 |
+| In quanto tempo si potrà dire se l'intervento ha funzionato? | **Analisi di potenza** e minimo effetto rilevabile (MDE) | sezione 7.4 |
+| Il controfattuale scelto è ammissibile? | **Test di pre-trend** sulle pendenze 2018-2024 | sezione 7.4 |
+
+Due proprietà rendono questi conti verificabili invece che dichiarati. La prima è che
+**il pin di regressione è indipendente**: `pipeline/verifica.py` non rilegge i risultati
+dei notebook, li **ricalcola dai raw con implementazioni alternative** (gli intervalli
+riscritti da zero, il modello in forma analitica, il matching rifatto, le coorti prese
+dalle classi quinquennali invece che dalle età singole, un secondo parser della matrice
+del pendolarismo). Se le due strade divergono, il controllo fallisce. La seconda è che
+**il documento è dentro il perimetro del pin**: l'ultimo blocco di controlli rilegge le
+cifre da `data/processed/`, le formatta all'italiana e pretende che la frase compaia alla
+lettera in questa relazione. Ritoccare un numero a mano nel testo fa fallire la pipeline
+esattamente come lo farebbe un errore di calcolo.
+
+### 1.5 Che cosa le inferenze autorizzano a dire
+
+I risultati che seguono non hanno tutti lo stesso statuto, e la distinzione è la
+premessa per leggerli senza sopravvalutarli.
+
+- **Descrittivo.** Conteggi e quote censuarie su Bagheria. Non sono stime campionarie e
+  non hanno errore di campionamento; dove un intervallo compare, misura la variabilità
+  della proporzione, non un'incertezza di rilevazione.
+- **Comparativo.** Il confronto con Palermo, Sicilia, Italia, i 390 comuni siciliani e i
+  due gruppi di pari. Qui l'affermazione robusta è quella che **sopravvive al cambio di
+  lente**: dove i due gruppi di pari divergono, la relazione lo dice invece di scegliere
+  il più favorevole.
+- **Ecologico.** Le correlazioni fra comuni (mobilità e occupazione femminile, mezzo
+  collettivo e divario di genere). Orientano un'ipotesi e non la dimostrano: valgono sul
+  comune, mai sulla persona. Sono citate con questo limite ogni volta, e una di esse è
+  riportata proprio perché ha dato **esito negativo** (sezione 5.4).
+- **Nessuna stima causale.** Nessun numero di questa relazione misura l'effetto di un
+  intervento, perché nessun disegno lo permetterebbe. È il motivo per cui la proposta
+  include un proprio disegno di valutazione (sezione 7.4): serve a produrre l'evidenza
+  che oggi manca, non a confermare quella che c'è.
+
+Il perimetro di ciò che la relazione **non** afferma è raccolto in chiaro nella sezione 9.
 
 ---
 
@@ -368,7 +505,8 @@ conteggio del 2011 **non è una stima**: i record di tipo `S` sono enumerazione 
 → `mob_ribaltamento.csv`, `mob_ribaltamento_territori.csv`, fig `mob_fig02`
 
 Il verso cambia ovunque; la particolarità di Bagheria è **l'ampiezza**: due volte e mezza il
-salto siciliano, e sul lavoro il **13° percentile** dei comuni siciliani. Le ragazze di
+salto siciliano, e sul lavoro il **13° percentile** dei 381 comuni non capoluogo (15° sui
+390). Le ragazze di
 Bagheria si muovono. Smettono quando il motivo diventa il lavoro.
 
 **La replica tiene, su una fonte che non condivide niente.** La stessa misura sul censimento
@@ -423,7 +561,7 @@ calibrazione non cambia la conclusione, la rafforza — lo scarto sul treno pass
 
 Le donne raggiungono Palermo **sul mezzo collettivo**, gli uomini in auto. Partono anche più
 tardi (prima delle 7:15 il 54,4% contro il 65,0%) e viaggiano più a lungo (31-60 minuti per
-il 43,8% contro il 36,2%), per 17 chilometri.
+il 43,8% contro il 36,1%), per 17 chilometri.
 
 **Ma il treno di Bagheria non è sottoutilizzato: è già l'asset di mobilità più distintivo che
 il comune abbia**, al 98° percentile siciliano per quota di chi esce che lo usa (97° a parità
@@ -584,6 +722,65 @@ condizione lavorativa (sez. 4): la proposta non consuma soltanto dati, **ne prod
 dove le statistiche pubbliche finiscono**, con una dashboard trimestrale aggregata come
 impegno di accountability.
 
+### 7.6 Rotta F: il modulo di genere
+
+La quota di genere (7.2) impedisce al servizio di riprodurre l'asimmetria che deve
+correggere, ma **non dice come la si corregge**. Lo dice `docs/POLICY_PONTE_19.md` §4-bis,
+che è la parte di Ponte 19 che risponde al focus principale del bando e vale quasi due
+quinti della proposta: qui se ne riassume l'ossatura, perché una relazione che mette il
+genere al centro non può rimandare altrove l'unico pezzo di intervento costruito su di
+esso.
+
+Il meccanismo in una riga: **le ragazze di Bagheria si spostano per studiare e si fermano
+per lavorare**. Il modulo apre una componente su ciascuno dei tre anelli che le sezioni 3 e
+5 mostrano rotti, il contatto, la barriera e la domanda.
+
+**F1 - Contatto: l'etichetta come canale, non come elenco.** Le 387 casalinghe **non sono
+identificabili**: il censimento è aggregato, nessuna lista nominativa esiste né va
+costruita. L'etichetta dice dove cercare, non chi. Il contatto passa quindi dai luoghi che
+quella popolazione già la vedono, le sedi secondarie cittadine, i servizi sociali, i
+consultori, le associazioni, ed è la traccia femminile delle due tracce di contatto: per le
+ragazze il carico di cura ha già un nome censuario su cui aprire il colloquio, per i ragazzi
+quel nome non c'è (sez. 3.2).
+
+**F2 - Barriera: non il collegamento, ma l'orario e il mezzo dati per scontati.** È la
+componente controintuitiva, ed è il punto in cui la proposta rinuncia alla soluzione che
+tutti si aspettano: l'intervento infrastrutturale è escluso dai dati (7.0), quindi F2 non
+si appoggia all'offerta di trasporto e non finanzia trasporto. Quello che resta di genere è
+il canale: verso Palermo le donne vanno sul mezzo collettivo e gli uomini in auto (treno
+31,5% contro 16,4%, sez. 5.4). Un servizio che dia per scontata l'auto seleziona per genere,
+e lo fa in silenzio. La regola operativa che ne discende è una sola: nessuna opportunità
+entra nel piano di transizione senza **verifica di raggiungibilità col mezzo collettivo
+negli orari reali della posizione**. Costa istruttoria, non budget.
+
+**F3 - Domanda: la leva che il Comune ha già in mano.** Criteri **premiali** di pari
+opportunità nelle gare e nelle concessioni comunali, sul modello dell'art. 47 del DL 77/2021
+(assunzioni di donne e under 36 negli appalti PNRR), orientati alle **donne 22-25** e con
+verifica dell'esito a 6 e 12 mesi. Premialità, non riserva né requisito di residenza: il
+radicamento locale dell'esito si misura a valle, non si impone in gara. È l'unica delle tre
+componenti che non richiede una struttura nuova: è uno strumento amministrativo esistente
+riorientato su un target dichiarato. Cautela: il volume è piccolo per costruzione, e F3 rende
+la domanda **verificabile**, non la crea (sez. 2.4, 3.1).
+
+**Target.** La platea sono le **573** ragazze 15-24 fuori da lavoro e studio (sez. 3.2); la
+presa in carico pilota è la metà dei 200 previsti dalla quota (7), concentrata sulla
+finestra prioritaria **22-25**, dove il vantaggio educativo non si converte e la ritenzione
+si rompe senza rientri (sez. 3.3).
+
+**KPI.** Il primario del modulo è la **quota di casalinghe 15-24** (13,4% verso l'11,3% di
+Palermo), non il tasso di occupazione. La ragione è la finestra di lettura e non la
+preferenza: fra i due è l'unico che si legge già su un biennio, quindi l'unico che
+restituisce un verdetto dentro la durata di un mandato. L'occupazione femminile resta
+l'esito che dà senso al primo e si legge sul triennio pooled (7.4).
+
+**Cosa il modulo non promette**, con lo stesso metro della sezione 9: non identifica le
+387; non attribuisce la condizione di casalinga a una scelta né a un vincolo familiare
+osservato, perché lo stato civile esclude il matrimonio precoce come canale ma non osserva
+convivenze né maternità; non propone interventi sul trasporto; e non sostiene alcuna tesi
+di segregazione per indirizzo di studio, perché l'anagrafe MIUR dà le sedi e non gli
+iscritti per genere e indirizzo. Quel dato non esiste, e senza di esso «gli indirizzi
+femminili non convertono» resterebbe un'ipotesi travestita da evidenza.
+
 ---
 
 ## 8. Le figure
@@ -651,7 +848,7 @@ cautele in caption, palette colorblind-safe, PNG 300dpi + SVG in `figures/`.
 
 ---
 
-## Appendice - mappa dei file
+## Appendice A - Mappa dei file
 
 | Deliverable | File |
 |---|---|
@@ -666,7 +863,7 @@ cautele in caption, palette colorblind-safe, PNG 300dpi + SVG in `figures/`.
 | Interfaccia dati Python→R | `data/processed/` |
 
 Stato delle verifiche al 2026-08-29: sensore `nbconvert` **verde sui quattro notebook**;
-`pipeline.verifica` **701/701 PASS**; la matrice del pendolarismo ricostruisce **sette su
+`pipeline.verifica` **743/743 PASS**; la matrice del pendolarismo ricostruisce **sette su
 sette** gli indicatori `M` pubblicati da 8milaCensus e i due totali nazionali dichiarati da
 ISTAT; nessun numero di questa relazione è scritto a mano - ogni cifra ha accanto il file o
 la cella che la rigenera.

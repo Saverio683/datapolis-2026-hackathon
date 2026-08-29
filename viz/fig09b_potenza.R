@@ -68,33 +68,29 @@ figura <- ggplot(soglie, aes(mde_pp, finestra)) +
   coord_cartesian(clip = "off") +
   guides(colour = guide_legend(override.aes = list(linewidth = 0, size = 4.2))) +
   labs(
-    title = "Un anno di rilevazione non distingue da zero l'effetto\nche il KPI promette; un triennio sì",
-    subtitle = paste0(
-      "Il pallino è la differenza minima rilevabile (MDE) all'80% di potenza: sotto quella soglia un effetto c'è ma la lettura non lo vede.\n",
+    title = "Serve un triennio per distinguere da zero\nl'effetto che il KPI promette",
+    subtitle = sommario(paste0(
+      "Differenza minima rilevabile (MDE, in punti percentuali) per due indicatori della proposta, in funzione di quanti anni si mettono insieme in ciascuno dei due lati del confronto. ",
+      "È una figura di disegno della misura, non un risultato sui giovani: dice quanto deve essere grande un effetto perché una rilevazione riesca a distinguerlo da zero. ",
+      "Il pallino è la soglia all'80% di potenza: sotto quella soglia un effetto c'è ma la lettura non lo vede.\n",
       "Il tratteggio è il delta che il KPI promette (+", virgola(DELTA, 2),
-      " punti, l'allineamento a Palermo di fig09). Su un anno solo la soglia sta\n",
-      "a ", virgola(soglia_di(1), 2), " punti, oltre il doppio del promesso: la potenza è ",
-      virgola(potenza_di(1), 0), "%, poco più di un lancio di moneta. Su tre anni pooled\n",
-      "la soglia scende a ", virgola(soglia_di(3), 2), " punti e la potenza sale al ",
-      virgola(potenza_di(3), 0), "%.\n",
-      "Per questo i KPI primari si leggono su trienni pooled (2022-2024 contro 2025-2027), e l'anno per anno spetta a indicatori\n",
-      "di processo (utenza per età e genere) che oggi nessuno rileva."),
+      " punti, l'allineamento a Palermo di fig09). Su un anno solo la soglia sta a ", virgola(soglia_di(1), 2),
+      " punti, oltre il doppio del promesso: la potenza è ", virgola(potenza_di(1), 0),
+      "%, poco più di un lancio di moneta. Su tre anni pooled la soglia scende a ", virgola(soglia_di(3), 2),
+      " punti e la potenza sale al ", virgola(potenza_di(3), 0), "%.\n",
+      "Per questo i KPI primari si leggono su trienni pooled (2022-2024 contro 2025-2027), e l'anno per anno spetta a indicatori ",
+      "di processo (utenza per età e genere) che oggi nessuno rileva."), LARGHEZZA),
     x = "punti percentuali", y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "differenza minima rilevabile (MDE, in punti percentuali) per due indicatori della proposta, in funzione di quanti anni si mettono insieme in ciascuno dei due lati del confronto. ",
-        "È una figura di disegno della misura, non un risultato sui giovani: dice quanto deve essere grande un effetto perché una rilevazione riesca a distinguerlo da zero."),
-      base = paste0(
-        "MDE calcolata a potenza 80% e livello di significatività alfa 5%, per la differenza fra due proporzioni, con trasformazione arcoseno. ",
-        "«Anni pooled» è l'ampiezza di ciascuno dei due lati del confronto: un triennio contro un triennio, non tre anni in tutto. ",
-        "La soglia dipende dalla numerosità disponibile, che a Bagheria è di ", migliaia(base$popolazione_F_15_24[1]),
-        " ragazze di 15-24 anni nel ", anno, ": è un limite della rilevazione, non una debolezza dell'intervento. ",
-        "La potenza stampata accanto a ogni pallino è quella effettiva per il delta che il KPI promette, non la potenza nominale dell'80% con cui la soglia è calcolata."),
+    caption = didascalia_2b(
       lettura = paste0(
-        "ogni riga è una finestra di lettura e la lunghezza del segmento è la soglia MDE. ",
+        "ogni riga è una finestra di lettura e la lunghezza del segmento è la soglia MDE, calcolata a potenza 80% e livello di significatività alfa 5% per la differenza fra due proporzioni, con trasformazione arcoseno. ",
+        "«Anni pooled» è l'ampiezza di ciascuno dei due lati del confronto: un triennio contro un triennio, non tre anni in tutto. ",
         "La riga tratteggiata verticale è il delta che il KPI promette (", virgola(DELTA, 2), " punti, l'allineamento a Palermo di fig09). ",
         "Il colore è la conclusione: blu quando la soglia sta a sinistra del tratteggio, cioè la finestra vede l'effetto promesso; grigio quando la soglia lo supera e l'effetto resterebbe invisibile. ",
-        "Un segmento grigio non significa che l'intervento non funzioni, ma che quella finestra di lettura non basterebbe a dimostrarlo."),
+        "Un segmento grigio non significa che l'intervento non funzioni, ma che quella finestra di lettura non basterebbe a dimostrarlo. ",
+        "La potenza stampata accanto a ogni pallino è quella effettiva per il delta promesso, non la potenza nominale dell'80% con cui la soglia è calcolata. ",
+        "La soglia dipende dalla numerosità disponibile, che a Bagheria è di ", migliaia(base$popolazione_F_15_24[1]),
+        " ragazze di 15-24 anni nel ", anno, ": è un limite della rilevazione, non una debolezza dell'intervento."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", anno,
         ", per le numerosità di base. Il delta da rilevare è quello di fig09, dove lo stesso obiettivo è tradotto in persone e messo di fronte al restringimento della platea. ",

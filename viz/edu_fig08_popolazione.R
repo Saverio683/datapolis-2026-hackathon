@@ -71,40 +71,34 @@ figura <- ggplot(popolazione, aes(anno, indice_primo_anno_100, colour = territor
   labs(
     title = "Lo stock di giovani si assottiglia a Bagheria esattamente come in tutta la Sicilia",
     subtitle = sommario(paste0(
-      "Popolazione ", PRIMO, "-", ULTIMO, " nella fascia 15-34, indicizzata a 100 nel ", PRIMO,
-      " perché quattro territori di dimensione incomparabile si confrontano sul ritmo, non sui totali.\n",
+      "Popolazione residente nella fascia 15-34 anni dal ", PRIMO, " al ", ULTIMO,
+      " su quattro territori, espressa come numero indice con base 100 nel ", PRIMO,
+      ": quattro territori di dimensione incomparabile si confrontano così sul ritmo e non sui totali, e l'indice non dice nulla sui livelli.\n",
       "Bagheria perde il ", virgola(abs(variazione("Bagheria")), 1),
       "% dei suoi 15-34enni, la Sicilia il ", virgola(abs(variazione("Sicilia")), 1),
       "%: le due traiettorie divergono di poco a metà periodo e si richiudono, e alla fine distano ",
       virgola(DIVARIO, 2), " punti d'indice.\n",
-      "È un risultato negativo, e serve: il calo giovanile di Bagheria non è un'anomalia locale da spiegare con la fuga, è la demografia dell'isola.\n",
+      "È un risultato negativo, e serve: il calo giovanile di Bagheria è la demografia dell'isola, prima che un'anomalia locale da spiegare con la fuga.\n",
       "Che l'Italia nello stesso periodo faccia ",
       ifelse(variazione("Italia") >= 0, "+", "−"), virgola(abs(variazione("Italia")), 1),
       "% dimostra che questa scala le differenze le mostra, quando ci sono."), LARGHEZZA),
     x = NULL, y = paste0("indice, ", PRIMO, " = 100"),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "popolazione residente nella fascia 15-34 anni, dal ", PRIMO, " al ", ULTIMO,
-        ", su quattro territori, espressa come numero indice con base 100 nel ", PRIMO,
-        ". L'indice serve perché quattro territori di dimensione incomparabile si confrontino sul ritmo e non sui totali: non dice nulla sui livelli, che restano incomparabili. ",
-        "È un risultato negativo e serve: il calo giovanile di Bagheria non è un'anomalia locale da spiegare con la fuga, è la demografia dell'isola."),
-      base = paste0(
-        "Popolazione di partenza nel ", PRIMO, ": ",
-        paste0(inizio$territorio_nome, " ", migliaia(inizio$popolazione_15_34), collapse = "; "),
-        " residenti di 15-34 anni. Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "La finestra parte dal ", PRIMO,
-        " perché le età singole, necessarie a ricostruire la fascia 15-34, esistono solo da quell'anno: è un limite della fonte e non un ritaglio scelto qui. ",
-        "Le altre figure del thread usano la classe 15-24 e coprono il ", PRIMO - 3, "-", ULTIMO, ": le due finestre non sono confrontabili. ",
-        "Lo stock non identifica la migrazione: una popolazione che si riduce somma nascite, morti, immigrazioni, emigrazioni e l'invecchiamento delle coorti che entrano ed escono dalla fascia, ",
-        "nessuna di queste componenti è isolabile da questi dati, e il numero non va citato come misura di chi se ne va."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni linea è un territorio e parte da 100 nel ", PRIMO, ": la sua altezza in un'annata è quindi la variazione percentuale cumulata da quell'anno, non un valore assoluto. ",
         "Le etichette di fine linea sono scostate in verticale quel tanto che basta a non sovrapporsi, perché Bagheria e Sicilia arrivano a ",
         virgola(DIVARIO, 2), " punti d'indice l'una dall'altra: i pallini stanno sul valore vero, le scritte no. ",
-        "Che le due linee siano quasi sovrapposte è il finding, e che l'Italia se ne stacchi dimostra che questa scala le differenze le mostra quando ci sono."),
+        "Che le due linee siano quasi sovrapposte è il finding, e che l'Italia se ne stacchi dimostra che questa scala le differenze le mostra quando ci sono. ",
+        "Lo stock non identifica la migrazione: una popolazione che si riduce somma nascite, morti, immigrazioni, emigrazioni e l'invecchiamento delle coorti che entrano ed escono dalla fascia, ",
+        "e il numero non va citato come misura di chi se ne va. ",
+        "La finestra parte dal ", PRIMO,
+        " perché le età singole, necessarie a ricostruire la fascia 15-34, esistono solo da quell'anno: le altre figure del thread usano la classe 15-24 sul ",
+        PRIMO - 3, "-", ULTIMO, ", e le due finestre restano separate."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, popolazione residente per età singola, fascia 15-34 anni, ",
-        PRIMO, "-", ULTIMO, ". Elaborazione: pipeline/edu (thread educazione), data/processed/edu_youth_population_15_34.csv."),
+        PRIMO, "-", ULTIMO, " (nel ", PRIMO, ": ",
+        paste0(inizio$territorio_nome, " ", migliaia(inizio$popolazione_15_34), collapse = "; "),
+        " residenti). Elaborazione: pipeline/edu (thread educazione), data/processed/edu_youth_population_15_34.csv."),
       larghezza = LARGHEZZA)
   ) +
   tema_figura()

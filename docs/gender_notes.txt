@@ -1,4 +1,0 @@
-  Vicoli ciechi verificati (da non promettere in proposal): nelle tavole lavoro/istruzione la cittadinanza esiste solo come
-  TOTAL e nella demografia lo stato civile solo come ALL — genere × cittadinanza sull'occupazione e l'analisi dei matrimoni
-  precoci richiederebbero nuovi fetch SDMX (possibili, ma è un task "nuova fonte": va pianificato prima).
-

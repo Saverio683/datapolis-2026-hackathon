@@ -159,8 +159,11 @@ figura <- (pannello_livelli | pannello_posizione) +
     title = paste0("Bagheria migliora su tutti e ", N,
                    " gli indicatori educativi, e su tutti e ", N, " scivola indietro"),
     subtitle = sommario(paste0(
-      "Tre censimenti, 1991-2011. A sinistra quanto è cambiata la quota; a destra dove si colloca Bagheria fra i 390 comuni siciliani, ribaltando il percentile\n",
-      "dove salire è peggio, così che in alto significhi sempre \"davanti\". Il capitale umano cresce di più di tutto: diploma o laurea fra i 25-64enni passa da ",
+      "Posizione di Bagheria fra i 390 comuni siciliani su ", N,
+      " indicatori di istruzione e lavoro, ai tre censimenti decennali 1991-2011: a sinistra quanto è cambiata la quota, a destra il percentile favorevole, ",
+      "cioè la posizione ribaltata (100 meno il percentile) dove salire è peggio, così che in alto significhi sempre \"davanti\". ",
+      "Migliorare e arretrare vanno insieme: la quota di Bagheria sale, quella della mediana regionale sale di più, e a destra si misura la seconda cosa, quella che una politica di convergenza deve spostare.\n",
+      "Il capitale umano cresce di più di tutto: diploma o laurea fra i 25-64enni passa da ",
       virgola(cambio$valore_1991[cambio$indicatore == "I6"], 1), "%\n",
       "a ", virgola(cambio$valore_2011[cambio$indicatore == "I6"], 1),
       "%, ma la Sicilia cresce di più, e quello stesso indicatore scende dal ",
@@ -173,24 +176,14 @@ figura <- (pannello_livelli | pannello_posizione) +
       virgola(cambio$valore_2011[cambio$indicatore == "L14"], 1),
       "%) valgono un crollo dal ", virgola(primi$percentile_fav[primi$indicatore == "L14"], 0),
       "° al ", virgola(ultimi$percentile_fav[ultimi$indicatore == "L14"], 0), "° percentile."), LARGHEZZA),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "posizione di Bagheria fra i comuni siciliani su ", N,
-        " indicatori di istruzione e lavoro, ai tre censimenti decennali 1991, 2001 e 2011. ",
-        "Il valore disegnato è un percentile favorevole, cioè la posizione di Bagheria fra i 390 comuni siciliani, ribaltata (100 meno il percentile) sugli indicatori dove il valore alto è sfavorevole, come uscita precoce e NEET. ",
-        "Dopo il ribaltamento un percentile alto significa sempre «davanti agli altri comuni». ",
-        "Migliorare e arretrare non sono in contraddizione: la quota di Bagheria sale, quella della mediana regionale sale di più, e la figura misura la seconda cosa, che è quella che una politica di convergenza deve spostare."),
-      base = paste0(
-        "N = 390 comuni siciliani per ciascun censimento, che è la popolazione su cui il percentile è calcolato. ",
-        "Nessun intervallo di confidenza: sono ranghi calcolati su conteggi censuari, non stime campionarie, e nessun comune è escluso. ",
-        "Le fasce d'età sono diverse da indicatore a indicatore e sono indicate nel nome di ciascuno. ",
-        "Il confronto si ferma al 2011: 8milaCensus non prosegue oltre, e le tavole 2018-2024 hanno definizioni diverse, quindi i due periodi non formano una serie continua e non vanno letti come tale."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni riga è un indicatore e ogni linea segue Bagheria attraverso i tre censimenti: la pendenza è il movimento in graduatoria, non il movimento del valore. ",
         "Le etichette di fine linea sono scostate in verticale quel tanto che basta a non sovrapporsi: i pallini stanno sul valore vero, le scritte no. ",
-        "Il nome di ogni riga porta il verso dell'indicatore, così non serve ricordarsi quale direzione sia quella buona."),
+        "Il nome di ogni riga porta il verso dell'indicatore, così non serve ricordarsi quale direzione sia quella buona, e le fasce d'età, diverse da indicatore a indicatore, sono indicate nel nome di ciascuno. ",
+        "Il percentile è calcolato su tutti e 390 i comuni siciliani di quel censimento, senza esclusioni."),
       fonte = paste0(
-        "ISTAT, 8milaCensus, censimenti 1991, 2001 e 2011. ",
+        "ISTAT, 8milaCensus, censimenti 1991, 2001 e 2011. Il confronto si ferma al 2011, perché 8milaCensus non prosegue oltre e le tavole 2018-2024 hanno definizioni diverse: i due periodi non formano una serie continua. ",
         "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_historical_bagheria.csv e edu_historical_change_1991_2011.csv."),
       larghezza = LARGHEZZA),
     theme = tema_figura()

@@ -112,31 +112,23 @@ figura <- ggplot(lungo, aes(valore, riga)) +
   labs(
     title = paste0("Fra ", N_PARI, " comuni siciliani costruiti per somigliarle, Bagheria è in mezzo sull'istruzione e in fondo sul lavoro"),
     subtitle = sommario(paste0(
-      "Censimento 2011. Ogni pallino grigio è uno dei ", N_PARI,
-      " comuni appaiati a Bagheria; il vermiglio è Bagheria, la tacca scura la mediana dei pari.\n",
-      "I tre indicatori in alto sono serviti a scegliere i pari, quindi che Bagheria stia in mezzo è atteso: quel blocco è il collaudo dell'appaiamento, non un risultato.\n",
+      "Posizione di Bagheria dentro un gruppo di ", N_PARI,
+      " comuni siciliani costruiti per somigliarle, su cinque indicatori del censimento 2011: ogni riga è un indicatore e mostra dove cade Bagheria nella nuvola dei suoi pari. ",
+      "Ogni pallino grigio è uno dei pari; il vermiglio è Bagheria, la tacca scura la mediana dei pari.\n",
+      "I tre indicatori in alto sono serviti a scegliere i pari, quindi che Bagheria stia in mezzo è atteso per costruzione: quel blocco è il collaudo dell'appaiamento, non un risultato.\n",
       "I due in basso non hanno partecipato alla selezione, e lì la posizione dice qualcosa: sull'occupazione giovanile Bagheria sta ",
       virgola(abs(l14$scarto_favorevole), 1), " punti sotto la mediana dei pari (",
       virgola(l14$valore_bagheria, 1), "% contro ", virgola(l14$mediana, 1), "%).\n",
-      "Il divario non nasce dal confronto con Palermo o con la media regionale: resta anche fra comuni scelti per somigliarle."), LARGHEZZA),
+      "Il divario resta anche fra comuni scelti per somigliarle, oltre che nel confronto con Palermo o con la media regionale."), LARGHEZZA),
     x = "valore dell'indicatore, censimento 2011", y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "posizione di Bagheria dentro un gruppo di comuni siciliani costruiti per somigliarle, su cinque indicatori del censimento 2011. ",
-        "Ogni riga è un indicatore e mostra dove cade Bagheria nella nuvola dei suoi pari. ",
-        "I tre indicatori in alto sono serviti a scegliere i pari, quindi che Bagheria stia in mezzo è atteso per costruzione: quel blocco è il collaudo dell'appaiamento e non un risultato. ",
-        "I due in basso non hanno partecipato alla selezione, ed è lì che la posizione dice qualcosa."),
-      base = paste0(
-        "N = ", N_PARI, " comuni pari, più Bagheria. Sono i comuni siciliani più vicini a Bagheria entro un caliper di popolazione, appaiati su struttura demografica, abitativa ed educativa; ",
-        "gli esiti (occupazione 15-29 e NEET 15-29) non entrano nella distanza di appaiamento, ed è ciò che rende la loro posizione informativa e non tautologica. ",
-        "La misura di sintesi è la mediana dei soli pari, con Bagheria esclusa dal calcolo. ",
-        "Con ", N_PARI, " osservazioni la dispersione conta più della graduatoria: la figura mostra dove cade Bagheria dentro la nuvola, non che posto occupa, e nessun test di significatività è appropriato su questa numerosità. ",
-        "È un confronto descrittivo fra territori e mai causale: comuni simili su alcune variabili osservabili non sono un controllo sperimentale, e nulla qui autorizza a dire che l'appaiamento isoli l'effetto di una politica o di un tratto. ",
-        "Le fasce d'età sono diverse da indicatore a indicatore e sono scritte in ogni riga."),
+    caption = didascalia_2b(
       lettura = paste0(
-        "ogni pallino grigio è uno dei ", N_PARI, " comuni pari, il pallino vermiglio è Bagheria e la tacca scura è la mediana dei pari. ",
+        "ogni pallino grigio è uno dei ", N_PARI, " comuni pari, il pallino vermiglio è Bagheria e la tacca scura è la mediana dei soli pari, con Bagheria esclusa dal calcolo. ",
         "Lo scarto citato nel sottotitolo è in punti favorevoli: è il valore di Bagheria meno la mediana dei pari dove salire è meglio, e l'opposto dove salire è peggio, quindi un valore negativo significa sempre che Bagheria sta peggio. ",
-        "Le righe hanno basi diverse e non sono confrontabili fra loro in ampiezza: si confronta la posizione dentro ciascuna nuvola, non la lunghezza di una riga contro quella di un'altra."),
+        "Le righe hanno basi diverse e fasce d'età diverse, scritte in ogni riga: si confronta la posizione dentro ciascuna nuvola, non la lunghezza di una riga contro quella di un'altra. ",
+        "Con ", N_PARI, " osservazioni conta la dispersione più della graduatoria: la figura mostra dove cade Bagheria dentro la nuvola, non che posto occupa. ",
+        "I pari sono i comuni siciliani più vicini a Bagheria entro un caliper di popolazione, appaiati su struttura demografica, abitativa ed educativa, e gli esiti (occupazione 15-29 e NEET 15-29) restano fuori dalla distanza di appaiamento: è ciò che rende la loro posizione informativa. ",
+        "Resta un confronto descrittivo fra territori e mai causale: comuni simili su alcune variabili osservabili non sono un controllo sperimentale."),
       fonte = paste0(
         "ISTAT, 8milaCensus, censimento 2011. Anno e fasce sono diversi dalle serie 2018-2024 delle altre figure del thread: è il gruppo di controllo storico, non un termine di paragone con il censimento permanente. ",
         "Elaborazione: pipeline/edu (thread educazione), data/processed/edu_matched_peers_2011.csv."),

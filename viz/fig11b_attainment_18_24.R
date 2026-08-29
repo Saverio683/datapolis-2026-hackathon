@@ -54,33 +54,26 @@ figura <- ggplot(dati, aes(.data[[QUOTA]], nome_territorio)) +
   scale_x_continuous(limits = c(58, 82), breaks = seq(60, 80, 5),
                      labels = \(x) virgola(x, 0, "%")) +
   labs(
-    title = "Sul 18-24 il vantaggio delle ragazze resta,\nil primato di Bagheria no",
-    subtitle = paste0(
-      "Quota con almeno il diploma a 18-24 anni, ", anno_rif,
-      ": la fascia in cui il titolo è raggiungibile, quindi chi non ha ancora\n",
-      "finito la scuola non pesa sul denominatore. Il vantaggio femminile regge in tutti e cinque i territori, e a Bagheria vale\n",
-      "+", virgola(divario("Bagheria")), " punti (", virgola(v("Bagheria", "F"), 0, "%"),
+    title = "Sul 18-24 il vantaggio delle ragazze regge,\nil primato di Bagheria passa ad altri",
+    subtitle = sommario(paste0(
+      "Quota di residenti di 18-24 anni con almeno il diploma, in percentuale dei coetanei della stessa fascia e dello stesso genere, ", anno_rif,
+      ", su cinque territori: è la fascia in cui il titolo è già raggiungibile, quindi chi non ha ancora finito la scuola non pesa sul denominatore come accade sul 9-24. ",
+      "Vale come controllo di robustezza del claim educativo.\n",
+      "Il vantaggio femminile regge in tutti e cinque i territori, e a Bagheria vale +",
+      virgola(divario("Bagheria")), " punti (", virgola(v("Bagheria", "F"), 0, "%"),
       " contro ", virgola(v("Bagheria", "M"), 0, "%"),
-      "), il più ampio del panel. Ma sul livello Bagheria non è più in testa:\n",
+      "), il più ampio del panel. Ma sul livello passano avanti ",
       paste(sopra_bagheria, collapse = " e "),
-      " stanno sopra. È il limite del claim educativo: a distinguere Bagheria non è quanto\n",
-      "le ragazze studiano, ma che il titolo non si converta in lavoro (fig11)."),
+      ". È il limite del claim educativo: a distinguere Bagheria è che il titolo resti fuori dal mercato del lavoro (fig11), più di quanto le ragazze studino."), LARGHEZZA),
     x = "% con almeno il diploma, 18-24 anni", y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "quota di residenti di 18-24 anni con almeno il diploma, in percentuale dei coetanei della stessa fascia e dello stesso genere, anno ",
-        anno_rif, ", su cinque territori. È un controllo di robustezza del claim educativo: sulla fascia 18-24 il titolo è già raggiungibile, ",
-        "quindi chi non ha ancora finito la scuola non pesa sul denominatore come accade sul 9-24."),
-      base = paste0(
-        "Denominatori: ", N_TERRITORI,
-        ". Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. Una sola annata, quindi nessuna tendenza. ",
-        "Il valore è un limite superiore e non una stima puntuale: qualche qualifica professionale si consegue a 17 anni, quindi la quota vera è al più quella disegnata (stessa logica dei limiti sulle casalinghe in fig02). ",
-        "La fascia 18-24 è diversa sia dalla classe 15-24 su cui stanno le altre figure del thread sia dalla fascia 9-24 della serie storica di fig05b: le tre misure non si sommano e non vanno lette in sequenza. ",
-        "L'incrocio fra titolo di studio e condizione professionale non è pubblicato a livello comunale, quindi da questa figura non si ricava quante delle diplomate lavorino."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni riga è un territorio e il segmento grigio unisce i due generi: la sua lunghezza è il divario. ",
         "Il pallino rosa è il valore femminile, quello blu il maschile, e la cifra accanto a ciascuno è il suo valore, stampata all'esterno per non coprire il pallino. ",
         "L'ordine delle righe è geografico, dal comune al paese, non per valore. ",
+        "Il valore è un limite superiore e non una stima puntuale, perché qualche qualifica professionale si consegue a 17 anni: la quota vera è al più quella disegnata. ",
+        "La fascia 18-24 è diversa sia dalla classe 15-24 su cui stanno le altre figure del thread sia dalla fascia 9-24 della serie storica di fig05b: le tre misure vanno lette una per volta. ",
+        "Quante delle diplomate lavorino da qui non si ricava, perché l'incrocio fra titolo di studio e condizione professionale non è pubblicato a livello comunale. ",
         "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media delle cinque quote."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola istruzione, anno ", anno_rif,

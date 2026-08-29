@@ -102,8 +102,11 @@ posizione <- ggplot(confronto, aes(valore)) +
 figura <- (nuvola | posizione) +
   plot_layout(widths = c(1.25, 1)) +
   plot_annotation(
-    title = "Bagheria non si muove poco: si muove quanto un comune della sua taglia a quella distanza",
-    subtitle = paste0(
+    title = "Bagheria si muove quanto un comune della sua taglia a quella distanza",
+    subtitle = sommario(paste0(
+      "Quota di pendolari che esce dal comune per lavoro, in percentuale dei pendolari del comune, messa in relazione con la distanza dal capoluogo di provincia: ",
+      "il pannello A mostra tutti i comuni non capoluogo e le curve del valore atteso, il pannello B la posizione di Bagheria prima e dopo il controllo. ",
+      "La figura serve a togliere di mezzo un claim, non a stabilirne uno: dice che «Bagheria si muove poco» è una lettura sbagliata di un numero giusto.\n",
       "Il dato grezzo mette Bagheria al ", virgola(percentile_grezzo, 0, "° percentile"),
       " dei 381 comuni siciliani non capoluogo per quota di chi esce a lavorare.\n",
       "Sembra un'anomalia, e i vicini la rafforzano: ", CONTRASTO$nome, " manda fuori il ",
@@ -115,26 +118,19 @@ figura <- (nuvola | posizione) +
       "Controllando distanza e dimensione, che sono due variabili geografiche e non di comportamento, il residuo è di ",
       virgola(bagheria$residuo, 1), " punti e il percentile sale al ",
       virgola(percentile_residuo, 0, "°"), ".\n",
-      "La particolarità di Bagheria non è quanto si muove: è chi si muove, e per quale motivo (figure 2 e 3)."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "quota di pendolari che esce dal comune per lavoro, in percentuale dei pendolari del comune, messa in relazione con la distanza dal capoluogo di provincia. ",
-        "Il pannello A mostra tutti i comuni non capoluogo e le curve del valore atteso; il pannello B mostra la posizione di Bagheria prima e dopo il controllo. ",
-        "La figura serve a togliere di mezzo un claim, non a stabilirne uno: dice che «Bagheria si muove poco» è una lettura sbagliata di un numero giusto."),
-      base = paste0(
-        "N = 381 comuni siciliani non capoluogo. I nove capoluoghi sono esclusi perché per loro la misura non è definita: è l'unica esclusione. ",
-        "Conteggio esaustivo da matrice origine-destinazione, non stima campionaria. ",
-        "Modello: regressione lineare ai minimi quadrati della quota di uscita sul logaritmo della distanza dal capoluogo e sul logaritmo del numero di pendolari del comune, ",
-        "con errori standard robusti all'eteroschedasticità (HC3), n = 381, R quadro = 0,31. Entrambi i coefficienti sono negativi e statisticamente significativi. ",
-        "Il modello serve a togliere di mezzo taglia e posizione, non a spiegare la mobilità: sono due regressori geografici e non c'è nessuna pretesa causale. ",
-        "La distanza è in linea d'aria fra i centroidi ISTAT (EPSG:32633): non è distanza stradale né tempo di viaggio, e per i comuni montani la sottostima."),
+      "La particolarità di Bagheria è chi si muove, e per quale motivo (figure 2 e 3)."), LARGHEZZA),
+    caption = didascalia_2b(
       lettura = paste0(
         "nel pannello A ogni punto grigio è un comune e Bagheria è il punto vermiglio. Il diametro del punto è il numero di pendolari del comune, cioè proprio la variabile che spiega l'apparente anomalia: si vede a occhio che i comuni grandi stanno in basso. ",
         "L'asse orizzontale è logaritmico perché il modello è nel logaritmo della distanza: così il valore atteso appare come la retta che è. ",
         "Le due linee scure sono il valore atteso dal modello a due taglie fissate, e non una interpolazione dei punti: la distanza fra le due curve è quanto la sola taglia sposta l'atteso. ",
-        "Nel pannello B ogni barra conta i comuni, e le due righe vermiglie sono Bagheria prima del controllo (quota grezza) e dopo (residuo del modello): il salto fra le due posizioni è il finding."),
+        "Nel pannello B ogni barra conta i comuni, e le due righe vermiglie sono Bagheria prima del controllo (quota grezza) e dopo (residuo del modello): il salto fra le due posizioni è il finding. ",
+        "Il modello è una regressione lineare della quota di uscita sul logaritmo della distanza dal capoluogo e sul logaritmo del numero di pendolari (n = 381, R quadro = 0,31, errori standard HC3): serve a togliere di mezzo taglia e posizione, ",
+        "e sono due regressori geografici senza nessuna pretesa causale. ",
+        "La distanza è in linea d'aria fra i centroidi ISTAT (EPSG:32633): non è distanza stradale né tempo di viaggio, e per i comuni montani la sottostima. ",
+        "I nove capoluoghi restano fuori perché per loro la misura non è definita: è l'unica esclusione dai 381 comuni disegnati."),
       fonte = paste0(
-        "ISTAT, Matrice del pendolarismo, censimento permanente 2021, motivo lavoro, origine-destinazione comune per comune. ",
+        "ISTAT, Matrice del pendolarismo, censimento permanente 2021, motivo lavoro, origine-destinazione comune per comune (conteggio esaustivo, non stima campionaria). ",
         "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_taglia_distanza.csv e mob_curva_attesa.csv)."),
       larghezza = LARGHEZZA),
     theme = tema_figura())

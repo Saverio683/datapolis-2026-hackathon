@@ -115,40 +115,31 @@ figura <- ggplot() +
   scale_y_continuous(breaks = base_di, labels = ANNI,
                      expand = expansion(add = c(0.06, 0.8))) +
   labs(
-    title = "Bagheria sale con tutta la Sicilia e non esce mai dal quinto più basso",
-    subtitle = paste0(
-      "Ogni cresta è la distribuzione dei 390 comuni siciliani in quell'anno. Il gambo scuro è la mediana regionale,\n",
-      "quello vermiglio Bagheria, col suo percentile a fianco.\n",
+    title = "Bagheria sale con tutta la Sicilia, fissa sul quinto più basso",
+    subtitle = sommario(paste0(
+      "Distribuzione del tasso di occupazione femminile fra i 390 comuni siciliani, una curva per anno, dal ", min(ANNI), " al ", max(ANNI),
+      ": ogni curva è una stima di densità sui comuni di quell'anno, non una serie storica. Il tempo scorre dal basso verso l'alto, ",
+      "e lo scivolamento verso destra è l'aumento generale dell'occupazione femminile in tutta la regione; la stessa relazione sui quattro territori di confronto sta in fig06.\n",
+      "Il gambo scuro è la mediana regionale, quello vermiglio Bagheria, col suo percentile a fianco.\n",
       "In sei annate la mediana sale da ", virgola(PRIMO$mediana, 1, "%"), " a ", virgola(ULTIMO$mediana, 1, "%"),
       " e Bagheria da ", virgola(PRIMO$bagheria, 1, "%"), " a ", virgola(ULTIMO$bagheria, 1, "%"),
-      ": guadagna più della mediana\n",
-      "(+", virgola(PASSO_BAG, 1, taglia_zero = FALSE), " punti contro +", virgola(PASSO_MED, 1, taglia_zero = FALSE),
-      ") e non supera mai il ", round(max(distrib$percentile)), "° percentile, cioè il quinto più basso della regione.\n",
-      "Il tratteggio è il ", max(ANNI), " di Bagheria: cade ancora a sinistra della mediana siciliana del ", min(ANNI), "."),
+      ": guadagna più della mediana (+", virgola(PASSO_BAG, 1, taglia_zero = FALSE), " punti contro +",
+      virgola(PASSO_MED, 1, taglia_zero = FALSE),
+      ") e resta entro il ", round(max(distrib$percentile)), "° percentile, cioè dentro il quinto più basso della regione.\n",
+      "Il tratteggio è il ", max(ANNI), " di Bagheria: cade ancora a sinistra della mediana siciliana del ", min(ANNI), "."), LARGHEZZA),
     x = "tasso di occupazione femminile, 15 anni e più",
     y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "distribuzione del tasso di occupazione femminile fra i comuni siciliani, una curva per anno, dal ", min(ANNI), " al ", max(ANNI),
-        ". Ogni curva è una stima di densità sui comuni di quell'anno, non una serie storica: il tempo scorre dal basso verso l'alto, ",
-        "e lo scivolamento verso destra è l'aumento generale dell'occupazione femminile in tutta la regione. ",
-        "La stessa relazione sui quattro territori di confronto sta in fig06."),
-      base = paste0(
-        "N = 390 comuni siciliani per ciascuna delle ", length(ANNI), " annate disegnate. ",
-        "Le curve sono stime di densità per nucleo con banda unica, scelta con la regola di Silverman sul pool delle annate: ",
-        "così le differenze di forma sono del dato e non del lisciamento. Ogni curva ha area 1 e la scala verticale è comune, quindi anche le altezze si confrontano fra annate; ",
-        "non c'è normalizzazione per singola curva, che farebbe sembrare alta un'annata dispersa quanto una concentrata. ",
-        "Il 2020 manca alla fonte: le annate sono ", length(ANNI), " e non sette, e la curva di quell'anno semplicemente non esiste, senza interpolazione. ",
-        "Il 2011 di 8milaCensus resta fuori perché è un'altra rilevazione, e una curva appaiata alle altre farebbe leggere lo scarto di definizione come movimento della distribuzione; ",
-        "il confronto fra le due epoche sta in fig04 e fig04b, dove lo stacco è dichiarato. ",
-        "Nessun intervallo di confidenza: la densità descrive i 390 comuni osservati, non stima una popolazione più ampia."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni curva grigia è un'annata, etichettata sull'asse verticale, e le annate sono impilate dal ", min(ANNI), " in basso al ", max(ANNI), " in alto. ",
         "Dentro ogni curva ci sono due gambi verticali: quello scuro è la mediana regionale, quello vermiglio è Bagheria, con il suo percentile scritto a fianco. ",
         "La distanza fra i due gambi è il finding, e resta la stessa per tutte le annate. ",
         "La linea punteggiata verticale è il valore di Bagheria nel ", max(ANNI),
         " e attraversa tutta la pila: serve a vedere che cade ancora a sinistra della mediana siciliana del ", min(ANNI), ". ",
-        "Le etichette «Bagheria» e «mediana siciliana» compaiono una volta sola, sulla curva in cima: sotto, i gambi si riconoscono dal colore."),
+        "Le etichette «Bagheria» e «mediana siciliana» compaiono una volta sola, sulla curva in cima: sotto, i gambi si riconoscono dal colore. ",
+        "Le curve sono stime di densità per nucleo con banda unica, scelta con la regola di Silverman sul pool delle annate, quindi le differenze di forma sono del dato e non del lisciamento; ",
+        "ogni curva ha area 1 e la scala verticale è comune, quindi anche le altezze si confrontano fra annate. ",
+        "Le annate disegnate sono ", length(ANNI), " e non sette perché il 2020 manca alla fonte, e il 2011 di 8milaCensus resta fuori perché è un'altra rilevazione: il confronto fra le due epoche sta in fig04 e fig04b, dove lo stacco è dichiarato."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, popolazione di 15 anni e più, 390 comuni siciliani, ",
         min(ANNI), "-", max(ANNI), ". Fascia e anni sono diversi dalle serie 15-24 del thread: è contesto regionale, non un termine di paragone. ",

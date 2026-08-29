@@ -111,12 +111,14 @@ figura <- ggplot(dati, aes(eta_2021, ritenzione_rolling3_pct, colour = nome_terr
   labs(
     title = "La finestra per trattenere le ragazze di Bagheria\nè fra i 22 e i 25 anni",
     subtitle = sommario(paste0(
-      "Quota della coorte del 2021 ancora residente tre anni dopo: chi aveva 20 anni nel 2021 ne ha 23 nel 2024. Sotto il tratteggio la coorte si è ridotta.\n",
+      "Quota della coorte del 2021 ancora residente nello stesso comune tre anni dopo, in percentuale della coorte di partenza: chi aveva 20 anni nel 2021 ne ha 23 nel 2024. ",
+      "Per età singola da ", ETA_MIN, " a ", ETA_MAX, " anni, per genere, su cinque territori. È una misura netta di saldo, che comprende sia chi parte sia chi arriva: ",
+      "dice a che età si perde, non da quando, e la stessa domanda su scala decennale sta in fig07b. Sotto il tratteggio la coorte si è ridotta.\n",
       "I ragazzi escono a ondate, a 17-19 e a 23-24 anni, e in parte rientrano dopo i 26. Le ragazze tengono fino ai 23 e da lì cedono, ",
       "senza rientri: sulle età 25-29 restano fra ", virgola(CODA_BAG[["min"]], 1, "%"), " e ",
       virgola(CODA_BAG[["max"]], 1, "%"), ", contro una media italiana di ",
       virgola(CODA_ITA[["media"]], 1, "%"), ".\n",
-      "E non è un effetto di zona: fra i 22 e i 25 anni i cinque comuni vicini restano piatti (",
+      "Ed è un tratto di Bagheria: fra i 22 e i 25 anni i cinque comuni vicini restano piatti (",
       virgola(ritenzione(ETICHETTA_VICINATO, 22), 1, "%"), " e ",
       virgola(ritenzione(ETICHETTA_VICINATO, 25), 1, "%"), "), mentre Bagheria scende da ",
       virgola(ritenzione("Bagheria", 22), 1, "%"), " a ",
@@ -124,25 +126,12 @@ figura <- ggplot(dati, aes(eta_2021, ritenzione_rolling3_pct, colour = nome_terr
       ". È l'età in cui il vantaggio educativo dovrebbe convertirsi in lavoro."), LARGHEZZA),
     x = "età nel 2021 (nel 2024: tre anni in più)",
     y = "% della coorte del 2021",
-    caption = didascalia_4b(
-      mostra = paste0(
-        "quota della coorte del 2021 ancora residente nello stesso comune tre anni dopo, in percentuale della coorte di partenza (base 100 = coorte del 2021), ",
-        "per età singola da ", ETA_MIN, " a ", ETA_MAX, " anni e per genere, su cinque territori. ",
-        "È una misura netta di saldo: comprende sia chi parte sia chi arriva, quindi non conta le partenze. ",
-        "Questa figura dice a che età si perde, non da quando: la stessa domanda su scala decennale sta in fig07b."),
-      base = paste0(
-        "N = ", migliaia(N_F + N_M), " persone nella coorte 2021 di Bagheria (", migliaia(N_F),
-        " femmine e ", migliaia(N_M), " maschi), fra ", migliaia(N_ETA_MIN), " e ", migliaia(N_ETA_MAX),
-        " per singola età. Le linee sono medie mobili centrate su tre età, quindi si leggono i pattern e non i decimali. ",
-        "Nessun intervallo di confidenza: i conteggi sono censuari e non stime campionarie, e l'incertezza residua è l'aggiustamento post-censuario delle stime di popolazione, che la misura incorpora. ",
-        "Nessun record escluso; le età ai bordi servono solo a chiudere la media mobile e restano fuori dal grafico. ",
-        "Controllo di robustezza dentro la sola rilevazione permanente, sulla stessa coorte a cinque anni (", CTRL_BAG$periodi,
-        "): la perdita si concentra sulla transizione dalla classe 20-24 alla 25-29, dove le femmine di Bagheria stanno a ",
-        CTRL_BAG$valori, " contro ", CTRL_ITA$valori, " dell'Italia, cioè esattamente dove questo profilo colloca la finestra."),
+    caption = didascalia_2b(
       lettura = paste0(
         "la riga tratteggiata orizzontale a 100% è la parità: sopra la coorte è cresciuta, sotto si è ridotta. ",
         "Il rettangolo vermiglio chiaro, presente solo sul pannello delle femmine, è la finestra 22-25 anni. ",
         "Bagheria è in vermiglio a tratto pieno perché è il soggetto, i quattro riferimenti sono a tratto sottile. ",
+        "Le linee sono medie mobili centrate su tre età, quindi si leggono i pattern e non i decimali; le età ai bordi servono solo a chiudere la media mobile e restano fuori dal grafico. ",
         "Vicinato = ", paste(vicini$nome_comune, collapse = ", "),
         ", cioè i cinque comuni più vicini per distanza fra i centroidi: le coorti sono sommate prima del rapporto, non è la media dei cinque rapporti, così il denominatore regge il confronto con Bagheria. ",
         "Le serie dei singoli comuni, troppo piccole per essere lette per età, restano in genere_ritenzione_eta_vicini.csv. ",

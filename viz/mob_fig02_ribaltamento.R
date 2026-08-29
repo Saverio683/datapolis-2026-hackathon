@@ -112,7 +112,10 @@ figura <- (pendenza | distribuzione) +
   plot_layout(widths = c(1.05, 1)) +
   plot_annotation(
     title = "Le ragazze di Bagheria si spostano per studiare. Le donne non si spostano per lavorare",
-    subtitle = paste0(
+    subtitle = sommario(paste0(
+      "Scarto fra femmine e maschi nella propensione a uscire dal comune, misurato separatamente per i due motivi dello spostamento: ",
+      "la quota di chi esce dal comune sul totale di chi si sposta quotidianamente per quel motivo, calcolata per genere, e riportata come femmine meno maschi in punti percentuali. ",
+      "A sinistra cinque territori sui due motivi, a destra Bagheria nella distribuzione dei 390 comuni siciliani del «ribaltamento», cioè lo scarto sullo studio meno lo scarto sul lavoro.\n",
       "Fra chi già si sposta per studiare escono dal comune ", virgola(larghi$gap_studio_F_M[1], 1),
       " punti più femmine che maschi. Fra chi si sposta per lavorare, ",
       virgola(abs(larghi$gap_lavoro_F_M[1]), 1), " punti meno donne che uomini.\n",
@@ -120,33 +123,24 @@ figura <- (pendenza | distribuzione) +
       " punti a Bagheria, contro ", virgola(larghi$ribaltamento[larghi$territorio == 'Sicilia'], 1),
       " in Sicilia e ", virgola(larghi$ribaltamento[larghi$territorio == 'Italia'], 1), " in Italia: due volte e mezza.\n",
       "Il denominatore è già condizionato al motivo (chi si sposta per lavoro un lavoro ce l'ha), ",
-      "quindi non è il divario occupazionale visto da un'altra angolazione,\n",
-      "ma una misura indipendente sullo stesso passaggio.\n",
+      "quindi è una misura indipendente sullo stesso passaggio,\n",
+      "che sta in piedi da sola accanto al divario occupazionale.\n",
       "La stessa misura sul censimento permanente del ", ANNO_CONTROLLO,
       ", cioè un'altra rilevazione sette anni dopo, dà per Bagheria +", ctrl("Bagheria"),
-      " contro +", ctrl("Sicilia"), " siciliano."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "scarto fra femmine e maschi nella propensione a uscire dal comune, misurato separatamente per i due motivi dello spostamento. ",
-        "La misura è la quota di chi esce dal comune sul totale di chi si sposta quotidianamente per quel motivo, calcolata per genere; il valore riportato è femmine meno maschi, in punti percentuali. ",
-        "Il pannello di sinistra confronta cinque territori sui due motivi; quello di destra colloca Bagheria nella distribuzione dei 390 comuni siciliani del «ribaltamento», cioè lo scarto sullo studio meno lo scarto sul lavoro. ",
-        "Il denominatore è già condizionato al motivo, perché chi si sposta per lavoro un lavoro ce l'ha: non è quindi il divario occupazionale visto da un'altra angolazione, ma una misura indipendente sullo stesso passaggio."),
-      base = paste0(
-        "N = ", migliaia(round(N_BAGHERIA)), " pendolari a Bagheria e 390 comuni siciliani ai confini del 2011, l'universo usato da tutti i thread del progetto. ",
-        "Conteggio esaustivo da matrice origine-destinazione (record di tipo S): non è una stima campionaria, non ha errore di campionamento e non porta intervallo di confidenza. Nessuna esclusione. ",
-        "La matrice non ha la dimensione dell'età: il target 15-34 del bando non è isolabile su questa fonte. Chi esce dal comune per studio è però quasi solo secondaria superiore e università, perché a Bagheria i cicli precedenti ci sono tutti. ",
-        "Controllo su una rilevazione indipendente: la stessa misura sul censimento permanente del ", ANNO_CONTROLLO,
-        " dà ", ctrl("Bagheria"), " punti a Bagheria contro ", ctrl("Sicilia"), " in Sicilia, quindi il segno e l'ordine di grandezza si replicano sette anni dopo con un altro disegno di rilevazione. ",
-        "Nessun test di significatività: con un conteggio esaustivo il confronto è fra popolazioni, non fra stime."),
+      " contro +", ctrl("Sicilia"), " siciliano."), LARGHEZZA),
+    caption = didascalia_2b(
       lettura = paste0(
         "nel pannello di sinistra ogni linea è un territorio e la sua pendenza è il finding: unisce lo scarto sullo studio a quello sul lavoro, e il cambio di segno è il ribaltamento. ",
         "Bagheria è in vermiglio e a tratto spesso, gli altri quattro territori sono grigi perché servono a mostrare che il ribaltamento esiste ovunque e che quello che cambia è l'ampiezza. ",
         "La riga orizzontale chiara è lo zero, cioè la parità fra i generi. Le etichette di fine linea sono scostate in verticale quel tanto che basta a non sovrapporsi: i punti stanno sul valore vero, le scritte no. ",
         "Nel pannello di destra ogni barra conta i comuni con quel valore di ribaltamento; la riga grigia è la mediana dei 390 comuni e quella vermiglia è Bagheria, con il suo percentile. ",
-        "«5 comuni vicini» è l'aggregato di Santa Flavia, Ficarazzi, Villabate, Casteldaccia e Misilmeri."),
+        "«5 comuni vicini» è l'aggregato di Santa Flavia, Ficarazzi, Villabate, Casteldaccia e Misilmeri. ",
+        "I 390 comuni sono presi ai confini del 2011, l'universo usato da tutti i thread del progetto, e la matrice non ha la dimensione dell'età: il target 15-34 del bando non è isolabile su questa fonte. ",
+        "Chi esce dal comune per studio è però quasi solo secondaria superiore e università, perché a Bagheria i cicli precedenti ci sono tutti."),
       fonte = paste0(
-        "ISTAT, Matrice del pendolarismo, censimento della popolazione 2011, più il Censimento permanente della popolazione del ",
-        ANNO_CONTROLLO, " per il controllo. ",
+        "ISTAT, Matrice del pendolarismo, censimento della popolazione 2011 (conteggio esaustivo su ",
+        migliaia(round(N_BAGHERIA)), " pendolari a Bagheria: non è una stima campionaria), più il Censimento permanente della popolazione del ",
+        ANNO_CONTROLLO, " per il controllo su una rilevazione indipendente. ",
         "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_ribaltamento.csv, mob_ribaltamento_territori.csv, mob_ribaltamento_390.csv, mob_treno_390.csv per i denominatori e genere_pendolarismo.csv per il controllo)."),
       larghezza = LARGHEZZA),
     theme = tema_figura())

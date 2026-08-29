@@ -102,36 +102,26 @@ figura <- ggplot(dati, aes(asse_2020(anno), tasso_occupazione, colour = nome_ter
                      labels = function(x) virgola(x, 0, "%")) +
   buco_2020(y = 40, dati$anno, dati$tasso_occupazione) +
   labs(
-    title = "Il ritardo di Bagheria sull'occupazione non finisce a 24 anni",
-    subtitle = paste0(
-      "Quota di occupati sulla popolazione della classe, ", PRIMO, "-", ANNO,
-      ", tutte e quattro le classi d'età pubblicate a livello comunale.\n",
+    title = "Il ritardo di Bagheria sull'occupazione accompagna tutta la vita lavorativa",
+    subtitle = sommario(paste0(
+      "Tasso di occupazione, cioè occupati in percentuale della popolazione della stessa classe d'età, dal ", PRIMO, " al ", ANNO,
+      ", su quattro territori e su tutte e quattro le classi d'età pubblicate a livello comunale, maschi e femmine insieme (la stessa tavola aperta per genere sta in fig13b). ",
+      "Il tasso sta sulla popolazione della classe e non sulle sole forze di lavoro, quindi comprende studenti e inattivi: è la ragione per cui la classe 15-24 resta strutturalmente bassa in tutti i territori.\n",
       "In punti il divario con la Sicilia è più stretto sui giovani (",
       virgola(GIOVANI$gap_pp, 1), " pp) e tocca il massimo sui ", PIU_LARGO, " (",
-      virgola(LARGO$gap_pp, 1), " pp): il ritardo non è\n",
-      "un problema di primo ingresso, accompagna tutta la vita lavorativa. Sulla base ",
+      virgola(LARGO$gap_pp, 1), " pp): il ritardo comincia al primo ingresso e prosegue per tutta la carriera. Sulla base ",
       "bassa dei 15-24 però quei ", virgola(GIOVANI$gap_pp, 1), " pp sono\n",
       "il ", virgola(abs(GIOVANI$gap_rel), 0), "% dell'occupazione della classe: in ",
-      "termini relativi la più distante dalla Sicilia resta proprio il ", PIU_LARGO_REL, "."),
+      "termini relativi la più distante dalla Sicilia resta proprio il ", PIU_LARGO_REL, "."), LARGHEZZA),
     x = NULL, y = NULL, colour = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "tasso di occupazione, cioè occupati in percentuale della popolazione della stessa classe d'età, dal ", PRIMO, " al ", ANNO,
-        ", su quattro territori e su tutte e quattro le classi d'età pubblicate a livello comunale. Totale di maschi e femmine; ",
-        "la stessa tavola aperta per genere sta in fig13b. Il tasso è calcolato sulla popolazione della classe e non sulle sole forze di lavoro, ",
-        "quindi comprende studenti e inattivi: è la ragione per cui la classe 15-24 sta strutturalmente bassa in tutti i territori, e non un dato anomalo."),
-      base = paste0(
-        "Denominatori di Bagheria nel ", ANNO, " (", N_CLASSI,
-        " persone). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Le quattro classi sono le uniche pubblicate a livello comunale dal censimento permanente: la fascia 15-34 del bando non è ricostruibile da qui, ",
-        "e il totale 15+ non è disegnato perché somma le quattro classi invece di affiancarsi a loro. ",
-        "Il 2020 manca alla fonte: sulla classe 15-24 non esiste nessuna riga, sulle altre classi esiste solo il denominatore. La serie è interrotta e nessun valore è interpolato."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni pannello è una classe d'età, e la cifra nella sua intestazione è il divario di Bagheria rispetto alla Sicilia in punti percentuali nell'ultima annata. ",
         "L'area vermiglio chiaro dentro ogni pannello è il cuneo fra Bagheria e la Sicilia: la sua altezza è la distanza fra le due linee, non un intervallo di confidenza. ",
         "Bagheria è in vermiglio a tratto pieno perché è il soggetto, i tre riferimenti sono a tratto sottile. ",
-        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: dove c'è la striscia non c'è misura. ",
-        "Sull'asse orizzontale sono etichettate solo la prima annata, il 2021 e l'ultima, perché con quattro pannelli affiancati sei etichette si sovrappongono; le posizioni restano quelle di tutte le annate."),
+        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: il 2020 manca alla fonte (sulla classe 15-24 non esiste nessuna riga, sulle altre solo il denominatore) e nessun valore è interpolato. ",
+        "Sull'asse orizzontale sono etichettate solo la prima annata, il 2021 e l'ultima, perché con quattro pannelli affiancati sei etichette si sovrappongono; le posizioni restano quelle di tutte le annate. ",
+        "Le quattro classi sono le uniche pubblicate a livello comunale dal censimento permanente: la fascia 15-34 del bando non è ricostruibile da qui, e il totale 15+ resta fuori perché somma le quattro classi invece di affiancarsi a loro."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, ", PRIMO, "-", ANNO,
         ". Elaborazione: pipeline/build.py (data/processed/tasso_occupazione_eta.csv, che contiene anche il dettaglio per genere)."),

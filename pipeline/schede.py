@@ -404,7 +404,7 @@ TESTA = {"fig07_ritenzione_eta": 2}
 
 # La didascalia e' sempre di quattro paragrafi, uno per blocco: sono le ultime quattro
 # bande di ogni figura. E' una convenzione garantita da viz/theme.R, non una stima.
-CODA_DIDASCALIA = 4
+CODA_DIDASCALIA = 2
 
 
 def _bande(grigia, vuoto: int = 28):
@@ -424,7 +424,7 @@ def figura(nome: str, *, intera: bool = False, larghezza: int = 1500,
     Il data URI, e non un <img src="../../figures/...">, perche' la scheda deve restare
     UN file: si manda per mail e si stampa senza portarsi dietro una cartella.
 
-    `intera=False` (norma): via il titolo, il sottotitolo e la didascalia a 4 blocchi;
+    `intera=False` (norma): via il titolo, il sottotitolo e la didascalia a 2 blocchi;
     resta il grafico, e il testo lo rimette la scheda alla propria tipografia, a corpo
     leggibile e selezionabile.
 

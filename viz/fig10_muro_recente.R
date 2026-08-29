@@ -219,7 +219,10 @@ figura <- ((posizione / striscia + plot_layout(heights = c(1, 0.32))) | confront
   plot_layout(widths = c(1.15, 1)) +
   plot_annotation(
     title = "Il muro si alza fra il 2001 e il 2011, e nel 2024 è ancora lì",
-    subtitle = paste0(
+    subtitle = sommario(paste0(
+      "Tre letture della stessa frattura, allineate sullo stesso asse del tempo: in alto a sinistra la posizione di Bagheria nella distribuzione dei 390 comuni siciliani, in percentile, su quattro indicatori del mercato del lavoro; ",
+      "sotto, la stessa frattura vista dall'istruzione con l'uscita precoce dalla scuola; a destra il tasso di occupazione femminile di Bagheria dentro il suo gruppo di dieci comuni gemelli, in punti percentuali. ",
+      "I primi due pannelli sono in percentile e il terzo in livello: sono unità diverse, e ciascuna si legge dentro il suo pannello.\n",
       "Fra il 1991 e il 2011 le donne di Bagheria entrano nel lavoro, ma il mercato non le assorbe: l'occupazione femminile scende al ",
       pct("L11", 2011), " percentile.\n",
       "Il censimento permanente mostra che dopo il 2011 è peggiorata ancora (", pct("L11", 2018),
@@ -227,36 +230,28 @@ figura <- ((posizione / striscia + plot_layout(heights = c(1, 0.32))) | confront
       "Fra il 2011 e il 2024 l'occupazione maschile risale dal ", pct("L10", 2011), " al ", pct("L10", 2024),
       " percentile, mentre la partecipazione femminile continua a scendere, dal ", pct("L2", 2011),
       " al ", pct("L2", 2024), ":\n",
-      "la lettura del 2011, un mercato ristretto per tutti, al 2024 non regge più, perché gli uomini recuperano e le donne no.\n",
-      "Rispetto alle gemelle strutturali lo scarto non si è chiuso: ", virgola(scarto_2011),
+      "la lettura del 2011, un mercato ristretto per tutti, al 2024 vale solo per gli uomini, che recuperano mentre le donne restano indietro.\n",
+      "Rispetto alle gemelle strutturali lo scarto resta aperto: ", virgola(scarto_2011),
       " punti nel 2011, e fra ", SCARTO_MIN, " e ", SCARTO_MAX, " in ogni anno dal ",
       ANNI_PERM[1], " al ", ANNI_PERM[2], ".\n",
       "Nello stesso decennio peggiora anche l'istruzione, e in modo indipendente dal lavoro: l'uscita precoce dalla scuola passa dal ",
       virgola(frattura$percentile_390[frattura$anno == 2001], 0, "°"), " al ",
       virgola(frattura$percentile_390[frattura$anno == 2011], 0, "° percentile"), ".\n",
-      "Due domini diversi, due indicatori diversi, la stessa datazione: il 2001-2011 non è un artefatto della misura del lavoro.\n",
-      "Per la proposal: la frattura è databile e non si richiude da sola, e il pre-periodo del disegno di valutazione adesso è misurato invece che assunto."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "tre letture della stessa frattura, allineate sullo stesso asse del tempo. In alto a sinistra la posizione di Bagheria nella distribuzione dei 390 comuni siciliani, in percentile, su quattro indicatori del mercato del lavoro; ",
-        "sotto, la stessa frattura vista dall'istruzione con l'uscita precoce dalla scuola; a destra il tasso di occupazione femminile di Bagheria dentro il suo gruppo di dieci comuni gemelli, in punti percentuali. ",
-        "I primi due pannelli sono in percentile e il terzo in livello: sono unità diverse e non vanno confrontate fra loro."),
-      base = paste0(
-        "N = 390 comuni ai confini del 2011 in entrambe le epoche (Misiliscemi, istituito nel 2021, resta fuori per non cambiare il denominatore) e 10 comuni nel gruppo delle gemelle. ",
-        "Gemelle = i dieci comuni più simili a Bagheria per dimensione, densità, struttura per età, stranieri, abitazioni e distanza da Palermo, appaiati con distanza di Mahalanobis su variabili che non sono esiti. ",
-        "Due rilevazioni con disegni diversi: universale a questionario i censimenti 1991-2011, campionaria sui registri il censimento permanente 2018-2024. Nessuna linea attraversa lo stacco fra le due, e nessun valore è interpolato; il 2020 manca alla fonte. ",
-        "Il percentile è un rango calcolato dentro l'anno e assorbe quindi lo scarto di definizione fra le fonti; i livelli assoluti no, ed è la ragione per cui nel pannello destro le due epoche restano separate. ",
-        "Cautela di misura: fra il 2019 e il 2021 il censimento permanente cambia la definizione di «in cerca di occupazione» (a Bagheria la disoccupazione femminile cala di 15,5 punti, in Italia di 4,5), quindi le due serie grigie vanno lette con prudenza in quel tratto; occupazione maschile e femminile non ne risentono. ",
-        "Il differenziale educativo fra maschi e femmine non è in figura perché esiste solo fino al 2011: 8milaCensus lo calcola sulla popolazione di 6 anni e più, e il permanente non pubblica una classe 15 e più sull'istruzione. ",
-        "I percentili dell'uscita precoce, ricalcolati in questo thread, coincidono con quelli del thread educazione su tutte e 18 le coppie indicatore per anno, con scarto massimo 0,00."),
+      "Due domini diversi, due indicatori diversi, la stessa datazione: il 2001-2011 è una frattura reale, non un artefatto della misura del lavoro.\n",
+      "Per la proposal: la frattura è databile e resta aperta, e il pre-periodo del disegno di valutazione adesso è misurato invece che assunto."), LARGHEZZA),
+    caption = didascalia_2b(
       lettura = paste0(
         "l'asse del tempo non è in scala: il tratto 1991-2011 è compresso e il tratto 2018-2024 allungato, per dare spazio agli anni con più rilevazioni. Le pendenze si leggono dentro ciascuna epoca, mai fra un'epoca e l'altra. ",
-        "La striscia grigia verticale al centro di ogni pannello è lo stacco fra le due rilevazioni: non è un'annata mancante, è un cambio di fonte, e nessuna linea lo attraversa. ",
+        "La striscia grigia verticale al centro di ogni pannello è lo stacco fra le due rilevazioni (universale a questionario i censimenti 1991-2011, campionaria sui registri il permanente 2018-2024): non è un'annata mancante, è un cambio di fonte, e nessuna linea lo attraversa. ",
+        "Il percentile è un rango calcolato dentro l'anno e assorbe quindi lo scarto di definizione fra le fonti; i livelli assoluti no, ed è la ragione per cui nel pannello destro le due epoche restano separate. ",
         "Nei due pannelli di sinistra la riga orizzontale a 50 è la mediana regionale. Nel pannello in alto lo spessore è enfasi e non un dato: occupazione femminile (vermiglio) e maschile (blu) sono le due serie del finding, partecipazione e disoccupazione femminile restano grigie perché sono contesto. ",
+        "Su quelle due serie grigie va usata prudenza fra il 2019 e il 2021, dove il permanente cambia la definizione di «in cerca di occupazione» (a Bagheria la disoccupazione femminile cala di 15,5 punti, in Italia di 4,5); occupazione maschile e femminile non ne risentono. ",
         "La striscia in basso ha verso opposto ai pannelli sopra, e per questo ha scala e asse propri: l'uscita precoce dalla scuola è un indicatore negativo, quindi più in alto significa peggio. ",
-        "Nel pannello di destra la banda grigia è l'intervallo fra il primo e il terzo quartile delle dieci gemelle, cioè la loro metà centrale, e non è un intervallo di confidenza; la linea grigia dentro la banda è la loro mediana e quella vermiglia è Bagheria."),
+        "Nel pannello di destra la banda grigia è l'intervallo fra il primo e il terzo quartile delle dieci gemelle, cioè la loro metà centrale, e non è un intervallo di confidenza; la linea grigia dentro la banda è la loro mediana e quella vermiglia è Bagheria. ",
+        "Gemelle = i dieci comuni più simili a Bagheria per dimensione, densità, struttura per età, stranieri, abitazioni e distanza da Palermo, appaiati con distanza di Mahalanobis su variabili che non sono esiti. ",
+        "Il differenziale educativo fra maschi e femmine non è in figura perché esiste solo fino al 2011: 8milaCensus lo calcola sulla popolazione di 6 anni e più, e il permanente non pubblica una classe 15 e più sull'istruzione."),
       fonte = paste0(
-        "ISTAT, 8milaCensus (censimenti 1991, 2001 e 2011) e Censimento permanente della popolazione (2018-2024), popolazione di 15 anni e più; per la striscia, l'indicatore I5 di 8milaCensus, cioè la quota di 15-24enni con la sola licenza media e fuori da scuola e formazione. ",
+        "ISTAT, 8milaCensus (censimenti 1991, 2001 e 2011) e Censimento permanente della popolazione (2018-2024), popolazione di 15 anni e più, 390 comuni ai confini del 2011; per la striscia, l'indicatore I5 di 8milaCensus, cioè la quota di 15-24enni con la sola licenza media e fuori da scuola e formazione. ",
         "Elaborazione: notebooks/genere.ipynb (data/processed/genere_gap_madri.csv, genere_madri_recente.csv, genere_pretrend_gemelle.csv, genere_pretrend_gemelle_recente.csv e genere_frattura_istruzione.csv)."),
       larghezza = LARGHEZZA),
     theme = tema_figura()

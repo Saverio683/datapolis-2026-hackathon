@@ -37,7 +37,8 @@ Resta da rigenerare `docs/RELAZIONE_DATAPOLIS.docx`, fermo alla versione precede
 - **Il ribaltamento è il risultato del thread.** Quota che esce dal comune, scarto F−M, 2011,
   conteggio esaustivo: **+2,6 punti** per studio (le ragazze escono più dei coetanei),
   **−12,1** per lavoro. Il salto vale **14,7 punti** contro 6,0 in Sicilia, 6,5 in Italia,
-  1,9 nel Comune di Palermo. Sul lavoro Bagheria è al **13° percentile** dei 390 comuni.
+  1,9 nel Comune di Palermo. Sul lavoro Bagheria è al **13° percentile** dei 381 comuni non
+  capoluogo (15° sui 390).
   **Replica** sul censimento permanente 2018-2019, fonte e metodo diversi: +11,3 e +10,9
   contro +5,6 siciliano. Regge al controllo per tasso di occupazione femminile (`L11`) e per
   divario occupazionale: il residuo passa da −8,7 a −7,0 punti.
@@ -48,7 +49,7 @@ Resta da rigenerare `docs/RELAZIONE_DATAPOLIS.docx`, fermo alla versione precede
   tipo «portare il treno a Bagheria» risolverebbe un problema che non c'è.
 - **Le donne partono più tardi e viaggiano più a lungo.** Verso Palermo per lavoro esce
   prima delle 7:15 il **65,0% degli uomini** e il **54,4% delle donne**; il 43,8% delle donne
-  impiega 31-60 minuti contro il 36,2% degli uomini, per 17 km. Sullo studio la differenza
+  impiega 31-60 minuti contro il 36,1% degli uomini, per 17 km. Sullo studio la differenza
   quasi scompare: **la divergenza oraria nasce col lavoro.**
 
 ## Risultato negativo, da non dimenticare

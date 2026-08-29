@@ -18,12 +18,25 @@ Deliverable (in ordine di priorità):
 uv sync                                   # setup ambiente Python
 uv run python -m pipeline.fetch           # scarica raw da tutte le fonti
 uv run python -m pipeline.build           # raw -> processed
-uv run jupyter nbconvert --to notebook --execute notebooks/analisi.ipynb  # SENSORE: il notebook DEVE passare questo comando
+uv run python -m pipeline.edu             # thread educazione: raw -> edu_*.csv
+uv run jupyter nbconvert --to notebook --execute notebooks/analisi.ipynb     # SENSORE (19 celle)
+uv run jupyter nbconvert --to notebook --execute notebooks/genere.ipynb      # SENSORE (133 celle)
+uv run jupyter nbconvert --to notebook --execute notebooks/educazione.ipynb  # SENSORE (64 celle)
+uv run jupyter nbconvert --to notebook --execute notebooks/mobilita.ipynb    # SENSORE (40 celle)
 Rscript viz/build_all.R                   # genera tutte le figure in figures/
 uv run python -m pipeline.schede          # data/processed -> docs/schede/ (4 schede HTML)
+Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didascalie.csv
+uv run python -m pipeline.editor_testi fig06   # editor dei soli testi di una figura, anteprima live
+uv run python -m pipeline.relazione_docx  # RELAZIONE_DATAPOLIS.md + figure -> .docx
+uv run python -m pipeline.policy_docx     # POLICY_PONTE_19.md + figure e sinossi -> .docx
+uv run python -m pipeline.verifica        # SENSORE: 743 controlli, exit 1 se uno fallisce
 ```
 
-Prima di dichiarare completo qualunque task che tocca il notebook, esegui il comando nbconvert sopra. Se fallisce, il task non è finito.
+Prima di dichiarare completo qualunque task che tocca un notebook, esegui il nbconvert **di quel notebook** e quello di `analisi.ipynb`. Se fallisce, il task non è finito.
+
+`analisi.ipynb` è il guscio condiviso (caricamento, verifica delle definizioni, export per le figure): da solo copre 19 celle su 256, l'analisi vera sta nei tre notebook di thread. Un nbconvert sul solo `analisi.ipynb` non è quindi la prova che il progetto gira.
+
+Prima di dichiarare completo qualunque task che tocca `data/processed/`, i notebook o i documenti di `docs/`, esegui `pipeline.verifica`. Copre tre salti: raw -> notebook, notebook -> processed, e processed -> le cifre scritte a mano in `RELAZIONE.md`, `RELAZIONE_DATAPOLIS.md` e `POLICY_PONTE_19.md`. Quest'ultimo blocco non dichiara i numeri attesi: li rilegge da `data/processed/`, li formatta all'italiana e pretende che la frase compaia alla lettera nel documento, quindi fallisce sia se si muove il dato sia se si ritocca il testo a mano. Quando fallisce, la riga di FAIL stampa la frase da riscrivere.
 
 ## Struttura repo
 ```
@@ -32,7 +45,8 @@ data/processed/    # output della pipeline, rigenerabile, interfaccia Python->R
 pipeline/          # moduli Python di fetch e trasformazione
 notebooks/         # analisi.ipynb (condiviso) + un notebook per thread esplorativo
 viz/               # script R, uno per figura + build_all.R
-figures/           # output viz (PNG 300dpi + SVG)
+figures/           # output viz (PNG 300dpi + SVG) + didascalie.csv (titoli e
+                   # didascalie estratti dagli script R, per chi incorpora le figure)
 docs/schede/       # quattro schede tematiche HTML, generate da pipeline/schede.py:
                    # una per richiesta del bando, ogni cifra letta da data/processed/
                    # blocchi numerati («Figura 2.3») + didascalia a 4 blocchi; incorporano
@@ -82,14 +96,13 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 - Palette: colorblind-safe (viridis per continue, Okabe-Ito per categoriche). Per il genere si usano blu (M) e rosa (F) — scelta del team del 2026-08-26, per la lettura immediata: i due valori restano dentro Okabe-Ito (`#0072B2` e `#CC79A7`), quindi la coppia è ancora distinguibile in protanopia e deuteranopia. Di conseguenza nessun territorio usa quei due colori: Palermo è viola, Sicilia ambra.
 - Tipografia delle figure: tre livelli, una sola famiglia. Titolo della figura e sottotitolo prendono `tema_figura()`, i titoli dei singoli pannelli restano su `tema_datapolis()`. Mai un secondo font: solo Lato ha un fallback verificato e cairo converte comunque il testo in tracciati nell'SVG.
 - Ogni figura: titolo che enuncia il finding (non la variabile), export sia PNG 300dpi sia SVG in `figures/`.
-- **Didascalia autosufficiente, quattro blocchi** — `didascalia_4b()` in `viz/theme.R`, obbligatorio su ogni figura. Chi guarda dal fondo della sala non ha il notebook accanto: la figura deve dire da sola cosa misura, su quante persone, con che dispersione, e cosa significano le linee che non sono dati.
-  - **Vale anche per le schede HTML**: `blocco()` in `pipeline/schede.py` prende gli stessi quattro come argomenti obbligatori senza default, e `main()` verifica che ogni sezione li abbia tutti e quattro. Stessa anatomia, due linguaggi.
-  - Quando una scheda incorpora una figura di `figures/`, la didascalia del PNG si **ritaglia via** (`figura()` la toglie insieme al titolo) e si rifà in HTML: a larghezza di colonna quel testo scende sotto i cinque pixel. Il PNG intero solo in appendice, a piena larghezza.
-  - `mostra`: metrica, unità, trasformazioni, fascia d'età, territori, anni. Anche cosa la figura **non** dice, e quale altra figura lo dice.
-  - `base`: N per gruppo, tendenza centrale, dispersione o intervalli **con il metodo esplicito** (Wilson sui tassi, Newcombe sulla differenza M−F, bootstrap sui residui, tutti al 95%), test e soglie, esclusioni e filtri. Dove non c'è incertezza campionaria si scrive perché (conteggi censuari, non stime).
-  - `lettura`: decodifica di tutto ciò che non è un dato — tratteggi, bande, strisce del dato mancante, colori, diametri, scale logaritmiche, ordinamenti non per valore.
+- **Il sottotitolo dice cosa mostra la figura** — metrica, unità, trasformazioni, fascia d'età, territori, anni; anche cosa la figura **non** dice, e quale altra figura lo dice. Sta in alto, a corpo pieno, ed è la prima cosa che si legge: è lì che serve. Sotto, il finding con le cifre. Testi lunghi passano da `sommario(..., LARGHEZZA)`, che manda a capo sulla larghezza dichiarata (le figure da 30 cm in su vanno a capo a mano: il budget in caratteri di `a_capo()` è una stima e su quelle misure sborda).
+- **Didascalia autosufficiente, due blocchi** — `didascalia_2b()` in `viz/theme.R`, obbligatorio su ogni figura. Chi guarda dal fondo della sala non ha il notebook accanto: la figura deve dire da sola cosa significano le linee che non sono dati, e da dove viene il numero.
+  - `lettura`: decodifica di tutto ciò che non è un dato — tratteggi, bande, strisce del dato mancante, colori, diametri, scale logaritmiche, ordinamenti non per valore. Qui vive anche il metodo di ciò che è disegnato (Wilson, Newcombe, bootstrap, tutti al 95%) e la cautela che serve a leggere il grafico: fasce non confrontabili, esclusioni, definizioni cambiate alla fonte.
   - `fonte`: fonte con anno, più il file di `data/processed/` che rigenera la figura.
-- Ogni script dichiara `LARGHEZZA <- n` una volta e la passa sia a `didascalia_4b()` sia a `salva()`: legate, un testo tagliato dal bordo del PNG non può passare inosservato. Alzare `altezza` quando la didascalia cresce.
+  - Le **schede HTML restano a quattro blocchi**: `blocco()` in `pipeline/schede.py` prende `mostra`, `base`, `lettura` e `fonte` come argomenti obbligatori senza default, e `main()` verifica che ogni sezione li abbia tutti e quattro. In una scheda il testo ha lo spazio che sul PNG manca.
+  - Quando una scheda o un .docx incorpora una figura di `figures/`, la didascalia del PNG si **ritaglia via** (`CODA_DIDASCALIA = 2` in `pipeline/schede.py` e `pipeline/relazione_docx.py`: sono le ultime due bande di inchiostro) e si rifà nella tipografia del documento, con il testo estratto da `figures/didascalie.csv`. Il PNG intero solo in appendice, a piena larghezza.
+- Ogni script dichiara `LARGHEZZA <- n` una volta e la passa sia a `didascalia_2b()` sia a `salva()`: legate, un testo tagliato dal bordo del PNG non può passare inosservato. Alzare `altezza` quando il testo cresce.
 - **Niente em-dash nel testo renderizzato**: parentesi tonde, due punti o virgole. Italiano formale. I commenti nel codice sono esenti.
 - La regola «nessuna cifra scritta a mano» vale anche per titoli, sottotitoli e didascalie: ogni numero si legge da `data/processed/` dentro lo script.
 - Mappe: confini ISTAT ufficiali (shapefile/GeoJSON delle unità amministrative), CRS documentato nello script.

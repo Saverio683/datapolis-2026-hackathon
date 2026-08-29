@@ -60,32 +60,26 @@ figura <- ggplot(largo) +
   scale_colour_manual(values = COLORI_GENERE, labels = ETICHETTE_GENERE) +
   labs(
     title = "La freccia punta in basso a destra in tutti e quattro i territori,\ne a Bagheria arriva più in basso di tutte",
-    subtitle = paste0(
-      "Ogni freccia va dal punto maschile a quello femminile: verso destra le ragazze sono più istruite dei coetanei, verso il basso\n",
-      "sono meno occupate. Nessuno dei quattro territori fa eccezione al verso: a distinguere Bagheria è quanto in basso arriva.\n",
-      "sul 9-24 il vantaggio nel diploma è il più ampio del panel (+", virgola(DIVARIO_BAG, 1),
-      " punti) e il tasso di occupazione femminile è il più basso (", virgola(bag$tasso_occupazione_F, 1), "%)."),
+    subtitle = sommario(paste0(
+      "Posizione dei quattro territori di confronto sul piano che incrocia istruzione e lavoro, anno ", anno,
+      ": sull'asse orizzontale la quota con almeno il diploma sulla fascia 9-24 anni, in percentuale della popolazione della fascia, ",
+      "sull'asse verticale il tasso di occupazione della classe 15-24 anni, in percentuale dei residenti della classe. ",
+      "Ogni territorio compare due volte, una per genere, e la freccia unisce i suoi due punti.\n",
+      "Ogni freccia va dal punto maschile a quello femminile: verso destra le ragazze sono più istruite dei coetanei, verso il basso sono meno occupate. ",
+      "Tutti e quattro i territori condividono il verso: a distinguere Bagheria è quanto in basso arriva.\n",
+      "Sul 9-24 il vantaggio nel diploma è il più ampio del panel (+", virgola(DIVARIO_BAG, 1),
+      " punti) e il tasso di occupazione femminile è il più basso (", virgola(bag$tasso_occupazione_F, 1), "%)."), LARGHEZZA),
     x = "quota con almeno il diploma, 9-24 anni (%)",
     y = "tasso di occupazione 15-24 anni (%)",
-    caption = didascalia_4b(
-      mostra = paste0(
-        "posizione dei quattro territori di confronto sul piano che incrocia istruzione e lavoro, anno ", anno,
-        ". Sull'asse orizzontale la quota con almeno il diploma sulla fascia 9-24 anni, in percentuale della popolazione della fascia; ",
-        "sull'asse verticale il tasso di occupazione della classe 15-24 anni, in percentuale dei residenti della classe. ",
-        "Ogni territorio compare due volte, una per genere, e la freccia unisce i suoi due punti."),
-      base = paste0(
-        "Quattro territori e una sola annata, quindi la figura è una fotografia e non una tendenza: la serie sta in fig05b. ",
-        "Denominatori di Bagheria: ", migliaia(round(N_9_24("F"))), " ragazze e ", migliaia(round(N_9_24("M"))),
-        " ragazzi sulla fascia 9-24 dell'asse orizzontale, ", migliaia(N_15_24("F")), " ragazze e ",
-        migliaia(N_15_24("M")), " ragazzi sulla classe 15-24 dell'asse verticale. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Le due fasce non coincidono ma vivono sulla stessa popolazione, perché nessuno consegue un titolo prima dei 15 anni: i diplomati 9-24 sono i diplomati 15-24. ",
-        "Attenzione al denominatore dell'asse orizzontale: la fascia 9-24 include bambini che non hanno ancora l'età del titolo, quindi il livello della quota non è un tasso di diplomati, mentre il confronto fra generi e fra territori resta valido."),
+    caption = didascalia_2b(
       lettura = paste0(
         "il pallino rosa è il valore femminile, quello blu il maschile. La freccia grigia parte dal punto maschile e arriva a quello femminile: ",
         "quanto va verso destra è il vantaggio educativo delle ragazze, quanto scende è il loro svantaggio occupazionale. ",
         "Una freccia che punta in basso a destra significa quindi «più istruite e meno occupate», ed è il verso che tutti e quattro i territori condividono. ",
-        "Il nome accanto alla punta identifica il territorio: qui i colori dicono il genere, non il territorio."),
+        "Il nome accanto alla punta identifica il territorio: qui i colori dicono il genere, non il territorio. ",
+        "Le due fasce degli assi non coincidono ma vivono sulla stessa popolazione, perché nessuno consegue un titolo prima dei 15 anni: i diplomati 9-24 sono i diplomati 15-24. ",
+        "Sull'asse orizzontale la fascia 9-24 include però bambini che non hanno ancora l'età del titolo, quindi il livello della quota va letto come posizione relativa e non come tasso di diplomati; il confronto fra generi e fra territori resta valido. ",
+        "Una sola annata, quindi la figura è una fotografia e non una tendenza: la serie sta in fig05b."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola istruzione (fascia 9-24 anni) e tavola della condizione professionale (classe 15-24 anni), anno ",
         anno, ". Il contesto regionale, cioè dove cade Bagheria nella distribuzione dei 390 comuni siciliani per occupazione femminile, sta in fig06b, che usa fascia e anni diversi e non va letta in serie con questa. ",

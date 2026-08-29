@@ -179,9 +179,10 @@ figura <- ggplot(barre, aes(q, nome_territorio, fill = stato)) +
   labs(
     title = paste0("Alle ragazze di Bagheria mancano ", round(BUCO_F),
                    " punti di occupazione: riappaiono quasi tutti fra le casalinghe"),
-    subtitle = paste0(
-      "Composizione della condizione professionale, 15-24 anni, ", ANNO,
-      ". Ogni barra somma 100: un territorio per riga, ordine geografico.\n",
+    subtitle = sommario(paste0(
+      "Composizione della condizione professionale della classe 15-24 anni, in percentuale della popolazione della classe, anno ",
+      ANNO, ", su cinque territori e separatamente per genere: un territorio per riga, in ordine geografico, e ogni barra somma 100. ",
+      "La figura mostra quindi come si ridistribuisce la stessa popolazione, non i livelli assoluti; la partizione su Bagheria sola, con i tre esiti aggregati e i conteggi, sta in fig02, e il dettaglio sulle sole casalinghe in fig02b.\n",
       # Niente articolo davanti alle quote: «al 8,2%» vuole l'apostrofo, «al 9,6%» no, e
       # la forma giusta dipenderebbe da una cifra che arriva dai dati.
       "Fra le ragazze Bagheria sta a ", virgola(q("Bagheria", "occupati", "F")),
@@ -190,35 +191,25 @@ figura <- ggplot(barre, aes(q, nome_territorio, fill = stato)) +
       virgola(q("Bagheria", "casalinghe/i", "F")), "% contro ",
       virgola(q("Italia", "casalinghe/i", "F")), "%:\n",
       virgola(BUCO_F), " punti persi da una parte, ", virgola(scarto("casalinghe/i", "F")),
-      " ritrovati dall'altra. E non è che a Bagheria si studi di più, perché le studentesse sono ",
+      " ritrovati dall'altra. E il tempo va altrove che allo studio, perché le studentesse sono ",
       virgola(q("Bagheria", "studenti", "F")), "% contro ",
       virgola(q("Italia", "studenti", "F")), "%.\n",
       "Sui ragazzi il buco di occupazione è quasi identico (", virgola(BUCO_M),
       " punti), ma la quota riemerge nell'«altra condizione» (+",
       virgola(scarto("altra condizione", "M")), "), non fra le casalinghe.\n",
-      "Stesso divario, destinazioni diverse. Il vicinato segue Bagheria o sta peggio su entrambe le voci: ",
-      "il confine comunale non è dove cambia il fenomeno."),
+      "Stesso divario, destinazioni diverse. Il vicinato segue Bagheria o va oltre su entrambe le voci: ",
+      "il fenomeno prosegue oltre il confine comunale."), LARGHEZZA),
     x = NULL, y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "composizione della condizione professionale della classe 15-24 anni, in percentuale della popolazione della classe, anno ",
-        ANNO, ", su cinque territori e separatamente per genere. Ogni barra somma 100, quindi la figura mostra come si ridistribuisce la stessa popolazione e non i livelli assoluti. ",
-        "La stessa partizione su Bagheria sola, con i tre esiti aggregati e i conteggi, sta in fig02; il dettaglio sulle sole casalinghe in fig02b."),
-      base = paste0(
-        "Denominatori (residenti 15-24 al ", ANNO, "): ", N_TERRITORI,
-        ". Per il vicinato i conteggi dei cinque comuni sono sommati prima delle quote, non è la media delle cinque quote. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. Una sola annata, quindi nessuna tendenza. ",
-        "Le quote sono arrotondate al decimo alla fonte e possono sommare a 100,1: la barra normalizza per allineare i bordi, mentre l'etichetta resta il numero pubblicato. ",
-        "Il totale «fuori da lavoro e istruzione» che la graffa aggrega viene da genere_fuori_lavoro_istruzione.csv, perché sommare qui le quote già arrotondate darebbe un decimo in più. ",
-        "La condizione è autodichiarata al censimento: è un marcatore del carico di cura, non la sua misura diretta."),
+    caption = didascalia_2b(
       lettura = paste0(
         "in una barra impilata solo i segmenti ancorati a un bordo sono confrontabili fra righe, perché gli altri partono da un offset diverso in ogni riga. ",
         "Per questo l'ordine delle categorie non è narrativo: «occupati» sta al bordo sinistro e «casalinghe/i» al destro, e sono le due voci del confronto fra territori; ",
         "le altre quattro si leggono dentro un territorio, non fra territori. ",
         "L'ordine delle righe è geografico e non per valore, dal comune al paese. ",
         "La graffa in cima aggrega i quattro stati oltre «studenti»: è la convenzione di questo repo («fuori da lavoro e istruzione» = tutti meno occupati e studenti), non il NEET ISTAT 15-29, che a scala comunale esiste solo al 2011. ",
+        "Il totale che la graffa aggrega viene da genere_fuori_lavoro_istruzione.csv, perché sommare qui le quote già arrotondate darebbe un decimo in più; per lo stesso motivo la barra normalizza per allineare i bordi, mentre l'etichetta resta il numero pubblicato. ",
         "L'etichetta compare solo sui segmenti che la reggono (quota di almeno ", virgola(SOGLIA_ETICHETTA), "%): sotto quella soglia il testo è più largo del segmento e sconfinerebbe su quelli accanto. ",
-        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi."),
+        "Vicinato = i cinque comuni più vicini per distanza fra i centroidi, con i conteggi sommati prima delle quote: sono le quote del blocco, non la media delle cinque quote."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", ANNO,
         ". Elaborazione: notebooks/genere.ipynb (data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv per il vicinato aggregato e genere_platea.csv per i denominatori)."),

@@ -146,9 +146,11 @@ storica <- ggplot(mobilita_storica, aes(valore, territorio_nome)) +
 figura <- (misurato | storica) +
   plot_layout(widths = c(1.1, 1)) +
   plot_annotation(
-    title = "Da Bagheria si esce per lavorare molto più che per studiare, ma dove si va il dato non lo dice",
+    title = "Da Bagheria si esce per lavorare molto più che per studiare, e dove si vada resta fuori dal dato",
     subtitle = sommario(paste0(
-      "Appendice. Nel ", ANNO, " il ", virgola(quota_di("Bagheria", "WK"), 1),
+      "Appendice sulla mobilità: nel pannello di sinistra la quota di chi esce dal comune sul totale di chi si sposta ogni giorno per quel motivo, per quattro territori e per i due motivi (lavoro e studio), anno ",
+      ANNO, "; nei pannelli di destra due indicatori storici di mobilità del censimento 2011, ciascuno con il proprio denominatore. La figura descrive e non spiega: serve a dire cosa la mobilità permette di affermare e cosa no.\n",
+      "Nel ", ANNO, " il ", virgola(quota_di("Bagheria", "WK"), 1),
       "% di chi si sposta per lavoro esce dal comune, contro il ",
       virgola(quota_di("Bagheria", "STD"), 1), "% di chi si sposta per studio: ",
       virgola(quota_di("Bagheria", "WK") - quota_di("Bagheria", "STD"), 1),
@@ -157,27 +159,20 @@ figura <- (misurato | storica) +
       virgola(quota_di("Bagheria", "WK"), 1), "% contro ", virgola(quota_di("Sicilia", "WK"), 1),
       "%) e MENO studenti (", virgola(quota_di("Bagheria", "STD"), 1), "% contro ",
       virgola(quota_di("Sicilia", "STD"), 1), "%). È una descrizione, non una spiegazione.\n",
-      "Quello che manca è ciò che servirebbe a farne una policy: la tavola non identifica la destinazione, quindi \"fuori comune\" non è \"a Palermo\";\n",
+      "Quello che manca è ciò che servirebbe a farne una policy: la tavola si ferma a «fuori comune», quindi la destinazione resta ignota;\n",
       "i due indicatori storici hanno denominatori incompatibili e stanno in due pannelli separati; e il GTFS disponibile copre la rete urbana di Palermo, non il collegamento da Bagheria."),
       LARGHEZZA),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "appendice sulla mobilità. Nel pannello di sinistra la quota di chi esce dal comune sul totale di chi si sposta ogni giorno per quel motivo, per quattro territori e per i due motivi (lavoro e studio), anno ",
-        ANNO, "; nei pannelli di destra due indicatori storici di mobilità del censimento 2011, ciascuno con il proprio denominatore. ",
-        "La figura descrive e non spiega: serve a dire cosa la mobilità permette di affermare e cosa no."),
-      base = paste0(
-        "La destinazione non è nel dato. La tavola distingue solo «stesso comune» e «altro comune»: nessun numero di questa figura dice quante persone vanno a Palermo, e la quota fuori comune non va usata come misura del pendolarismo verso il capoluogo. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie. ",
-        "I due motivi hanno denominatori diversi fra loro, perché i pendolari per lavoro e quelli per studio sono due popolazioni distinte: il confronto legittimo è fra territori sullo stesso motivo, mentre la distanza fra i due pallini di una riga descrive quel territorio e non una differenza di intensità fra lavoro e studio. ",
-        "Anche i due indicatori storici hanno denominatori incompatibili, ed è la ragione per cui stanno in due pannelli con due assi: M2 rapporta chi esce dal comune alla popolazione fino a 64 anni, M6 rapporta chi usa il mezzo collettivo ai soli residenti che si spostano ogni giorno. ",
-        "Palermo compare a valori bassissimi per costruzione e non per merito: è il capoluogo del proprio bacino, quindi i suoi residenti trovano lavoro e scuole dentro il comune, e il suo dato è il termine di paragone della struttura, non una prestazione. ",
-        "Il feed GTFS disponibile (", gtfs$feed_publisher, ", ", gtfs$feed_version, ": ", migliaia(gtfs$routes),
-        " linee, ", migliaia(gtfs$stops), " fermate) descrive la rete urbana di Palermo e non include il tratto Bagheria-Palermo: non misura l'accessibilità che questa appendice vorrebbe misurare, e nessun risultato ne dipende. ",
-        "La mobilità resta contesto: nel pilota può entrare solo come barriera registrata caso per caso e testata su uno specifico sottogruppo, mai come causa identificata del divario occupazionale."),
+    caption = didascalia_2b(
       lettura = paste0(
-        "nel pannello di sinistra ogni riga è un territorio e i due pallini sono i due motivi dello spostamento: la loro distanza descrive quel territorio, non un divario fra lavoro e studio. ",
-        "Nei pannelli di destra ogni pannello ha il suo asse perché i due indicatori non condividono il denominatore: le due altezze non vanno confrontate a occhio, e ciascun pannello si legge solo al proprio interno. ",
-        "Bagheria è in vermiglio, gli altri territori restano in grigio o nei colori che portano in tutta la cartella."),
+        "nel pannello di sinistra ogni riga è un territorio e i due pallini sono i due motivi dello spostamento: la loro distanza descrive quel territorio, non un divario fra lavoro e studio, perché i pendolari per lavoro e quelli per studio sono due popolazioni distinte. ",
+        "Il confronto legittimo è quindi fra territori sullo stesso motivo. ",
+        "Nei pannelli di destra ogni pannello ha il suo asse perché i due indicatori non condividono il denominatore (M2 rapporta chi esce dal comune alla popolazione fino a 64 anni, M6 rapporta chi usa il mezzo collettivo ai soli residenti che si spostano ogni giorno): le due altezze non vanno confrontate a occhio. ",
+        "Bagheria è in vermiglio, gli altri territori restano in grigio o nei colori che portano in tutta la cartella. ",
+        "Palermo compare a valori bassissimi per costruzione e non per merito: è il capoluogo del proprio bacino, quindi i suoi residenti trovano lavoro e scuole dentro il comune. ",
+        "La destinazione non è nel dato: la tavola distingue solo «stesso comune» e «altro comune», e nessun numero di questa figura dice quante persone vanno a Palermo. ",
+        "Il feed GTFS disponibile (", gtfs$feed_publisher, ", ", gtfs$feed_version, ": ", migliaia(gtfs$routes),
+        " linee, ", migliaia(gtfs$stops), " fermate) descrive la rete urbana di Palermo e non include il tratto Bagheria-Palermo, quindi nessun risultato ne dipende. ",
+        "La mobilità resta contesto: nel pilota può entrare solo come barriera registrata caso per caso e testata su uno specifico sottogruppo, mai come causa identificata del divario occupazionale."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola del pendolarismo giornaliero, ", ANNO,
         " (pannello sinistro), e ISTAT, 8milaCensus, censimento 2011 (pannelli destri). ",

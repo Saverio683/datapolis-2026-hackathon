@@ -95,37 +95,27 @@ figura <- ggplot(serie, aes(asse_2020(anno), tasso_occupazione,
   buco_2020(y = 40, serie$anno, serie$tasso_occupazione) +
   labs(
     title = "A Bagheria il tasso di occupazione maschile è il doppio di quello femminile\ngià a 15-24 anni",
-    subtitle = paste0(
-      "Quota di occupati sulla popolazione della classe, per genere, ", PRIMO, "-", ANNO,
-      ". Bagheria a tratto pieno, ", RIFERIMENTO, " tratteggiata.\n",
+    subtitle = sommario(paste0(
+      "Tasso di occupazione per genere, cioè occupati in percentuale della popolazione della stessa classe d'età e dello stesso genere, dal ",
+      PRIMO, " al ", ANNO, ", sulle quattro classi d'età pubblicate a livello comunale. Sul grafico stanno due territori, Bagheria a tratto pieno e ",
+      RIFERIMENTO, " tratteggiata: con quattro territori le linee diventerebbero sedici e i pannelli illeggibili. ",
+      "Il tasso sta sulla popolazione della classe e non sulle sole forze di lavoro, quindi comprende studenti e inattivi, e per questo la classe 15-24 resta bassa per entrambi i generi.\n",
       "In punti il divario cresce con l'età (da ", virgola(GIOVANI$gap_pp, 1),
       " pp sui 15-24 a ", virgola(ANZIANI$gap_pp, 1), " pp sui 50-64), ma cresce ovunque. ",
       "Quello che distingue Bagheria è il rapporto:\n",
       virgola(GIOVANI$rapporto, 2, "×", taglia_zero = FALSE), " già a 15-24 contro ",
       virgola(GIOVANI_RIF$rapporto, 2, "×", taglia_zero = FALSE), " in ", RIFERIMENTO,
       ", ed è il più alto dei quattro territori in tutte e quattro le classi. Il divario\n",
-      "non si apre dopo i vent'anni: a vent'anni c'è già, e in punti sembra piccolo solo ",
-      "perché a quell'età lavorano in pochi."),
+      "c'è già a vent'anni, e in punti sembra piccolo solo perché a quell'età lavorano in pochi."), LARGHEZZA),
     x = NULL, y = NULL, colour = NULL, linetype = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "tasso di occupazione per genere, cioè occupati in percentuale della popolazione della stessa classe d'età e dello stesso genere, dal ",
-        PRIMO, " al ", ANNO, ", sulle quattro classi d'età pubblicate a livello comunale. ",
-        "Sul grafico stanno due territori, Bagheria e ", RIFERIMENTO,
-        ": con quattro territori le linee diventerebbero sedici e i pannelli illeggibili. ",
-        "Il tasso è calcolato sulla popolazione della classe e non sulle sole forze di lavoro, quindi comprende studenti e inattivi, ",
-        "e per questo la classe 15-24 sta strutturalmente bassa per entrambi i generi."),
-      base = paste0(
-        "Denominatori di Bagheria nel ", ANNO, " (", N_CLASSI,
-        "). Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. ",
-        "Il divario è dichiarato su due scale perché dicono cose diverse: in punti percentuali nell'intestazione di ogni pannello, in rapporto fra i due tassi nel sottotitolo. ",
-        "Il rapporto è la misura che non dipende dal livello generale della classe, ed è quella su cui Bagheria risulta il territorio più sbilanciato dei quattro in tutte e quattro le classi (verifica sui quattro territori nel notebook, non disegnata qui). ",
-        "Il 2020 manca alla fonte: sulla classe 15-24 non esiste nessuna riga, sulle altre classi esiste solo il denominatore. La serie è interrotta e nessun valore è interpolato."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ci sono due codifiche indipendenti e vanno lette insieme: il colore è il genere (rosa le femmine, blu i maschi) e il tratto è il territorio (pieno Bagheria, tratteggiato ",
         RIFERIMENTO, "). Il rosa e il blu qui non stanno per un territorio, ed è la ragione per cui nessun territorio li usa nelle altre figure. ",
         "Ogni pannello è una classe d'età, e la cifra nella sua intestazione è il divario fra maschi e femmine a Bagheria in punti percentuali nell'ultima annata. ",
-        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: dove c'è la striscia non c'è misura. ",
+        "Il divario è dichiarato su due scale perché dicono cose diverse: in punti percentuali nell'intestazione di ogni pannello, in rapporto fra i due tassi nel sottotitolo, ",
+        "e il rapporto è la misura che non dipende dal livello generale della classe. ",
+        "La striscia grigia verticale fra il 2019 e il 2021 occupa l'annata mancante: il 2020 manca alla fonte e nessun valore è interpolato. ",
         "Sull'asse orizzontale sono etichettate solo la prima annata, il 2021 e l'ultima; le posizioni restano quelle di tutte le annate."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, ", PRIMO, "-", ANNO,

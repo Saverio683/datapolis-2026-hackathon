@@ -91,8 +91,8 @@ pannello_390 <- ggplot(comuni, aes(treno)) +
   # Il massimo è Termini Imerese al 37,5%: oltre i 40 punti non c'è nessuno, e lasciare
   # l'asse fino a 100 sprecava metà pannello per rappresentare il vuoto.
   coord_cartesian(xlim = c(0, 40)) +
-  labs(subtitle = paste0("C. Il treno a Bagheria non è sottoutilizzato: è già\n",
-                         "l'asset di mobilità più distintivo che il comune abbia"),
+  labs(subtitle = paste0("C. Il treno a Bagheria è già l'asset di mobilità\n",
+                         "più distintivo che il comune abbia"),
        x = "quota di chi esce dal comune che usa il treno", y = "comuni") +
   theme(panel.grid.major.x = element_blank())
 
@@ -101,6 +101,12 @@ figura <- (pannello_mezzo / pannello_orario | pannello_390) +
   plot_annotation(
     title = "Le donne di Bagheria raggiungono Palermo in treno. Gli uomini in auto",
     subtitle = paste0(
+      "Tre letture della stessa popolazione, i residenti di Bagheria che escono dal comune: il pannello A dà\n",
+      "la composizione per mezzo di trasporto, in percentuale degli spostamenti di ciascun genere, il pannello B\n",
+      "la distribuzione per fascia oraria di uscita da casa, il pannello C la posizione di Bagheria nella\n",
+      "distribuzione siciliana dell'uso del treno. Il pannello C è parte della lettura e non un'appendice: senza,\n",
+      "il pannello A si leggerebbe come «serve più treno», mentre il treno a Bagheria c'è già più che quasi\n",
+      "ovunque in Sicilia.\n",
       "Fra chi esce dal comune, il mezzo collettivo vale il ",
       virgola(filter(classi, genere == "F", classe == "collettivo")$quota, 1, "%"),
       " degli spostamenti delle donne e il ",
@@ -110,33 +116,24 @@ figura <- (pannello_mezzo / pannello_orario | pannello_390) +
       virgola(filter(classi, genere == "M", classe == "privato a motore")$quota, 1, "%"),
       " su mezzo privato a motore, contro il ",
       virgola(filter(classi, genere == "F", classe == "privato a motore")$quota, 1, "%"), ".\n",
-      "Per le donne il servizio non è una comodità, è il canale d'accesso: se l'orario non copre, l'accesso non c'è. ",
-      "Ma il pannello C dice che il vincolo non è la quantità di treno:\n",
-      "Bagheria ne usa più del ", virgola(percentile, 0, "%"), " dei comuni siciliani.\n",
+      "Per le donne il servizio è il canale d'accesso più che una comodità: se l'orario non copre, l'accesso non c'è.\n",
+      "Ma il pannello C sposta il vincolo altrove: di treno Bagheria ne usa già più del ",
+      virgola(percentile, 0, "%"), " dei comuni siciliani.\n",
       "Il divario di genere si apre altrove: nel passaggio dallo studio al lavoro (figura 2)."),
-    caption = didascalia_4b(
-      mostra = paste0(
-        "tre letture della stessa popolazione, cioè i residenti di Bagheria che escono dal comune. ",
-        "Il pannello A dà la composizione per mezzo di trasporto, in percentuale degli spostamenti di ciascun genere; il pannello B la distribuzione per fascia oraria di uscita da casa; ",
-        "il pannello C colloca Bagheria nella distribuzione siciliana dell'uso del treno. ",
-        "Il pannello C è parte della lettura e non un'appendice: senza, il pannello A si leggerebbe come «serve più treno», mentre il treno a Bagheria c'è già più che quasi ovunque in Sicilia."),
-      base = paste0(
-        "N = ", migliaia(round(enne_mezzo("F"))), " donne e ", migliaia(round(enne_mezzo("M"))),
-        " uomini che escono dal comune. Attenzione alla natura del dato: mezzo, orario di uscita e durata sono rilevati su CAMPIONE nei comuni sopra i 20.000 abitanti, e Bagheria è uno di questi, ",
-        "quindi i valori dei pannelli A e B sono stime e non conteggi. ",
-        "Le stime sono calibrate sui margini esatti dei record di tipo S, che sono invece un'enumerazione completa: l'errore relativo mediano della stima non calibrata è dello 0,9% e il massimo dell'8,6% sullo strato più piccolo. ",
-        "La calibrazione non cambia la conclusione, e anzi allarga lo scarto sul treno da 14,5 a 15,1 punti. ",
-        "Il pannello C esclude i ", esclusi, " comuni su 390 dove escono meno di ", SOGLIA,
-        " persone al giorno, perché sotto quella soglia la quota è rumore (a Lampedusa e Linosa esce dal comune una persona sola, che prende il treno, e il comune risulterebbe al 100%). ",
-        "Il percentile mostrato è quello grezzo; a parità di distanza dal capoluogo e di dimensione il residuo di Bagheria resta al 97°. ",
-        "Della fascia oraria si conosce solo l'uscita di casa: del rientro la matrice non dice nulla, e l'ipotesi del carico di cura resta un'ipotesi non verificata da questi dati."),
+    caption = didascalia_2b(
       lettura = paste0(
         "nei pannelli A e B il colore è il genere, rosa le donne e blu gli uomini, e le due barre affiancate della stessa riga sono i due generi sulla stessa voce. ",
         "Nel pannello A la barra «di cui: treno» è staccata dalle altre perché è un sottoinsieme della classe «collettivo» e non una quinta classe: le quattro classi sommano a 100, la barra del treno no. ",
         "Le classi seguono la convenzione di 8milaCensus, verificata ricostruendo gli indicatori M5, M6 e M7, e «collettivo» esclude l'autobus aziendale o scolastico, che è contato a parte. ",
-        "Nel pannello C ogni barra conta i comuni con quel valore, la riga vermiglia è Bagheria e il percentile è scritto accanto."),
+        "Nel pannello C ogni barra conta i comuni con quel valore, la riga vermiglia è Bagheria e il percentile è scritto accanto; restano fuori i ", esclusi,
+        " comuni su 390 dove escono meno di ", SOGLIA,
+        " persone al giorno, perché sotto quella soglia la quota è rumore. Il percentile mostrato è quello grezzo, e a parità di distanza dal capoluogo e di dimensione il residuo di Bagheria resta al 97°. ",
+        "Mezzo, orario di uscita e durata sono rilevati su CAMPIONE nei comuni sopra i 20.000 abitanti, e Bagheria è uno di questi: i valori dei pannelli A e B sono stime, calibrate sui margini esatti dei record di tipo S. ",
+        "Della fascia oraria si conosce solo l'uscita di casa: del rientro la matrice non dice nulla, e l'ipotesi del carico di cura resta un'ipotesi non verificata da questi dati."),
       fonte = paste0(
-        "ISTAT, Matrice del pendolarismo, censimento della popolazione 2011. ",
+        "ISTAT, Matrice del pendolarismo, censimento della popolazione 2011, su ",
+        migliaia(round(enne_mezzo("F"))), " donne e ", migliaia(round(enne_mezzo("M"))),
+        " uomini che escono dal comune. ",
         "Elaborazione: notebooks/mobilita.ipynb (data/processed/mob_mezzo_genere.csv, mob_orario_genere.csv e mob_treno_390.csv)."),
       larghezza = LARGHEZZA),
     theme = tema_figura())

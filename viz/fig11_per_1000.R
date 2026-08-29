@@ -89,9 +89,11 @@ figura <- ggplot(lungo, aes(x, nome_territorio, fill = genere)) +
                      labels = abs, expand = expansion(0)) +
   labs(
     title = "Il diploma le ragazze lo raggiungono più dei ragazzi; il lavoro, la metà",
-    subtitle = paste0(
-      "Su 1.000 residenti 15-24, ", anno_rif,
-      ". Ali a confronto sulla stessa riga: ragazze a sinistra della spina, ragazzi a destra, stessa scala nei due pannelli.\n",
+    subtitle = sommario(paste0(
+      "Due misure sulla stessa popolazione di 15-24 anni, entrambe riportate a base 1.000 residenti dello stesso genere, ", anno_rif,
+      ", su cinque territori: in alto quante persone hanno almeno il diploma, in basso quante lavorano. ",
+      "La base 1.000 è una normalizzazione e non un conteggio, e serve a rendere confrontabili territori di taglia diversissima. ",
+      "Ali a confronto sulla stessa riga: ragazze a sinistra della spina, ragazzi a destra, stessa scala nei due pannelli.\n",
       "A Bagheria su 1.000 ragazze ", v("Bagheria", "F", "per_1000_diploma"),
       " hanno almeno il diploma e ", v("Bagheria", "F", "per_1000_occupati"),
       " lavorano; su 1.000 coetanei, ", v("Bagheria", "M", "per_1000_diploma"), " e ",
@@ -101,28 +103,19 @@ figura <- ggplot(lungo, aes(x, nome_territorio, fill = genere)) +
       " le ragazze,\nil valore più alto del panel, ma in punti per mille l'ala si apre di più in ",
       piu_largo$nome_territorio, " (", piu_largo$scarto_lavoro, " contro ", bagheria$scarto_lavoro,
       "): a Bagheria è basso il livello femminile, non solo la distanza.\n",
-      "Le due quote vivono sulla stessa popolazione (il conteggio dei diplomi 9-24 è per costruzione quello 15-24, perché nessuno ha un diploma prima), ma non\n",
-      "sono stadi di un funnel: quante delle diplomate lavorino il censimento comunale non lo dice, e chi lavora può non avere il diploma (fig11b per il 18-24)."),
+      "Le due quote vivono sulla stessa popolazione (il conteggio dei diplomi 9-24 è per costruzione quello 15-24, perché nessuno ha un diploma prima), e restano\n",
+      "due misure affiancate: quante delle diplomate lavorino il censimento comunale non lo dice, e chi lavora può non avere il diploma (fig11b per il 18-24)."), LARGHEZZA),
     x = paste0("per 1.000 residenti 15-24 dello stesso genere (", anno_rif, ")"), y = NULL,
-    caption = didascalia_4b(
-      mostra = paste0(
-        "due misure sulla stessa popolazione di 15-24 anni, entrambe riportate a base 1.000 residenti dello stesso genere, anno ",
-        anno_rif, ", su cinque territori. In alto quante persone hanno almeno il diploma, in basso quante lavorano. ",
-        "La base 1.000 è una normalizzazione, non un conteggio: serve a rendere confrontabili territori di taglia diversissima. ",
-        "L'attainment letto sulla fascia in cui il diploma è già raggiungibile (18-24) sta in fig11b."),
-      base = paste0(
-        "Denominatori effettivi: ", N_TERRITORI, ", riferiti al ", anno_rif,
-        ". Ogni ala ha il suo denominatore (1.000 ragazze a sinistra, 1.000 ragazzi a destra), quindi le due lunghezze restano confrontabili anche dove le due popolazioni non sono uguali. ",
-        "Nessun intervallo di confidenza: sono conteggi censuari e non stime campionarie, e nessun record è escluso. Una sola annata, quindi nessuna tendenza. ",
-        "Estrazione: i diplomati 15-24 coincidono con i diplomati 9-24, perché nessuno consegue un titolo prima dei 15 anni; i denominatori vengono dalle età singole e la coerenza fra le tavole è verificata nel notebook con scarto zero. ",
-        "L'incrocio fra titolo di studio e condizione professionale non è pubblicato a livello comunale: le due misure stanno in due pannelli perché non è possibile incatenarle, non per scelta grafica. ",
-        "Chi lavora non è quindi un sottoinsieme di chi ha il diploma, e i due pannelli non sono stadi di un percorso."),
+    caption = didascalia_2b(
       lettura = paste0(
         "ogni riga è un territorio e la linea verticale scura al centro è la spina della farfalla, cioè lo zero. ",
         "L'ala rosa verso sinistra è il valore femminile, quella blu verso destra il maschile: la coordinata è negativa a sinistra solo per costruire la farfalla, e l'asse riporta i valori assoluti. ",
-        "Le due ali partono entrambe dalla spina e condividono la base, quindi sono rispecchiate e non troncate, ed è ciò che rende corretto confrontarle a colpo d'occhio. ",
+        "Le due ali partono entrambe dalla spina e condividono la base, quindi sono rispecchiate e non troncate, ed è ciò che rende corretto confrontarle a colpo d'occhio; ",
+        "ogni ala ha però il suo denominatore (1.000 ragazze a sinistra, 1.000 ragazzi a destra), così le due lunghezze restano confrontabili anche dove le due popolazioni non sono uguali. ",
         "La scala orizzontale è la stessa nei due pannelli, apposta: che il lavoro sia una frazione del diploma è metà del finding, e due scale libere lo cancellerebbero. ",
         "Il rovesciamento della forma fra il pannello di sopra e quello di sotto è la forbice. ",
+        "I due pannelli sono affiancati e non incatenati perché l'incrocio fra titolo di studio e condizione professionale non è pubblicato a livello comunale: chi lavora non è un sottoinsieme di chi ha il diploma, e non sono stadi di un percorso. ",
+        "L'attainment letto sulla fascia in cui il diploma è già raggiungibile (18-24) sta in fig11b. ",
         "Vicinato = i cinque comuni più vicini per distanza fra i centroidi: conteggi sommati e poi le quote, non media dei cinque valori."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola istruzione (fascia 9-24 anni), tavola della condizione professionale (classe 15-24 anni) e demografia per età singola per i denominatori, anno ",
