@@ -57,12 +57,26 @@ numeri, due domande.
 La locandina chiede **2-3 visualizzazioni avanzate**. Queste sono le tre candidate alla
 consegna; le altre restano nei notebook come apparato.
 
-> ⏸️ **Scelta sospesa (2026-08-28, aggiornata il 2026-08-29).** Le figure sono in
-> revisione: la terna qui sotto è quella proposta, non ancora congelata, e va riesaminata a
-> revisione finita. Fuori gara finché la scelta non si riapre: `fig12_pendolarismo` e le
-> quattro figure del thread mobilità (§ nuova, sotto). Fra queste, **`mob_fig01_verso_palermo`
-> è una candidata seria alla terna**: è una carta, la locandina le nomina esplicitamente, e
-> risponde alla lettera al terzo focus del brief. La decisione resta al team.
+> ✅ **Scelta chiusa (2026-08-29).** La terna consegnata è quella qui sotto:
+> `fig05_forbice`, `fig07_ritenzione_eta`, `fig04_mappa_sicilia`. Il criterio, dichiarato
+> perché sia contestabile: la locandina chiede il **profiling e benchmarking** come voce
+> obbligatoria e l'**analisi esplorativa** come «focus a scelta, almeno una dimensione»
+> fra titolo per condizione, genere e pendolarismo. La terna copre quindi l'obbligatorio
+> (`fig04`, Bagheria come punto fra 390 e non come aneddoto), il focus scelto al suo
+> punto più affilato (`fig05`, il paradosso che dà il titolo alla relazione) e
+> l'obiettivo del brief, la fuga di talenti (`fig07`, l'unica figura che dice **a che
+> età** si parte, ed è la ragione per cui «Ponte 19» prende di mira la finestra 18-25).
+>
+> **Prima riserva: `mob_fig01_verso_palermo`.** È la candidata che resta fuori di poco:
+> carta a flussi, forte impatto comunicativo, e risponde alla lettera al terzo focus.
+> Non entra per due ragioni. Coprire un secondo focus opzionale vale meno che tenere la
+> catena evidenza-intervento intatta, perché senza `fig07` la finestra d'età della
+> proposta resta senza figura che la giustifichi; e con `fig04` già in terna la carta
+> sarebbe la seconda su tre, ridondante nella forma. Il pendolarismo resta comunque
+> presente nel pacchetto, con `scheda3_pendolarismo` e le quattro figure del thread.
+> Per riaprire la scelta basta scambiare `fig07` con `mob_fig01` qui e nel pacchetto
+> d'invio: le due figure sono autonome e nessun'altra parte del testo dipende da quale
+> delle due è in terna.
 
 ### ① `fig05_forbice` - il paradosso
 **Perché**: è la tesi in un'immagine sola. A sinistra il quadrante sulla **stessa fascia

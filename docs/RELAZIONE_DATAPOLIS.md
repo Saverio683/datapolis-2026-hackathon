@@ -588,8 +588,9 @@ impegno di accountability.
 
 ## 8. Le figure
 
-La locandina chiede 2-3 visualizzazioni avanzate. La terna candidata (proposta in
-`docs/RELAZIONE.md` §3, da congelare a revisione delle figure conclusa):
+La locandina chiede 2-3 visualizzazioni avanzate. La terna consegnata, chiusa il
+2026-08-29 (criterio e alternativa scartata in `docs/RELAZIONE.md` §3), copre la voce
+obbligatoria della locandina, il focus esplorativo scelto e l'obiettivo del brief:
 
 1. **`fig05_forbice`** - il paradosso in un'immagine: il quadrante «più istruite, meno
    occupate» sulla stessa fascia 15-24, e la forbice nel tempo col cuneo dal 2021.
@@ -605,7 +606,9 @@ Il terzo focus del brief ha una serie propria, aggiunta con il thread mobilità:
 
 - **`mob_fig01_verso_palermo`** - la carta a flussi: dove vanno i pendolari di Bagheria,
   per studio e per lavoro, col nome del comune di arrivo. È la risposta letterale alla
-  domanda della locandina, ed è **il quarto candidato alla terna**: la scelta resta al team.
+  domanda della locandina, ed è la **prima riserva** della terna: resta fuori perché
+  `fig04` è già una carta e perché togliere `fig07` lascerebbe la finestra d'età della
+  proposta senza la figura che la giustifica.
 - **`mob_fig02_ribaltamento`** - il risultato del thread: le due misure unite da una linea
   la cui pendenza è il finding, più la distribuzione dei 390 comuni.
 - **`mob_fig03_treno_genere`** - mezzo e orario per genere, e il pannello che impedisce di

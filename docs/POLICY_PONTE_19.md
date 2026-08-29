@@ -16,6 +16,18 @@ derivati dai dati e non da preferenze di design:
 
 Nessuna cifra qui è scritta a mano: ognuna punta al file che la produce.
 
+**Una parola sul NEET, perché è il termine con cui la locandina apre.** Il bando parla di
+«alto tasso di NEET (15-34enni)». Quella misura, a livello comunale, **non esiste nei dati
+pubblici**: il censimento permanente non pubblica la fascia 15-34 sulla condizione
+professionale, e l'unica classe giovanile disponibile per comune è la 15-24. Questo
+servizio non aggira il problema stimando il numero mancante: usa due misure dichiarate e
+mai fuse, il **NEET 15-29 al 2011** (8milaCensus, indicatore `L4`) come termine storico e
+il proxy **«fuori da lavoro e istruzione» 15-24, 2018-2024** come misura corrente. Dove
+qui si legge «inattivi non studenti» o «fuori da lavoro e studio» si intende il secondo:
+è il NEET della locandina per sostanza, non per definizione ISTAT, e la differenza di
+fascia è la ragione per cui il target del servizio parte da 18 e non da 15. La
+ricostruzione completa sta in `docs/RELAZIONE_DATAPOLIS.md` §1 e §9.
+
 ---
 
 ## 1. L'evidenza che motiva l'intervento
