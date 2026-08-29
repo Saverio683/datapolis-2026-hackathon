@@ -128,18 +128,46 @@ Le figure rispondono una domanda per volta; le **schede** rispondono una *richie
 bando* per volta, incrociando i tre thread. Sono la superficie che accompagna la proposta,
 e stanno in `docs/schede/` (HTML autoportante, stampabile in PDF con `@page A4`).
 
-| Scheda | Richiesta della locandina | Cosa incrocia |
-|---|---|---|
-| `scheda1_profilo` | Profiling statistico & benchmarking | educazione (stati 15-24, NEET storico) + demografia |
-| `scheda2_forbice` | Focus differenze di genere, e «titolo × condizione» per quanto i dati consentano | genere (forbice, casalinghe, stato civile) + educazione (pari a pari istruzione) |
-| `scheda3_pendolarismo` | Focus pendolarismo verso Palermo | mobilità (destinazione, ribaltamento, mezzo) + genere (coorti 25-29) |
-| `scheda4_ponte19` | Proposta di intervento | tutte e tre: ogni scelta di progetto ha accanto il numero che l'ha imposta |
+| Scheda | Richiesta della locandina | Cosa incrocia | Blocchi |
+|---|---|---|---|
+| `scheda1_profilo` | Profiling statistico & benchmarking | educazione (stati 15-24, arco 1991-2011, NEET storico) + demografia | 6 |
+| `scheda2_forbice` | Focus differenze di genere, e «titolo × condizione» per quanto i dati consentano | genere (forbice, mappa dei 390, ritenzione per età, casalinghe, stato civile) + educazione (pari a pari istruzione) | 6 |
+| `scheda3_pendolarismo` | Focus pendolarismo verso Palermo | mobilità (destinazione, ribaltamento, mezzo, taglia e distanza) + genere (coorti 25-29) | 5 |
+| `scheda4_ponte19` | Proposta di intervento | tutte e tre: ogni scelta di progetto ha accanto il numero che l'ha imposta | 5 |
 
 Si rigenerano con `uv run python -m pipeline.schede`, che legge solo `data/processed/`.
 **Nessuna cifra è scritta a mano**: ogni claim finisce in `data/processed/schede_claim.csv`
-con accanto il file che lo produce e la sua cautela (36 claim al 2026-08-29). È il modo in
+con accanto il file che lo produce e la sua cautela (42 claim al 2026-08-29). È il modo in
 cui la regola «nessun numero hardcodato nelle slide» diventa verificabile invece che
 dichiarata.
+
+**I blocchi sono numerati e portano la didascalia a quattro blocchi** (2026-08-29). Ogni
+sezione di scheda si chiama «Figura 2.3» o «Tavola 4.1» e chiude con *cosa mostra · base
+statistica · come si legge · fonte*, la stessa anatomia di `didascalia_4b()` in
+`viz/theme.R`. In `blocco()` i quattro sono argomenti obbligatori senza default, e `main()`
+verifica che ogni sezione ne abbia quattro: prima N, intervalli e metodo finivano dove
+capitava, ed erano assenti in metà dei blocchi. La numerazione serve perché la proposal
+possa citare «figura 2.4» invece di «il terzo grafico della scheda 2»: prima le schede
+citavano `data/processed/`, ma nulla poteva citare le schede.
+
+**Le schede incorporano sei figure di `figures/`**, ed è la giuntura che prima mancava fra
+le schede e lo zip. La regola, in `figura()` di `pipeline/schede.py`, è che il default sia
+il **ritaglio al solo grafico**: la figura R porta già titolo, sottotitolo e didascalia, che
+la scheda rifà in HTML alla propria tipografia, e un PNG a 300 dpi rimpicciolito a una
+colonna renderebbe quel testo a circa cinque pixel, illeggibile. Il ritaglio trova le bande
+di inchiostro e toglie la testa e le ultime quattro bande, che sono sempre i quattro blocchi
+della didascalia (`--bande` stampa la struttura di ogni PNG). L'**immagine intera** si usa
+solo nelle appendici, a piena larghezza, dove il punto non è il dato ma mostrare che la
+tavola dello zip viaggia da sola con la propria didascalia.
+
+| Figura R | Dove | Come |
+|---|---|---|
+| `edu_fig01_storia_posizione` | figura 1.4 | ritagliata: restituisce al thread educazione l'asse del tempo |
+| `fig04_mappa_sicilia` | figura 2.3 | ritagliata: una delle tre viz dichiarate, prima assente dalle schede |
+| `fig07_ritenzione_eta` | figura 2.4 | ritagliata: la seconda viz dichiarata, e l'evidenza che impone le due finestre |
+| `mob_fig04_taglia_distanza` | figura 3.4 | ritagliata: i due risultati negativi, prima solo testo |
+| `fig05_forbice` | tavola 2.6 | **intera**, in appendice |
+| `fig09_kpi_finestra` | tavola 4.5 | **intera**, in appendice |
 
 ⚠️ **Una discrepanza da sanare**: il percentile del divario di pendolarismo sul lavoro è
 **13° sui 381 comuni non capoluogo** (notebook, cella 18) ma **15° sui 390** della tavola

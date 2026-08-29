@@ -12,6 +12,9 @@ dependencies = [
     "matplotlib>=3.10",
     "pyyaml>=6.0",
     "scikit-learn>=1.6",
+    # pipeline/schede.py ritaglia e incorpora i PNG di figures/: finora Pillow arrivava
+    # per caso con matplotlib, ora e' una dipendenza diretta e va dichiarata.
+    "pillow>=11.0",
 ]
 
 [tool.uv]

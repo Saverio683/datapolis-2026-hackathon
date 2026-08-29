@@ -7,8 +7,18 @@ Ogni scheda risponde a UNA richiesta della locandina, incrociando i tre thread:
     scheda3_pendolarismo.html  Focus pendolarismo verso Palermo (mobilita + genere)
     scheda4_ponte19.html       Proposta di intervento
 
-Le schede sono HTML autoportante: nessun asset esterno, nessuna rete, i grafici sono
-SVG inline generati qui. Si aprono in un browser e si stampano in PDF (@page A4).
+Le schede sono HTML autoportante: nessun asset esterno, nessuna rete. I grafici sono
+di due tipi, entrambi incorporati nel file: SVG inline generati qui, e le figure di
+figures/ come data URI. Si aprono in un browser e si stampano in PDF (@page A4).
+
+Ogni blocco porta la stessa didascalia a quattro blocchi delle figure R (cosa mostra,
+base statistica, come si legge, fonte): in blocco() sono argomenti obbligatori, e
+main() verifica che nessuno sia vuoto. Le figure R incorporate sono di norma
+ritagliate al solo grafico, perche' la scheda ne rifa' titolo e didascalia alla
+propria tipografia; l'immagine intera si usa solo in appendice, dove il punto e'
+mostrare che la tavola dello zip viaggia da sola. Il criterio sta in figura().
+
+    uv run python -m pipeline.schede --bande   # struttura delle figure, per TESTA
 
 Il vincolo del repo vale anche qui, ed e' il motivo per cui questo file esiste invece
 di quattro HTML scritti a mano: **nessuna cifra e' scritta a mano**. Ogni numero viene
@@ -28,6 +38,7 @@ import pandas as pd
 RADICE = Path(__file__).resolve().parent.parent
 PROCESSED = RADICE / "data" / "processed"
 SCHEDE = RADICE / "docs" / "schede"
+FIGURE = RADICE / "figures"
 
 # Palette: la stessa di viz/theme.R. I colori significano le stesse cose nelle figure e
 # nelle schede, altrimenti chi legge il deck deve reimparare la legenda a meta' strada.
@@ -379,11 +390,115 @@ def legenda(voci) -> str:
     return f'<div class="legenda">{pezzi}</div>'
 
 
-def blocco(titolo: str, sommario: str, *contenuto: str, fonte: str, nota: str = "") -> str:
-    corpo = "".join(contenuto)
-    nota_html = f'<p class="nota">{nota}</p>' if nota else ""
-    return (f'<section class="blocco"><h3>{titolo}</h3><p class="somm">{sommario}</p>'
-            f'{corpo}{nota_html}<p class="fonte">{fonte}</p></section>')
+# ---------------------------------------------------------------- figure da figures/
+# Le figure di R hanno tre parti impilate: titolo e sottotitolo in testa, il grafico,
+# la didascalia a quattro blocchi in coda (didascalia_4b(), obbligatoria su ogni figura).
+# Nella scheda il titolo lo rifa' <h3> e la didascalia la rifa' blocco(): incollare il
+# PNG intero dentro un blocco le stamperebbe due volte, e la seconda a circa 5 px di
+# corpo, cioe' illeggibile. Quindi di norma si ritaglia via il testo e resta il grafico.
+
+# Quante bande di testo saltare in testa: 1 = titolo e sottotitolo stanno nella stessa
+# banda, 2 = il sottotitolo e' staccato (e sotto c'e' la legenda, che va tenuta).
+# Si legge dall'immagine con `python -m pipeline.schede --bande`, non si indovina.
+TESTA = {"fig07_ritenzione_eta": 2}
+
+# La didascalia e' sempre di quattro paragrafi, uno per blocco: sono le ultime quattro
+# bande di ogni figura. E' una convenzione garantita da viz/theme.R, non una stima.
+CODA_DIDASCALIA = 4
+
+
+def _bande(grigia, vuoto: int = 28):
+    """Le bande orizzontali di inchiostro, separate da almeno `vuoto` righe bianche."""
+    import numpy as np
+
+    righe = np.flatnonzero((grigia < 245).sum(axis=1) > 0)
+    salti = np.flatnonzero(np.diff(righe) > vuoto)
+    return list(zip(np.concatenate(([righe[0]], righe[salti + 1])),
+                    np.concatenate((righe[salti], [righe[-1]]))))
+
+
+def figura(nome: str, *, intera: bool = False, larghezza: int = 1500,
+           margine: int = 26) -> str:
+    """Una figura di figures/ dentro la scheda, incorporata come data URI.
+
+    Il data URI, e non un <img src="../../figures/...">, perche' la scheda deve restare
+    UN file: si manda per mail e si stampa senza portarsi dietro una cartella.
+
+    `intera=False` (norma): via il titolo, il sottotitolo e la didascalia a 4 blocchi;
+    resta il grafico, e il testo lo rimette la scheda alla propria tipografia, a corpo
+    leggibile e selezionabile.
+
+    `intera=True` ha un solo uso legittimo: la figura mostrata *come oggetto*, in
+    appendice e a piena larghezza, quando il punto e' che la tavola dello zip viaggia
+    da sola con la sua didascalia. In mezzo a un ragionamento non va mai, perche'
+    compete col titolo del blocco e la sua didascalia non si legge.
+    """
+    import base64
+    import io
+
+    import numpy as np
+    from PIL import Image
+
+    im = Image.open(FIGURE / f"{nome}.png").convert("RGB")
+    if not intera:
+        salta = TESTA.get(nome, 1)
+        bande = _bande(np.asarray(im.convert("L")))
+        assert len(bande) > salta + CODA_DIDASCALIA, (
+            f"{nome}: {len(bande)} bande, non bastano per saltare {salta} di testa e "
+            f"{CODA_DIDASCALIA} di didascalia. La figura ha cambiato impaginazione: "
+            f"guardala con --bande e aggiorna TESTA.")
+        corpo = bande[salta:-CODA_DIDASCALIA]
+        im = im.crop((0, max(0, corpo[0][0] - margine),
+                      im.width, min(im.height, corpo[-1][1] + margine)))
+    im.thumbnail((larghezza, 4 * larghezza), Image.LANCZOS)
+    # Palette a 256 colori senza dithering: i grafici sono a tinte piatte, quindi il
+    # PNG cala di 3-4 volte e a occhio non cambia niente, viridis della mappa compresa.
+    # Con il dithering acceso, invece, il retino si vede sulle campiture chiare.
+    buf = io.BytesIO()
+    im.quantize(colors=256, method=Image.MEDIANCUT, dither=Image.NONE).save(
+        buf, format="PNG", optimize=True)
+    dati = base64.b64encode(buf.getvalue()).decode("ascii")
+    classe = "fig intera" if intera else "fig"
+    return (f'<img class="{classe}" alt="{e(nome)}" '
+            f'src="data:image/png;base64,{dati}">')
+
+
+def blocco(numero: str, titolo: str, *contenuto: str,
+           mostra: str, base: str, lettura: str, fonte: str) -> str:
+    """Un blocco = titolo dichiarativo + grafico + didascalia a quattro blocchi.
+
+    E' la stessa anatomia di didascalia_4b() in viz/theme.R, e per lo stesso motivo:
+    chi legge la scheda in sala non ha il notebook accanto. I quattro blocchi non sono
+    facoltativi, sono argomenti obbligatori senza default: un blocco cui manca `base`
+    non compila. E' l'unico modo per impedire che «N e dispersione» finiscano dove
+    capita, che e' come stavano prima.
+
+    mostra   metrica, unita', fascia d'eta', territori, anni; e cosa la figura NON dice
+    base     N per gruppo, tendenza centrale, dispersione col metodo, test, esclusioni
+    lettura  decodifica di cio' che non e' un dato: tratteggi, bande, colori, scale
+    fonte    fonte con anno + il file di data/processed/ che rigenera i numeri
+    """
+    did = "".join(f"<p><b>{et}</b> {tx}</p>" for et, tx in (
+        ("Cosa mostra.", mostra), ("Base statistica.", base),
+        ("Come si legge.", lettura), ("Fonte.", fonte)))
+    return (f'<section class="blocco"><h3><span class="nb">{numero}</span>{titolo}</h3>'
+            f'{"".join(contenuto)}<div class="did">{did}</div></section>')
+
+
+class Numera:
+    """Numera i blocchi di una scheda: «Figura 2.1», «Figura 2.2», «Tavola 2.3».
+
+    Serve perche' la relazione e la proposal possano citare un blocco per nome invece
+    che come «il terzo grafico della scheda 2». Finora le schede citavano i file di
+    data/processed/, ma nulla poteva citare le schede.
+    """
+
+    def __init__(self, scheda: int):
+        self.scheda, self.n = scheda, 0
+
+    def __call__(self, tipo: str = "Figura") -> str:
+        self.n += 1
+        return f"{tipo} {self.scheda}.{self.n}"
 
 
 def kpi(voci) -> str:
@@ -426,9 +541,16 @@ h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-weight:400
 font-size:22px;line-height:1.22;margin:0 0 5px}
 .somm{font-size:13px;color:#4A4741;margin:0 0 14px;max-width:78ch}
 .fonte{font-size:11px;color:#8C877F;font-style:italic;margin:10px 0 0;line-height:1.45}
-.nota{font-size:11.5px;color:#4A4741;margin:12px 0 0;padding:9px 12px;background:#F5F2EC;
-border-radius:2px;line-height:1.5}
-.nota b{color:var(--inchiostro)}
+.nb{display:block;font-family:Lato,Helvetica,Arial,sans-serif;font-size:10px;
+letter-spacing:.11em;text-transform:uppercase;color:var(--bagheria);font-weight:700;
+margin:0 0 3px}
+.did{font-size:11.5px;color:#4A4741;margin:13px 0 0;padding:11px 14px;background:#F5F2EC;
+border-radius:2px;line-height:1.55}
+.did p{margin:0 0 7px;max-width:88ch}
+.did p:last-child{margin:0}
+.did b{color:var(--inchiostro)}
+.fig{display:block;width:100%;height:auto;margin:2px 0 0}
+.fig.intera{border:1px solid var(--filo);border-radius:2px}
 .legenda{display:flex;flex-wrap:wrap;gap:7px 18px;margin:0 0 11px;font-size:11.5px;
 color:var(--tenue)}
 .lg{display:inline-flex;align-items:center;gap:6px}
@@ -497,6 +619,7 @@ def scrivi(nome: str, titolo: str, corpo: str, piede_extra: str = "") -> Path:
 def scheda_profilo() -> Path:
     """Profiling statistico & benchmarking: la richiesta principale della locandina."""
     S = "1. profilo"
+    fig = Numera(1)
     stati = pd.read_csv(PROCESSED / "edu_youth_states_2018_2024.csv")
     b24 = stati[(stati.territorio_nome == "Bagheria") & (stati.anno == 2024)].iloc[0]
     b18 = stati[(stati.territorio_nome == "Bagheria") & (stati.anno == 2018)].iloc[0]
@@ -560,15 +683,32 @@ def scheda_profilo() -> Path:
               ("in cerca", b24.in_cerca, COL_STATO["in cerca"]),
               ("inattivi non studenti", b24.inattivi_non_studenti, COL_STATO["casalinghe/i"])]
     corpo += blocco(
+        fig(),
         f"I {num(b24.popolazione, 0)} quindici-ventiquattrenni di Bagheria, uno per uno",
-        "Un quadrato ogni 50 residenti. Il blocco arancione &egrave; la met&agrave; del problema che "
-        "nessuna statistica corrente conta: giovani che non studiano, non lavorano e non "
-        "risultano in cerca di occupazione.",
         legenda([(f"{n} &middot; {num(v, 0)}", c) for n, v, c in gruppi]),
         waffle(gruppi, per_quadrato=50, colonne=22),
+        mostra="Condizione prevalente dei residenti di 15-24 anni a Bagheria nel 2024, in "
+               "persone: le quattro condizioni sono esaustive e si escludono a vicenda. "
+               "La figura <b>non</b> dice nulla su titolo di studio, genere n&eacute; "
+               "et&agrave; singola: la scomposizione per genere sta nella scheda 2, quella "
+               "per et&agrave; nella figura 2.4.",
+        base=f"N = {num(b24.popolazione, 0)} residenti 15-24 al 2024; per gruppo "
+             f"{num(b24.studenti, 0)} studenti, {num(b24.occupati, 0)} occupati, "
+             f"{num(b24.in_cerca, 0)} in cerca, {num(b24.inattivi_non_studenti, 0)} "
+             f"inattivi non studenti. <b>Nessun intervallo di confidenza</b>: sono "
+             f"conteggi della tavola censuaria e non stime campionarie, e nessun record "
+             f"&egrave; escluso. Gli occupati sono un conteggio diretto; le altre tre "
+             f"componenti vengono dalla ricostruzione della tavola 15-24 e sono stime "
+             f"della ricostruzione, non conteggi.",
+        lettura="Un quadrato ogni 50 residenti, letti per righe da 22. I quadrati per "
+                "gruppo sono arrotondati all&rsquo;intero, quindi il totale disegnato "
+                "pu&ograve; scostarsi di poche unit&agrave; dal conteggio. Il colore "
+                "codifica la condizione e <b>non un ordine</b>: non &egrave; una scala, "
+                "l&rsquo;accostamento arancione-azzurro non va letto come un gradiente. "
+                "Il blocco arancione &egrave; la met&agrave; del problema che nessuna "
+                "statistica corrente conta.",
         fonte="ISTAT, censimento permanente 2024, ricostruzione della tavola 15-24 "
-              "&rarr; <b>edu_youth_states_2018_2024.csv</b>. Le componenti diverse dagli "
-              "occupati sono stime della ricostruzione, non conteggi.")
+              "&rarr; <b>edu_youth_states_2018_2024.csv</b>.")
 
     righe_imp = []
     for nome in ORDINE:
@@ -578,13 +718,31 @@ def scheda_profilo() -> Path:
             ("occupati", r.quota_occupati, COL_STATO["occupati"]),
             ("in cerca", r.quota_in_cerca, COL_STATO["in cerca"]),
             ("inattivi", r.quota_inattivi_non_studenti, COL_STATO["casalinghe/i"])]))
+    enne = {t: stati[(stati.territorio_nome == t) & (stati.anno == 2024)].popolazione.iloc[0]
+            for t in ORDINE}
     corpo += blocco(
+        fig(),
         "Il benchmarking: pi&ugrave; studenti della media, meno occupati, pi&ugrave; inattivi",
-        "Condizione prevalente dei 15-24enni, 2024. Bagheria ha la quota di studenti pi&ugrave; alta "
-        "del panel e insieme la quota di occupati pi&ugrave; bassa: il territorio trattiene i "
-        "giovani dentro la formazione e non li consegna al lavoro.",
         impilate(righe_imp),
-        fonte="ISTAT, censimento permanente 2024 &rarr; <b>edu_youth_states_2018_2024.csv</b>.")
+        mostra="Composizione percentuale della condizione prevalente dei 15-24enni nel 2024, "
+               "per i quattro territori di confronto del bando. Ogni barra somma a 100: sono "
+               "quote, non numeri assoluti, quindi la figura <b>non</b> dice quanto pesa "
+               "Bagheria sulla Sicilia. I valori assoluti stanno nella base qui sotto.",
+        base="N per territorio: " + ", ".join(
+            f"{t} {num(enne[t], 0)}" for t in ORDINE) + " residenti 15-24. "
+             "Conteggi censuari e non stime campionarie: nessun intervallo di confidenza. "
+             "Nessun test formale fra territori: i confronti sono descrittivi e su "
+             "denominatori di ordini di grandezza diversi, dalle 5.904 persone di "
+             "Bagheria ai 5,9 milioni italiani.",
+        lettura="Le barre sono al 100% e i segmenti seguono sempre lo stesso ordine "
+                "(studenti, occupati, in cerca, inattivi non studenti), cos&igrave; le "
+                "posizioni sono confrontabili in verticale. Bagheria &egrave; a piena "
+                "intensit&agrave; di colore, gli altri territori al 55%: &egrave; una "
+                "gerarchia di lettura, non un dato. Il numero compare dentro il segmento "
+                "solo dove ci sta: sotto una certa larghezza uscirebbe dal proprio blocco e "
+                "si leggerebbe come appartenente a quello accanto.",
+        fonte="ISTAT, censimento permanente 2024 &rarr; "
+              "<b>edu_youth_states_2018_2024.csv</b>.")
 
     delta = [("occupati", b18.quota_occupati, b24.quota_occupati),
              ("studenti", b18.quota_studenti, b24.quota_studenti),
@@ -592,10 +750,8 @@ def scheda_profilo() -> Path:
              ("inattivi non studenti", b18.quota_inattivi_non_studenti,
               b24.quota_inattivi_non_studenti)]
     corpo += blocco(
+        fig("Tavola"),
         "Il recupero c&rsquo;&egrave;. La convergenza no.",
-        "Da dove viene il miglioramento 2018-2024: quasi tutto dal calo di chi cerca lavoro, "
-        "quasi niente dalla riattivazione di chi non cerca. Il divario occupazionale con la "
-        "Sicilia &egrave; identico all&rsquo;inizio e alla fine del periodo.",
         tabella(["Condizione 15-24", "2018", "2024", "variazione"],
                 [(n, num(a, 1, "%", zero=True), num(b, 1, "%", zero=True),
                   num(b - a, 1, " p.p.", segno=True, zero=True))
@@ -605,57 +761,159 @@ def scheda_profilo() -> Path:
                   num(b24.quota_occupati - s24.quota_occupati, 1, " p.p.", segno=True),
                   "invariato")],
                 forte=("inattivi non studenti", "gap occupazione vs Sicilia")),
-        fonte="ISTAT, censimento permanente &rarr; <b>edu_youth_states_2018_2024.csv</b>.",
-        nota="<b>Cautela dichiarata.</b> Fra il 2019 e il 2021 c&rsquo;&egrave; una rottura di misura "
-             "sulla componente &laquo;in cerca di occupazione&raquo;: i confronti fra territori "
-             "reggono, i livelli delle singole componenti no. Il <b>2020 manca alla fonte</b> "
-             "sulla classe 15-24 e non &egrave; stato interpolato.")
+        mostra="Le quattro quote della condizione 15-24 a Bagheria agli estremi della serie "
+               "disponibile, 2018 e 2024, in punti percentuali, pi&ugrave; il divario "
+               "occupazionale con la Sicilia alle stesse due date. Da dove viene il "
+               "miglioramento: quasi tutto dal calo di chi cerca lavoro, quasi niente dalla "
+               "riattivazione di chi non cerca.",
+        base=f"N = {num(b18.popolazione, 0)} residenti 15-24 nel 2018 e "
+             f"{num(b24.popolazione, 0)} nel 2024, cio&egrave; due popolazioni diverse: la "
+             f"variazione &egrave; fra due quote, non un pannello sulle stesse persone. "
+             f"Conteggi censuari, nessun intervallo di confidenza e nessun test: la "
+             f"colonna &laquo;variazione&raquo; &egrave; una differenza aritmetica, non una "
+             f"stima con incertezza. <b>Esclusioni</b>: il 2020 manca alla fonte sulla "
+             f"classe 15-24 e non &egrave; interpolato; fra 2019 e 2021 c&rsquo;&egrave; una "
+             f"rottura di misura sulla componente &laquo;in cerca di occupazione&raquo;.",
+        lettura="Le due righe in nero sono quelle su cui poggia la tesi della scheda: "
+                "l&rsquo;inattivit&agrave; ferma e il divario invariato. &laquo;Invariato&raquo; "
+                "nell&rsquo;ultima cella non &egrave; un arrotondamento di comodo: il gap vale "
+                f"{num(b18.quota_occupati - s18.quota_occupati, 1, ' p.p.', segno=True)} nel "
+                f"2018 e {num(b24.quota_occupati - s24.quota_occupati, 1, ' p.p.', segno=True)} "
+                "nel 2024, la stessa cifra a un decimale. Per la rottura di misura del 2019-2021 "
+                "i confronti fra territori reggono, i livelli delle singole componenti no.",
+        fonte="ISTAT, censimento permanente 2018 e 2024 &rarr; "
+              "<b>edu_youth_states_2018_2024.csv</b>.")
+
+    # I cinque indicatori del pannello storico, gli stessi di viz/edu_fig01. Il percentile
+    # «favorevole» ribalta quelli in cui alto = male, cosi' che in alto = meglio valga per
+    # tutti e cinque: senza il ribaltamento le linee del pannello destro non si leggono
+    # insieme. La regola sta nella colonna `direzione`, non nel codice.
+    CINQUE = ["I6", "I7", "I5", "L14", "L4"]
+    s91 = perc[perc.anno == 1991].set_index("indicatore")
+    s11 = perc[perc.anno == 2011].set_index("indicatore")
+    favo = lambda r: (100 - r.percentile_sicilia if "sfavorevole" in r.direzione
+                      else r.percentile_sicilia)
+    verso = lambda i: -1 if "sfavorevole" in s11.loc[i].direzione else 1
+    meglio = sum(1 for i in CINQUE
+                 if (s11.loc[i].valore - s91.loc[i].valore) * verso(i) > 0)
+    arretra = sum(1 for i in CINQUE if favo(s11.loc[i]) < favo(s91.loc[i]))
+    claim(S, "indicatori 8milaCensus che migliorano in valore 1991-2011",
+          f"{meglio}/{len(CINQUE)}", "indicatori", "edu_historical_bagheria.csv",
+          "I6 I7 I5 L14 L4; fasce d'eta' diverse fra loro")
+    claim(S, "gli stessi che arretrano in percentile siciliano",
+          f"{arretra}/{len(CINQUE)}", "indicatori", "edu_historical_bagheria.csv",
+          "percentile favorevole: ribaltato dove alto = sfavorevole")
 
     corpo += blocco(
+        fig(),
+        f"Trent&rsquo;anni: {meglio} indicatori su {len(CINQUE)} migliorano in valore, e "
+        f"{arretra} su {len(CINQUE)} arretrano in posizione",
+        figura("edu_fig01_storia_posizione"),
+        mostra="Cinque indicatori 8milaCensus per Bagheria ai censimenti 1991, 2001 e 2011. "
+               "A sinistra il <b>livello</b>, in percentuale della popolazione di riferimento "
+               "di ciascun indicatore; a destra la <b>posizione</b>, cio&egrave; il percentile "
+               "fra i 390 comuni siciliani. Le fasce d&rsquo;et&agrave; sono diverse da "
+               "indicatore a indicatore e sono scritte accanto a ciascuno: si legge ogni riga "
+               "per s&eacute;, mai una colonna. La figura <b>non</b> si unisce alla serie "
+               "2018-2024 del resto della scheda, che &egrave; un&rsquo;altra rilevazione con "
+               "altre definizioni.",
+        base=f"N = 390 comuni siciliani a ogni censimento; Bagheria &egrave; uno di questi. "
+             f"Conteggi censuari e non stime campionarie: <b>nessun intervallo di "
+             f"confidenza</b> e nessun test. Tre sole osservazioni per indicatore, a dieci "
+             f"anni di distanza: nessuna interpolazione fra un censimento e l&rsquo;altro. "
+             f"Il conteggio {meglio}/{len(CINQUE)} e {arretra}/{len(CINQUE)} &egrave; il "
+             f"segno della variazione 1991-2011, calcolato indicatore per indicatore nel "
+             f"verso dichiarato dalla fonte.",
+        lettura="A sinistra, per ogni riga: cerchio vuoto 1991, tacca 2001, cerchio pieno "
+                "2011; la barra grigia &egrave; la distanza percorsa, non un intervallo di "
+                "incertezza. La freccia sotto l&rsquo;etichetta dice da che parte sta il "
+                "meglio, perch&eacute; per &laquo;uscita precoce&raquo; e &laquo;NEET&raquo; "
+                "scendere &egrave; un miglioramento. A destra il percentile &egrave; "
+                "<b>favorevole</b>: dove alto significava male &egrave; stato ribaltato, "
+                "cos&igrave; in alto = davanti per tutte e cinque le linee. La tratteggiata a "
+                "50 &egrave; la mediana regionale, cio&egrave; un riferimento mobile, non un "
+                "obiettivo: Bagheria pu&ograve; scendere anche migliorando, se gli altri "
+                "migliorano di pi&ugrave;. I due pannelli hanno scale diverse e non "
+                "condividono l&rsquo;asse.",
+        fonte="ISTAT 8milaCensus, censimenti 1991, 2001 e 2011 &rarr; "
+              "<b>edu_historical_bagheria.csv</b>. Figura a piena risoluzione: "
+              "<b>figures/edu_fig01_storia_posizione.png</b> (nello zip, con la propria "
+              "didascalia).")
+
+    corpo += blocco(
+        fig(),
         "Il NEET del bando: due misure, mai una serie",
-        "La locandina chiede il NEET 15-34. A livello comunale <b>non esiste</b>: la fascia non "
-        "&egrave; pubblicata. Si riportano due misure diverse, ciascuna con la sua etichetta, e "
-        "non si sommano n&eacute; si mettono in serie.",
         '<div class="duo">'
         f'<div><h4>2011 &middot; NEET 15-29 (8milaCensus, L4)</h4>'
         + barre([{"label": n, "valore": float(l4[n]), "colore": COL[n], "forte": n == "Bagheria"}
-                 for n in ORDINE], w=300, lab=76, coda=46) +
-        f'<p class="fonte">Percentile fra i 390 comuni siciliani: '
-        f'{num(perc_l4_91, 0)}&deg; nel 1991 &rarr; <b>{num(perc_l4, 0)}&deg; nel 2011</b>. '
-        f'Bagheria migliora in assoluto e arretra in posizione.</p></div>'
+                 for n in ORDINE], w=300, lab=76, coda=46) + '</div>'
         f'<div><h4>2024 &middot; fuori da lavoro e studio, 15-24</h4>'
         + barre([{"label": n, "valore": float(
             stati[(stati.territorio_nome == n) & (stati.anno == 2024)]
             .quota_fuori_lavoro_studio.iloc[0]),
             "colore": COL[n], "forte": n == "Bagheria"} for n in ORDINE],
-            w=300, lab=76, coda=46) +
-        f'<p class="fonte">Proxy costruito sulla condizione professionale. '
-        f'Di questo {num(b24.quota_fuori_lavoro_studio)}%, il '
-        f'<b>{num(b24.inattivi_su_fuori)}% non risulta in cerca di occupazione</b>.</p></div>'
+            w=300, lab=76, coda=46) + '</div>'
         '</div>',
-        fonte="ISTAT 8milaCensus 2011 (<b>edu_historical_benchmarks_2011.csv</b>) e censimento "
-              "permanente 2024 (<b>edu_youth_states_2018_2024.csv</b>).",
-        nota="<b>Perch&eacute; non si sommano.</b> Fasce diverse (15-29 contro 15-24), "
-             "definizioni diverse, rilevazioni diverse. Affiancarle &egrave; corretto, unirle in "
-             "una serie sarebbe un errore, non un&rsquo;approssimazione. I due pannelli hanno "
-             "<b>scale indipendenti</b>: si confrontano le posizioni dentro ciascun pannello, "
-             "mai le lunghezze fra l&rsquo;uno e l&rsquo;altro.")
+        mostra="La locandina chiede il NEET 15-34. A livello comunale <b>non esiste</b>: la "
+               "fascia non &egrave; pubblicata. Si riportano allora le due misure che "
+               "esistono, ciascuna con la propria etichetta. A sinistra il NEET ISTAT "
+               "standard <b>15-29</b> al 2011 (8milaCensus, indicatore L4), in percentuale "
+               "dei residenti di quella fascia. A destra il proxy <b>15-24</b> al 2024, "
+               "costruito sulla condizione professionale del censimento permanente: quota di "
+               "chi non lavora, non studia e non risulta in cerca, pi&ugrave; chi cerca "
+               "senza studiare.",
+        base="N a sinistra: i residenti 15-29 dei quattro territori al censimento 2011. N a "
+             f"destra: {num(enne['Bagheria'], 0)} residenti 15-24 a Bagheria nel 2024 e i "
+             "corrispondenti degli altri tre (vedi figura 1.2). Conteggi censuari in "
+             "entrambi i pannelli, <b>nessun intervallo di confidenza</b> e nessun test fra "
+             "pannelli, che sarebbe privo di senso: le popolazioni non coincidono. Del "
+             f"{num(b24.quota_fuori_lavoro_studio)}% di destra, il "
+             f"<b>{num(b24.inattivi_su_fuori)}% non risulta in cerca di occupazione</b>: "
+             f"&egrave; la componente su cui poggia la scelta dell&rsquo;outreach nella "
+             f"scheda 4.",
+        lettura="I due pannelli hanno <b>scale indipendenti</b>: si confrontano le posizioni "
+                "dentro ciascun pannello, mai le lunghezze fra l&rsquo;uno e l&rsquo;altro. "
+                "Bagheria &egrave; la barra a piena intensit&agrave;. <b>Perch&eacute; non si "
+                "sommano e non si mettono in serie</b>: fasce diverse (15-29 contro 15-24), "
+                "definizioni diverse, rilevazioni diverse. Affiancarle &egrave; corretto, "
+                "unirle sarebbe un errore, non un&rsquo;approssimazione. Sul pannello di "
+                f"sinistra vale quanto detto alla figura 1.{fig.n - 1}: fra i 390 comuni "
+                f"siciliani il NEET di Bagheria passa dal {num(perc_l4_91, 0)}&deg; "
+                f"percentile del 1991 al <b>{num(perc_l4, 0)}&deg; del 2011</b>, dove alto "
+                f"&egrave; sfavorevole. Il valore migliora, la posizione peggiora.",
+        fonte="ISTAT 8milaCensus 2011 (<b>edu_historical_benchmarks_2011.csv</b>, percentili "
+              "da <b>edu_historical_bagheria.csv</b>) e censimento permanente 2024 "
+              "(<b>edu_youth_states_2018_2024.csv</b>).")
 
     corpo += blocco(
+        fig("Tavola"),
         "La fuga sta nel denominatore",
-        "Ogni tasso di questa scheda ha sotto una popolazione che si assottiglia, e senza "
-        "ricambio migratorio: il calo &egrave; al netto di niente.",
         kpi([(num(pb.loc[2024].popolazione_15_34, 0), "residenti 15-34 nel 2024, da "
               f"{num(pb.loc[2021].popolazione_15_34, 0)} nel 2021", COL["Bagheria"]),
              (num(pb.loc[2024].variazione_da_primo_anno_pct, 1, "%"),
               "in tre anni (Italia: +1,2%)", COL["Bagheria"]),
              (num(quota_stranieri, 1, "%"),
               "stranieri sul 15-34, contro 12,4% in Italia", INCHIOSTRO)]),
-        fonte="ISTAT, censimento permanente &rarr; <b>edu_youth_population_15_34.csv</b>, "
-              "<b>genere_stranieri.csv</b>.",
-        nota="<b>Cosa questo numero non dice.</b> &Egrave; un <b>saldo netto</b>: nessuna fonte "
-             "comunale d&agrave; la destinazione di chi se ne va, quindi non si pu&ograve; "
-             "chiamarlo &laquo;emigrazione misurata&raquo;.")
+        mostra="Popolazione residente di 15-34 anni a Bagheria, in persone, e sua variazione "
+               "fra 2021 e 2024; pi&ugrave; la quota di cittadini stranieri sulla stessa "
+               "fascia. Questa &egrave; l&rsquo;unica misura della scheda sul <b>15-34</b> "
+               "pieno del bando: lavoro e istruzione a livello comunale esistono solo sul "
+               "15-24, ed &egrave; il motivo per cui il resto della scheda sta su quella "
+               "fascia.",
+        base=f"N = {num(pb.loc[2024].popolazione_15_34, 0)} residenti 15-34 al 2024, da "
+             f"{num(pb.loc[2021].popolazione_15_34, 0)} al 2021. La serie parte dal 2021 e "
+             f"non prima: le et&agrave; singole, necessarie a ricostruire il 15-34 esatto, "
+             f"esistono nella fonte solo da quell&rsquo;anno. Conteggi anagrafici del "
+             f"censimento permanente, non stime: nessun intervallo di confidenza. Il "
+             f"confronto italiano (+1,2%) &egrave; sullo stesso arco 2021-2024.",
+        lettura="I tre numeri non sono una serie n&eacute; una scomposizione: sono tre "
+                "misure sullo stesso denominatore. <b>Cosa il calo non dice</b>: &egrave; un "
+                "<b>saldo netto</b> fra iscrizioni e cancellazioni anagrafiche, quindi non "
+                "conta le partenze e non ha una destinazione. Chiamarlo &laquo;emigrazione "
+                "misurata&raquo; sarebbe scorretto. Il profilo per et&agrave; di questo saldo, "
+                "che dice <i>quando</i> le uscite avvengono, sta nella figura 2.4.",
+        fonte="ISTAT, censimento permanente, et&agrave; singole 2021-2024 &rarr; "
+              "<b>edu_youth_population_15_34.csv</b>, <b>genere_stranieri.csv</b>.")
 
     return scrivi("scheda1_profilo.html",
                   "Il profilo dei giovani di Bagheria", corpo,
@@ -668,6 +926,7 @@ def scheda_profilo() -> Path:
 def scheda_forbice() -> Path:
     """Focus differenze di genere, e la risposta obliqua a «titolo x condizione»."""
     S = "2. forbice"
+    fig = Numera(2)
     q = pd.read_csv(PROCESSED / "genere_quadro_sintesi.csv").set_index("nome_territorio")
     serie = pd.read_csv(PROCESSED / "genere_forbice_serie.csv")
     quad = pd.read_csv(PROCESSED / "genere_forbice_quadrante.csv")
@@ -677,6 +936,9 @@ def scheda_forbice() -> Path:
     civ = pd.read_csv(PROCESSED / "genere_stato_civile.csv")
     bounds = pd.read_csv(PROCESSED / "genere_casalinghe_bounds.csv")
     pos = pd.read_csv(PROCESSED / "genere_posizionamento.csv").set_index("indicatore")
+    dist = pd.read_csv(PROCESSED / "genere_distribuzione_390.csv").set_index("anno")
+    rit = pd.read_csv(PROCESSED / "genere_ritenzione_eta.csv")
+    coo = pd.read_csv(PROCESSED / "genere_coorti.csv")
     breve = lambda n: "vicinato" if n.startswith("vicinato") else n
 
     b = q.loc["Bagheria"]
@@ -728,8 +990,8 @@ def scheda_forbice() -> Path:
         "occupazione 15-24 &middot; 2018-2024",
         "Su 1.000 ragazze di Bagheria, 510 hanno almeno il diploma e 82 lavorano.",
         f"Le ragazze di Bagheria arrivano al diploma "
-        f"{num(-b['gap istruzione (M-F)'])} punti pi&ugrave; dei coetanei &mdash; il vantaggio "
-        f"educativo femminile pi&ugrave; ampio del panel &mdash; e hanno un tasso di occupazione "
+        f"{num(-b['gap istruzione (M-F)'])} punti pi&ugrave; dei coetanei (il vantaggio "
+        f"educativo femminile pi&ugrave; ampio del panel) e hanno un tasso di occupazione "
         f"del {num(b['occupazione F'])}%, il pi&ugrave; basso dei quattro territori in "
         f"{minimi} annate su {annate}. Il capitale umano c&rsquo;&egrave;: quello che non "
         f"funziona &egrave; la conversione.",
@@ -752,18 +1014,36 @@ def scheda_forbice() -> Path:
         {"label": "ragazzi occupati", "valore": m24.loc["M"].per_1000_occupati,
          "colore": COL_G["M"]}]
     corpo += blocco(
+        fig(),
         "Due misure, la stessa base di 1.000 persone",
-        "Ogni barra &egrave; su 1.000 residenti dello stesso sesso, 15-24 anni, Bagheria 2024. "
-        "Le ragazze superano i coetanei sul titolo di studio e ne fanno la met&agrave; sul lavoro.",
         barre(per_mille, lab=214, fmt=lambda v: num(v, 0), coda=44),
-        fonte="ISTAT, censimento permanente 2024 &rarr; <b>genere_per_1000.csv</b>.",
-        nota="<b>Non &egrave; un imbuto.</b> Le due barre hanno la stessa base ma non sono "
-             "le stesse persone seguite in sequenza: nelle tavole comunali il titolo di studio "
-             "e la condizione professionale <b>non sono incrociati</b> (nella tavola lavoro il "
-             "titolo &egrave; solo &laquo;totale&raquo;, in quella istruzione la condizione "
-             "&egrave; solo &laquo;totale&raquo;). &laquo;Quante diplomate di Bagheria "
-             "lavorano&raquo; non &egrave; una domanda a cui i dati pubblici rispondono &mdash; "
-             "ed &egrave; il primo dato che il servizio proposto nella scheda 4 produrrebbe.")
+        mostra="Diplomate e occupate ogni 1.000 residenti dello stesso sesso, 15-24 anni, "
+               "Bagheria 2024. Le due misure sono normalizzate sulla <b>stessa base</b> per "
+               "renderle confrontabili, ma restano due misure distinte: la figura <b>non</b> "
+               "dice quante fra le diplomate lavorino, e quel dato non esiste (vedi la base).",
+        base=f"N = {num(m24.loc['F'].pop_15_24, 0)} ragazze e "
+             f"{num(m24.loc['M'].pop_15_24, 0)} ragazzi residenti 15-24 nel 2024; in valore "
+             f"assoluto {num(m24.loc['F'].diplomati, 0)} diplomate e "
+             f"{num(m24.loc['F'].occupati, 0)} occupate, {num(m24.loc['M'].diplomati, 0)} "
+             f"diplomati e {num(m24.loc['M'].occupati, 0)} occupati. Conteggi censuari e non "
+             f"stime campionarie: <b>nessun intervallo di confidenza sui livelli</b>. "
+             f"L&rsquo;unico intervallo di questa scheda sta sulla <i>differenza</i> M&minus;F "
+             f"dell&rsquo;occupazione ({num(ci_b.gap)} p.p., IC 95% di Newcombe "
+             f"[{num(ci_b.gap_lo)}; {num(ci_b.gap_hi)}]), perch&eacute; &egrave; l&rsquo;unica "
+             f"quantit&agrave; su cui il thread dichiara un&rsquo;incertezza.",
+        lettura="Rosa le ragazze, blu i ragazzi: la coppia &egrave; dentro Okabe-Ito e resta "
+                "distinguibile in protanopia e deuteranopia. Le due barre femminili sono a "
+                "piena intensit&agrave; perch&eacute; sono il soggetto, non perch&eacute; "
+                "valgano di pi&ugrave;. <b>Non &egrave; un imbuto</b>: le barre hanno la stessa "
+                "base ma non sono le stesse persone seguite in sequenza. Nelle tavole comunali "
+                "titolo di studio e condizione professionale <b>non sono incrociati</b> (nella "
+                "tavola lavoro il titolo &egrave; solo &laquo;totale&raquo;, in quella "
+                "istruzione la condizione &egrave; solo &laquo;totale&raquo;). &laquo;Quante "
+                "diplomate di Bagheria lavorano&raquo; non &egrave; una domanda a cui i dati "
+                "pubblici rispondano, ed &egrave; il primo dato che il servizio della scheda 4 "
+                "produrrebbe.",
+        fonte="ISTAT, censimento permanente 2024 &rarr; <b>genere_per_1000.csv</b>; intervallo "
+              "da <b>genere_gap_occupazione_ci.csv</b>.")
 
     q24 = quad[quad.anno == 2024]
     punti = [(breve(r.nome_territorio), r.vantaggio_diploma_15_24_pp, r.tasso_occupazione_F,
@@ -771,31 +1051,153 @@ def scheda_forbice() -> Path:
              for _, r in q24.iterrows()]
     ser_f = {breve(n): dict(zip(g.anno, g.tasso_occupazione_F))
              for n, g in serie.groupby("nome_territorio")}
+    enne_f = (mille[mille.anno == 2024].set_index(["nome_territorio", "genere"])
+              .pop_15_24.unstack())
     corpo += blocco(
+        fig(),
         "La forbice: pi&ugrave; il vantaggio educativo cresce, meno il lavoro arriva",
-        "A sinistra il piano istruzione &times; occupazione sulla <b>stessa fascia 15-24</b>: "
-        "Bagheria &egrave; sola nell&rsquo;angolo &laquo;pi&ugrave; istruite, meno occupate&raquo;. "
-        "A destra la serie del tasso femminile: la distanza dagli altri territori non si chiude.",
         '<div class="duo">'
         '<div><h4>2024 &middot; il quadrante</h4>'
         + quadrante(punti, xlab="vantaggio femminile sul diploma (p.p.)",
                     ylab="occupazione femminile 15-24 (%)", w=300, h=232) + '</div>'
         '<div><h4>2018-2024 &middot; occupazione femminile 15-24</h4>'
         + linee(ser_f, w=300, h=232, coda=92) + '</div></div>',
-        fonte="ISTAT, censimento permanente &rarr; <b>genere_forbice_quadrante.csv</b>, "
-              "<b>genere_forbice_serie.csv</b>. Il 2020 manca alla fonte e non &egrave; "
-              "interpolato.",
-        nota="<b>Il claim robusto, e quello che non lo &egrave;.</b> Sulla fascia 15-24 il "
-             "primato del vantaggio educativo &egrave; un pareggio con la Sicilia: il claim "
-             "solido non &egrave; &laquo;le pi&ugrave; istruite d&rsquo;Italia&raquo;, ma il "
-             "<b>distacco dal vicinato</b> unito alla <b>mancata conversione</b>.")
+        mostra="A sinistra il piano istruzione &times; occupazione al 2024, entrambe le misure "
+               "sulla <b>stessa fascia 15-24</b>: in ascissa il vantaggio femminile sul "
+               "diploma (quota F meno quota M, in punti percentuali), in ordinata il tasso di "
+               "occupazione femminile in percentuale delle coetanee residenti. A destra la "
+               "serie 2018-2024 dello stesso tasso femminile. La figura <b>non</b> mostra il "
+               "rapporto fra tasso maschile e femminile, che sta nella figura 2.1.",
+        base="N delle coetanee 15-24 al 2024: " + ", ".join(
+            f"{breve(t)} {num(enne_f.loc[t, 'F'], 0)}"
+            for t in ["Bagheria", "Palermo", "Sicilia", "Italia", "vicinato (5 comuni)"]) +
+             ". Conteggi censuari e non stime campionarie: nessun intervallo sui singoli "
+             "punti. Per il vicinato i conteggi dei cinque comuni sono <b>sommati e solo "
+             "dopo</b> si calcola il tasso: non &egrave; la media dei cinque tassi. "
+             f"<b>Esclusioni</b>: il 2020 manca alla fonte sulla classe 15-24 e non &egrave; "
+             f"interpolato. Bagheria ha il tasso femminile pi&ugrave; basso del panel in "
+             f"{minimi} annate su {annate}, cio&egrave; il minimo non dipende dall&rsquo;anno "
+             f"scelto.",
+        lettura="Nel pannello di sinistra gli assi sono assi, <b>non mediane</b>: non "
+                "dividono il piano in quadranti, e la lettura &egrave; relativa fra i cinque "
+                "punti, non rispetto a una soglia. Bagheria &egrave; il punto grande e "
+                "colorato, e sta in basso a destra, cio&egrave; pi&ugrave; vantaggio educativo "
+                "e meno occupazione. La versione con le mediane del panel disegnate &egrave; "
+                "la tavola 2.6. Nel pannello di destra la striscia grigia verticale "
+                "&egrave; il <b>2020 non rilevato</b>: &egrave; opaca apposta, per tagliare la "
+                "linea invece di lasciarla passare sotto e raccontare una continuit&agrave; "
+                "che non c&rsquo;&egrave;. Le etichette di fine linea sono scostate quel tanto "
+                "che basta a non sovrapporsi: i punti restano sul valore vero. "
+                "<b>Il claim robusto, e quello che non lo &egrave;</b>: sulla fascia 15-24 il "
+                "primato del vantaggio educativo &egrave; un pareggio con la Sicilia, quindi "
+                "il claim solido non &egrave; &laquo;le pi&ugrave; istruite d&rsquo;Italia&raquo; "
+                "ma il <b>distacco dal vicinato</b> unito alla <b>mancata conversione</b>.",
+        fonte="ISTAT, censimento permanente 2018-2024 &rarr; "
+              "<b>genere_forbice_quadrante.csv</b>, <b>genere_forbice_serie.csv</b>, "
+              "denominatori da <b>genere_per_1000.csv</b>.")
+
+    dist11, dist24 = dist.loc[2011], dist.loc[2024]
+    l11 = pos.loc["L11"]
+    claim(S, "percentile siciliano dell'occupazione femminile, 2011 -> 2024",
+          f"{dist11.percentile:.1f} -> {dist24.percentile:.1f}", "percentile",
+          "genere_distribuzione_390.csv", "indicatore 15+, non giovanile; 390 comuni")
+    claim(S, "rho di Spearman fra la graduatoria 2011 e quella 2024", dist24.rho_vs_2011,
+          "-", "genere_distribuzione_390.csv", "la posizione del 2011 predice quella del 2024")
 
     corpo += blocco(
+        fig(),
+        f"Non &egrave; un comune medio della Sicilia: sta nella coda bassa, e ci stava "
+        f"gi&agrave; nel 2011",
+        figura("fig04_mappa_sicilia"),
+        mostra="Tasso di occupazione femminile sulla popolazione di <b>15 anni e pi&ugrave;</b>, "
+               "per comune siciliano, 2024. In alto la carta dell&rsquo;isola, in basso la "
+               "distribuzione dello stesso indicatore confrontata con quella del 2011. "
+               "<b>Attenzione alla fascia</b>: qui e solo qui la misura &egrave; sui 15+ e non "
+               "sui 15-24 del resto della scheda, perch&eacute; il confronto sui 390 comuni "
+               "esiste solo su quella base. Il tasso di questa figura e quello delle figure "
+               "2.1 e 2.2 <b>non si confrontano fra loro</b>: popolazioni diverse.",
+        base=f"N = 390 comuni ai confini del 2011 in entrambe le annate. Unica esclusione: "
+             f"Misiliscemi, istituito nel 2021 per distacco da Trapani, disegnato in grigio e "
+             f"tenuto fuori dai 390 perch&eacute; nel 2011 non esisteva. Conteggi censuari, "
+             f"<b>nessun intervallo di confidenza sui singoli comuni</b>; nei comuni piccoli "
+             f"il tasso resta per&ograve; instabile, perch&eacute; poche persone spostano "
+             f"molti punti. Bagheria passa da {num(dist11.bagheria)}% "
+             f"({num(dist11.percentile, 1)}&deg; percentile, {num(dist11.comuni_sotto, 0)} comuni "
+             f"sotto) a {num(dist24.bagheria)}% ({num(dist24.percentile, 1)}&deg; percentile, "
+             f"{num(dist24.comuni_sotto, 0)} sotto), mentre la mediana regionale sale da "
+             f"{num(dist11.mediana)}% a {num(dist24.mediana)}%. La graduatoria &egrave; stabile: "
+             f"rho di Spearman fra 2011 e 2024 = <b>{num(dist24.rho_vs_2011, 3)}</b>. Fra i "
+             f"{num(l11.n_istruiti, 0)} comuni siciliani ugualmente scolarizzati, uno solo "
+             f"sta sotto Bagheria: <b>&egrave; penultima del gruppo</b>. Le due annate "
+             f"vengono da rilevazioni con disegni diversi (universale a questionario nel "
+             f"2011, campionaria sui registri il permanente): il livello ne risente, il rango "
+             f"dentro l&rsquo;anno molto meno, ed &egrave; il motivo per cui il confronto fra "
+             f"annate si fa in percentili e non in punti percentuali.",
+        lettura="Sulla carta il colore &egrave; il valore, su scala continua viridis: "
+                "pi&ugrave; chiaro significa occupazione femminile pi&ugrave; alta, e la "
+                "stessa scala vale per le barre dell&rsquo;istogramma sotto. &Egrave; una "
+                "scala sequenziale, quindi ha un verso e non va letta come categorie. Bagheria "
+                "ha il bordo vermiglio, i cinque comuni pi&ugrave; vicini per distanza fra i "
+                "centroidi il bordo scuro, Palermo il bordo viola: a questa scala i loro "
+                "poligoni sono un punto, perci&ograve; i nomi sono raccolti in una graffa in "
+                "mare, ordinati per valore decrescente. Nell&rsquo;istogramma le barre piene "
+                "sono il 2024 e il profilo grigio vuoto &egrave; il 2011: sono "
+                "<b>sovrapposti e non affiancati</b>, perch&eacute; il finding &egrave; lo "
+                "scorrimento dell&rsquo;intera distribuzione. Le verticali tratteggiate sono i "
+                "valori 2011 e quelle piene i valori 2024. Il riquadro &egrave; centrato sulla "
+                "terraferma: Lampedusa, Linosa, Pantelleria e Marettimo restano fuori dalla "
+                "carta ma sono nel dato e nell&rsquo;istogramma.",
+        fonte="ISTAT 8milaCensus indicatore L11 (2011) e censimento permanente (2024) &rarr; "
+              "<b>genere_distribuzione_390.csv</b>, <b>genere_posizionamento.csv</b>. Confini: "
+              "unit&agrave; amministrative generalizzate ISTAT al 01/01/2026, EPSG:32633. "
+              "Figura a piena risoluzione: <b>figures/fig04_mappa_sicilia.png</b>.")
+
+    rit_b = rit[(rit.nome_territorio == "Bagheria") & rit.eta_2021.between(14, 30)]
+    n_rit = rit_b.groupby("genere").n_2021.sum()
+    c2529f = coo[(coo.coorte == "25-29 nel 2021") & (coo.genere == "F")].set_index(
+        "nome_territorio")["ritenzione_%"]
+    claim(S, "ritenzione della coorte F 25-29, Bagheria contro Italia",
+          f"{c2529f['Bagheria']:.1f} / {c2529f['Italia']:.1f}", "per 100",
+          "genere_coorti.csv", "saldo netto di coorte, non un conteggio di partenze")
+
+    corpo += blocco(
+        fig(),
+        "Le uscite hanno due tempi, e quello femminile &egrave; fra i 22 e i 25 anni",
+        figura("fig07_ritenzione_eta"),
+        mostra="Quota della coorte del 2021 ancora residente nello stesso comune tre anni "
+               "dopo, per <b>et&agrave; singola</b> da 14 a 30 anni e per genere, cinque "
+               "territori. Base 100 = la coorte di partenza: chi aveva 20 anni nel 2021 ne ha "
+               "23 nel 2024. &Egrave; una misura <b>netta</b>, che comprende sia chi parte sia "
+               "chi arriva, quindi <b>non</b> conta le partenze e non ha una destinazione: "
+               "dice a che et&agrave; si perde, non dove si va.",
+        base=f"N = {num(n_rit.sum(), 0)} persone nella coorte 2021 di Bagheria "
+             f"({num(n_rit['F'], 0)} femmine e {num(n_rit['M'], 0)} maschi), fra "
+             f"{num(rit_b.n_2021.min(), 0)} e {num(rit_b.n_2021.max(), 0)} per singola "
+             f"et&agrave;. Le linee sono <b>medie mobili centrate su tre et&agrave;</b>, "
+             f"quindi si leggono i pattern e non i decimali. Conteggi censuari, "
+             f"<b>nessun intervallo di confidenza</b>: l&rsquo;incertezza residua &egrave; "
+             f"l&rsquo;aggiustamento post-censuario delle stime di popolazione, che la misura "
+             f"incorpora. Nessun record escluso: le et&agrave; ai bordi servono solo a "
+             f"chiudere la media mobile. Sulla coorte 25-29 la ritenzione femminile di "
+             f"Bagheria vale {num(c2529f['Bagheria'])} contro {num(c2529f['Italia'])} in "
+             f"Italia, l&rsquo;unica cella femminile negativa dei quattro territori.",
+        lettura="La tratteggiata orizzontale a 100 &egrave; la parit&agrave;: sopra, la coorte "
+                "&egrave; cresciuta; sotto, si &egrave; ridotta. Il rettangolo vermiglio "
+                "chiaro, presente <b>solo sul pannello femminile</b>, &egrave; il soggetto "
+                "della figura: la finestra 22-25. A sinistra le femmine, a destra i maschi, e "
+                "i due pannelli condividono la scala verticale. Il vicinato &egrave; "
+                "l&rsquo;insieme dei cinque comuni pi&ugrave; vicini per distanza fra i "
+                "centroidi, non un vicino singolo. <b>Cautela</b>: la finestra 22-25 &egrave; "
+                "una lettura <i>pooled</i>, e le transizioni annuali oscillano fino a 8 punti "
+                "sulla stessa et&agrave;. Si titola sul triennio, mai sull&rsquo;anno singolo. "
+                "&Egrave; la figura che impone le due finestre di ingaggio della scheda 4.",
+        fonte="ISTAT, censimento permanente, et&agrave; singole 2021 e 2024 &rarr; "
+              "<b>genere_ritenzione_eta.csv</b>, <b>genere_coorti.csv</b>. Figura a piena "
+              "risoluzione: <b>figures/fig07_ritenzione_eta.png</b>.")
+
+    corpo += blocco(
+        fig(),
         "Dentro l&rsquo;inattivit&agrave;: stesse dimensioni, etichette opposte",
-        f"I circa {num(inatt.sum(), 0)} giovani fuori da lavoro, studio e ricerca "
-        f"<b>non sono un gruppo femminile</b>: {num(inatt['F'], 0)} ragazze e "
-        f"{num(inatt['M'], 0)} ragazzi. Sono femminili nell&rsquo;<b>etichetta</b> che il "
-        f"censimento assegna loro, e l&rsquo;etichetta &egrave; il canale di contatto.",
         legenda([("femmine", COL_G["F"]), ("maschi", COL_G["M"])]),
         barre([{"label": "casalinghe (F)", "valore": casa["F"], "colore": COL_G["F"], "forte": True},
                {"label": "casalinghi (M)", "valore": casa["M"], "colore": COL_G["M"]},
@@ -804,19 +1206,65 @@ def scheda_forbice() -> Path:
                {"label": "«altra condizione» (M)", "valore": altra["M"],
                 "colore": COL_G["M"], "forte": True}],
               lab=196, fmt=lambda v: num(v, 0) + " persone", coda=90),
+        mostra=f"Come il censimento etichetta i circa {num(inatt.sum(), 0)} quindici-"
+               f"ventiquattrenni di Bagheria che al 2024 sono fuori da lavoro, studio e "
+               f"ricerca attiva: in persone, per genere e per stato dichiarato. La figura "
+               f"mostra l&rsquo;<b>etichetta</b>, non una condizione accertata, e non dice "
+               f"nulla su quanto quelle persone vorrebbero lavorare.",
+        base=f"N = {num(inatt.sum(), 0)} persone fuori da lavoro e istruzione e non in cerca, "
+             f"di cui {num(inatt['F'], 0)} femmine e {num(inatt['M'], 0)} maschi: il gruppo "
+             f"&egrave; per met&agrave; maschile, non &egrave; un gruppo femminile. Conteggi "
+             f"censuari, nessun intervallo di confidenza. Nella tavola i codici F, M e il "
+             f"totale T convivono come righe sorelle: <b>il totale &egrave; filtrato via</b> "
+             f"prima di sommare, altrimenti i conteggi raddoppiano. Sullo stato civile la "
+             f"fonte e la data di riferimento sono diverse (1&deg; gennaio 2025, DCIS_POPRES1 "
+             f"contro censimento 2024), quindi il {num(nubili, 0)}% qui sotto &egrave; un "
+             f"<b>limite inferiore</b>, non una stima puntuale.",
+        lettura=f"Rosa le femmine, blu i maschi; a piena intensit&agrave; le due barre che "
+                f"reggono il ragionamento, cio&egrave; le casalinghe e l&rsquo;&laquo;altra "
+                f"condizione&raquo; maschile. Le quattro barre sono conteggi sulla stessa "
+                f"scala e si confrontano direttamente. <b>Le casalinghe di Bagheria sono "
+                f"nubili</b>: al 1&deg; gennaio 2025 le gi&agrave; coniugate 15-24 sono "
+                f"{num(con25.gia_coniugate, 0)} ({num(con25.quota_gia_coniugate_pct)}%) contro "
+                f"{num(casa['F'], 0)} casalinghe, quindi almeno il "
+                f"<b>{num(nubili, 0)}% non &egrave; sposato</b>, e il matrimonio under-25 a "
+                f"Bagheria sta sotto Palermo e Sicilia. Il canale non &egrave; la famiglia "
+                f"propria ma quella d&rsquo;origine: serve un servizio di <b>attivazione</b>, "
+                f"non solo di conciliazione. La quota &egrave; sensibile alla struttura per "
+                f"et&agrave;, e passa da {num(bounds.iloc[0, 1])}% sui 15-24 a "
+                f"{num(bounds.iloc[2, 1])}% se si assume che nessuna abbia meno di 20 anni.",
         fonte="ISTAT, censimento permanente 2024 &rarr; "
               "<b>genere_composizione_stato_dettaglio.csv</b>; stato civile al 1&deg; gennaio "
-              "2025 (DCIS_POPRES1) &rarr; <b>genere_stato_civile.csv</b>.",
-        nota=f"<b>Le casalinghe di Bagheria sono nubili.</b> Al 1&deg; gennaio 2025 le gi&agrave; "
-             f"coniugate 15-24 sono {num(con25.gia_coniugate, 0)} "
-             f"({num(con25.quota_gia_coniugate_pct)}%) contro {num(casa['F'], 0)} casalinghe: "
-             f"almeno il <b>{num(nubili, 0)}% non &egrave; sposato</b>, e il matrimonio "
-             f"under-25 a Bagheria sta <i>sotto</i> Palermo e Sicilia. Il canale non &egrave; la "
-             f"famiglia propria ma quella d&rsquo;origine &mdash; quindi serve un servizio di "
-             f"<b>attivazione</b>, non solo di conciliazione. "
-             f"&Egrave; anche un dato sensibile alla struttura per et&agrave;: la quota passa "
-             f"da {num(bounds.iloc[0, 1])}% sui 15-24 a {num(bounds.iloc[2, 1])}% se si "
-             f"assume che nessuna abbia meno di 20 anni.")
+              "2025 (DCIS_POPRES1) &rarr; <b>genere_stato_civile.csv</b>, bound in "
+              "<b>genere_casalinghe_bounds.csv</b>.")
+
+    corpo += blocco(
+        fig("Tavola"),
+        "La stessa forbice come esce dal notebook, con la sua didascalia",
+        figura("fig05_forbice", intera=True, larghezza=1650),
+        mostra="&Egrave; la figura 2.2, nella versione integrale che sta nello zip: stessa "
+               "misura, stesse cinque unit&agrave;, ma con le mediane del panel disegnate e "
+               "la didascalia a quattro blocchi incorporata nell&rsquo;immagine. Compare qui "
+               "<b>intera e non ritagliata</b> perch&eacute; il punto non &egrave; il dato, "
+               "che la scheda ha gi&agrave; dato, ma mostrare che ogni tavola del progetto "
+               "viaggia da sola: chi la trova in una cartella sa gi&agrave; che cosa misura, "
+               "su quante persone e con quali limiti.",
+        base="Le altre figure di questa scheda sono ritagliate al solo grafico proprio "
+             "perch&eacute; questa non lo &egrave;: alla larghezza di una colonna il testo "
+             "incorporato in un PNG a 300 dpi scende sotto i cinque pixel e non si legge, "
+             "quindi la didascalia va ricomposta in HTML, come nelle figure 2.1-2.5. La "
+             "regola sta in <b>pipeline/schede.py</b>, funzione <code>figura()</code>. I "
+             "denominatori sono quelli della figura 2.2.",
+        lettura="Rispetto alla figura 2.2 cambiano due cose: le <b>tratteggiate chiare</b> "
+                "sono le mediane del panel e dividono davvero il piano in quadranti, e "
+                "l&rsquo;etichetta accanto a ogni punto ne ripete i due valori. La "
+                "tratteggiata verticale allo zero &egrave; la parit&agrave; educativa fra "
+                "ragazze e ragazzi: a destra di quella riga le ragazze sono pi&ugrave; "
+                "istruite dei coetanei. Bagheria &egrave; il punto vermiglio pi&ugrave; grande, "
+                "e sta da sola in basso a destra.",
+        fonte="Generata da <b>viz/fig05_forbice.R</b> &rarr; "
+              "<b>figures/fig05_forbice.png</b> (300 dpi) e <b>.svg</b>. Dati: "
+              "<b>genere_forbice_quadrante.csv</b>, <b>genere_per_1000.csv</b>.")
 
     return scrivi("scheda2_forbice.html",
                   "La forbice di genere a Bagheria", corpo,
@@ -840,6 +1288,7 @@ def _spearman(a, b):
 def scheda_pendolarismo() -> Path:
     """Focus «dinamiche e ruolo del pendolarismo verso Palermo»."""
     S = "3. pendolarismo"
+    fig = Numera(3)
     flu = pd.read_csv(PROCESSED / "mob_flussi_bagheria.csv")
     rib = pd.read_csv(PROCESSED / "mob_ribaltamento_territori.csv").set_index("territorio")
     mez = pd.read_csv(PROCESSED / "mob_mezzo_genere.csv")
@@ -902,7 +1351,7 @@ def scheda_pendolarismo() -> Path:
     corpo = intestazione(
         "Focus &laquo;dinamiche e ruolo del pendolarismo verso Palermo&raquo; &middot; "
         "matrice origine-destinazione ISTAT 2011 e 2021",
-        "Si esce per studiare, non per lavorare &mdash; e la destinazione &egrave; una sola.",
+        "Si esce per studiare, non per lavorare, e la destinazione &egrave; una sola.",
         f"Fra chi lascia Bagheria ogni giorno, il "
         f"{num(sin.loc['quota di chi esce che va a Palermo, studio 2011'].valore)}% per studio "
         f"e il {num(sin.loc['quota di chi esce che va a Palermo, lavoro 2021'].valore)}% per "
@@ -918,11 +1367,11 @@ def scheda_pendolarismo() -> Path:
         f"i {num(rib.loc['Sicilia'].ribaltamento)} della Sicilia. Le ragazze si muovono: "
         f"smettono quando il motivo diventa il lavoro.")
 
+    usc11 = flu[(flu.anno == 2011) & (flu.motivo == "studio")].persone.sum()
+    usc21 = flu[(flu.anno == 2021) & (flu.motivo == "lavoro")].persone.sum()
     corpo += blocco(
+        fig(),
         "La destinazione ha un nome, ed &egrave; una sola",
-        "Primi cinque comuni di arrivo di chi esce da Bagheria. Il secondo &egrave; sempre un "
-        "ordine di grandezza sotto il primo: non c&rsquo;&egrave; da scegliere quale "
-        "destinazione servire.",
         '<div class="duo">'
         '<div><h4>2011 &middot; motivo studio</h4>'
         + barre([{"label": r.comune, "valore": r.quota_su_chi_esce, "colore": COL["Bagheria"],
@@ -932,39 +1381,73 @@ def scheda_pendolarismo() -> Path:
         + barre([{"label": r.comune, "valore": r.quota_su_chi_esce, "colore": COL["Bagheria"],
                   "forte": r.comune == "Palermo"} for _, r in lavoro21.iterrows()],
                 w=300, lab=118, coda=48) + '</div></div>',
-        fonte="ISTAT, matrici del pendolarismo &rarr; <b>mob_flussi_bagheria.csv</b>. "
-              "La matrice ricostruisce sette su sette gli indicatori <i>M</i> gi&agrave; "
-              "pubblicati da 8milaCensus: &egrave; il livello sottostante, non una fonte "
-              "alternativa.",
-        nota="<b>I due pannelli non sono una serie.</b> Il 2011 conta chi si sposta "
-             "<i>giornalmente</i>, il 2021 chi si reca al lavoro <i>almeno tre giorni a "
-             "settimana</i>, e il 2021 copre il solo lavoro. Si confronta la composizione "
-             "(dove vanno, su cento che escono), mai il livello.")
+        mostra="I primi cinque comuni di arrivo di chi esce ogni giorno da Bagheria, in "
+               "percentuale di chi esce, per i due motivi e le due rilevazioni disponibili: "
+               "studio al censimento 2011, lavoro alla matrice del censimento permanente "
+               "2021. La figura mostra <b>dove</b> vanno quelli che escono, non <b>quanti</b> "
+               "escono: il livello di uscita sta nella figura 3.4.",
+        base=f"N = {num(usc11, 0)} persone che escono da Bagheria per studio nel 2011 e "
+             f"{num(usc21, 0)} che ne escono per lavoro nel 2021; le quote sono su questi "
+             f"due denominatori, non sulla popolazione. Record esaustivi della matrice "
+             f"origine-destinazione, non un campione: <b>nessun intervallo di confidenza</b>. "
+             f"Sono mostrate le prime cinque destinazioni su tutte quelle presenti; la coda "
+             f"non &egrave; esclusa dal calcolo delle quote, solo dal disegno.",
+        lettura="I due pannelli hanno scale indipendenti e Palermo &egrave; la barra a piena "
+                "intensit&agrave;. <b>Non sono una serie</b>: il 2011 conta chi si sposta "
+                "<i>giornalmente</i>, il 2021 chi si reca al lavoro <i>almeno tre giorni a "
+                "settimana</i>, e il 2021 copre il solo lavoro. Si confronta la composizione "
+                "(dove vanno, su cento che escono), mai il livello. Che il secondo comune stia "
+                "sempre un ordine di grandezza sotto il primo &egrave; il finding: non "
+                "c&rsquo;&egrave; da scegliere quale destinazione servire.",
+        fonte="ISTAT, matrici del pendolarismo 2011 e 2021 &rarr; "
+              "<b>mob_flussi_bagheria.csv</b>. La matrice ricostruisce sette su sette gli "
+              "indicatori <i>M</i> gi&agrave; pubblicati da 8milaCensus: &egrave; il livello "
+              "sottostante, non una fonte alternativa.")
 
     ordine_rib = ["Bagheria", "5 comuni vicini", "Sicilia", "Italia", "Comune di Palermo"]
     corpo += blocco(
+        fig(),
         "Il ribaltamento: lo scarto di genere cambia segno col motivo",
-        "Quota di chi esce dal comune, scarto femmine &minus; maschi. Il verso cambia in tutti i "
-        "territori; la particolarit&agrave; di Bagheria &egrave; l&rsquo;<b>ampiezza</b> del salto.",
         slope([(n, rib.loc[n].gap_studio_F_M, rib.loc[n].gap_lavoro_F_M,
                 COL.get(n, GRIGIO), n == "Bagheria") for n in ordine_rib],
               sx="per STUDIO", dx="per LAVORO"),
-        fonte="ISTAT, censimento 2011, record esaustivi &rarr; "
-              "<b>mob_ribaltamento_territori.csv</b>.",
-        nota=f"<b>Replicato su una fonte che non condivide niente.</b> La stessa misura sul "
-             f"censimento permanente 2018-2019 &mdash; altra rilevazione, altro metodo, sette "
-             f"anni dopo &mdash; d&agrave; per Bagheria "
+        mostra="Quota di chi esce dal comune di residenza, come <b>scarto femmine "
+               "&minus; maschi</b> in punti percentuali, per i due motivi dello spostamento e "
+               "cinque territori, censimento 2011. Il denominatore &egrave; chi si sposta per "
+               "quel motivo, non la popolazione: la figura misura il verso dello "
+               "spostamento a parit&agrave; di motivo, e <b>non</b> quante persone lavorano o "
+               "studiano.",
+        base=f"Record esaustivi del censimento 2011: <b>nessun intervallo di confidenza</b> e "
+             f"nessun test, sono conteggi di popolazione. Per Bagheria il divario sul lavoro "
+             f"vale {num(bag.gap_lavoro_F_M)} punti, il "
+             f"{num(perc_gap, 0)}&deg; percentile dei 390 comuni siciliani (13&deg; sui soli "
+             f"381 non capoluogo); il salto fra i due motivi vale "
+             f"{num(bag.ribaltamento)} punti contro i "
+             f"{num(rib.loc['Sicilia'].ribaltamento)} della Sicilia. <b>Replicato su una "
+             f"fonte indipendente</b>: la stessa misura sul censimento permanente 2018-2019 "
+             f"(altra rilevazione, altro metodo, sette anni dopo) d&agrave; per Bagheria "
              f"{num(pen19.loc[('Bagheria', 'WK')].gap_M_meno_F)} punti sul lavoro contro "
              f"{num(pen19.loc[('Sicilia', 'WK')].gap_M_meno_F)} in Sicilia, e il segno "
-             f"opposto sullo studio. <b>E non &egrave; il divario occupazionale travestito</b>: "
-             f"il denominatore &egrave; gi&agrave; condizionato al motivo &mdash; chi si sposta "
-             f"per lavoro un lavoro ce l&rsquo;ha.")
+             f"opposto sullo studio. La fonte non ha la dimensione et&agrave;: il target "
+             f"15-34 del bando non &egrave; isolabile qui.",
+        lettura="Ogni linea &egrave; un territorio e collega la stessa misura ai due motivi: "
+                "la <b>pendenza</b> &egrave; il finding, non i due livelli presi da soli. La "
+                "tratteggiata orizzontale &egrave; la parit&agrave; F = M: sopra escono "
+                "pi&ugrave; le donne, sotto pi&ugrave; gli uomini. Bagheria &egrave; la linea "
+                "spessa e colorata. Il verso cambia in tutti i territori, quindi il "
+                "ribaltamento in s&eacute; non &egrave; una particolarit&agrave; locale: "
+                "l&rsquo;<b>ampiezza</b> lo &egrave;. <b>E non &egrave; il divario "
+                "occupazionale travestito</b>: il denominatore &egrave; gi&agrave; "
+                "condizionato al motivo, cio&egrave; chi si sposta per lavoro un lavoro "
+                "ce l&rsquo;ha.",
+        fonte="ISTAT, censimento 2011, record esaustivi &rarr; "
+              "<b>mob_ribaltamento_territori.csv</b>; replica sul censimento permanente "
+              "2018-2019 &rarr; <b>genere_pendolarismo.csv</b>.")
 
+    n_mob = ora.groupby("genere").persone.sum()
     corpo += blocco(
-        "Il treno &egrave; il canale femminile &mdash; e non &egrave; sottoutilizzato",
-        "Come raggiungono Palermo, fra chi esce da Bagheria. Le donne sul mezzo collettivo, "
-        "gli uomini in auto: un servizio che d&agrave; per scontata l&rsquo;auto seleziona per "
-        "genere.",
+        fig(),
+        "Il treno &egrave; il canale femminile, l&rsquo;auto quello maschile",
         legenda([("femmine", COL_G["F"]), ("maschi", COL_G["M"])]),
         '<div class="duo">'
         '<div><h4>Mezzo usato (2011)</h4>'
@@ -979,31 +1462,94 @@ def scheda_pendolarismo() -> Path:
         + barre([{"label": "femmine", "valore": presto["F"], "colore": COL_G["F"], "forte": True},
                  {"label": "maschi", "valore": presto["M"], "colore": COL_G["M"]}],
                 w=300, lab=132, coda=46)
-        + f'<p class="fonte">Tutti i motivi. Le donne partono pi&ugrave; tardi e viaggiano '
-          f'pi&ugrave; a lungo, per 17 chilometri. Il rientro non &egrave; rilevato: il carico '
-          f'di cura resta un&rsquo;ipotesi, non un dato.</p></div></div>',
+        + '</div></div>',
+        mostra="Come si sposta chi esce da Bagheria, per genere, censimento 2011: a sinistra "
+               "il mezzo usato, in percentuale di chi si sposta dello stesso sesso; a destra "
+               "la quota che esce di casa prima delle 7:15. <b>Tutti i motivi insieme</b>, "
+               "perch&eacute; la tavola per mezzo non incrocia il motivo. La figura non dice "
+               "nulla sul viaggio di rientro, che la fonte non rileva.",
+        base=f"N = {num(n_mob['F'], 0)} femmine e {num(n_mob['M'], 0)} maschi che si spostano "
+             f"giornalmente. <b>Stima campionaria</b>, non conteggio: la tavola per mezzo e "
+             f"orario &egrave; rilevata sui comuni sopra i 20.000 abitanti e calibrata sui "
+             f"margini dei conteggi esaustivi; <b>errore relativo mediano 0,9%</b>, che alle "
+             f"differenze qui mostrate (16 punti sul mezzo collettivo) non cambia il segno. "
+             f"Le classi &laquo;di cui: treno&raquo; sono un sottoinsieme del mezzo "
+             f"collettivo e non vanno sommate alle altre.",
+        lettura="Rosa le femmine, blu i maschi; a piena intensit&agrave; la barra pi&ugrave; "
+                "alta della coppia, cio&egrave; il canale prevalente per quel sesso. Le due "
+                "colonne hanno scale indipendenti. Le donne partono pi&ugrave; tardi e "
+                "viaggiano pi&ugrave; a lungo, per 17 chilometri; il rientro non &egrave; "
+                "rilevato, quindi <b>il carico di cura resta un&rsquo;ipotesi e non un "
+                "dato</b>. La conseguenza operativa &egrave; nella scheda 4: un servizio che "
+                "d&agrave; per scontata l&rsquo;auto seleziona per genere.",
         fonte="ISTAT, censimento 2011, tavola per mezzo e orario &rarr; "
-              "<b>mob_mezzo_genere.csv</b>, <b>mob_orario_genere.csv</b>. Stima campionaria "
-              "(comuni sopra i 20.000 abitanti), calibrata sui margini dei conteggi esaustivi; "
-              "errore relativo mediano 0,9%.",
-        nota=f"<b>Un risultato negativo, riportato perch&eacute; &egrave; stato testato.</b> "
-             f"Bagheria &egrave; al <b>{num(perc_treno, 0)}&deg; percentile siciliano</b> per "
-             f"uso del treno: non c&rsquo;&egrave; infrastruttura sottoutilizzata da attivare. "
-             f"E sui 390 comuni l&rsquo;ipotesi naturale &mdash; dove il treno pesa di pi&ugrave; "
-             f"il divario di genere &egrave; pi&ugrave; piccolo &mdash; d&agrave; "
-             f"un&rsquo;associazione <b>non distinguibile da zero</b>: Spearman "
-             f"{num(rho, 2)}, p = {num(p, 2)}. "
-             f"Anche &laquo;Bagheria si muove poco&raquo; non regge: a parit&agrave; di taglia e "
-             f"distanza dal capoluogo il residuo &egrave; {num(tagb.residuo)} punti. "
-             f"<b>Conseguenza di progettazione: la leva non &egrave; il collegamento, &egrave; "
-             f"la transizione.</b>")
+              "<b>mob_mezzo_genere.csv</b>, <b>mob_orario_genere.csv</b>.")
+
+    # Il finding e' lo scarto fra i due percentili, non i due percentili: sulla quota
+    # grezza Bagheria sembra muoversi poco, sul residuo del modello e' nella media.
+    perc_grezzo = 100 * (tag.quota_fuori < tagb.quota_fuori).mean()
+    perc_residuo = 100 * (tag.residuo < tagb.residuo).mean()
+    claim(S, "percentile di Bagheria fra i 381 non capoluogo, quota grezza -> residuo",
+          f"{perc_grezzo:.0f} -> {perc_residuo:.0f}", "percentile",
+          "mob_taglia_distanza.csv", "a parita' di taglia e distanza Bagheria e' nella media")
 
     corpo += blocco(
+        fig(),
+        "Due ipotesi testate, e cadute: il treno non &egrave; sottoutilizzato e Bagheria "
+        "non si muove poco",
+        figura("mob_fig04_taglia_distanza"),
+        mostra="Quota di residenti che esce dal comune per lavoro, in percentuale, contro la "
+               "taglia del comune e la distanza dal capoluogo, per i 381 comuni siciliani non "
+               "capoluogo. Serve a rispondere a una sola domanda: <b>quanto di quello che si "
+               "vede a Bagheria &egrave; spiegato da quanto Bagheria &egrave; grande e da "
+               "quanto dista da Palermo.</b> La figura non riguarda il divario di genere, che "
+               "&egrave; nella figura 3.2.",
+        base=f"N = {num(len(tag), 0)} comuni non capoluogo. Bagheria: quota osservata "
+             f"{num(tagb.quota_fuori)}%, attesa {num(tagb.atteso)}% a parit&agrave; di taglia "
+             f"e distanza, <b>residuo {num(tagb.residuo)} punti</b> contro una deviazione "
+             f"standard dei residui di {num(tag.residuo.std())} punti. Sulla quota grezza "
+             f"Bagheria &egrave; al {num(perc_grezzo, 0)}&deg; percentile, sul residuo del "
+             f"modello al {num(perc_residuo, 0)}&deg;: <b>il controllo sposta Bagheria nella "
+             f"media</b>, cio&egrave; l&rsquo;apparente anomalia era la taglia del comune e "
+             f"la distanza da Palermo. <b>Secondo test, e secondo risultato negativo</b>: "
+             f"sui 390 comuni "
+             f"l&rsquo;ipotesi naturale (dove il treno pesa di pi&ugrave;, il divario di "
+             f"genere sul lavoro &egrave; pi&ugrave; piccolo) d&agrave; un&rsquo;associazione "
+             f"<b>non distinguibile da zero</b>, Spearman {num(rho, 2)} con p = {num(p, 2)}. "
+             f"E Bagheria &egrave; al {num(perc_treno, 0)}&deg; percentile siciliano per uso "
+             f"del treno, cio&egrave; fra i comuni che il treno lo usano di pi&ugrave;.",
+        lettura=f"Nel pannello A ogni bolla &egrave; un comune e il <b>diametro</b> &egrave; il "
+                "numero di pendolari, non il valore: la scala dei diametri sta in legenda. "
+                "L&rsquo;asse orizzontale &egrave; in <b>scala logaritmica</b>, quindi la "
+                "stessa distanza sullo schermo vale un raddoppio di chilometri e non un "
+                "numero fisso. Le due linee sono l&rsquo;attesa del modello a taglia fissata: "
+                "continua per il comune mediano, tratteggiata per la taglia di Bagheria. "
+                "Bagheria &egrave; la bolla vermiglia, etichettata con osservato e atteso. "
+                "Nel pannello B i due istogrammi contano i comuni: sopra la quota grezza, "
+                "sotto il residuo del modello, con la verticale vermiglia su Bagheria. "
+                f"<b>Il finding &egrave; lo spostamento fra i due istogrammi</b>: dal "
+                f"{num(perc_grezzo, 0)}&deg; al {num(perc_residuo, 0)}&deg; percentile, "
+                f"cio&egrave; una volta tolte taglia e distanza Bagheria &egrave; un comune "
+                f"qualunque. Un risultato negativo si riporta perch&eacute; &egrave; stato "
+                f"testato, non nonostante lo sia. "
+                "Attenzione a due cose: l&rsquo;associazione &egrave; <b>ecologica</b>, "
+                "calcolata fra comuni e non fra persone, quindi orienta l&rsquo;ipotesi e non "
+                "la dimostra; e un test che non rifiuta non prova l&rsquo;assenza di un "
+                "effetto, dice che con questi dati non se ne vede. <b>Conseguenza di "
+                "progettazione: la leva non &egrave; il collegamento, &egrave; la "
+                "transizione</b>, ed &egrave; il motivo per cui la scheda 4 non propone "
+                "nessuna infrastruttura.",
+        fonte="ISTAT, matrice del pendolarismo 2021 e censimento 2011 &rarr; "
+              "<b>mob_taglia_distanza.csv</b>, <b>mob_treno_390.csv</b>, "
+              "<b>mob_ribaltamento_390.csv</b>. Figura a piena risoluzione: "
+              "<b>figures/mob_fig04_taglia_distanza.png</b>.")
+
+    rit = pd.read_csv(PROCESSED / "genere_ritenzione_eta.csv")
+    n_coorte = (rit[(rit.nome_territorio == "Bagheria") & rit.eta_2021.between(25, 29)]
+                .groupby("genere").n_2021.sum())
+    corpo += blocco(
+        fig(),
         "Dove la mobilit&agrave; femminile si spegne, la coorte si assottiglia",
-        "Ritenzione della coorte 25-29 fra 2021 e 2024: quanti restano ogni 100. &Egrave; "
-        "l&rsquo;unica cella femminile negativa dei quattro territori, ed &egrave; lo stesso "
-        "passaggio, misurato da una terza fonte che non condivide n&eacute; tavola n&eacute; "
-        "denominatore.",
         legenda([("femmine", COL_G["F"]), ("maschi", COL_G["M"])]),
         divergenti([{"label": f"{r.nome_territorio} ({ETICHETTA_G[r.genere]})",
                      "valore": r["ritenzione_%"], "colore": COL_G[r.genere],
@@ -1011,15 +1557,38 @@ def scheda_pendolarismo() -> Path:
                     for _, r in c2529.iterrows()],
                    centro=100, lab=150, coda=52,
                    etichetta_centro="100 = coorte intatta"),
-        fonte="ISTAT, censimento permanente, et&agrave; singole 2021-2024 &rarr; "
-              "<b>genere_coorti.csv</b>. &Egrave; un <b>saldo netto</b>: non ha destinazione e "
-              "non si somma al pendolarismo, che invece non ha l&rsquo;et&agrave;.",
-        nota="<b>Il limite che questa scheda dichiara per prima.</b> N&eacute; la matrice del "
-             "pendolarismo n&eacute; il censimento permanente hanno la dimensione et&agrave;: "
-             "il target 15-34 del bando <b>non &egrave; isolabile</b> sul pendolarismo. Il "
-             "motivo dello spostamento &egrave; un&rsquo;informazione d&rsquo;et&agrave; "
-             "parziale &mdash; chi esce per studio &egrave; quasi solo secondaria superiore e "
-             "universit&agrave; &mdash; e viene usato come tale.")
+        mostra="Ritenzione della coorte che aveva 25-29 anni nel 2021, misurata al 2024: "
+               "quante persone su 100 sono ancora residenti nello stesso comune, per genere e "
+               "quattro territori. &Egrave; l&rsquo;et&agrave; in cui la mobilit&agrave; "
+               "femminile per lavoro si spegne, misurata qui da una <b>terza fonte</b> che "
+               "non condivide n&eacute; tavola n&eacute; denominatore con le figure 3.1-3.4. "
+               "Il profilo completo per et&agrave; singola, che mostra dove si apre la "
+               "finestra, &egrave; la figura 2.4.",
+        base=f"N = {num(n_coorte.sum(), 0)} persone nella coorte 25-29 di Bagheria al 2021 "
+             f"({num(n_coorte['F'], 0)} femmine e {num(n_coorte['M'], 0)} maschi); per gli "
+             f"altri territori i denominatori sono di due o tre ordini di grandezza "
+             f"superiori. Conteggi censuari, <b>nessun intervallo di confidenza</b>. La "
+             f"ritenzione femminile di Bagheria &egrave; l&rsquo;unica cella femminile sotto "
+             f"100 dei quattro territori. La misura &egrave; un <b>saldo netto</b> fra "
+             f"iscrizioni e cancellazioni: confonde partenze, arrivi e rettifiche "
+             f"anagrafiche, e ai 25-29 la mortalit&agrave; &egrave; trascurabile ma le "
+             f"rettifiche no.",
+        lettura="Le barre partono dalla verticale a 100, che &egrave; la coorte intatta, e la "
+                "loro lunghezza &egrave; lo <b>scarto</b> da quella linea: a destra la coorte "
+                "&egrave; cresciuta, a sinistra si &egrave; ridotta. Sono disegnate cos&igrave; "
+                "e non da zero perch&eacute; 96,3 contro 103,0 su una scala 0-110 sarebbero "
+                "indistinguibili a occhio. Rosa le femmine, blu i maschi; a piena "
+                "intensit&agrave; la cella di Bagheria femmine. <b>Il limite che questa scheda "
+                "dichiara per prima</b>: n&eacute; la matrice del pendolarismo n&eacute; la "
+                "tavola per mezzo hanno la dimensione et&agrave;, quindi il target 15-34 del "
+                "bando non &egrave; isolabile sul pendolarismo, e questa coorte non si somma "
+                "alle figure precedenti. Il motivo dello spostamento &egrave; "
+                "un&rsquo;informazione d&rsquo;et&agrave; solo parziale (chi esce per studio "
+                "&egrave; quasi solo secondaria superiore e universit&agrave;) e viene usato "
+                "come tale.",
+        fonte="ISTAT, censimento permanente, et&agrave; singole 2021 e 2024 &rarr; "
+              "<b>genere_coorti.csv</b>, denominatori da "
+              "<b>genere_ritenzione_eta.csv</b>.")
 
     return scrivi("scheda3_pendolarismo.html",
                   "Il pendolarismo di Bagheria verso Palermo", corpo,
@@ -1032,6 +1601,7 @@ def scheda_pendolarismo() -> Path:
 def scheda_ponte19() -> Path:
     """La proposta di intervento, e il vincolo di misura che la distingue da un auspicio."""
     S = "4. Ponte 19"
+    fig = Numera(4)
     netto = pd.read_csv(PROCESSED / "genere_kpi_netto.csv").set_index("orizzonte")
     platea = pd.read_csv(PROCESSED / "genere_platea.csv")
     tetto = pd.read_csv(PROCESSED / "genere_tetto_platea.csv")
@@ -1097,40 +1667,52 @@ def scheda_ponte19() -> Path:
         f"dichiarata prima dell&rsquo;avvio.")
 
     corpo += blocco(
+        fig("Tavola"),
         "Dalle evidenze alle scelte di progetto",
-        "Ogni riga: il numero che l&rsquo;ha imposta, e in quale scheda sta.",
-        tabella(["Evidenza", "Scheda", "Scelta imposta"],
-                [("Il 70,6% di chi &egrave; fuori non cerca", "1",
-                  "outreach attivo, non sportello a domanda"),
-                 (f"Le uscite hanno due tempi: i ragazzi a 17-19 e 23-24 con rientri, "
-                  f"le ragazze da 24-25 senza rientri", "2, 3",
+        tabella(["Evidenza", "Dove", "Scelta imposta"],
+                [(f"Il {num(b24.inattivi_su_fuori)}% di chi &egrave; fuori non cerca",
+                  "fig. 1.5", "outreach attivo, non sportello a domanda"),
+                 ("Le uscite hanno due tempi: i ragazzi a 17-19 e 23-24 con rientri, "
+                  "le ragazze da 24-25 senza rientri", "fig. 2.4, 3.5",
                   "<b>due finestre</b>: A 18-20 all&rsquo;uscita, B 22-25 sulla conversione"),
                  (f"{num(inatt['F'], 0)} ragazze e {num(inatt['M'], 0)} ragazzi, "
-                  f"etichette opposte", "2",
+                  f"etichette opposte", "fig. 2.5",
                   "<b>quota &ge;50% F</b> e due tracce di contatto distinte"),
-                 ("Almeno l&rsquo;89% delle casalinghe &egrave; nubile", "2",
+                 ("Almeno l&rsquo;89% delle casalinghe &egrave; nubile", "fig. 2.5",
                   "attivazione dalla famiglia d&rsquo;origine, non sola conciliazione"),
-                 ("Il treno &egrave; al 98&deg; percentile; l&rsquo;offerta di trasporto non "
-                  "spiega il divario", "3",
+                 ("A pari istruzione il lavoro non arriva, e la posizione regionale "
+                  "&egrave; stabile da tredici anni", "fig. 2.3",
+                  "il servizio non finanzia altra istruzione: paga l&rsquo;anello intatto"),
+                 ("L&rsquo;offerta di trasporto non spiega il divario, e a pari taglia e "
+                  "distanza Bagheria &egrave; nella media", "fig. 3.4",
                   "<b>nessun intervento infrastrutturale</b>: la leva &egrave; la transizione"),
-                 ("Le donne vanno a Palermo in treno, gli uomini in auto", "3",
+                 ("Le donne vanno a Palermo in treno, gli uomini in auto", "fig. 3.3",
                   "sedi, orari e tirocini scelti su ci&ograve; che &egrave; raggiungibile "
                   "senza auto"),
-                 (f"La platea F cala del {num(-pb.loc['F'].var_2034_pct)}% al 2034", "4",
-                  "<b>KPI in tasso</b>, riparametrato ogni anno sulla platea")],
-                forte=("Il 70,6% di chi &egrave; fuori non cerca",)),
-        fonte="Derivazione completa in <b>docs/POLICY_PONTE_19.md</b>; ogni numero rimanda "
-              "alla scheda che lo produce.")
+                 (f"La platea F cala del {num(-pb.loc['F'].var_2034_pct)}% al 2034",
+                  "fig. 4.2", "<b>KPI in tasso</b>, riparametrato ogni anno sulla platea")],
+                forte=(f"Il {num(b24.inattivi_su_fuori)}% di chi &egrave; fuori non cerca",)),
+        mostra="La derivazione del progetto: ogni riga &egrave; un numero delle schede 1-3 e "
+               "la scelta di disegno che quel numero impone. Si legge da sinistra a destra, "
+               "una riga per volta. La tavola <b>non</b> &egrave; un elenco di funzionalit&agrave; "
+               "del servizio: &egrave; l&rsquo;elenco delle scelte che i dati hanno gi&agrave; "
+               "chiuso, e ogni riga senza evidenza a monte &egrave; stata tolta.",
+        base="Nessun numero nuovo: le otto righe rimandano alle figure che li producono, con "
+             "N, incertezza e cautele dichiarati l&igrave;. Due righe sono <b>risultati "
+             "negativi</b> (l&rsquo;offerta di trasporto e la taglia del comune), e sono "
+             "quelle che escludono un intervento invece di aggiungerlo: valgono quanto le "
+             "altre.",
+        lettura="La riga in nero &egrave; quella che decide la forma del servizio: se sette "
+                "persone su dieci fra chi &egrave; fuori non stanno cercando, uno sportello a "
+                "domanda spontanea raggiunge il segmento che si sta gi&agrave; risolvendo da "
+                "s&eacute;. La colonna centrale &egrave; un rimando, non un dato.",
+        fonte="Derivazione completa in <b>docs/POLICY_PONTE_19.md</b>. Ogni numero rimanda "
+              "alla figura che lo produce, e da l&igrave; al file di "
+              "<b>data/processed/</b>.")
 
     corpo += blocco(
+        fig(),
         "Perch&eacute; il KPI non pu&ograve; essere scritto in teste",
-        f"Le &laquo;+40 occupate&raquo; sono l&rsquo;effetto lordo di portare Bagheria al tasso "
-        f"femminile di Palermo ({num(n29.tasso_obiettivo_pct)}%). Applicato alla platea di "
-        f"ciascun anno, lo stesso obiettivo incontra un attrito demografico che se lo mangia. "
-        f"La platea femminile 15-24 passa da {num(pb.loc['F'].platea_2024, 0)} (2024) a "
-        f"{num(pb.loc['F'].platea_2029, 0)} (2029) a {num(pb.loc['F'].platea_2034, 0)} "
-        f"(2034); sui coetanei maschi il calo al 2034 &egrave; "
-        f"{num(pb.loc['M'].var_2034_pct)}%, meno di un terzo.",
         '<div class="duo">'
         '<div><h4>Orizzonte 2029</h4>'
         + cascata([("+40 occupate\nsulla platea 2024", n29.kpi_lordo, "totale"),
@@ -1142,49 +1724,78 @@ def scheda_ponte19() -> Path:
                    ("attrito\ndemografico", n34.attrito_demografico, "delta"),
                    ("KPI netto\n2034", n34.kpi_netto, "totale")], w=290, h=196,
                   fmt=lambda v: num(v, 1, segno=True)) + '</div></div>',
-        fonte="ISTAT, et&agrave; singole del censimento permanente &rarr; "
-              "<b>genere_platea.csv</b>, <b>genere_kpi_netto.csv</b>. La platea &egrave; un "
-              "conteggio di chi &egrave; gi&agrave; nato e residente, non una proiezione "
-              "demografica.",
-        nota=f"<b>Due numeri, due domande: non confonderli.</b> "
-             f"{num(tf.loc[2029].delta_vs_2024)} e {num(tf.loc[2034].delta_vs_2024)} &egrave; "
-             f"lo scenario &laquo;non si fa niente&raquo; (tasso 2024 fermo). "
-             f"{num(n29.attrito_demografico)} e {num(n34.attrito_demografico)} &egrave; "
-             f"l&rsquo;attrito sullo stesso conto al tasso obiettivo. "
-             f"Se serve un equivalente in teste per la comunicazione si scrive cos&igrave; e non "
-             f"altrimenti: &laquo;+40 occupate sulla platea 2024; il target si riparametra ogni "
-             f"anno come tasso-obiettivo &times; platea dell&rsquo;anno&raquo;, con la formula "
-             f"pubblicata.")
+        mostra=f"Che cosa resta dello stesso obiettivo a due orizzonti, in <b>numero di "
+               f"occupate</b>. Le &laquo;+40 occupate&raquo; sono l&rsquo;effetto lordo di "
+               f"portare l&rsquo;occupazione femminile 15-24 di Bagheria al tasso di Palermo "
+               f"({num(n29.tasso_obiettivo_pct)}%); applicato alla platea di ciascun anno, lo "
+               f"stesso obiettivo incontra un attrito demografico. La figura <b>non</b> "
+               f"&egrave; una previsione di quante saranno le occupate: &egrave; il conto di "
+               f"che cosa misura un target scritto in teste.",
+        base=f"La platea femminile 15-24 passa da {num(pb.loc['F'].platea_2024, 0)} (2024) a "
+             f"{num(pb.loc['F'].platea_2029, 0)} (2029) a {num(pb.loc['F'].platea_2034, 0)} "
+             f"(2034): &egrave; un <b>conteggio di chi &egrave; gi&agrave; nato e residente</b> "
+             f"al 2024 fatto scorrere per et&agrave;, non una proiezione demografica, quindi "
+             f"non ha incertezza di modello e non incorpora migrazione futura. Sui coetanei "
+             f"maschi il calo al 2034 &egrave; {num(pb.loc['M'].var_2034_pct)}%, meno di un "
+             f"terzo: l&rsquo;asimmetria &egrave; locale e nota. Nessun intervallo di "
+             f"confidenza: tutti i termini sono aritmetica su conteggi.",
+        lettura=f"Ogni cascata si legge da sinistra: la prima barra &egrave; l&rsquo;effetto "
+                f"lordo, la seconda l&rsquo;attrito (negativa, in rosso), la terza il netto. "
+                f"Le tratteggiate collegano il livello di una barra all&rsquo;inizio della "
+                f"successiva e non sono dati. I due pannelli hanno la stessa scala, quindi le "
+                f"altezze si confrontano fra orizzonti. <b>Due numeri, due domande: non "
+                f"confonderli.</b> {num(tf.loc[2029].delta_vs_2024)} e "
+                f"{num(tf.loc[2034].delta_vs_2024)} &egrave; lo scenario &laquo;non si fa "
+                f"niente&raquo; (tasso 2024 fermo, <b>genere_tetto_platea.csv</b>); "
+                f"{num(n29.attrito_demografico)} e {num(n34.attrito_demografico)} &egrave; "
+                f"l&rsquo;attrito sullo stesso conto al tasso obiettivo. Se serve un "
+                f"equivalente in teste per la comunicazione si scrive cos&igrave; e non "
+                f"altrimenti: &laquo;+40 occupate sulla platea 2024; il target si riparametra "
+                f"ogni anno come tasso-obiettivo &times; platea dell&rsquo;anno&raquo;, con la "
+                f"formula pubblicata.",
+        fonte="ISTAT, et&agrave; singole del censimento permanente 2024 &rarr; "
+              "<b>genere_platea.csv</b>, <b>genere_kpi_netto.csv</b>, "
+              "<b>genere_tetto_platea.csv</b>.")
 
     corpo += blocco(
+        fig("Tavola"),
         "Quando si potr&agrave; dire se ha funzionato",
-        f"Il delta da rilevare &egrave; {num(mde_occ.loc[1, 'delta da rilevare (pp)'])} punti. "
-        f"Su un anno solo il minimo rilevabile &egrave; "
-        f"{num(mde_occ.loc[1, 'MDE 80% (pp)'], 2)} punti: la lettura annuale del KPI primario "
-        f"<b>non &egrave; ammessa</b>, e dichiararlo prima dell&rsquo;avvio &egrave; parte "
-        f"della proposta.",
         tabella(["Finestra di lettura", "MDE 80%", "Potenza sul delta"],
                 [(f"{int(k)} {'anno' if k == 1 else 'anni'} pooled per lato",
                   num(r["MDE 80% (pp)"], 2, " p.p."),
                   num(r["potenza per il delta (%)"], 0, "%"))
                  for k, r in mde_occ.iterrows()],
                 forte=("3 anni pooled per lato",)),
-        fonte="Calcolo di potenza sui denominatori reali &rarr; <b>genere_mde.csv</b>. "
-              "Controfattuale dichiarato in anticipo: <b>Palermo</b>; il prerequisito &egrave; "
-              f"testato, non assunto (pendenza di Bagheria {num(pre.iloc[0].stima, 2)} pp/anno, "
-              f"differenza con Palermo p = {num(pre.iloc[1].p, 2)}). "
-              f"Ancoraggio dei target sulle {len(gem)} gemelle strutturali "
-              f"(<b>genere_gemelle.csv</b>).",
-        nota="La lettura <b>annuale</b> spetta ai KPI di processo, che oggi nessuno rileva e che "
-             "il servizio produce: primo contatto entro 30 giorni, piano entro 15, utenza per "
-             "et&agrave; singola e genere contro la platea residente, copertura separata delle "
-             "due finestre.")
+        mostra="Il disegno di valutazione dichiarato <b>prima</b> dell&rsquo;avvio: per ogni "
+               "finestra di lettura, il minimo effetto rilevabile (MDE) sul tasso di "
+               "occupazione femminile 15-24, in punti percentuali, e la potenza statistica "
+               "sull&rsquo;effetto atteso. La tavola dice <b>quando</b> si potr&agrave; "
+               "rispondere, non se l&rsquo;intervento funzioner&agrave;.",
+        base=f"Calcolo di potenza sui <b>denominatori reali</b> di Bagheria, non su un N "
+             f"ipotetico. Soglie convenzionali: alfa 0,05 a due code, potenza obiettivo 80% "
+             f"per la colonna MDE. Il delta da rilevare &egrave; "
+             f"{num(mde_occ.loc[1, 'delta da rilevare (pp)'])} punti; su un anno solo il "
+             f"minimo rilevabile &egrave; {num(mde_occ.loc[1, 'MDE 80% (pp)'], 2)} punti, "
+             f"cio&egrave; <b>sopra</b> il delta, quindi la lettura annuale del KPI primario "
+             f"non &egrave; ammessa. Controfattuale dichiarato in anticipo: <b>Palermo</b>, "
+             f"col prerequisito testato e non assunto (pendenza di Bagheria "
+             f"{num(pre.iloc[0].stima, 2)} pp/anno, differenza con Palermo "
+             f"p = {num(pre.iloc[1].p, 2)}, cio&egrave; le due traiettorie pre-intervento non "
+             f"si distinguono). Ancoraggio dei target sulle {len(gem)} gemelle strutturali.",
+        lettura="&laquo;Pooled per lato&raquo; significa che gli anni vengono accorpati prima "
+                "e dopo l&rsquo;avvio: tre anni per lato sono sei anni di dati, non tre. La "
+                "riga in nero &egrave; la sola finestra su cui il KPI primario si legge, ed "
+                "&egrave; una scelta vincolante, non un consiglio. La lettura <b>annuale</b> "
+                "spetta ai KPI di processo, che oggi nessuno rileva e che il servizio produce: "
+                "primo contatto entro 30 giorni, piano entro 15, utenza per et&agrave; singola "
+                "e genere contro la platea residente, copertura separata delle due finestre.",
+        fonte="Calcolo di potenza sui denominatori reali &rarr; <b>genere_mde.csv</b>; "
+              "pre-trend in <b>genere_pretrend.csv</b>; gruppo di controllo in "
+              "<b>genere_gemelle.csv</b>.")
 
     corpo += blocco(
+        fig("Tavola"),
         "Target, capacit&agrave; e ordine di grandezza",
-        "Il pilota non promette di risolvere il problema: promette di misurarlo mentre lo "
-        "affronta. Le tre stime di bersaglio vengono da misure che <b>non condividono il "
-        "denominatore</b> e cadono nello stesso ordine di grandezza.",
         kpi([(num(b24.inattivi_non_studenti, 0), "inattivi non studenti 15-24, la platea "
               f"({num(inatt['F'], 0)} F, {num(inatt['M'], 0)} M)", COL["Bagheria"]),
              (num(pilota, 0), f"presi in carico nel primo anno "
@@ -1197,18 +1808,61 @@ def scheda_ponte19() -> Path:
                 [("divario di pendolarismo pari alla media siciliana",
                   "donne che lavorano fuori comune", num(bersaglio, 0))],
                 forte=("parit&agrave; con i coetanei maschi di Bagheria",)),
+        mostra="Il dimensionamento del pilota: la platea di riferimento, la capacit&agrave; "
+               "del primo anno e la quota di genere minima; sotto, quattro scenari di "
+               "convergenza espressi in <b>persone</b>. Gli scenari dicono quanto vale il "
+               "divario, non quanto il servizio produrr&agrave;: sono un ordine di grandezza "
+               "del bersaglio, non un obiettivo.",
+        base=f"Platea: {num(b24.inattivi_non_studenti, 0)} inattivi non studenti 15-24 al "
+             f"2024 ({num(inatt['F'], 0)} F, {num(inatt['M'], 0)} M). Capacit&agrave; del "
+             f"primo anno {num(pilota, 0)} prese in carico, cio&egrave; il "
+             f"{num(100 * pilota / b24.inattivi_non_studenti, 0)}% della platea. I quattro "
+             f"scenari poggiano su <b>denominatori diversi</b>: i primi tre sull&rsquo;"
+             f"occupazione femminile 15-24, il quarto sulle donne che lavorano fuori comune, "
+             f"da una fonte che non condivide n&eacute; tavola n&eacute; base. Che cadano "
+             f"nello stesso ordine di grandezza &egrave; il motivo per cui vengono riportati "
+             f"insieme, non una loro somma.",
+        lettura="Gli scenari <b>non si sommano</b>: misurano popolazioni diverse sullo stesso "
+                "passaggio, e sommarli conterebbe due volte le stesse persone. La riga in nero "
+                "&egrave; lo scenario di riferimento della proposta. <b>Decision gate a 90 "
+                "giorni</b>: il modulo esperienza si attiva solo con &ge;30 posti a domanda e "
+                "mentor verificati; il supporto mobilit&agrave; solo se il trasporto risulta "
+                "barriera primaria su un sottogruppo con offerta coerente; se la quota di "
+                "genere scende sotto il 40% si rivedono i canali di contatto <i>prima</i> di "
+                "aumentare la capacit&agrave;. Il servizio genera, per ogni presa in carico, il "
+                "record <b>titolo &rarr; uscita &rarr; barriera &rarr; azione &rarr; esito a "
+                "3/6/12 mesi</b>: &egrave; l&rsquo;unico modo di misurare a Bagheria il "
+                "rapporto individuale fra titolo di studio e condizione lavorativa, che le "
+                "tavole pubbliche non incrociano (figura 2.1).",
         fonte="<b>genere_gap_persone.csv</b>, <b>mob_sintesi.csv</b>, "
-              "<b>edu_youth_states_2018_2024.csv</b>. Gli scenari <b>non si sommano</b>: "
-              "misurano popolazioni diverse sullo stesso passaggio.",
-        nota="<b>Decision gate a 90 giorni.</b> Il modulo esperienza si attiva solo con "
-             "&ge;30 posti a domanda e mentor verificati; il supporto mobilit&agrave; solo se il "
-             "trasporto risulta barriera primaria su un sottogruppo con offerta coerente; se la "
-             "quota di genere scende sotto il 40% si rivedono i canali di contatto <i>prima</i> "
-             "di aumentare la capacit&agrave;. Il servizio genera, per ogni presa in carico, il "
-             "record <b>titolo &rarr; uscita &rarr; barriera &rarr; azione &rarr; esito a 3/6/12 "
-             "mesi</b>: &egrave; l&rsquo;unico modo di misurare a Bagheria il rapporto "
-             "individuale fra titolo di studio e condizione lavorativa, che le tavole pubbliche "
-             "non incrociano (scheda 2).")
+              "<b>edu_youth_states_2018_2024.csv</b>, "
+              "<b>genere_composizione_stato_dettaglio.csv</b>.")
+
+    corpo += blocco(
+        fig("Tavola"),
+        "La finestra di lettura del KPI, come esce dal notebook",
+        figura("fig09_kpi_finestra", intera=True, larghezza=1650),
+        mostra="&Egrave; la tavola tecnica dietro le figure 4.2 e 4.3, nella versione "
+               "integrale che sta nello zip: la cascata del KPI netto e la potenza per "
+               "finestra di lettura sulla stessa pagina, con la didascalia a quattro blocchi "
+               "incorporata. Compare <b>intera e non ritagliata</b> per la stessa ragione "
+               "della tavola 2.6: qui il punto non &egrave; il numero, che la scheda ha "
+               "gi&agrave; dato, ma che la tavola sia leggibile da sola quando qualcuno la "
+               "trova fuori da questa scheda.",
+        base="Nessun numero nuovo rispetto alle figure 4.2 e 4.3: stessi denominatori, stesse "
+             "soglie, stesso controfattuale. La didascalia incorporata nell&rsquo;immagine "
+             "dichiara N, metodo e cautele per conto proprio, ed &egrave; esattamente "
+             "ci&ograve; che questa pagina vuole mostrare.",
+        lettura="A questa larghezza il testo dentro l&rsquo;immagine si legge; nelle colonne "
+                "strette delle altre figure non si leggerebbe, ed &egrave; il motivo per cui "
+                "l&igrave; viene ritagliato via e ricomposto in HTML. Il criterio &egrave; "
+                "scritto in <b>pipeline/schede.py</b>, funzione <code>figura()</code>: "
+                "ritaglio al solo grafico dentro un ragionamento, immagine intera quando la "
+                "figura &egrave; essa stessa l&rsquo;oggetto.",
+        fonte="Generata da <b>viz/fig09_kpi_finestra.R</b> &rarr; "
+              "<b>figures/fig09_kpi_finestra.png</b> (300 dpi) e <b>.svg</b>. Dati: "
+              "<b>genere_kpi_netto.csv</b>, <b>genere_platea.csv</b>, "
+              "<b>genere_mde.csv</b>.")
 
     return scrivi("scheda4_ponte19.html", "Ponte 19", corpo,
                   "Scheda 4 di 4 &middot; risponde alla richiesta &laquo;Proposta di "
@@ -1217,7 +1871,28 @@ def scheda_ponte19() -> Path:
 
 # ===================================================================== esecuzione
 
+def bande_figure() -> None:
+    """`--bande`: stampa la struttura a bande di ogni PNG di figures/.
+
+    Serve solo a decidere il valore di TESTA quando una figura cambia impaginazione:
+    l'ultima colonna dice quante bande restano dopo aver tolto la didascalia.
+    """
+    import numpy as np
+    from PIL import Image
+
+    for png in sorted(FIGURE.glob("*.png")):
+        b = _bande(np.asarray(Image.open(png).convert("L")))
+        testa = TESTA.get(png.stem, 1)
+        print(f"{png.stem:34s} bande={len(b):2d} testa={testa} "
+              f"grafico={len(b) - testa - CODA_DIDASCALIA:2d}  "
+              + " ".join(f"[{s}-{f}]" for s, f in b))
+
+
 def main() -> None:
+    import sys
+
+    if "--bande" in sys.argv:
+        return bande_figure()
     SCHEDE.mkdir(parents=True, exist_ok=True)
     prodotte = [scheda_profilo(), scheda_forbice(), scheda_pendolarismo(), scheda_ponte19()]
 
@@ -1229,6 +1904,20 @@ def main() -> None:
     # non in silenzio dentro una figura.
     assert len(prodotte) == 4 and all(p.stat().st_size > 8000 for p in prodotte)
     assert not registro.empty and registro.fonte.str.len().min() > 0
+
+    # I quattro blocchi della didascalia sono argomenti obbligatori di blocco(), quindi
+    # non possono mancare; qui si controlla che ce ne sia uno per ogni <section>, cioe'
+    # che nessuno sia stato svuotato con una stringa vuota per fretta.
+    for p in prodotte:
+        testo = p.read_text(encoding="utf-8")
+        sezioni, didascalie = testo.count("<section"), testo.count('<div class="did">')
+        assert sezioni == didascalie, f"{p.name}: {sezioni} blocchi, {didascalie} didascalie"
+        assert didascalie * 4 == testo.count("<p><b>Cosa mostra.</b>") \
+            + testo.count("<p><b>Base statistica.</b>") \
+            + testo.count("<p><b>Come si legge.</b>") + testo.count("<p><b>Fonte.</b>"), \
+            f"{p.name}: una didascalia non ha tutti e quattro i blocchi"
+        # La regola dell'em-dash vale sul testo renderizzato, non solo nelle figure R.
+        assert "&mdash;" not in testo and "—" not in testo, f"{p.name}: em-dash"
     stati = pd.read_csv(PROCESSED / "edu_youth_states_2018_2024.csv")
     b = stati[(stati.territorio_nome == "Bagheria") & (stati.anno == 2024)].iloc[0]
     somma = (b.quota_occupati + b.quota_in_cerca + b.quota_studenti

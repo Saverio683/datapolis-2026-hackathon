@@ -35,6 +35,8 @@ viz/               # script R, uno per figura + build_all.R
 figures/           # output viz (PNG 300dpi + SVG)
 docs/schede/       # quattro schede tematiche HTML, generate da pipeline/schede.py:
                    # una per richiesta del bando, ogni cifra letta da data/processed/
+                   # blocchi numerati («Figura 2.3») + didascalia a 4 blocchi; incorporano
+                   # le figure di figures/ ritagliate al solo grafico, intere solo in appendice
 docs/sources.md    # dettaglio endpoint, query, struttura dei dataset — leggilo prima di scrivere codice di fetch
 ```
 
@@ -81,6 +83,8 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 - Tipografia delle figure: tre livelli, una sola famiglia. Titolo della figura e sottotitolo prendono `tema_figura()`, i titoli dei singoli pannelli restano su `tema_datapolis()`. Mai un secondo font: solo Lato ha un fallback verificato e cairo converte comunque il testo in tracciati nell'SVG.
 - Ogni figura: titolo che enuncia il finding (non la variabile), export sia PNG 300dpi sia SVG in `figures/`.
 - **Didascalia autosufficiente, quattro blocchi** — `didascalia_4b()` in `viz/theme.R`, obbligatorio su ogni figura. Chi guarda dal fondo della sala non ha il notebook accanto: la figura deve dire da sola cosa misura, su quante persone, con che dispersione, e cosa significano le linee che non sono dati.
+  - **Vale anche per le schede HTML**: `blocco()` in `pipeline/schede.py` prende gli stessi quattro come argomenti obbligatori senza default, e `main()` verifica che ogni sezione li abbia tutti e quattro. Stessa anatomia, due linguaggi.
+  - Quando una scheda incorpora una figura di `figures/`, la didascalia del PNG si **ritaglia via** (`figura()` la toglie insieme al titolo) e si rifà in HTML: a larghezza di colonna quel testo scende sotto i cinque pixel. Il PNG intero solo in appendice, a piena larghezza.
   - `mostra`: metrica, unità, trasformazioni, fascia d'età, territori, anni. Anche cosa la figura **non** dice, e quale altra figura lo dice.
   - `base`: N per gruppo, tendenza centrale, dispersione o intervalli **con il metodo esplicito** (Wilson sui tassi, Newcombe sulla differenza M−F, bootstrap sui residui, tutti al 95%), test e soglie, esclusioni e filtri. Dove non c'è incertezza campionaria si scrive perché (conteggi censuari, non stime).
   - `lettura`: decodifica di tutto ciò che non è un dato — tratteggi, bande, strisce del dato mancante, colori, diametri, scale logaritmiche, ordinamenti non per valore.
