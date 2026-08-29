@@ -109,4 +109,4 @@ Una dashboard trimestrale pubblica soltanto indicatori aggregati: persone contat
 attivati, esiti a 3/6/12 mesi, durata media dell'inattività e differenza rispetto al gruppo di
 confronto. Il successo non è il numero di iscritti, ma una transizione stabile.
 
-_Policy generata il 2026-08-27 dalla pipeline riproducibile._
+_Policy generata il 2026-08-29 dalla pipeline riproducibile._

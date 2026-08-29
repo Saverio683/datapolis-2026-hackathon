@@ -1,8 +1,8 @@
 {
-  "started_at_utc": "2026-08-27T21:12:11.304576+00:00",
+  "started_at_utc": "2026-08-29T13:28:17.653717+00:00",
   "project_root": "/home/kiycoh/Documents/dev/datapolis-2026-hackathon",
   "quality": {
-    "generated_at_utc": "2026-08-27T21:12:12.689985+00:00",
+    "generated_at_utc": "2026-08-29T13:28:18.301761+00:00",
     "checks": {
       "sicilian_municipalities_2011": 390,
       "ottomila_rows": 154737,
@@ -37,7 +37,7 @@
     ]
   },
   "analysis": {
-    "generated_at_utc": "2026-08-27T21:12:17.854759+00:00",
+    "generated_at_utc": "2026-08-29T13:28:20.607374+00:00",
     "title": "Bagheria: dalla formazione all'attivazione",
     "research_question": "Come è cambiata la transizione tra istruzione e lavoro a Bagheria e quale segmento presenta oggi il divario più persistente rispetto alla Sicilia?",
     "scope": "Bagheria; popolazione totale; focus lavoro 15-24 e confronto 25-49",
@@ -87,7 +87,7 @@
     ]
   },
   "validation": {
-    "generated_at_utc": "2026-08-27T21:12:17.880341+00:00",
+    "generated_at_utc": "2026-08-29T13:28:20.619238+00:00",
     "status": "passed",
     "checks_passed": 11,
     "checks_total": 11,
@@ -167,13 +167,13 @@
   "policy": "Ponte 19 Bagheria",
   "status": "passed",
   "stage_seconds": {
-    "cleaning": 1.39,
-    "analysis": 5.166,
-    "validation": 0.019,
-    "charts": 5.535,
-    "policy": 0.002,
-    "analytical_report": 0.006,
-    "executive_summary": 0.002
+    "cleaning": 0.651,
+    "analysis": 2.306,
+    "validation": 0.009,
+    "charts": 2.416,
+    "policy": 0.001,
+    "analytical_report": 0.003,
+    "executive_summary": 0.001
   },
-  "finished_at_utc": "2026-08-27T21:12:23.425675+00:00"
+  "finished_at_utc": "2026-08-29T13:28:23.040492+00:00"
 }

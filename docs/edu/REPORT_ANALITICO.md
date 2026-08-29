@@ -145,4 +145,4 @@ domanda. Il progetto misura titolo, condizione iniziale, barriera, servizio ed e
 
 La specifica completa è in `POLICY_PONTE_19_BAGHERIA.md`.
 
-_Report generato il 2026-08-27 dalla pipeline riproducibile._
+_Report generato il 2026-08-29 dalla pipeline riproducibile._
