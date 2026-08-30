@@ -8,20 +8,33 @@ scheda,claim,valore,unita,fonte,cautela
 1. profilo,"percentile siciliano del NEET, 1991 -> 2011",17 -> 88,percentile,edu_historical_bagheria.csv,"390 comuni, alto = sfavorevole"
 1. profilo,"popolazione 15-34, 2021 -> 2024",12174 -> 11861,persone,edu_youth_population_15_34.csv,"saldo netto: non misura l'emigrazione, non ha destinazione"
 1. profilo,stranieri sul 15-34,1.6440435039204115,%,genere_stranieri.csv,
+1. profilo,"calo degli inattivi non studenti 15-24, 2018-2024",-101.6266729093893,persone,edu_change_decomposition_2018_2024.csv,"due popolazioni diverse, non un pannello sulle stesse persone"
+1. profilo,quota di quel calo che e' sola demografia,65.34691846715155,%,edu_change_decomposition_2018_2024.csv,shift-share: effetto popolazione contro effetto tasso
+1. profilo,"calo di chi e' fuori da lavoro e studio, di cui comportamento",-764 / -636,persone,edu_change_decomposition_2018_2024.csv,sul totale il recupero e' quasi tutto effetto tasso
+1. profilo,"almeno diploma 9-24 a Bagheria, 2018 -> 2024",28.6 -> 31.3,%,edu_education_context_2018_2024.csv,"fascia 9-24 della fonte, include bambini"
+1. profilo,"gap sul diploma 9-24 vs Sicilia, 2018 -> 2024",-0.9 -> -0.4,p.p.,edu_education_context_2018_2024.csv,
+1. profilo,"gap sul diploma 25-49 vs Sicilia, 2024",-4.127521947712644,p.p.,edu_education_context_2018_2024.csv,"stock adulto: fascia diversa da quella giovanile, non confrontabile con la 9-24"
 1. profilo,indicatori 8milaCensus che migliorano in valore 1991-2011,5/5,indicatori,edu_historical_bagheria.csv,I6 I7 I5 L14 L4; fasce d'eta' diverse fra loro
 1. profilo,gli stessi che arretrano in percentile siciliano,5/5,indicatori,edu_historical_bagheria.csv,percentile favorevole: ribaltato dove alto = sfavorevole
-2. forbice,"almeno diploma 9-24, vantaggio femminile",4.2,p.p.,genere_quadro_sintesi.csv,"fascia 9-24 della fonte, include bambini"
-2. forbice,tasso di occupazione F 15-24,8.2,%,genere_quadro_sintesi.csv,
-2. forbice,gap occupazionale M-F 15-24 con IC 95%,8.3 [6.6; 10.0],p.p.,genere_gap_occupazione_ci.csv,Newcombe
-2. forbice,annate in cui Bagheria ha il tasso F minimo del panel,6/6,annate,genere_forbice_serie.csv,
-2. forbice,su 1.000 ragazze: diplomate / occupate,510 / 82,per mille,genere_per_1000.csv,"stessa base, NON un funnel: l'incrocio individuale non esiste"
-2. forbice,su 1.000 ragazzi: diplomati / occupati,462 / 165,per mille,genere_per_1000.csv,
-2. forbice,casalinghe 15-24 (F) contro casalinghi (M),387 / 50,persone,genere_composizione_stato_dettaglio.csv,
-2. forbice,quota delle casalinghe che NON e' gia' coniugata,89.40020682523267,%,genere_stato_civile.csv + genere_composizione_stato_dettaglio.csv,bound inferiore: fonti e date di riferimento diverse
-2. forbice,"posizione fra i 10 comuni ugualmente scolarizzati (occupazione F 15+, 2011)",1/10 sotto Bagheria,rango,genere_posizionamento.csv,"indicatore 15+, non giovanile"
-2. forbice,"percentile siciliano dell'occupazione femminile, 2011 -> 2024",12.3 -> 16.9,percentile,genere_distribuzione_390.csv,"indicatore 15+, non giovanile; 390 comuni"
-2. forbice,rho di Spearman fra la graduatoria 2011 e quella 2024,0.848,-,genere_distribuzione_390.csv,la posizione del 2011 predice quella del 2024
-2. forbice,"ritenzione della coorte F 25-29, Bagheria contro Italia",96.3 / 103.0,per 100,genere_coorti.csv,"saldo netto di coorte, non un conteggio di partenze"
+1. profilo,specifiche in cui Bagheria sta sotto l'atteso,6/6,specifiche,edu_model_robustness_2011.csv,residuo orientato: negativo = peggio dell'atteso su entrambi gli indicatori
+1. profilo,"residuo su occupazione 15-29, modello contesto territoriale",-5.9 [-7.7; -4.3],p.p.,edu_model_robustness_2011.csv,"2011, indicatore 15-29; IC 95% bootstrap"
+1. profilo,"residuo sul NEET 15-29, modello contesto territoriale",1.8 [0.3; 3.3],p.p.,edu_model_robustness_2011.csv,alto = sfavorevole: qui il segno positivo e' male
+1. profilo,comuni simili con occupazione 15-29 piu' bassa di Bagheria,2/10,comuni,edu_matched_peers_2011.csv,"pari scelti per struttura e istruzione, non per esito"
+2. genere,"almeno diploma 9-24, vantaggio femminile",4.2,p.p.,genere_quadro_sintesi.csv,"fascia 9-24 della fonte, include bambini"
+2. genere,tasso di occupazione F 15-24,8.2,%,genere_quadro_sintesi.csv,
+2. genere,gap occupazionale M-F 15-24 con IC 95%,8.3 [6.6; 10.0],p.p.,genere_gap_occupazione_ci.csv,Newcombe
+2. genere,annate in cui Bagheria ha il tasso F minimo del panel,6/6,annate,genere_forbice_serie.csv,
+2. genere,su 1.000 ragazze: diplomate / occupate,510 / 82,per mille,genere_per_1000.csv,"stessa base, NON un funnel: l'incrocio individuale non esiste"
+2. genere,su 1.000 ragazzi: diplomati / occupati,462 / 165,per mille,genere_per_1000.csv,
+2. genere,casalinghe 15-24 (F) contro casalinghi (M),387 / 50,persone,genere_composizione_stato_dettaglio.csv,
+2. genere,quota delle casalinghe che NON e' gia' coniugata,89.40020682523267,%,genere_stato_civile.csv + genere_composizione_stato_dettaglio.csv,bound inferiore: fonti e date di riferimento diverse
+2. genere,"posizione fra i 10 comuni ugualmente scolarizzati (occupazione F 15+, 2011)",1/10 sotto Bagheria,rango,genere_posizionamento.csv,"indicatore 15+, non giovanile"
+2. genere,"percentile siciliano dell'occupazione femminile, 2011 -> 2024",12.3 -> 16.9,percentile,genere_distribuzione_390.csv,"indicatore 15+, non giovanile; 390 comuni"
+2. genere,rho di Spearman fra la graduatoria 2011 e quella 2024,0.848,-,genere_distribuzione_390.csv,la posizione del 2011 predice quella del 2024
+2. genere,"ritenzione della coorte F 25-29, Bagheria contro Italia",96.3 / 103.0,per 100,genere_coorti.csv,"saldo netto di coorte, non un conteggio di partenze"
+2. genere,"residenti 9-24 con almeno il diploma, di cui terziari",2864 / 258,persone,censpop_istr_lav_long.csv,"la fascia 9-24 non ha ancora finito di studiare: e' il titolo detenuto, non quello finale"
+2. genere,"di chi ha almeno il diploma, quota che si ferma al diploma",90.99162011173185,%,censpop_istr_lav_long.csv,
+2. genere,"catena dei titoli 2011, scarto vs Sicilia (I8 / I6 / I7)",+0.2 / -5.7 / -3.9,p.p.,edu_historical_benchmarks_2011.csv,"tre fasce d'eta' diverse: e' una scala di gradini, non una serie"
 3. pendolarismo,"di chi esce per studio (2011), quota diretta a Palermo",91.0902696365768,%,mob_sintesi.csv / mob_flussi_bagheria.csv,93o percentile dei 381 non capoluogo
 3. pendolarismo,"di chi esce per lavoro (2021), quota diretta a Palermo",65.07903494176372,%,mob_sintesi.csv,definizione 2021 diversa dal 2011: non e' una serie
 3. pendolarismo,"divario F-M sull'uscire per studio, 2011",2.621171977168105,p.p.,mob_ribaltamento_territori.csv,"conteggio esaustivo, nessuna eta' nella fonte"
@@ -41,3 +54,5 @@ scheda,claim,valore,unita,fonte,cautela
 4. Ponte 19,MDE annuale contro delta da rilevare,2.14 vs 1.4,p.p.,genere_mde.csv,la lettura annuale NON e' ammessa sui KPI primari
 4. Ponte 19,"inattivi non studenti 15-24, F / M",573 / 549,persone,genere_composizione_stato_dettaglio.csv,51% F: il gruppo non e' femminile
 4. Ponte 19,pendenza del tasso F 2018-2024 e test di pre-trend vs Palermo,0.65 pp/anno; p=0.29,-,genere_pretrend.csv,"prerequisito del controfattuale, testato non assunto"
+4. Ponte 19,"sedi di istituto tecnico, Bagheria / Palermo",3 / 23,sedi,edu_technical_schools.csv,anagrafe MIUR: sono i canali della finestra A
+4. Ponte 19,"percentile siciliano del treno, e residuo a parita' di taglia e distanza",98 / -1.9,percentile e p.p.,mob_treno_390.csv + mob_taglia_distanza.csv,"le due misure per cui la mobilita' e' un vincolo, non un capitolo di spesa"

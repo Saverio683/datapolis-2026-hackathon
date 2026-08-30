@@ -1,4 +1,4 @@
-# Bagheria produce titoli e non li converte
+# A Bagheria il diploma arriva, il lavoro no
 
 ## Relazione tecnica e proposta di intervento - DataPolis 2026, «Analisi e Visione per i Giovani di Bagheria»
 
@@ -18,8 +18,8 @@ sta accanto al numero, non in fondo.
 
 ## In una pagina
 
-> **Bagheria produce titoli e non li converte. La conversione fallisce soprattutto sulle
-> ragazze (più istruite del panel, 8,2% di occupazione, il minimo dei quattro territori
+> **A Bagheria il diploma arriva e il lavoro no. La conversione fallisce soprattutto sulle
+> ragazze (più istruite dei coetanei, 8,2% di occupazione, il minimo dei quattro territori
 > in 6 anni su 6), in una finestra d'età stretta (22-25, ritenzione 96,3 contro ~103 in
 > Italia), e il vincolo di mobilità ha lo stesso segno. Chi resta fuori non è chi cerca
 > lavoro: il 70,6% dei giovani fuori da lavoro e studio non cerca nemmeno.**
@@ -440,10 +440,29 @@ rispondono.
 
 Quello che si può dire, si dice con due misure parallele sulla stessa fascia e sullo
 stesso denominatore (fig11, sezione 3.1), con il confronto territoriale (sezione 2) e
-con la lente dei pari a pari istruzione (sezione 2.4). Tutto converge sulla stessa
-conclusione: **il collo di bottiglia non è la produzione di titoli - quasi universale
-alla base già nel 2011, con il 96,7% dei 15-19enni almeno alla licenza media - ma la
-conversione dei titoli in lavoro.** → `edu_historical_benchmarks_2011.csv`
+con la lente dei pari a pari istruzione (sezione 2.4).
+
+**Prima però va detto di quale titolo si parla, perché non è lo stesso a tutte le
+altezze.** Nella fascia 9-24 del 2024 il titolo di Bagheria è il diploma: dei **2.864
+residenti con almeno il diploma, il 91,0% si ferma al diploma** di scuola secondaria, e i
+titoli terziari sono **258 persone** in tutto. Il dato dice quale titolo la fascia
+detiene, non quanto in alto arriverà: a 20 anni una laurea non può ancora esserci.
+→ `censpop_istr_lav_long.csv`
+
+Chi la laurea l'ha finita si legge al 2011, e lì la scala regge solo al primo gradino
+(`edu_fig02_catena_2011`). L'unico indicatore su cui Bagheria sta davanti a Palermo e alla
+Sicilia è la competenza di base, `I8`: **96,7% dei 15-19enni con almeno la licenza media**,
+contro 95,6 e 96,5 (Italia 97,9). Un gradino più su il segno si inverte e non torna:
+adulti 25-64 con diploma o laurea (`I6`) al **42,5%** contro 48,2 in Sicilia, 51,2 a
+Palermo e 55,1 in Italia; trentenni con titolo universitario (`I7`) al **14,4%** contro
+18,3, 20,6 e 23,2. Ultima del panel su entrambi, e al 2024 il segno non cambia (sezione
+2.2: −4,1 punti sul diploma 25-49). → `edu_historical_benchmarks_2011.csv`
+
+**Il collo di bottiglia quindi non è la scolarizzazione di base, che tiene, ma tutto ciò
+che viene dopo: la scala dei titoli, che a Bagheria si ferma presto, e la conversione in
+lavoro, che non arriva nemmeno per i titoli che ci sono.** Le due letture non si sommano
+in una catena individuale, perché l'incrocio sulla persona non esiste: restano due misure
+aggregate dello stesso territorio.
 
 La versione individuale della domanda resta la più importante del territorio, ed è per
 questo che la proposta la trasforma in un output: il dataset di servizio della sezione
@@ -845,6 +864,12 @@ cautele in caption, palette colorblind-safe, PNG 300dpi + SVG in `figures/`.
    verrebbe usata.
 7. **Nessun effetto dell'offerta di trasporto sul divario di genere**: testato sui 390
    comuni e **non trovato** (sez. 5.4). Nessuna parte della proposta vi si appoggia.
+8. **Nessun primato sui titoli**: Bagheria non produce più istruzione dei territori di
+   confronto. Sta davanti solo sulla competenza di base del 2011 (`I8`), ed è ultima del
+   panel su diploma o laurea (`I6`) e titolo universitario (`I7`). Il claim è la mancata
+   conversione, non un surplus di titoli da convertire (sez. 4).
+   *Fino al 2026-08-29 il titolo di questa relazione era «Bagheria produce titoli e non li
+   converte»: affermava una produzione che i dati non mostrano. Resta qui, corretto.*
 
 ---
 

@@ -2,7 +2,7 @@
 # Tre pannelli che rispondono a tre domande diverse sulla stessa popolazione:
 #   A  con che mezzo   -> le donne sul collettivo, gli uomini in auto
 #   B  a che ora       -> gli uomini prima delle 7:15, le donne nella fascia dopo
-#   C  e rispetto agli altri comuni? -> Bagheria è al 97° percentile per uso del treno
+#   C  e rispetto agli altri comuni? -> Bagheria è al 98° percentile per uso del treno
 # Il pannello C esiste perché senza di lui A si legge come «serve più treno»: il treno c'è
 # già, più che quasi ovunque in Sicilia. È la correzione che la figura deve portare con sé.
 

@@ -370,7 +370,7 @@ def sinossi() -> str:
 
     return f"""# Il quadro in una pagina
 
-> **Bagheria produce titoli e non li converte, e chi resta fuori non è chi cerca lavoro.**
+> **A Bagheria il diploma arriva, il lavoro no. E chi resta fuori non è chi cerca lavoro.**
 > Nel 2024 il {ita(st('inattivi_su_fuori', 2024))}% dei giovani fuori da lavoro e studio
 > non cerca nemmeno; fra il 2018 e il 2024 la quota di chi cerca è calata di
 > {ita(calo_cerca)} punti, quella degli inattivi non studenti soltanto di
@@ -398,11 +398,6 @@ su chi già si sposta, quindi non è un riflesso del divario occupazionale. La t
 dice come Bagheria si collochi fra comuni simili: lo dicono le figure delle sezioni 1 e
 4-bis, che confrontano con due gruppi di comuni pari dichiarati.
 
-**Base statistica:** conteggi del censimento permanente ISTAT, non stime campionarie:
-nessun intervallo di confidenza è quindi riportato in tabella. Gli intervalli servono dove
-si confrontano due gruppi, e stanno accanto alle figure che quel confronto lo fanno. Le
-persone sono arrotondate all'unità, le quote al decimo di punto.
-
 **Come si legge:** in grassetto la colonna di Bagheria. Un divario positivo significa
 valore maschile più alto: sul lavoro Bagheria ha il divario più ampio dopo la Sicilia,
 sullo studio è l'unico dei quattro territori in cui il segno si inverte a favore delle
@@ -427,11 +422,6 @@ porta a un intervento derivabile resta nell'analisi e non entra qui.
 proposta, con il rimando alla sezione che le argomenta. Non mostra i costi né il
 cronoprogramma di attuazione, che stanno nelle sezioni 3 e 4, e non mostra le condizioni
 che possono fermare una componente, che stanno nel decision gate della sezione 5.
-
-**Base statistica:** ogni cifra citata nelle celle è letta da `data/processed/` nel momento
-in cui questo documento viene generato, non trascritta. Le potenze statistiche della
-colonna KPI vengono da `genere_mde.csv` e sono calcolate al 95% di confidenza, sulla
-numerosità effettiva della fascia.
 
 **Come si legge:** la colonna KPI distingue gli obiettivi di popolazione, che si leggono su
 biennio o triennio, dagli indicatori di processo, che si leggono ogni anno. La distinzione

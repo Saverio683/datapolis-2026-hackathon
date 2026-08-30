@@ -139,7 +139,7 @@ di distanza dal capoluogo e di dimensione il residuo di Bagheria è **−1,9 pun
 Il secondo: il canale «più mezzo collettivo, meno divario di genere» è stato testato sugli
 stessi 390 comuni e **non regge** (Spearman **−0,10**, p = 0,06, per giunta col segno
 sbagliato; sul treno l'associazione è nulla, p = 0,29), mentre il treno di Bagheria sta al
-**97° percentile siciliano**. Il vincolo non è l'offerta di trasporto.
+**98° percentile siciliano**. Il vincolo non è l'offerta di trasporto.
 
 La componente vive quindi come **verifica di raggiungibilità col mezzo collettivo negli orari
 reali della posizione**, dentro l'istruttoria di ogni piano di transizione, e il sostegno
@@ -319,7 +319,7 @@ teste si annullerebbe da solo, e sul lato femminile più in fretta.
 - Non attribuisce la condizione di casalinga a una scelta né a un vincolo familiare osservato. Lo stato civile esclude il matrimonio precoce come canale, ma non osserva convivenze né maternità.
 - Non afferma un flusso femminile «verso Palermo» corrente: la destinazione per genere esiste solo al 2011 (matrice ISTAT), la serie annuale 2018-2019 dà «fuori comune» aggregato e il 2021 non ha il sesso. Il KPI di F2 si legge sul dato di servizio (sezione 6).
 - Non promette che F3 sposti da sola il KPI di popolazione: rende la domanda verificabile, il resto resta appeso a F1 e F2.
-- Non propone interventi sul trasporto. L'ipotesi è stata testata sui 390 comuni e respinta, il treno di Bagheria è al 97° percentile siciliano, e «portare il treno a Bagheria» risolverebbe un problema che non esiste.
+- Non propone interventi sul trasporto. L'ipotesi è stata testata sui 390 comuni e respinta, il treno di Bagheria è al 98° percentile siciliano, e «portare il treno a Bagheria» risolverebbe un problema che non esiste.
 - Non sostiene alcuna tesi di segregazione per indirizzo di studio. L'anagrafe MIUR dà le sedi, non gli iscritti per genere e indirizzo: il dato non esiste, e senza quello «gli indirizzi femminili non convertono» resta un'ipotesi, non un'evidenza.
 
 ---

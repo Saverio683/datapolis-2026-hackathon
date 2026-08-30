@@ -14,8 +14,8 @@ citato punta alla cella o al file che lo produce, e si rigenera con
 
 ## 1. La tesi
 
-> **Bagheria produce titoli e non li converte. La conversione fallisce soprattutto sulle
-> ragazze (più istruite del panel, 8,2% di occupazione, il minimo dei quattro territori
+> **A Bagheria il diploma arriva e il lavoro no. La conversione fallisce soprattutto sulle
+> ragazze (più istruite dei coetanei, 8,2% di occupazione, il minimo dei quattro territori
 > in 6 anni su 6), in una finestra d'età stretta (22-25, ritenzione 96,3 contro ~103 in
 > Italia), e il vincolo di mobilità ha lo stesso segno. Chi resta fuori non è chi cerca
 > lavoro: il 70,6% dei giovani fuori da lavoro e studio non cerca nemmeno.**
@@ -26,7 +26,7 @@ diversa, quindi nessuno è la riformulazione di un altro.
 
 | Anello | Evidenza | Origine |
 |---|---|---|
-| I titoli ci sono | +4,2 pp di vantaggio femminile sul diploma; `I8` 2011 al 96,7% | `genere_quadro_sintesi.csv`, `edu_historical_benchmarks_2011.csv` |
+| Il diploma arriva, e si ferma lì | +4,2 pp di vantaggio femminile sul diploma; `I8` 2011 al 96,7%, ma `I6` 42,5 e `I7` 14,4 sono gli ultimi del panel | `genere_quadro_sintesi.csv`, `edu_historical_benchmarks_2011.csv` |
 | La conversione fallisce | occupazione F 15-24 all'8,2%, minimo del panel in 6 anni su 6 | `genere_forbice_serie.csv` |
 | …e fallisce anche in mobilità | fra chi già lavora, escono dal comune 41,2% M contro 33,0% F, doppio dello scarto regionale; **sullo studio il segno si inverte** | `genere_pendolarismo.csv` |
 | Poi si perdono | ritenzione F 25-29 = 96,3 (Italia 103,0); finestra 22-25 | `genere_coorti.csv`, `genere_ritenzione_eta.csv` |
@@ -144,25 +144,28 @@ e stanno in `docs/schede/` (HTML autoportante, stampabile in PDF con `@page A4`)
 
 | Scheda | Richiesta della locandina | Cosa incrocia | Blocchi |
 |---|---|---|---|
-| `scheda1_profilo` | Profiling statistico & benchmarking | educazione (stati 15-24, arco 1991-2011, NEET storico) + demografia | 6 |
-| `scheda2_forbice` | Focus differenze di genere, e «titolo × condizione» per quanto i dati consentano | genere (forbice, mappa dei 390, ritenzione per età, casalinghe, stato civile) + educazione (pari a pari istruzione) | 6 |
+| `scheda1_profilo` | Profiling statistico & benchmarking | educazione (stati 15-24, scomposizione del recupero, istruzione 9-24 e 25-49, arco 1991-2011, NEET storico, pari e robustezza 2011) + demografia | 9 |
+| `scheda2_genere` | Focus differenze di genere, e «titolo × condizione» per quanto i dati consentano | genere (i due divari, mappa dei 390, ritenzione per età, casalinghe, stato civile) + educazione (pari a pari istruzione, catena dei titoli 2011) | 7 |
 | `scheda3_pendolarismo` | Focus pendolarismo verso Palermo | mobilità (destinazione, ribaltamento, mezzo, taglia e distanza) + genere (coorti 25-29) | 5 |
-| `scheda4_ponte19` | Proposta di intervento | tutte e tre: ogni scelta di progetto ha accanto il numero che l'ha imposta | 5 |
+| `scheda4_ponte19` | Proposta di intervento | tutte e tre: ogni scelta di progetto ha accanto il numero che l'ha imposta, più modello operativo, decision gate e limiti dichiarati | 8 |
 
 Si rigenerano con `uv run python -m pipeline.schede`, che legge solo `data/processed/`.
 **Nessuna cifra è scritta a mano**: ogni claim finisce in `data/processed/schede_claim.csv`
-con accanto il file che lo produce e la sua cautela (42 claim al 2026-08-29). È il modo in
+con accanto il file che lo produce e la sua cautela (57 claim al 2026-08-30). È il modo in
 cui la regola «nessun numero hardcodato nelle slide» diventa verificabile invece che
 dichiarata.
 
-**I blocchi sono numerati e portano la didascalia a quattro blocchi** (2026-08-29). Ogni
-sezione di scheda si chiama «Figura 2.3» o «Tavola 4.1» e chiude con *cosa mostra · base
-statistica · come si legge · fonte*, la stessa anatomia di `didascalia_4b()` in
-`viz/theme.R`. In `blocco()` i quattro sono argomenti obbligatori senza default, e `main()`
-verifica che ogni sezione ne abbia quattro: prima N, intervalli e metodo finivano dove
-capitava, ed erano assenti in metà dei blocchi. La numerazione serve perché la proposal
-possa citare «figura 2.4» invece di «il terzo grafico della scheda 2»: prima le schede
-citavano `data/processed/`, ma nulla poteva citare le schede.
+**I blocchi sono numerati e portano la didascalia a tre blocchi** (2026-08-30). Ogni
+sezione di scheda si chiama «Figura 2.3» o «Tavola 4.1» e chiude con *cosa mostra · come
+si legge · fonte*. In `blocco()` gli argomenti obbligatori senza default restano quattro:
+`base` (N, intervalli, metodo, esclusioni) va scritta perché il blocco compili, ma **dal
+2026-08-30 non viene stampata**, perché la pagina era diventata più didascalia che grafico.
+Il testo resta nel sorgente accanto ai numeri che descrive, quindi il vincolo che lo aveva
+introdotto tiene ancora: prima N, intervalli e metodo finivano dove capitava ed erano
+assenti in metà dei blocchi. `main()` verifica che ogni sezione stampi i tre blocchi e che
+«Base statistica» non ricompaia. La numerazione serve perché la proposal possa citare
+«figura 2.4» invece di «il terzo grafico della scheda 2»: prima le schede citavano
+`data/processed/`, ma nulla poteva citare le schede.
 
 **Le schede incorporano sei figure di `figures/`**, ed è la giuntura che prima mancava fra
 le schede e lo zip. La regola, in `figura()` di `pipeline/schede.py`, è che il default sia
@@ -176,12 +179,12 @@ tavola dello zip viaggia da sola con la propria didascalia.
 
 | Figura R | Dove | Come |
 |---|---|---|
-| `edu_fig01_storia_posizione` | figura 1.4 | ritagliata: restituisce al thread educazione l'asse del tempo |
+| `edu_fig01_storia_posizione` | figura 1.6 | ritagliata: restituisce al thread educazione l'asse del tempo |
 | `fig04_mappa_sicilia` | figura 2.3 | ritagliata: una delle tre viz dichiarate, prima assente dalle schede |
 | `fig07_ritenzione_eta` | figura 2.4 | ritagliata: la seconda viz dichiarata, e l'evidenza che impone le due finestre |
 | `mob_fig04_taglia_distanza` | figura 3.4 | ritagliata: i due risultati negativi, prima solo testo |
-| `fig05_forbice` | tavola 2.6 | **intera**, in appendice |
-| `fig09_kpi_finestra` | tavola 4.5 | **intera**, in appendice |
+| `fig05_forbice` | tavola 2.7 | **intera**, in appendice |
+| `fig09_kpi_finestra` | tavola 4.8 | **intera**, in appendice |
 
 ✅ **Discrepanza sanata (2026-08-29)**: il percentile del divario di pendolarismo sul lavoro
 è **13° sui 381 comuni non capoluogo** (notebook, cella 18) e **15° sui 390** della tavola

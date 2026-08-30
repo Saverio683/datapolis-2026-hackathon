@@ -1494,6 +1494,17 @@ claim(POLICY,
       f"il treno vale il **{ita(_mz('F', 'di cui: treno'))}%** degli spostamenti delle donne e il "
       f"**{ita(_mz('M', 'di cui: treno'))}%** di quelli degli uomini")
 
+# Il percentile grezzo del treno era scritto a mano in tre posti e in due divergeva (97
+# troncato contro 98 arrotondato). Il 97 esiste ma e' un'altra cifra: il percentile a
+# parita' di distanza e taglia, che la relazione dichiara fra parentesi. Qui si pinna il
+# grezzo, che e' quello che la policy usa per dire «il vincolo non e' il trasporto».
+_t390 = pd.read_csv(PROCESSED / "mob_treno_390.csv")
+_pc_treno = 100 * (_t390["treno"] < _t390.loc[_t390["nome"] == "Bagheria", "treno"].item()).mean()
+check("mob_treno_390: Bagheria sopra il 95esimo percentile", float(_pc_treno > 95), 1.0, 0.5)
+claim(POLICY, f"il treno di Bagheria sta al **{_pc_treno:.0f}° percentile siciliano**")
+claim(POLICY, f"il treno di Bagheria è al {_pc_treno:.0f}° percentile siciliano")
+claim(RELAZ, f"al {_pc_treno:.0f}° percentile siciliano per quota di chi esce che lo usa")
+
 # --- POLICY, sezione 6: KPI e platea ----------------------------------------
 claim(POLICY,
       f"| Tasso di occupazione F 15-24 | {ita(_md('tasso di occupazione', 3, 'attuale (%)'))}% | "
@@ -1556,6 +1567,45 @@ claim(RELAZ,
 claim(RELAZ,
       f"| mezzo privato a motore | {ita(_mz('F', 'privato a motore'))}% | "
       f"**{ita(_mz('M', 'privato a motore'))}%** |")
+
+# --- RELAZIONE_DATAPOLIS §4: di quale titolo si parla ------------------------
+# La sezione 4 e' l'unica che nomina il LIVELLO del titolo, ed e' quella che regge il
+# titolo della relazione: se il mix 9-24 o la catena 2011 si muovono, la frase cambia.
+_d924 = {g: {x: cella_ist(B, 2024, g, x) for x in DIPLOMA + ["ALL"]} for g in ("T",)}["T"]
+_alm924 = sum(_d924[x] for x in DIPLOMA)
+claim(RELAZ,
+      f"dei **{ita(_alm924, 0)} residenti con almeno il diploma, "
+      f"il {ita(100 * _d924['USE_IF'] / _alm924)}% si ferma al diploma**")
+claim(RELAZ, f"**{ita(_alm924 - _d924['USE_IF'], 0)} persone**")
+
+_b11 = pd.read_csv(PROCESSED / "edu_historical_benchmarks_2011.csv")
+_b11 = _b11.set_index(["indicatore", "territorio_nome"])["valore"]
+
+
+def _i11(ind, terr):
+    return float(_b11.at[(ind, terr)])
+
+
+claim(RELAZ,
+      f"**{ita(_i11('I8', 'Bagheria'))}% dei 15-19enni con almeno la licenza media**, "
+      f"contro {ita(_i11('I8', 'Palermo'))} e {ita(_i11('I8', 'Sicilia'))} "
+      f"(Italia {ita(_i11('I8', 'Italia'))})")
+claim(RELAZ,
+      f"(`I6`) al **{ita(_i11('I6', 'Bagheria'))}%** contro {ita(_i11('I6', 'Sicilia'))} in "
+      f"Sicilia, {ita(_i11('I6', 'Palermo'))} a Palermo e {ita(_i11('I6', 'Italia'))} in Italia")
+claim(RELAZ,
+      f"(`I7`) al **{ita(_i11('I7', 'Bagheria'))}%** contro {ita(_i11('I7', 'Sicilia'))}, "
+      f"{ita(_i11('I7', 'Palermo'))} e {ita(_i11('I7', 'Italia'))}")
+
+# Il claim di §4 e del limite 8 e' un ORDINAMENTO, non una cifra: Bagheria davanti sulla
+# base e ultima del panel un gradino piu' su. Se la fonte si muovesse, la prosa
+# resterebbe formalmente vera sulle cifre e falsa sul senso, quindi si controlla il senso.
+check("catena 2011: Bagheria davanti a Palermo e Sicilia su I8",
+      float(_i11("I8", "Bagheria") > max(_i11("I8", "Palermo"), _i11("I8", "Sicilia"))), 1)
+for _ind in ("I6", "I7"):
+    check(f"catena 2011: Bagheria ultima del panel su {_ind}",
+          float(_i11(_ind, "Bagheria") < min(_i11(_ind, t_) for t_ in
+                                             ("Palermo", "Sicilia", "Italia"))), 1)
 
 # --- RELAZIONE (spina dorsale) ----------------------------------------------
 claim(SPINA, f"ritenzione F 25-29 = {ita(_co('F'))} (Ita")

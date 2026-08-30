@@ -30,6 +30,7 @@ uv run python -m pipeline.editor_testi fig06   # editor dei soli testi di una fi
 uv run python -m pipeline.relazione_docx  # RELAZIONE_DATAPOLIS.md + figure -> .docx
 uv run python -m pipeline.policy_docx     # POLICY_PONTE_19.md + figure e sinossi -> .docx
 uv run python -m pipeline.verifica        # SENSORE: 743 controlli, exit 1 se uno fallisce
+uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
 ```
 
 Prima di dichiarare completo qualunque task che tocca un notebook, esegui il nbconvert **di quel notebook** e quello di `analisi.ipynb`. Se fallisce, il task non è finito.
@@ -49,7 +50,7 @@ figures/           # output viz (PNG 300dpi + SVG) + didascalie.csv (titoli e
                    # didascalie estratti dagli script R, per chi incorpora le figure)
 docs/schede/       # quattro schede tematiche HTML, generate da pipeline/schede.py:
                    # una per richiesta del bando, ogni cifra letta da data/processed/
-                   # blocchi numerati («Figura 2.3») + didascalia a 4 blocchi; incorporano
+                   # blocchi numerati («Figura 2.3») + didascalia a 3 blocchi; incorporano
                    # le figure di figures/ ritagliate al solo grafico, intere solo in appendice
 docs/sources.md    # dettaglio endpoint, query, struttura dei dataset — leggilo prima di scrivere codice di fetch
 ```
@@ -100,7 +101,7 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 - **Didascalia autosufficiente, due blocchi** — `didascalia_2b()` in `viz/theme.R`, obbligatorio su ogni figura. Chi guarda dal fondo della sala non ha il notebook accanto: la figura deve dire da sola cosa significano le linee che non sono dati, e da dove viene il numero.
   - `lettura`: decodifica di tutto ciò che non è un dato — tratteggi, bande, strisce del dato mancante, colori, diametri, scale logaritmiche, ordinamenti non per valore. Qui vive anche il metodo di ciò che è disegnato (Wilson, Newcombe, bootstrap, tutti al 95%) e la cautela che serve a leggere il grafico: fasce non confrontabili, esclusioni, definizioni cambiate alla fonte.
   - `fonte`: fonte con anno, più il file di `data/processed/` che rigenera la figura.
-  - Le **schede HTML restano a quattro blocchi**: `blocco()` in `pipeline/schede.py` prende `mostra`, `base`, `lettura` e `fonte` come argomenti obbligatori senza default, e `main()` verifica che ogni sezione li abbia tutti e quattro. In una scheda il testo ha lo spazio che sul PNG manca.
+  - Le **schede HTML stampano tre blocchi**: `mostra`, `lettura` e `fonte`. `blocco()` in `pipeline/schede.py` prende tutti e quattro (`base` compresa) come argomenti obbligatori senza default e rifiuta la stringa vuota, ma **`base` non viene resa a schermo** (2026-08-30): resta nel sorgente accanto ai numeri che descrive, così chi scrive un blocco deve comunque dichiarare N e metodo. `main()` verifica che ogni sezione stampi i tre blocchi e che «Base statistica» non compaia.
   - Quando una scheda o un .docx incorpora una figura di `figures/`, la didascalia del PNG si **ritaglia via** (`CODA_DIDASCALIA = 2` in `pipeline/schede.py` e `pipeline/relazione_docx.py`: sono le ultime due bande di inchiostro) e si rifà nella tipografia del documento, con il testo estratto da `figures/didascalie.csv`. Il PNG intero solo in appendice, a piena larghezza.
 - Ogni script dichiara `LARGHEZZA <- n` una volta e la passa sia a `didascalia_2b()` sia a `salva()`: legate, un testo tagliato dal bordo del PNG non può passare inosservato. Alzare `altezza` quando il testo cresce.
 - **Niente em-dash nel testo renderizzato**: parentesi tonde, due punti o virgole. Italiano formale. I commenti nel codice sono esenti.

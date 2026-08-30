@@ -35,6 +35,7 @@ uv run python -m pipeline.schede          # le quattro schede HTML di docs/sched
 Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didascalie.csv
 uv run python -m pipeline.relazione_docx  # la relazione in .docx, con le figure dentro
 uv run python -m pipeline.verifica        # 743 controlli indipendenti, exit 1 se uno fallisce
+uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
 ```
 
 `pipeline/verifica.py` è il collaudo del progetto: ricalcola i numeri chiave
