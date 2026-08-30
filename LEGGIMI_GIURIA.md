@@ -4,12 +4,12 @@ Questo pacchetto contiene i tre deliverable richiesti dal bando: il technical no
 le visualizzazioni e la policy proposal. Percorso di lettura consigliato, dal risultato
 al metodo:
 
-1. **`docs/RELAZIONE_DATAPOLIS.docx`** - la relazione completa, con le figure incorporate.
+1. **`dist/RELAZIONE_DATAPOLIS.pdf`** - la relazione completa, con le figure incorporate.
    La sezione di apertura, «In una pagina», contiene tesi, proposta e la mappa che collega
    ogni richiesta del bando alla sezione che la soddisfa. Il testo è identico a
    `docs/RELAZIONE_DATAPOLIS.md`, che è la versione dentro il perimetro dei controlli
-   automatici; il .docx ne è l'impaginazione.
-2. **`docs/POLICY_PONTE_19.md`** - la policy proposal: «Ponte 19», servizio comunale di
+   automatici; il PDF ne è l'impaginazione.
+2. **`dist/POLICY_PONTE_19.pdf`** - la policy proposal: «Ponte 19», servizio comunale di
    transizione e riattivazione 18-25, con evidenza, target, KPI in tasso, finestre di
    lettura dichiarate e disegno di valutazione.
 3. **Le data viz richieste (2-3)** - la terna dichiarata è `figures/fig05_forbice`,

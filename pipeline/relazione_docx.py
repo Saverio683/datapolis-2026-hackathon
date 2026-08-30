@@ -417,6 +417,13 @@ def indice(corpo: str) -> str:
         if m:
             voci.append((len(m.group(1)), re.sub(r"^(\d+)\.", r"\1\\.", m.group(2))))
 
+    # L'indice parte dalla prima sezione numerata: i titoli del blocco di apertura
+    # («Il quadro in una pagina» nella policy, «In una pagina» nella relazione) sono il
+    # riassunto del documento, non la sua struttura, e in indice si leggono come commenti.
+    prima = next((i for i, (liv, testo) in enumerate(voci)
+                  if liv == 1 and re.match(r"\d+\\?\.", testo)), 0)
+    voci = voci[prima:]
+
     fuori, corrente = ["# Indice", ""], None
     for livello, testo in voci:
         stile = "IndiceUno" if livello == 1 else "IndiceDue"
