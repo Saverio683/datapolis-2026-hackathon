@@ -200,7 +200,7 @@ condivisa `mob_ribaltamento_390.csv`. La combinazione sbagliata «13° dei 390»
 | Focus **genere** | ✅ focus principale | thread genere |
 | Focus **titolo × condizione** | 🟡 risolto come due misure parallele sulla stessa fascia | `fig11_per_1000` |
 | Focus **pendolarismo** | ✅ destinazione identificata (91,1% studio e 65,1% lavoro verso Palermo) e ribaltamento di genere, replicato su due fonti | `mob_fig01`-`04`, `fig12_pendolarismo`, `notebooks/mobilita.ipynb` |
-| Technical notebook riproducibile | ✅ sensore nbconvert verde sui quattro notebook (2026-08-29) | - |
+| Technical notebook riproducibile | ✅ sensore nbconvert verde sui quattro notebook (2026-08-30) | - |
 | 2-3 data viz | ✅ le tre dichiarate sopra | `figures/` |
 | Policy proposal | ✅ | `docs/POLICY_PONTE_19.md` |
 
@@ -228,7 +228,7 @@ condivisa `mob_ribaltamento_390.csv`. La combinazione sbagliata «13° dei 390»
 
 ## 6. Prima di congelare
 
-- [x] sensore `nbconvert` sui quattro notebook, verde il 2026-08-29
+- [x] sensore `nbconvert` sui quattro notebook, verde il 2026-08-30
 - [x] `Rscript viz/build_all.R` dopo l'ultima modifica ai `data/processed/` — 37 figure, il 2026-08-29 (il glob ora prende anche il prefisso `mob_`)
-- [x] `uv run python -m pipeline.verifica` — 743/743 PASS il 2026-08-29 (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
-- [x] rigenerare `docs/RELAZIONE_DATAPOLIS.docx` — rigenerato il 2026-08-29 dal .md corrente (37 figure, didascalie da `figures/didascalie.csv`), dopo le cuciture pre-invio
+- [x] `uv run python -m pipeline.verifica` — 755/755 PASS il 2026-08-30 (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
+- [x] rigenerare `docs/RELAZIONE_DATAPOLIS.docx` — rigenerato il 2026-08-30 dal .md corrente (37 figure, didascalie da `figures/didascalie.csv`), dopo le cuciture pre-invio

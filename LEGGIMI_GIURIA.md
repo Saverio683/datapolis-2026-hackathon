@@ -27,7 +27,7 @@ al metodo:
    con URL, data e parametri.
 7. **La garanzia** - `uv run python -m pipeline.verifica` ricalcola i numeri chiave
    direttamente dai dati grezzi con implementazioni alternative e pretende che le cifre
-   scritte nella relazione e nella policy compaiano nei documenti alla lettera: 743
+   scritte nella relazione e nella policy compaiano nei documenti alla lettera: 755
    controlli, esce con errore se anche uno solo fallisce.
 
 Tutte le cifre provengono da statistica ufficiale pubblica (ISTAT, Ministero

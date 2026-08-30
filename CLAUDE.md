@@ -29,7 +29,7 @@ Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didas
 uv run python -m pipeline.editor_testi fig06   # editor dei soli testi di una figura, anteprima live
 uv run python -m pipeline.relazione_docx  # RELAZIONE_DATAPOLIS.md + figure -> .docx
 uv run python -m pipeline.policy_docx     # POLICY_PONTE_19.md + figure e sinossi -> .docx
-uv run python -m pipeline.verifica        # SENSORE: 743 controlli, exit 1 se uno fallisce
+uv run python -m pipeline.verifica        # SENSORE: 755 controlli, exit 1 se uno fallisce
 uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
 ```
 

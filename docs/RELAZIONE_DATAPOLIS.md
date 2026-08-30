@@ -47,7 +47,7 @@ distingue da un auspicio:
 | Focus: **pendolarismo verso Palermo** | ✅ misurato con la matrice origine-destinazione ISTAT: **91,1%** di chi esce per studio e **65,1%** di chi esce per lavoro va a Palermo, e lo scarto di genere si ribalta fra i due motivi | sezione 5 |
 | NEET 15-34 | 🔴→🟡 non calcolabile a livello comunale: due misure etichettate, mai fuse | sezione 2 |
 | Proposta di intervento | ✅ Ponte 19, con KPI misurabili e finestre di lettura dichiarate | sezione 7 |
-| Technical notebook riproducibile | ✅ sensore `nbconvert` verde sui quattro notebook; 743 controlli indipendenti PASS | sezione 1 |
+| Technical notebook riproducibile | ✅ sensore `nbconvert` verde sui quattro notebook; 755 controlli indipendenti PASS | sezione 1 |
 | 2-3 data viz avanzate | ✅ tre candidate + sei di supporto | sezione 8 |
 
 I 🟡 non sono lavori a metà: sono i punti in cui i dati pubblici finiscono, dichiarati
@@ -81,7 +81,7 @@ Rscript viz/build_all.R                   # tutte le figure in figures/
 uv run python -m pipeline.schede          # le quattro schede HTML di docs/schede/
 Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didascalie.csv
 uv run python -m pipeline.relazione_docx  # questa relazione in .docx, figure incorporate
-uv run python -m pipeline.verifica        # 743 controlli indipendenti
+uv run python -m pipeline.verifica        # 755 controlli indipendenti
 ```
 
 L'ordine non è arbitrario: `mobilita.ipynb` legge due tavole prodotte da
@@ -93,11 +93,11 @@ Tre proprietà non decorative:
 - **Provenance completa.** Ogni file in `data/raw/` è append-only e ha una riga in
   `docs/sources.md` con URL esatto, data e parametri. Le correzioni vivono in
   `pipeline/`, mai nei raw.
-- **Verifica indipendente.** `pipeline/verifica.py` ricalcola **743 numeri chiave
+- **Verifica indipendente.** `pipeline/verifica.py` ricalcola **755 numeri chiave
   direttamente dai raw con implementazioni alternative** (intervalli di Wilson/Newcombe
   riscritti, modello lineare di probabilità in forma analitica, matching rifatto, coorti
   dalle classi quinquennali, e un riparsing proprio della matrice del pendolarismo letta
-  in streaming dagli zip): 743/743 PASS al 2026-08-29. Se un raw cambia, il pin
+  in streaming dagli zip): 755/755 PASS al 2026-08-30. Se un raw cambia, il pin
   fallisce finché notebook e attesi non vengono riallineati.
 - **Separazione dei ruoli.** Python trasforma, R disegna: l'interfaccia sono i CSV di
   `data/processed/`, e nessuna logica di trasformazione vive negli script delle figure.
@@ -887,8 +887,8 @@ cautele in caption, palette colorblind-safe, PNG 300dpi + SVG in `figures/`.
 | Figure (PNG 300dpi + SVG) | `figures/` |
 | Interfaccia dati Python→R | `data/processed/` |
 
-Stato delle verifiche al 2026-08-29: sensore `nbconvert` **verde sui quattro notebook**;
-`pipeline.verifica` **743/743 PASS**; la matrice del pendolarismo ricostruisce **sette su
+Stato delle verifiche al 2026-08-30: sensore `nbconvert` **verde sui quattro notebook**;
+`pipeline.verifica` **755/755 PASS**; la matrice del pendolarismo ricostruisce **sette su
 sette** gli indicatori `M` pubblicati da 8milaCensus e i due totali nazionali dichiarati da
 ISTAT; nessun numero di questa relazione è scritto a mano - ogni cifra ha accanto il file o
 la cella che la rigenera.

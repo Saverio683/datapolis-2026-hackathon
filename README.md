@@ -34,7 +34,7 @@ Rscript viz/build_all.R                   # tutte le figure in figures/ (PNG 300
 uv run python -m pipeline.schede          # le quattro schede HTML di docs/schede/
 Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didascalie.csv
 uv run python -m pipeline.relazione_docx  # la relazione in .docx, con le figure dentro
-uv run python -m pipeline.verifica        # 743 controlli indipendenti, exit 1 se uno fallisce
+uv run python -m pipeline.verifica        # 755 controlli indipendenti, exit 1 se uno fallisce
 uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
 ```
 
