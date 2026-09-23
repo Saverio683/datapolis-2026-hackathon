@@ -4,7 +4,7 @@
     uv run python -m pipeline.edu --refresh         # riscarica le fonti
 
 Scrive le tavole edu_* in data/processed/, le figure in figures/edu/ e i
-report (analitico, executive, policy, run/validation) in docs/edu/.
+report (analitico, executive, policy, run/validation) in docs/analisi/educazione/.
 """
 from __future__ import annotations
 

@@ -80,7 +80,7 @@ pendenza <- ggplot(lungo, aes(motivo, gap, group = territorio)) +
   # spazio veniva tagliata dal bordo del pannello, e il taglio non lo segnala nessuno.
   scale_x_discrete(expand = expansion(mult = c(0.20, 0.78))) +
   scale_y_continuous(labels = function(y) virgola(y, 0)) +
-  labs(subtitle = "Lo scarto cambia segno col motivo, ovunque",
+  labs(subtitle = "Lo scarto cambia segno col motivo in Sicilia e in Italia",
        x = NULL, y = "chi esce dal comune, F − M (punti %)") +
   theme(panel.grid.major.x = element_blank())
 
@@ -111,7 +111,7 @@ distribuzione <- ggplot(comuni, aes(ribaltamento)) +
 figura <- (pendenza | distribuzione) +
   plot_layout(widths = c(1.05, 1)) +
   plot_annotation(
-    title = "Le ragazze di Bagheria si spostano per studiare. Le donne non si spostano per lavorare",
+    title = "Le ragazze di Bagheria escono più dei coetanei per studiare, le donne molto meno per lavorare",
     subtitle = sommario(paste0(
       "Scarto fra femmine e maschi nella propensione a uscire dal comune, misurato separatamente per i due motivi dello spostamento: ",
       "la quota di chi esce dal comune sul totale di chi si sposta quotidianamente per quel motivo, calcolata per genere, e riportata come femmine meno maschi in punti percentuali. ",

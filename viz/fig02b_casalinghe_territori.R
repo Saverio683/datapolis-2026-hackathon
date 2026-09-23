@@ -1,6 +1,6 @@
 # Figura 2b — la quota di casalinghe fra le ragazze 15-24, sui cinque territori.
 # Il punto: non è un'anomalia comunale. Nel vicinato la quota è la stessa o più alta, a
-# Palermo poco sotto, in Italia un terzo: il carico di cura è un tratto di zona, e una
+# Palermo poco sotto, in Italia un terzo: la quota è un tratto di zona, e una
 # politica che lo tratta come un problema di Bagheria sbaglia bacino.
 #
 # Scorporo di fig02 (2026-08-28): stava come striscia a fianco del Sankey. Da sola regge —
@@ -71,8 +71,8 @@ figura <- ggplot(territori, aes(quota, nome_territorio, colour = colore)) +
   labs(
     title = "La quota di casalinghe è un tratto di zona: il vicinato di Bagheria arriva ancora più in alto",
     subtitle = sommario(paste0(
-      "Quota di ragazze di 15-24 anni che al censimento si dichiarano casalinghe, in percentuale delle coetanee residenti, su cinque territori, anno ", ANNO,
-      ". La condizione è autodichiarata, quindi va letta come marcatore del carico di cura e non come la sua misura diretta, e non dice chi sia la persona accudita; da dove arrivi questa quota dentro la popolazione 15-24 di Bagheria, e dove porti, lo mostra fig02.\n",
+      "Quota di ragazze di 15-24 anni che il censimento classifica come casalinghe, in percentuale delle coetanee residenti, su cinque territori, anno ", ANNO,
+      ". La condizione non è dichiarata dalla persona né contata: dal 2021 ISTAT la stima con un modello, sommando per comune probabilità individuali, e non ne pubblica l'errore. Va letta come etichetta, non come misura del lavoro di cura; da dove arrivi questa quota dentro la popolazione 15-24 di Bagheria, e dove porti, lo mostra fig02.\n",
       "A Bagheria sono ", virgola(quota_di("Bagheria")), "% (", casalinghe_n,
       " ragazze) e nei cinque comuni più vicini ",  virgola(quota_di(ETICHETTA_VICINATO)),
       "%: il livello prosegue oltre il confine comunale. Palermo è a ",
@@ -89,10 +89,11 @@ figura <- ggplot(territori, aes(quota, nome_territorio, colour = colore)) +
         "L'ordine delle righe è geografico e non per valore, dal comune al paese: la discesa da Bagheria all'Italia è il finding, non l'effetto dell'ordinamento. ",
         "I colori sono quelli che i territori portano in tutta la cartella (Bagheria in vermiglio, il vicinato in verde acqua, Palermo in viola, la Sicilia in ambra, l'Italia in grigio) e non codificano nessuna variabile in più. ",
         "Vicinato = i cinque comuni più vicini per distanza fra i centroidi, con i conteggi sommati prima della quota: è la quota del blocco, non la media delle cinque quote. ",
-        "Una sola annata, quindi la figura è una fotografia e non una tendenza: la serie completa sta in genere_composizione_stato_dettaglio.csv."),
+        "Una sola annata, quindi la figura è una fotografia e non una tendenza: la serie completa sta in genere_composizione_stato_dettaglio.csv, e si legge solo dal 2021, perché il 2018-2019 viene da un altro metodo. ",
+        "La quota è una stima di modello (i conteggi comunali non sono interi): le differenze piccole fra territori vicini vanno lette con cautela."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, classe 15-24 anni, ", ANNO, ". ",
-        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv per il vicinato aggregato, genere_casalinghe.csv per il conteggio e genere_platea.csv per i denominatori)."),
+        "Elaborazione: notebooks/genere.ipynb (data/processed/genere_composizione_stato_dettaglio.csv, genere_composizione_stato_dettaglio_vicini.csv per il vicinato aggregato, genere_casalinghe.csv per il conteggio e genere_platea.csv per i denominatori; genere_interi_condizione.csv per la natura di stima)."),
       larghezza = LARGHEZZA)
   ) +
   # Le righe orizzontali della griglia duplicherebbero i segmenti del lollipop.

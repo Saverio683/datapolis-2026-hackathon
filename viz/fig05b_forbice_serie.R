@@ -94,7 +94,7 @@ figura <- ggplot(protagonisti, aes(asse_2020(anno), valore, colour = nome_territ
   coord_cartesian(clip = "off") +
   buco_2020(y = 2.2, lungo$anno, lungo$valore) +
   labs(
-    title = "Dal 2021 il vantaggio educativo delle ragazze\nsi allarga solo a Bagheria",
+    title = "Dal 2021 il vantaggio educativo delle ragazze\ncresce a Bagheria e si chiude nel vicinato",
     subtitle = sommario(paste0(
       "Quanti punti percentuali separano la quota di ragazze da quella di ragazzi con almeno il diploma, sulla fascia 9-24 anni, dal ",
       PRIMO, " al ", ANNO, ", su cinque territori: sopra lo zero le ragazze sono più istruite dei coetanei. ",

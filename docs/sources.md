@@ -984,3 +984,118 @@ di 8,4.
   Bagheria-Palermo, ma misura l'ultimo miglio a Palermo Centrale. Il thread mobilità usa il
   file già scaricato dal thread educazione (`data/raw/edu/palermo_gtfs_2026-08-25.zip`,
   §10), in sola lettura.
+
+## 13. Robustezza del thread genere: fonti aggiunte il 2026-09-23
+
+### 13.1 Censimento permanente, tavola lavoro 15-24 per i 390 comuni siciliani
+
+- **Dataflow**: `DF_DCSS_ISTR_LAV_PEN_2_TV_3`, la stessa tavola lavoro dei quattro territori,
+  ristretta a `AGE_NOCLASS = Y15-24`, `CITIZENSHIP = TOTAL`, `EDU_ATTAIN = ALL`, tutte le
+  condizioni e i tre generi. Chiave: `A.<33 codici>...Y15-24.TOTAL.ALL...`, in **12 blocchi**
+  come la 15+ (§ limite di IIS sul segmento di path).
+- **URL**: `https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/<chiave>/ALL/?detail=full`,
+  un URL per blocco, tutti in `data/raw/manifest.csv`. Scaricati il 2026-09-23 →
+  `data/raw/censpop_lavoro_15_24_sicilia_01..12_2026-09-23.csv`; processato in
+  `censpop_lavoro_15_24_sicilia_long.csv` (`pipeline/build.py`, che verifica 324 celle di
+  Bagheria e Palermo identiche alla tavola a quattro territori).
+- **Uso**: variabilità osservata delle variazioni nei comuni di taglia simile (il metro dei
+  KPI in `genere_mde.csv`), pendenze senza modello binomiale (`genere_pretrend_390.csv`),
+  rango di Bagheria (`genere_rango_390_15_24.csv`), natura delle celle
+  (`genere_interi_condizione.csv`).
+- ⚠️ **Celle vuote non pubblicate.** In una ventina di comuni minuscoli manca la riga degli
+  occupati (`CUR_ACT_STAT = 1`). Lì forze di lavoro (`22`) e in cerca (`12`) coincidono,
+  quindi gli occupati sono zero: il notebook e `pipeline/verifica.py` li pongono a zero dopo
+  averlo asserito.
+- ⚠️ **Dal 2021 le condizioni non professionali sono stime, non conteggi.** Nel 2018-2019
+  tutte le celle sono intere; dal 2021 lo sono solo occupati (`1`) e totale (`99`), mentre
+  in cerca, forze di lavoro, non forze di lavoro, pensionati, studenti, casalinghe e altra
+  condizione non lo sono quasi mai (Bagheria, casalinghe F 15-24 2024: 386,84). È il cambio
+  di metodo che produce la rottura 2019→2021.
+
+### 13.2 Il metodo ISTAT della condizione professionale (fonti lette, non scaricate in raw)
+
+- Nota tecnica censimento permanente 2018-2019,
+  https://www.istat.it/it/files/2020/12/NOTA-TECNICA-CENSIPOP.pdf : istruzione e condizione
+  professionale e non professionale sono «variabili tematiche», con «valori stimati
+  attraverso modelli statistici che usano congiuntamente i dati di indagine e le
+  informazioni presenti nei registri».
+- Metadati ESMS del censimento 2021, compilati da ISTAT per Eurostat,
+  https://ec.europa.eu/eurostat/cache/metadata/EN/cens_21_esmscs21_it.htm : prima si stima
+  se una persona è occupata (sì/no), poi per i non occupati «the "probabilities" for the
+  other modes of the CAS classification»; le frequenze di cella sono somme di valori in
+  [0;1]; «The standard error was not calculated.» Allegato
+  `cens_21_esmscs21_it_an_4.xlsx`: condizione dei non occupati stimata con un «Multinomial
+  Logistic Model».
+- Chianella, Ciccaglioni, Ercolani (ISTAT), RIEDS 2024,
+  https://www.rieds-journal.org/rieds/article/download/359/287 : «Summing these
+  probabilities within a specific domain, such as a municipality (M), provides the
+  estimated number of individuals in each category j»; «housewife» e «other condition»
+  stanno nella stessa categoria del modello. Gli autori avvertono che il testo non
+  rappresenta necessariamente la posizione di ISTAT.
+- Non trovata una nota ISTAT sul metodo della condizione professionale per le diffusioni
+  2022-2024: che il metodo 2021 sia rimasto invariato è un'assunzione.
+
+### 13.3 Rilevazione sulle forze di lavoro, incidenza NEET regionale
+
+- **Dataflow**: `172_931_DF_DCCV_NEET1_11` («Incidenza dei giovani Neet - Dati regionali
+  (%)»). DSD a 10 posizioni: FREQ, REF_AREA, DATA_TYPE (`NEET_I`), SEX (codici legacy
+  **1 maschi, 2 femmine, 9 totale**), AGE (`Y15-24`, `Y15-29`, `Y15-34`, `Y18-29`),
+  LABPROF_STATUS_A, EURO_LABOUR_STATUS, EDU_LEV_HIGHEST, CITIZENSHIP, ROLE_IN_HOUSEHOLD.
+- **URL**: `https://esploradati.istat.it/SDMXWS/rest/data/IT1,172_931_DF_DCCV_NEET1_11,1.0/A.ITG1+IT......../ALL/?detail=full`,
+  scaricato il 2026-09-23 → `data/raw/rcfl_neet_regionale_2026-09-23.csv` (2018-2025),
+  processato in `rcfl_neet_regionale_long.csv` e `genere_neet_rcfl.csv`.
+- ⚠️ **Fonte diversa dal censimento**: campionaria, solo regionale, definizione europea
+  (fuori da occupazione, istruzione e formazione, anche non formale). È il NEET 15-34 del
+  bando a scala regionale; il proxy comunale 15-24 non ci va mai in serie. Il dataflow
+  `172_931_DF_DCCV_NEET1_6` (valori assoluti) ha il sesso solo come totale.
+
+### 13.4 Parametri di costo del pilota (fonti lette, trascritte in `genere_costo_parametri.csv`)
+
+- Ministero del Lavoro, D.D. n. 30 del 14 giugno 2024, costo del lavoro delle cooperative
+  del settore socio-sanitario assistenziale-educativo, tabella «GENNAIO 2026», valori
+  nazionali (non esistono tabelle territoriali):
+  https://www.lavoro.gov.it/temi-e-priorita-rapporti-di-lavoro-e-relazioni-industriali/focus/dd-30-del-14-giugno-2024 .
+  Livello D2, riga «COSTO ANNUO» senza indennità di turno: 35.812,94 euro; ore mediamente
+  lavorate 1.548. Il costo orario stampato (25,78) comprende il turno, che qui non si applica.
+- Ministero del Lavoro, «Nota metodologica che riporta le tabelle standard dei costi unitari
+  – costi del personale» (D.D. 105 del 3/4/2026, aggiornata con D.D. 130 del 5/5/2026),
+  Tabella 1, Funzioni locali, CCNL 2022-2024:
+  https://pninclusione21-27.lavoro.gov.it/sites/default/files/2026-05/Nota_metodologica_UCS_EELL_Sanit%C3%A0_Uneba_6_maggio_2026.pdf .
+  Costo lordo annuo area Funzionari ed EQ: 44.539,99 euro (Istruttori 37.270,09), oneri e
+  IRAP 8,50% compresi; costi di gestione al 15%, il tasso forfettario dell'art. 54, par. 1,
+  lett. b) del Reg. (UE) 2021/1060.
+- ANPAL, Delibera del Commissario straordinario n. 5 del 12 aprile 2023, Allegato B (UCS
+  del programma GOL): orientamento specialistico e accompagnamento al lavoro 39,94 euro
+  l'ora; percorso 4 fino a 10 ore di orientamento e 20 di accompagnamento.
+- Deliberazione della Giunta regionale siciliana n. 292 del 19 luglio 2017 (recepisce le
+  linee guida sui tirocini del 25/5/2017): indennità minima di 300 euro lordi mensili; copia
+  letta: https://www.unipa.it/servizi/tirocini/tirociniextracurriculari/.content/Documenti-Normative/Deliberazione-n292-del-19-luglio-2017.pdf .
+- L'abbinamento fra profili e livelli del CCNL cooperative sociali (D2: educatore
+  professionale, assistente sociale, ricercatore dei servizi informativi e di orientamento)
+  viene da una fonte secondaria, la scheda di sintesi della Provincia di Mantova (rev.
+  24/4/2026); il testo del CCNL non è stato aperto.
+
+### 13.5 Trasferimenti di residenza: che cosa è pubblico per il comune (ricognizione del 2026-09-23)
+
+- SDMX `28_185_DF_DCIS_MIGRAZIONI_1` («Migrazioni interne - Italiani e stranieri»):
+  `availableconstraint` con 30 aree fino alla regione, `AGE` solo `TOTAL`.
+- demo.istat.it, «Bilancio demografico mensile» (D7B, https://demo.istat.it/app/?i=D7B&l=it,
+  file `https://demo.istat.it/data/d7b/D7B2024.csv.zip`) e «Bilancio demografico» (P02):
+  dettaglio comunale per sesso, con immigrati da/emigrati per altro comune e da/per
+  l'estero; **nessuna età, nessun titolo, nessun comune di destinazione**.
+- demo.istat.it, «Trasferimenti di residenza» 2002-2025 (https://demo.istat.it/tavole/?t=apr4&l=it):
+  tavole per provincia e sesso, saldi dei soli capoluoghi; età e titolo di studio solo nelle
+  serie regionali sui laureati.
+- ISTAT, «La mobilità territoriale: trasferimenti di residenza e spostamenti quotidiani»
+  (febbraio 2024), file comunale per il solo **2021**: cancellazioni per destinazione, sesso,
+  cittadinanza e laureati italiani, senza età.
+- ISTAT, Statistica report «Migrazioni interne e internazionali della popolazione residente.
+  Anni 2024-2025» (https://www.istat.it/wp-content/uploads/2026/08/Statistica-report_Migrazioni-interne-e-internazionali-della-popolazione-residente_ANNI-2024-2025.pdf):
+  «I dati sono rilevati a livello comunale. Le statistiche sono disponibili a livello
+  nazionale, di ripartizione geografica, di regione e di provincia»; «I dati elementari sono
+  resi disponibili agli utenti che ne facciano richiesta. Tali dati sono rilasciati in forma
+  anonima.»
+- SDMX `56_1046` («Iscritti all'università - comune di residenza»): per comune, sesso e
+  area disciplinare, ma fermo al 2015-2017.
+- Nessuno di questi file è stato scaricato in `data/raw/`: nessuno ha l'età, quindi nessuno
+  misura la partenza dei 15-34enni.

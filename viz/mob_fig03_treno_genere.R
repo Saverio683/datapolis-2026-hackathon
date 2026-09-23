@@ -91,15 +91,15 @@ pannello_390 <- ggplot(comuni, aes(treno)) +
   # Il massimo è Termini Imerese al 37,5%: oltre i 40 punti non c'è nessuno, e lasciare
   # l'asse fino a 100 sprecava metà pannello per rappresentare il vuoto.
   coord_cartesian(xlim = c(0, 40)) +
-  labs(subtitle = paste0("C. Il treno a Bagheria è già l'asset di mobilità\n",
-                         "più distintivo che il comune abbia"),
+  labs(subtitle = paste0("C. Il treno a Bagheria è già la risorsa di mobilità\n",
+                         "più distintiva che il comune abbia"),
        x = "quota di chi esce dal comune che usa il treno", y = "comuni") +
   theme(panel.grid.major.x = element_blank())
 
 figura <- (pannello_mezzo / pannello_orario | pannello_390) +
   plot_layout(widths = c(1.15, 1)) +
   plot_annotation(
-    title = "Le donne di Bagheria raggiungono Palermo in treno. Gli uomini in auto",
+    title = "Fra chi esce da Bagheria, le donne prendono il treno quasi il doppio degli uomini",
     subtitle = paste0(
       "Tre letture della stessa popolazione, i residenti di Bagheria che escono dal comune: il pannello A dà\n",
       "la composizione per mezzo di trasporto, in percentuale degli spostamenti di ciascun genere, il pannello B\n",
@@ -119,7 +119,7 @@ figura <- (pannello_mezzo / pannello_orario | pannello_390) +
       "Per le donne il servizio è il canale d'accesso più che una comodità: se l'orario non copre, l'accesso non c'è.\n",
       "Ma il pannello C sposta il vincolo altrove: di treno Bagheria ne usa già più del ",
       virgola(percentile, 0, "%"), " dei comuni siciliani.\n",
-      "Il divario di genere si apre altrove: nel passaggio dallo studio al lavoro (figura 2)."),
+      "Il divario di genere si apre altrove: nel passaggio dallo studio al lavoro (mob_fig02)."),
     caption = didascalia_2b(
       lettura = paste0(
         "nei pannelli A e B il colore è il genere, rosa le donne e blu gli uomini, e le due barre affiancate della stessa riga sono i due generi sulla stessa voce. ",
@@ -128,7 +128,7 @@ figura <- (pannello_mezzo / pannello_orario | pannello_390) +
         "Nel pannello C ogni barra conta i comuni con quel valore, la riga vermiglia è Bagheria e il percentile è scritto accanto; restano fuori i ", esclusi,
         " comuni su 390 dove escono meno di ", SOGLIA,
         " persone al giorno, perché sotto quella soglia la quota è rumore. Il percentile mostrato è quello grezzo, e a parità di distanza dal capoluogo e di dimensione il residuo di Bagheria resta al 97°. ",
-        "Mezzo, orario di uscita e durata sono rilevati su CAMPIONE nei comuni sopra i 20.000 abitanti, e Bagheria è uno di questi: i valori dei pannelli A e B sono stime, calibrate sui margini esatti dei record di tipo S. ",
+        "Mezzo, orario di uscita e durata sono rilevati su campione nei comuni sopra i 20.000 abitanti, e Bagheria è uno di questi: i valori dei pannelli A e B sono stime, calibrate sui margini esatti dei record di tipo S. ",
         "Della fascia oraria si conosce solo l'uscita di casa: del rientro la matrice non dice nulla, e l'ipotesi del carico di cura resta un'ipotesi non verificata da questi dati."),
       fonte = paste0(
         "ISTAT, Matrice del pendolarismo, censimento della popolazione 2011, su ",

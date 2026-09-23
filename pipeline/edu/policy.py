@@ -60,7 +60,7 @@ def build_analytical_report() -> str:
 **Bagheria è migliorata, ma non ha chiuso il divario con la Sicilia: il collo di bottiglia
 oggi più persistente è l'inattività non studentesca dei 15-24enni.**
 
-![Profilo 2024](../../figures/edu/01_snapshot_bagheria_2024.png)
+![Profilo 2024](../../../figures/edu/01_snapshot_bagheria_2024.png)
 
 ## 1. Dati iniziali, perimetro e qualità
 
@@ -92,13 +92,13 @@ Tra 1991 e 2011 l'uscita precoce 15-24 scende dal
 relativa tra i 390 comuni siciliani, però, peggiora su tutti gli indicatori selezionati: è il
 primo segnale che crescita interna e convergenza non sono la stessa cosa.
 
-![Storia e posizione relativa](../../figures/edu/02_storia_livelli_e_posizione.png)
+![Storia e posizione relativa](../../../figures/edu/02_storia_livelli_e_posizione.png)
 
 Nel 2011 il passaggio tra istruzione e lavoro presenta ancora una frattura: almeno licenza
 media 15-19 al 96,7%, ma uscita precoce 15-24 al 28,6%, NEET 15-29 al 40,1% e occupazione
 15-29 al 20,0%. Le fasce sono riportate esplicitamente e non descrivono un funnel individuale.
 
-![Benchmark della transizione 2011](../../figures/edu/03_transizione_benchmark_2011.png)
+![Benchmark della transizione 2011](../../../figures/edu/03_transizione_benchmark_2011.png)
 
 ## 3. Profilo corrente
 
@@ -114,9 +114,9 @@ Gli inattivi rappresentano il **{_fmt(current['inactive_share_of_outside_pct'])}
 fuori da lavoro e studio. La loro quota è **{_fmt(gaps['inactive_nonstudent_15_24_pp'])} punti
 sopra la Sicilia**.
 
-![Composizione 2018-2024](../../figures/edu/04_composizione_giovani_2018_2024.png)
+![Composizione 2018-2024](../../../figures/edu/04_composizione_giovani_2018_2024.png)
 
-![Confronto degli stati 2024](../../figures/edu/05_benchmark_stati_2024.png)
+![Confronto degli stati 2024](../../../figures/edu/05_benchmark_stati_2024.png)
 
 ## 4. Il recupero esiste, la convergenza no
 
@@ -125,7 +125,7 @@ quota fuori da lavoro e studio scende di **{_fmt(abs(change['outside_work_study_
 Tuttavia, il gap occupazionale con la Sicilia è ancora **{_fmt(abs(gaps['employment_15_24_pp']))}
 punti**: quasi lo stesso osservato nel 2018.
 
-![Gap con la Sicilia](../../figures/edu/06_gap_con_sicilia_2018_2024.png)
+![Gap con la Sicilia](../../../figures/edu/06_gap_con_sicilia_2018_2024.png)
 
 La composizione del cambiamento è decisiva. Il numero stimato di giovani in cerca diminuisce
 di circa **{_count(abs(search_change))}**, mentre gli inattivi non studenti scendono soltanto di
@@ -133,7 +133,7 @@ circa **{_count(abs(inactive_change))}**. In quota, la ricerca cala di 10,2 punt
 appena 0,6. Il miglioramento complessivo non equivale quindi alla riattivazione del gruppo più
 difficile da raggiungere.
 
-![Scomposizione del cambiamento](../../figures/edu/07_scomposizione_cambiamento_2018_2024.png)
+![Scomposizione del cambiamento](../../../figures/edu/07_scomposizione_cambiamento_2018_2024.png)
 
 ## 5. Istruzione e lavoro: cosa si può concludere
 
@@ -142,9 +142,9 @@ dal 56,2% al 62,4% tra 2018 e 2024; l'occupazione sale dal 43,0% al 53,6%. I div
 Sicilia si riducono, ma nel 2024 restano rispettivamente **{_fmt(abs(gaps['at_least_diploma_25_49_pp']))}
 e {_fmt(abs(gaps['employment_25_49_pp']))} punti**.
 
-![Traiettoria 25-49](../../figures/edu/08_traiettoria_25_49.png)
+![Traiettoria 25-49](../../../figures/edu/08_traiettoria_25_49.png)
 
-![Posizionamento 25-49](../../figures/edu/09_posizionamento_istruzione_lavoro_25_49.png)
+![Posizionamento 25-49](../../../figures/edu/09_posizionamento_istruzione_lavoro_25_49.png)
 
 La lettura corretta è territoriale: istruzione e occupazione avanzano insieme, ma Bagheria
 resta sotto il benchmark in entrambe. Senza un microdato comunale titolo × condizione non è
@@ -156,7 +156,7 @@ La popolazione 15-34 scende del 2,6% tra 2021 e 2024, quasi quanto la Sicilia. L
 e misura lo stock residente: non consente di attribuire il calo alla migrazione né di stimare
 una fuga di capitale umano.
 
-![Popolazione 15-34](../../figures/edu/10_popolazione_15_34.png)
+![Popolazione 15-34](../../../figures/edu/10_popolazione_15_34.png)
 
 ## 7. Il benchmark non dipende soltanto dalla media regionale
 
@@ -165,7 +165,7 @@ educativo, Bagheria registra un'occupazione 15-29 del **{_fmt(peer['bagheria_you
 contro una mediana del **{_fmt(peer['peer_median_youth_employment'])}%**. Il gap è
 **{_fmt(abs(peer['employment_gap_vs_peer_median']))} punti**.
 
-![Confronto con i peer](../../figures/edu/11_confronto_peer_2011.png)
+![Confronto con i peer](../../../figures/edu/11_confronto_peer_2011.png)
 
 Il matching non è causale, ma mostra che il basso ingresso nel lavoro non emerge soltanto nel
 confronto con Italia o Sicilia.

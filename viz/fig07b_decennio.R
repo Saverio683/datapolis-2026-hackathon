@@ -96,7 +96,7 @@ figura <- ggplot(decenni, aes(periodo, ritenzione_pct, colour = nome_territorio,
   labs(
     title = "La falla si è aperta nel decennio 2011-2021:\nprima Bagheria tratteneva la coorte meglio di Palermo e Sicilia",
     subtitle = sommario(paste0(
-      "Quota della coorte di partenza ancora residente dieci anni dopo, in percentuale della coorte iniziale, per genere e per quattro territori: ",
+      "Residenti della coorte dieci anni dopo per 100 residenti iniziali, per genere e per quattro territori: ",
       "sempre la stessa classe d'età (15-19 anni all'inizio del decennio) seguita due volte, nel 2001-2011 e nel 2011-2021. ",
       "È una misura netta di saldo, che comprende sia chi parte sia chi arriva, e dice da quando si perde; a che età si perde lo dice fig07. Il tratteggio a 100 è la coorte che si conserva.\n",
       "Tre anni di dati non basterebbero a chiamarla fuga (fig07), dieci sì. Nel 2001-2011 le ragazze di Bagheria arrivavano a ",
@@ -104,7 +104,7 @@ figura <- ggplot(decenni, aes(periodo, ritenzione_pct, colour = nome_territorio,
       virgola(valore("femmine", "dopo"), 1, "%"), " (", virgola(scarto_di("femmine")),
       " punti). Sui ragazzi il calo è di ", virgola(scarto_di("maschi")),
       " punti e li porta sotto Palermo.\n",
-      "È lo stesso decennio in cui si alza il muro dell'occupazione femminile (fig10): la frattura è databile, ed è ancora aperta."), LARGHEZZA),
+      "È il decennio successivo a quello in cui si alza il muro dell'occupazione femminile (fig10, 2001-2011): prima si apre il divario sul lavoro, poi quello sulla permanenza."), LARGHEZZA),
     x = NULL, y = "coorte dopo dieci anni",
     caption = didascalia_2b(
       lettura = paste0(

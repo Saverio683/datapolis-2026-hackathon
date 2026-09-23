@@ -118,7 +118,7 @@ figura <- (nuvola | posizione) +
       "Controllando distanza e dimensione, che sono due variabili geografiche e non di comportamento, il residuo è di ",
       virgola(bagheria$residuo, 1), " punti e il percentile sale al ",
       virgola(percentile_residuo, 0, "°"), ".\n",
-      "La particolarità di Bagheria è chi si muove, e per quale motivo (figure 2 e 3)."), LARGHEZZA),
+      "La particolarità di Bagheria è chi si muove, e per quale motivo (mob_fig02 e mob_fig03)."), LARGHEZZA),
     caption = didascalia_2b(
       lettura = paste0(
         "nel pannello A ogni punto grigio è un comune e Bagheria è il punto vermiglio. Il diametro del punto è il numero di pendolari del comune, cioè proprio la variabile che spiega l'apparente anomalia: si vede a occhio che i comuni grandi stanno in basso. ",

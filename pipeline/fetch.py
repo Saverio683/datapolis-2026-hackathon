@@ -159,6 +159,18 @@ def _sdmx_url_15piu(territori: str) -> str:
     return f"{SDMX}/data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/{chiave}/ALL/?detail=full"
 
 
+def _sdmx_url_15_24(territori: str) -> str:
+    """La stessa tavola lavoro ristretta alla classe 15-24: fascia di lavoro del progetto.
+
+    Porta nei 390 comuni il tasso di occupazione e la quota di casalinghe delle 15-24enni,
+    finora disponibili solo per i quattro territori, i vicini e le gemelle. Stesse
+    posizioni della DSD di _sdmx_url_15piu; "Y15-24" ha la lunghezza di "Y_GE15", quindi
+    il vincolo di IIS sul segmento di path resta quello già verificato.
+    """
+    chiave = f"A.{territori}...Y15-24.TOTAL.ALL..."
+    return f"{SDMX}/data/IT1,DF_DCSS_ISTR_LAV_PEN_2_TV_3,1.0/{chiave}/ALL/?detail=full"
+
+
 def _sdmx_url_popres_statciv() -> str:
     """Popolazione al 1° gennaio per età singola, sesso e stato civile (DCIS_POPRES1).
 
@@ -229,6 +241,18 @@ FONTI: list[tuple[str, str, str | None, bytes]] = [
     #     è il denominatore dei percentili regionali, finora disponibile solo al 2011 ---
     (f"censpop_lavoro_15piu_sicilia_{i:02d}", _sdmx_url_15piu(blocco), SDMX_CSV, b"DATAFLOW")
     for i, blocco in enumerate(_blocchi(COMUNI_SICILIA, CODICI_PER_QUERY), start=1)
+] + [
+    # --- I 390 comuni sulla classe 15-24: variabilità delle variazioni fra comuni simili
+    #     (sostituisce la potenza binomiale dei KPI) e posizione di Bagheria in Sicilia ---
+    (f"censpop_lavoro_15_24_sicilia_{i:02d}", _sdmx_url_15_24(blocco), SDMX_CSV, b"DATAFLOW")
+    for i, blocco in enumerate(_blocchi(COMUNI_SICILIA, CODICI_PER_QUERY), start=1)
+] + [
+    # --- Rilevazione sulle forze di lavoro (RCFL): incidenza NEET per sesso ed età,
+    #     Sicilia e Italia. FONTE DIVERSA dal censimento (campionaria, regionale): è il
+    #     NEET 15-34 del bando a scala regionale, mai in serie con il proxy comunale 15-24.
+    #     DSD a 10 posizioni: FREQ, REF_AREA, DATA_TYPE, SEX, AGE, LABPROF_STATUS_A,
+    #     EURO_LABOUR_STATUS, EDU_LEV_HIGHEST, CITIZENSHIP, ROLE_IN_HOUSEHOLD ---
+    ("rcfl_neet_regionale", _sdmx_url("172_931_DF_DCCV_NEET1_11", 10, "ITG1+IT"), SDMX_CSV, b"DATAFLOW"),
 ]
 
 
@@ -332,6 +356,8 @@ def _autocontrollo() -> None:
     # se questa assert salta, il server risponde 400 e il CSV finisce vuoto.
     piu_lungo = max(len(f"A.{b}...Y_GE15.TOTAL.ALL...") for b in blocchi)
     assert piu_lungo <= 254, f"chiave di {piu_lungo} caratteri: IIS taglia a ~260"
+    assert all(_sdmx_url_15_24(b).count("Y15-24") == 1 for b in blocchi)
+    assert len(_sdmx_url_15_24(blocchi[0])) == len(_sdmx_url_15piu(blocchi[0]))
     print("autocontrollo ok\n")
 
 

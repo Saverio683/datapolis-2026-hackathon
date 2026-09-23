@@ -8,5 +8,6 @@ vault.yaml
 .vscode/
 docs/silica/Inbox/
 .~lock.POLICY_PONTE_19.docx#
-docs/.~lock.RELAZIONE_DATAPOLIS.docx#
+docs/relazione/.~lock.RELAZIONE_DATAPOLIS.docx#
+docs/policy/.~lock.POLICY_PONTE_19.docx#
 dist/

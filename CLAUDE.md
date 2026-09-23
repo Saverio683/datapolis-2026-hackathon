@@ -20,7 +20,7 @@ uv run python -m pipeline.fetch           # scarica raw da tutte le fonti
 uv run python -m pipeline.build           # raw -> processed
 uv run python -m pipeline.edu             # thread educazione: raw -> edu_*.csv
 uv run jupyter nbconvert --to notebook --execute notebooks/analisi.ipynb     # SENSORE (19 celle)
-uv run jupyter nbconvert --to notebook --execute notebooks/genere.ipynb      # SENSORE (133 celle)
+uv run jupyter nbconvert --to notebook --execute notebooks/genere.ipynb      # SENSORE (155 celle)
 uv run jupyter nbconvert --to notebook --execute notebooks/educazione.ipynb  # SENSORE (64 celle)
 uv run jupyter nbconvert --to notebook --execute notebooks/mobilita.ipynb    # SENSORE (40 celle)
 Rscript viz/build_all.R                   # genera tutte le figure in figures/
@@ -29,17 +29,22 @@ Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didas
 uv run python -m pipeline.editor_testi fig06   # editor dei soli testi di una figura, anteprima live
 uv run python -m pipeline.relazione_docx  # RELAZIONE_DATAPOLIS.md + figure -> .docx
 uv run python -m pipeline.policy_docx     # POLICY_PONTE_19.md + figure e sinossi -> .docx
-uv run python -m pipeline.verifica        # SENSORE: 755 controlli, exit 1 se uno fallisce
+uv run python -m pipeline.verifica        # SENSORE: 934 controlli, exit 1 se uno fallisce
 uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
 ```
 
 Prima di dichiarare completo qualunque task che tocca un notebook, esegui il nbconvert **di quel notebook** e quello di `analisi.ipynb`. Se fallisce, il task non è finito.
 
-`analisi.ipynb` è il guscio condiviso (caricamento, verifica delle definizioni, export per le figure): da solo copre 19 celle su 256, l'analisi vera sta nei tre notebook di thread. Un nbconvert sul solo `analisi.ipynb` non è quindi la prova che il progetto gira.
+`analisi.ipynb` è il guscio condiviso (caricamento, verifica delle definizioni, export per le figure): da solo copre 19 celle su 278, l'analisi vera sta nei tre notebook di thread. Un nbconvert sul solo `analisi.ipynb` non è quindi la prova che il progetto gira.
 
-Prima di dichiarare completo qualunque task che tocca `data/processed/`, i notebook o i documenti di `docs/`, esegui `pipeline.verifica`. Copre tre salti: raw -> notebook, notebook -> processed, e processed -> le cifre scritte a mano in `RELAZIONE.md`, `RELAZIONE_DATAPOLIS.md` e `POLICY_PONTE_19.md`. Quest'ultimo blocco non dichiara i numeri attesi: li rilegge da `data/processed/`, li formatta all'italiana e pretende che la frase compaia alla lettera nel documento, quindi fallisce sia se si muove il dato sia se si ritocca il testo a mano. Quando fallisce, la riga di FAIL stampa la frase da riscrivere.
+Prima di dichiarare completo qualunque task che tocca `data/processed/`, i notebook o i documenti di `docs/`, esegui `pipeline.verifica`. Copre tre salti: raw -> notebook, notebook -> processed, e processed -> le cifre scritte a mano in `docs/team/SCELTE_ANALITICHE.md`, `RELAZIONE_DATAPOLIS.md` e `POLICY_PONTE_19.md`. Quest'ultimo blocco non dichiara i numeri attesi: li rilegge da `data/processed/`, li formatta all'italiana e pretende che la frase compaia alla lettera nel documento, quindi fallisce sia se si muove il dato sia se si ritocca il testo a mano. Quando fallisce, la riga di FAIL stampa la frase da riscrivere.
 
 ## Struttura repo
+
+Per orientarti tra testi ufficiali, materiali del team e documenti generati, leggi
+`docs/README.md`. Aggiorna i percorsi anche nei generatori, nei controlli e nello ZIP
+quando sposti un documento.
+
 ```
 data/raw/          # immutabile, mai editare — un file per download, mai sovrascrivere
 data/processed/    # output della pipeline, rigenerabile, interfaccia Python->R
@@ -89,7 +94,7 @@ Aggiornate il 2026-08-12 dopo la ricognizione delle fonti — i dettagli e le ve
 - **Genere** (Ale): gap di genere su occupazione (**15-24**) e istruzione (**9-24**), serie 2018-2024; confronto del gap locale con quello dei territori benchmark.
   - La **decomposizione del gap per titolo di studio non è fattibile** e va tolta dal piano: a livello comunale il censimento permanente non pubblica l'incrocio condizione professionale × titolo di studio. Nella tavola lavoro il titolo è solo `ALL`, in quella istruzione la condizione è solo il totale `99`. Dimostrato dalla cella di verifica in `notebooks/genere.ipynb`. Al suo posto i due gap si misurano separatamente e si confrontano i segni.
 - **Educazione** (Saverio) e **Mobilità** (Fabio): thread degli altri componenti — non modificarne i notebook; i dati condivisi passano solo da `data/processed/`.
-- Contesto per membro (stato del thread, fatti verificati, richieste incrociate): `docs/CONTEXT-ale.md`, `docs/CONTEXT-saverio.md`, `docs/CONTEXT-fabio.md`.
+- Contesto per membro (stato del thread, fatti verificati, richieste incrociate): `docs/team/CONTEXT-ale.md`, `docs/team/CONTEXT-saverio.md`, `docs/team/CONTEXT-fabio.md`. Modifiche della sera del 2026-09-23 (casalinghe come stima, potenza dei KPI, pilota, costo, NEET regionale): `docs/team/AGGIORNAMENTO_SAVERIO_2026-09-23.md`.
 - Convenzioni comuni obbligatorie a tutti i thread: stesse definizioni (sezione sopra), stessi territori, stesso anno base. Serve perché i risultati siano confrontabili nella proposal finale.
 
 ## Convenzioni viz (R)

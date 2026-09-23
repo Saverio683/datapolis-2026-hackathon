@@ -1,4 +1,4 @@
-"""docs/POLICY_PONTE_19.md -> docs/POLICY_PONTE_19.docx, con le figure incorporate.
+"""docs/policy/POLICY_PONTE_19.md -> docs/policy/POLICY_PONTE_19.docx, con le figure incorporate.
 
 Gemello di pipeline/relazione_docx.py, da cui prende tutto l'impianto tipografico:
 reference.docx ritipografato (Times New Roman, A4, pie' di pagina), ritaglio della
@@ -45,6 +45,7 @@ from pipeline.relazione_docx import (
     blocco_figura,
     dichiara_png,
     indice,
+    inserisci_figure,
     promuovi_titoli,
     reference_docx,
 )
@@ -52,11 +53,11 @@ from pipeline.relazione_docx import (
 RADICE = Path(__file__).resolve().parent.parent
 DOCS = RADICE / "docs"
 PROCESSED = RADICE / "data" / "processed"
-SORGENTE = DOCS / "POLICY_PONTE_19.md"
-USCITA = DOCS / "POLICY_PONTE_19.docx"
+SORGENTE = DOCS / "policy" / "POLICY_PONTE_19.md"
+USCITA = DOCS / "policy" / "POLICY_PONTE_19.docx"
 # Il conteggio dei controlli non si ribatte: si legge dalla relazione, che e' il documento
 # che lo dichiara e che verifica.py tiene allineato.
-RELAZIONE = DOCS / "RELAZIONE_DATAPOLIS.md"
+RELAZIONE = DOCS / "relazione" / "RELAZIONE_DATAPOLIS.md"
 
 # ------------------------------------------------------------------ dove va ogni figura
 # (frammento ancora nel .md, nome della figura). Il frammento deve comparire una volta
@@ -67,8 +68,8 @@ RELAZIONE = DOCS / "RELAZIONE_DATAPOLIS.md"
 # posizionamento segue il testo invece di essere una scelta editoriale a parte.
 INLINE: list[tuple[str, str]] = [
     # 1. L'evidenza che motiva l'intervento
-    ("→ `edu_finding_summary.csv`, `edu_kpi_dashboard.csv`", "edu_fig03_composizione"),
-    ("→ `genere_quadro_sintesi.csv`, `genere_forbice_serie.csv`, `genere_posizionamento.csv`",
+    ("→ `edu_youth_states_2018_2024.csv`, `edu_kpi_dashboard.csv`", "edu_fig03_composizione"),
+    ("`genere_quadro_sintesi.csv`, `genere_forbice_serie.csv`, `genere_posizionamento.csv`",
      "fig05_forbice"),
     ("smettono quando il motivo diventa il lavoro.\n→ `genere_pendolarismo.csv`",
      "fig12_pendolarismo"),
@@ -84,11 +85,10 @@ INLINE: list[tuple[str, str]] = [
     ("→ `genere_casalinghe.csv`, `genere_casalinghe_bounds.csv`, `genere_stato_civile.csv`, fig02b",
      "fig02b_casalinghe_territori"),
     ("→ `mob_ribaltamento_territori.csv`, `mob_sintesi.csv`, mob_fig02", "mob_fig02_ribaltamento"),
-    ("→ `genere_quadro_sintesi.csv`, `genere_pari_lenti.csv`, `genere_posizionamento.csv`, fig05b, fig08",
+    ("`genere_pari_lenti.csv`, `genere_posizionamento.csv`, fig05, fig08",
      "fig08_posizionamento"),
     ("→ `genere_forbice_serie.csv`, `genere_nuvola_390.csv`, fig05b, fig06b", "fig05b_forbice_serie"),
-    ("→ `mob_mezzo_genere.csv`, `mob_orario_genere.csv`, `mob_sintesi.csv`, mob_fig03",
-     "mob_fig03_treno_genere"),
+    ("`notebooks/mobilita.ipynb`, mob_fig03", "mob_fig03_treno_genere"),
     ("→ `genere_composizione_stato_dettaglio.csv`, `genere_ritenzione_eta.csv`",
      "fig07_ritenzione_eta"),
     ("→ `genere_mde.csv`, fig09b", "fig09b_potenza"),
@@ -218,6 +218,9 @@ def tabella_sinossi() -> str:
     platea = _csv("genere_platea.csv")
     mde = _csv("genere_mde.csv")
     posiz = _csv("genere_posizionamento.csv").set_index("indicatore")
+    quad = _csv("genere_forbice_quadrante.csv")
+    vant_15_24 = float(quad[quad["nome_territorio"].eq("Bagheria")
+                            & quad["anno"].eq(2024)]["vantaggio_diploma_15_24_pp"].iloc[0])
 
     def st(col, terr="Bagheria", anno=2024):
         r = stati[stati["territorio_nome"].eq(terr) & stati["anno"].eq(anno)]
@@ -265,7 +268,7 @@ def tabella_sinossi() -> str:
     n_coniugate = float(coniugate["gia_coniugate"].iloc[0])
     # Posizione di Bagheria fra i comuni ugualmente scolarizzati: il CSV conta quanti
     # stanno sotto, la posizione e' il complemento.
-    n_pari = int(posiz.at["L11", "n_istruiti"])
+    n_pari = int(posiz.at["L11", "n_istruiti"]) + 1          # i pari piu' Bagheria
     pos_pari = n_pari - int(posiz.at["L11", "istruiti_sotto"])
 
     inattivi = ita(st("inattivi_non_studenti"), 0)
@@ -287,10 +290,11 @@ def tabella_sinossi() -> str:
          "Residenti 18-20 all'uscita dalla secondaria e 22-25 fuori da lavoro e studio.",
          "Copertura delle due finestre misurata separatamente, mai in aggregato."),
         ("§1, §4-bis",
-         f"A pari istruzione il lavoro non arriva: le ragazze superano i coetanei di "
-         f"{ita(-quadro.at['Bagheria', 'gap istruzione (M-F)'])} punti sul diploma e si "
-         f"fermano al {ita(quadro.at['Bagheria', 'occupazione F'])}% di occupazione, "
-         f"{pos_pari}ª su {n_pari} fra i comuni ugualmente scolarizzati.",
+         f"A pari istruzione il lavoro non arriva: le ragazze 15-24 superano i coetanei "
+         f"di {ita(vant_15_24)} punti sul diploma e hanno un tasso di occupazione pari a "
+         f"{ita(quadro.at['Bagheria', 'occupazione F'])}%; nel 2011 Bagheria era "
+         f"{pos_pari}ª su {n_pari} per occupazione femminile fra i comuni ugualmente "
+         f"scolarizzati.",
          "Quota di genere sui presi in carico e modulo dedicato, la Rotta F "
          "(sezioni 3 e 4-bis).",
          f"Minimo 50% donne, cioè 100 nel primo anno sulle {ita(fuori_f(), 0)} fuori da "
@@ -298,14 +302,15 @@ def tabella_sinossi() -> str:
          f"Tasso di occupazione F 15-24 da "
          f"{ita(md('tasso di occupazione', 3, 'attuale (%)'))}% a "
          f"{ita(md('tasso di occupazione', 3, 'obiettivo (%)'))}%, letto sul triennio "
-         f"pooled (potenza "
-         f"{ita(md('tasso di occupazione', 3, 'potenza per il delta (%)'), 0)}%)."),
+         f"pooled come direzione della convergenza (potenza "
+         f"{ita(md('tasso di occupazione', 3, 'potenza osservata (%)'), 0)}% contro la "
+         f"variabilità dei comuni simili)."),
         ("§4-bis, F1",
          f"{ita(cp('F', 'casalinghe/i'), 0)} ragazze fra i 15 e i 24 anni si dichiarano "
-         f"casalinghe, il {ita(cas('Bagheria'))}% della fascia contro il "
-         f"{ita(cas('Palermo'))}% di Palermo, e le già coniugate sono "
-         f"{ita(n_coniugate, 0)} ({ita(q_coniugate)}%): il canale non è il matrimonio ma "
-         f"la famiglia d'origine.",
+         f"casalinghe, il {ita(cas('Bagheria'))}% della fascia (Palermo: "
+         f"{ita(cas('Palermo'))}%), e le già coniugate sono "
+         f"{ita(n_coniugate, 0)} ({ita(q_coniugate)}%): il matrimonio precoce non spiega "
+         f"il fenomeno.",
          "Contatto attraverso i luoghi che quella popolazione già la vedono, non "
          "attraverso una lista: sedi secondarie, servizi sociali, consultori, "
          "associazioni.",
@@ -314,13 +319,14 @@ def tabella_sinossi() -> str:
          f"Quota casalinghe F 15-24 da "
          f"{ita(md('quota casalinghe', 2, 'attuale (%)'))}% a "
          f"{ita(md('quota casalinghe', 2, 'obiettivo (%)'))}%, leggibile già sul biennio "
-         f"(potenza {ita(md('quota casalinghe', 2, 'potenza per il delta (%)'), 0)}%)."),
+         f"(potenza {ita(md('quota casalinghe', 2, 'potenza osservata (%)'), 0)}% contro la "
+         f"variabilità dei comuni simili)."),
         ("§4-bis, F2",
          f"Fra chi già si sposta per lavoro esce dal comune il "
          f"{ita(pe('Bagheria', 'WK', 'quota_M'))}% degli uomini e il "
-         f"{ita(pe('Bagheria', 'WK', 'quota_F'))}% delle donne, e verso Palermo il treno "
-         f"vale il {ita(mz('F', 'di cui: treno'))}% degli spostamenti femminili contro il "
-         f"{ita(mz('M', 'di cui: treno'))}% di quelli maschili.",
+         f"{ita(pe('Bagheria', 'WK', 'quota_F'))}% delle donne (2019); fra chi esce dal "
+         f"comune il treno vale il {ita(mz('F', 'di cui: treno'))}% degli spostamenti "
+         f"femminili contro il {ita(mz('M', 'di cui: treno'))}% di quelli maschili (2011).",
          "Nessuna opportunità entra nel piano di transizione senza verifica di "
          "raggiungibilità col mezzo collettivo negli orari reali della posizione. È un "
          "filtro di istruttoria, non un capitolo di spesa.",
@@ -364,26 +370,29 @@ def sinossi() -> str:
         r = stati[stati["territorio_nome"].eq("Bagheria") & stati["anno"].eq(anno)]
         return float(r[col].iloc[0])
 
-    calo_cerca = st("quota_in_cerca", 2018) - st("quota_in_cerca", 2024)
-    calo_inatt = (st("quota_inattivi_non_studenti", 2018)
-                  - st("quota_inattivi_non_studenti", 2024))
+    # Dal 2021 in poi: fra 2019 e 2021 cambia la misura della condizione «in cerca», e
+    # un confronto 2018-2024 delle componenti leggerebbe la rottura come un fatto.
+    quad = _csv("genere_forbice_quadrante.csv")
+    vant_15_24 = float(quad[quad["nome_territorio"].eq("Bagheria")
+                            & quad["anno"].eq(2024)]["vantaggio_diploma_15_24_pp"].iloc[0])
 
-    return f"""# Il quadro in una pagina
+    return f"""# Il quadro in sintesi
 
 > **A Bagheria il diploma arriva, il lavoro no. E chi resta fuori non è chi cerca lavoro.**
-> Nel 2024 il {ita(st('inattivi_su_fuori', 2024))}% dei giovani fuori da lavoro e studio
-> non cerca nemmeno; fra il 2018 e il 2024 la quota di chi cerca è calata di
-> {ita(calo_cerca)} punti, quella degli inattivi non studenti soltanto di
-> {ita(calo_inatt)}. Le ragazze arrivano al diploma
-> {ita(-quadro.at['Bagheria', 'gap istruzione (M-F)'])} punti più dei coetanei e lavorano
-> alla metà: {ita(quadro.at['Bagheria', 'occupazione F'])}% contro
+> Nel 2024 il {ita(st('inattivi_su_fuori', 2024))}% dei 15-24enni fuori da lavoro e studio
+> non cerca nemmeno; a definizione costante, fra il 2021 e il 2024, la quota di chi cerca
+> scende da {ita(st('quota_in_cerca', 2021))}% a {ita(st('quota_in_cerca', 2024))}% mentre
+> quella degli inattivi non studenti resta ferma
+> ({ita(st('quota_inattivi_non_studenti', 2021))}% → {ita(st('quota_inattivi_non_studenti', 2024))}%).
+> Le ragazze 15-24 hanno il diploma {ita(vant_15_24)} punti più spesso dei coetanei e
+> lavorano la metà: {ita(quadro.at['Bagheria', 'occupazione F'])}% contro
 > {ita(quadro.at['Bagheria', 'occupazione M'])}%. Un servizio a domanda spontanea
-> raggiungerebbe il segmento che si sta già risolvendo da sé.
+> raggiungerebbe chi già cerca, non il segmento che non si muove.
 
 **Ponte 19** è la risposta che questa proposta argomenta: un servizio comunale di
 transizione e riattivazione con due finestre di ingaggio, un target esplicito sul genere e
-obiettivi scritti in tasso, non in teste. Le due tabelle di questa pagina sono la proposta
-in forma compatta; le sezioni che seguono la argomentano una evidenza alla volta, e ogni
+obiettivi scritti in tasso, non in teste. Le due tabelle che seguono sono la proposta in
+forma compatta; le sezioni che seguono la argomentano una evidenza alla volta, e ogni
 cifra rimanda al file di `data/processed/` che la produce.
 
 ## Le cifre della diagnosi
@@ -399,9 +408,9 @@ dice come Bagheria si collochi fra comuni simili: lo dicono le figure delle sezi
 4-bis, che confrontano con due gruppi di comuni pari dichiarati.
 
 **Come si legge:** in grassetto la colonna di Bagheria. Un divario positivo significa
-valore maschile più alto: sul lavoro Bagheria ha il divario più ampio dopo la Sicilia,
-sullo studio è l'unico dei quattro territori in cui il segno si inverte a favore delle
-ragazze. Il vantaggio educativo è riportato col segno già ribaltato (F − M), perché è
+valore maschile più alto. Sul pendolarismo per lavoro Bagheria ha il divario più ampio dei
+quattro territori, circa il doppio di Sicilia e Italia; sul pendolarismo per studio il
+segno si inverte ovunque a favore delle ragazze, e a Bagheria più che altrove. Il vantaggio educativo è riportato col segno già ribaltato (F − M), perché è
 positivo ovunque e leggerlo al negativo sarebbe una trappola.
 
 **Fonte:** ISTAT, censimento permanente della popolazione e delle abitazioni, 2018-2024.
@@ -419,7 +428,7 @@ porta a un intervento derivabile resta nell'analisi e non entra qui.
 
 ::: {{custom-style="Didascalia"}}
 **Cosa mostra:** le sette catene evidenza, intervento, target e KPI su cui poggia la
-proposta, con il rimando alla sezione che le argomenta. Non mostra i costi né il
+proposta, con il rimando alla sezione che le argomenta. Non mostra la dotazione né il
 cronoprogramma di attuazione, che stanno nelle sezioni 3 e 4, e non mostra le condizioni
 che possono fermare una componente, che stanno nel decision gate della sezione 5.
 
@@ -437,7 +446,7 @@ nel testo che segue.
 
 # ------------------------------------------------------------------- copertina
 COPERTINA = """::: {{custom-style="CopertinaEnte"}}
-Comune di Bagheria (PA) · DataPolis 2026
+DataPolis 2026 · Bagheria (PA)
 :::
 
 ::: {{custom-style="CopertinaTitolo"}}
@@ -474,7 +483,7 @@ sintesi che aprono il testo. Ogni numero è prodotto da una cella di notebook o 
 di `data/processed/`, e il pin di regressione `pipeline/verifica.py` lo ricalcola dai dati
 grezzi con un'implementazione indipendente, verificando poi che la frase di questa
 proposta lo riporti alla lettera. L'analisi che la sostiene, con l'atlante completo delle
-figure e la ricostruzione metodologica, sta in `docs/RELAZIONE_DATAPOLIS.md`. Il documento
+figure e la ricostruzione metodologica, sta in `docs/relazione/RELAZIONE_DATAPOLIS.md`. Il documento
 si rigenera da zero con `uv run python -m pipeline.policy_docx`.
 :::
 """
@@ -513,15 +522,10 @@ def markdown(dest: Path) -> tuple[str, int]:
     assert righe[0].startswith("# ") and righe[2].startswith("## "), "testata inattesa"
     titolo = righe[0].lstrip("# ").strip()
     sottotitolo = righe[2].lstrip("# ").strip()
-    data = re.search(r"aggiornata il (\d{4}-\d{2}-\d{2})", righe[4]).group(1)
+    data = re.search(r"versione rivista del (\d{4}-\d{2}-\d{2})", righe[4]).group(1)
     testo = "\n".join(righe[4:])
 
-    numero = 0
-    for ancora, nome in INLINE:
-        assert testo.count(ancora) == 1, (
-            f"ancora per {nome} trovata {testo.count(ancora)} volte: «{ancora[:70]}»")
-        numero += 1
-        testo = testo.replace(ancora, ancora + "\n" + blocco_figura(nome, numero, dida, dest), 1)
+    testo, numero = inserisci_figure(testo, INLINE, dida, dest)
 
     for vecchio, nuovo in SOSTITUZIONI:
         testo = testo.replace(vecchio, nuovo)

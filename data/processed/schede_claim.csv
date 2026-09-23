@@ -51,7 +51,7 @@ scheda,claim,valore,unita,fonte,cautela
 4. Ponte 19,"KPI lordo, attrito e netto al 2029",40.4 / -22.2 / 18.2,occupate,genere_kpi_netto.csv,al tasso obiettivo di Palermo
 4. Ponte 19,KPI netto al 2034,-2.5,occupate,genere_kpi_netto.csv,"DIVERSO dallo scenario «non si fa niente» (-19/-37, genere_tetto_platea.csv)"
 4. Ponte 19,"scenario «non si fa niente», 2029 / 2034",-18.9 / -36.6,occupate,genere_tetto_platea.csv,tasso 2024 fermo
-4. Ponte 19,MDE annuale contro delta da rilevare,2.14 vs 1.4,p.p.,genere_mde.csv,la lettura annuale NON e' ammessa sui KPI primari
+4. Ponte 19,MDE osservata sul triennio contro delta da rilevare,2.25 vs 1.4,p.p.,genere_mde.csv,"nessuna finestra arriva all'80% nei comuni simili: il tasso si legge come direzione, l'effetto si misura sui partecipanti"
 4. Ponte 19,"inattivi non studenti 15-24, F / M",573 / 549,persone,genere_composizione_stato_dettaglio.csv,51% F: il gruppo non e' femminile
 4. Ponte 19,pendenza del tasso F 2018-2024 e test di pre-trend vs Palermo,0.65 pp/anno; p=0.29,-,genere_pretrend.csv,"prerequisito del controfattuale, testato non assunto"
 4. Ponte 19,"sedi di istituto tecnico, Bagheria / Palermo",3 / 23,sedi,edu_technical_schools.csv,anagrafe MIUR: sono i canali della finestra A

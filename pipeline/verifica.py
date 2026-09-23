@@ -1,4 +1,4 @@
-"""Verifica indipendente dei thread genere e mobilità: 701 controlli di regressione.
+"""Verifica indipendente dei thread genere e mobilità: 934 controlli di regressione.
 
 Ricalcola i numeri chiave DIRETTAMENTE da data/raw/ con un percorso di codice
 autonomo — parsing proprio dei CSV SDMX e 8milaCensus, implementazioni proprie
@@ -658,8 +658,8 @@ check("quadrante.csv Bagheria F diploma", r["almeno_diploma_%"].item(), 33.4)
 
 mde_csv = pd.read_csv(PROCESSED / "genere_mde.csv")
 check("mde.csv: 6 righe", len(mde_csv), 6, 0.5)
-check("mde.csv MDE annuale occ", mde_csv.iloc[0]["MDE 80% (pp)"], 2.14, 0.006)
-check("mde.csv potenza triennale occ", mde_csv.iloc[2]["potenza per il delta (%)"], 90, 0.51)
+check("mde.csv MDE binomiale annuale occ", mde_csv.iloc[0]["MDE binomiale 80% (pp)"], 2.14, 0.006)
+check("mde.csv potenza binomiale triennale occ", mde_csv.iloc[2]["potenza binomiale (%)"], 90, 0.51)
 
 gp = pd.read_csv(PROCESSED / "genere_gap_persone.csv")
 check("gap_persone.csv Palermo 2024", int(gp[gp["scenario"].str.contains("Palermo")]["occupate in più (2024)"].item()), 40, 0.5)
@@ -1322,10 +1322,171 @@ check("mob KPI: parità piena (gap azzerato)", 449,
       round(-mob_gap("Bagheria", "lavoro") * nf_bag / 100), 0.5)
 info("mob KPI: base femminile 2011 (lavoro, dentro+fuori)", nf_bag)
 
+# ------------- robustezza (2026-09-23): 390 comuni 15-24, Fréchet, NEET, pilota ---
+# Sezioni «Il KPI si può misurare?», «Trend paralleli» (terza cella) e «Robustezza» di
+# notebooks/genere.ipynb. Percorso autonomo: i raw si rileggono qui, le variazioni dei
+# comuni simili si ricalcolano da un dizionario di celle con numpy, senza pivot né il
+# codice del notebook. Gli attesi sono i numeri stampati dal notebook.
+s1524 = pd.concat([pd.read_csv(RAW / f"censpop_lavoro_15_24_sicilia_{i:02d}_2026-09-23.csv", dtype=str)
+                   for i in range(1, 13)], ignore_index=True)
+check("15-24 390: comuni scaricati", s1524["REF_AREA"].nunique(), 390, 0.5)
+s1524 = s1524[s1524["GENDER"].eq("F") & s1524["CITIZENSHIP"].eq("TOTAL") & s1524["EDU_ATTAIN"].eq("ALL")]
+cella390 = {(r.REF_AREA, int(r.TIME_PERIOD), r.CUR_ACT_STAT): float(r.OBS_VALUE)
+            for r in s1524.itertuples()}
+comuni390 = sorted({k[0] for k in cella390})
+ANNI6 = [2018, 2019, 2021, 2022, 2023, 2024]
+
+
+# La fonte non pubblica le celle vuote: dove manca la riga degli occupati, forze di lavoro
+# e in cerca coincidono, quindi le occupate sono zero (asserito, non assunto).
+for (c, a, cond) in [k for k in cella390 if k[2] == "99"]:
+    if (c, a, "1") not in cella390:
+        assert abs(cella390[(c, a, "22")] - cella390[(c, a, "12")]) < 1e-6, (c, a)
+        cella390[(c, a, "1")] = 0.0
+
+
+def tasso390(c, a, cond):
+    return 100 * cella390[(c, a, cond)] / cella390[(c, a, "99")]
+
+
+check("15-24 390: Bagheria 2024 = tavola a quattro territori", tasso390(B, 2024, "1"),
+      100 * cella_lav(B, 2024, "F", "1") / cella_lav(B, 2024, "F", "99"), 1e-9)
+nb_f = cella390[(B, 2024, "99")]
+simili_v = [c for c in comuni390 if c != B and nb_f / 2 <= cella390[(c, 2024, "99")] <= 2 * nb_f]
+check("comuni di taglia simile (Bagheria esclusa)", len(simili_v), 33, 0.5)
+check("Palermo fuori dai simili", float(P in simili_v), 0, 0.5)
+FINESTRE_V = {1: [([2018], [2019]), ([2021], [2022]), ([2022], [2023]), ([2023], [2024])],
+              2: [([2021, 2022], [2023, 2024])], 3: [([2018, 2019, 2021], [2022, 2023, 2024])]}
+
+
+def scarti_v(cond, k):
+    out = []
+    for prima, dopo in FINESTRE_V[k]:
+        var = np.array([np.mean([tasso390(c, a, cond) for a in dopo])
+                        - np.mean([tasso390(c, a, cond) for a in prima]) for c in simili_v])
+        out.extend(var - np.median(var))
+    return np.array(out)
+
+
+def oscillazione_v(cond):
+    anni = [2021, 2022, 2023, 2024]
+    rapporti = []
+    for c in simili_v:
+        p = np.array([cella390[(c, a, cond)] / cella390[(c, a, "99")] for a in anni])
+        n = np.array([cella390[(c, a, "99")] for a in anni])
+        res = p - np.polyval(np.polyfit(anni, p, 1), anni)
+        rapporti.append((res ** 2).sum() / 2 / np.mean(p * (1 - p) / n))
+    return np.median(rapporti)
+
+
+ZA = stats.norm.ppf(0.975)
+ZM = ZA + stats.norm.ppf(0.80)
+delta_v = {"1": 100 * (p_occ_pa - p_occ), "4": 100 * (q_cas_pa_r - q_cas_b_r)}
+# (deviazione, MDE osservata, potenza osservata, % comuni mossi almeno del delta)
+attesi_v = {("1", 1): (0.71, 2.00, 50, 5), ("1", 2): (0.64, 1.80, 59, 3), ("1", 3): (0.80, 2.25, 41, 9),
+            ("4", 1): (0.98, 2.76, 57, 3), ("4", 2): (0.73, 2.05, 82, 0), ("4", 3): (0.97, 2.72, 58, 3)}
+riga_mde = {"1": 0, "4": 3}
+for (cond, k), (sd_a, mde_a, pot_a, quota_a) in attesi_v.items():
+    s = scarti_v(cond, k)
+    sd = s.std(ddof=1)
+    x = abs(delta_v[cond]) / sd
+    pot = 100 * (stats.norm.sf(ZA - x) + stats.norm.cdf(-ZA - x))
+    quota = 100 * (np.abs(s) >= abs(delta_v[cond])).mean()
+    nome = f"{'occ' if cond == '1' else 'casalinghe'} {k} anni"
+    check(f"deviazione osservata {nome}", round(sd, 2), sd_a, 0.006)
+    check(f"MDE osservata {nome}", round(ZM * sd, 2), mde_a, 0.006)
+    check(f"potenza osservata {nome}", round(pot), pot_a, 0.51)
+    check(f"comuni simili mossi almeno del delta {nome}", round(quota), quota_a, 0.51)
+    r = mde_csv.iloc[riga_mde[cond] + k - 1]
+    check(f"mde.csv MDE osservata {nome}", r["MDE osservata 80% (pp)"], round(ZM * sd, 2), 0.006)
+    check(f"mde.csv potenza osservata {nome}", r["potenza osservata (%)"], round(pot), 0.51)
+for cond, att in (("1", 0.36), ("4", 1.41)):
+    check(f"oscillazione 2021-2024 / binomiale ({cond})", round(oscillazione_v(cond), 2), att, 0.006)
+    check(f"mde.csv oscillazione ({cond})",
+          mde_csv.iloc[riga_mde[cond]]["varianza annua attorno al trend 2021-2024 / binomiale"], att, 0.006)
+gradino_cas = np.median([tasso390(c, 2021, "4") - tasso390(c, 2019, "4") for c in simili_v])
+check("casalinghe: gradino mediano 2019 -> 2021 dei simili", round(gradino_cas, 2), 2.87, 0.006)
+
+# pretrend senza binomiale: pendenze OLS 2018-2024
+pend_v = {c: np.polyfit(ANNI6, [tasso390(c, a, "1") for a in ANNI6], 1)[0] for c in comuni390}
+sim_pend = np.array([pend_v[c] for c in simili_v])
+scarto_pa_v = pend_v[P] - pend_v[B]
+pre390 = pd.read_csv(PROCESSED / "genere_pretrend_390.csv").iloc[0]
+for nome, calc, att, tol in [
+        ("pendenza OLS Bagheria", pend_v[B], 0.64, 0.006),
+        ("pendenza OLS Palermo", pend_v[P], 0.55, 0.006),
+        ("differenza Palermo - Bagheria", scarto_pa_v, -0.09, 0.006),
+        ("deviazione pendenze simili", (sim_pend - np.median(sim_pend)).std(ddof=1), 0.19, 0.006),
+        ("simili più lontani da Palermo (%)",
+         100 * (np.abs(sim_pend - pend_v[P]) >= abs(scarto_pa_v)).mean(), 67, 0.51)]:
+    check(f"pretrend 390: {nome}", round(calc, 2), att, tol)
+check("pretrend_390.csv differenza", pre390["differenza Palermo - Bagheria (pp/anno)"], -0.09, 0.006)
+check("pretrend_390.csv quota", pre390["comuni simili più lontani da Palermo di Bagheria (%)"], 67, 0.51)
+
+# rango fra i 390 e fra i simili
+rango_csv = pd.read_csv(PROCESSED / "genere_rango_390_15_24.csv")
+for cond, nome, anno, r_att, rs_att in [("1", "tasso di occupazione F 15-24", 2024, 112, 2),
+                                        ("1", "tasso di occupazione F 15-24", 2018, 60, 2),
+                                        ("1", "tasso di occupazione F 15-24", 2021, 108, 3),
+                                        ("4", "quota casalinghe F 15-24", 2024, 358, 29)]:
+    vb = tasso390(B, anno, cond)
+    tutti = np.array([tasso390(c, anno, cond) for c in comuni390])
+    gruppo = np.array([tasso390(c, anno, cond) for c in simili_v + [B]])
+    check(f"rango 390 {nome} {anno}", int((tutti < vb).sum() + 1), r_att, 0.5)
+    check(f"rango simili {nome} {anno}", int((gruppo < vb).sum() + 1), rs_att, 0.5)
+    rc = rango_csv[rango_csv["indicatore"].eq(nome) & rango_csv["anno"].eq(anno)].iloc[0]
+    check(f"rango_390.csv {nome} {anno}", rc["rango dal basso"], r_att, 0.5)
+check("rango 390: mediana occ 2024", round(np.median([tasso390(c, 2024, "1") for c in comuni390]), 1), 9.7)
+check("rango 390: mediana simili occ 2024",
+      round(np.median([tasso390(c, 2024, "1") for c in simili_v + [B]]), 1), 10.6)
+check("rango 390: comuni sotto Bagheria occ 2024 (%)",
+      round(100 * np.mean([tasso390(c, 2024, "1") < tasso390(B, 2024, "1") for c in comuni390]), 1), 28.5)
+check("rango 390: comuni sotto Bagheria casalinghe 2024 (%)",
+      round(100 * np.mean([tasso390(c, 2024, "4") < tasso390(B, 2024, "4") for c in comuni390]), 1), 91.5)
+
+# Fréchet: stessi denominatori, tetto = occupati / diplomati
+scarto_den = max(abs(eta_somma(t, g, 15, 24, anno=a) - cella_lav(t, a, g, "99"))
+                 for t in QUATTRO for a in (2021, 2022, 2023, 2024) for g in ("M", "F"))
+check("Fréchet: età singole 15-24 = totale tavola lavoro", scarto_den, 0, 0.5)
+fre_csv = pd.read_csv(PROCESSED / "genere_frechet.csv", dtype={"territorio": str})
+for t, g, att in [(B, "F", 16.1), (B, "M", 35.7), (P, "F", 20.3), (S, "F", 20.4), (I, "F", 32.3)]:
+    occ = cella_lav(t, 2024, g, "1")
+    dipl = sum(cella_ist(t, 2024, g, x) for x in DIPLOMA)
+    check(f"Fréchet tetto {NOMI[t]} {g} 2024", round(100 * min(occ, dipl) / dipl, 1), att)
+    minimo = max(0, occ + dipl - eta_somma(t, g, 15, 24)) / dipl
+    check(f"Fréchet minimo {NOMI[t]} {g} 2024", minimo, 0, 1e-9)
+    r = fre_csv[fre_csv["territorio"].eq(t) & fre_csv["anno"].eq(2024) & fre_csv["genere"].eq(g)]
+    check(f"frechet.csv tetto {NOMI[t]} {g}", r["tetto_pct"].item(), att)
+
+# NEET della rilevazione forze di lavoro (fonte campionaria regionale)
+rcfl = pd.read_csv(RAW / "rcfl_neet_regionale_2026-09-23.csv", dtype=str)
+rcfl = rcfl[rcfl["DATA_TYPE"].eq("NEET_I") & rcfl["TIME_PERIOD"].eq("2024")]
+neet_csv = pd.read_csv(PROCESSED / "genere_neet_rcfl.csv")
+for area, sesso, eta, att in [("ITG1", "9", "Y15-34", 30.1), ("ITG1", "2", "Y15-34", 35.3),
+                              ("ITG1", "1", "Y15-34", 25.2), ("ITG1", "9", "Y15-24", 19.5),
+                              ("ITG1", "2", "Y15-24", 17.4), ("ITG1", "1", "Y15-24", 21.5),
+                              ("IT", "9", "Y15-34", 17.3)]:
+    v = float(rcfl[rcfl["REF_AREA"].eq(area) & rcfl["SEX"].eq(sesso) & rcfl["AGE"].eq(eta)]["OBS_VALUE"].item())
+    check(f"NEET RCFL {area} {sesso} {eta} 2024", round(v, 1), att)
+    g = {"9": "T", "2": "F", "1": "M"}[sesso]
+    r = neet_csv[neet_csv["territorio"].eq(area) & neet_csv["anno"].eq(2024)
+                 & neet_csv["genere"].eq(g) & neet_csv["eta"].eq(eta)]
+    check(f"neet_rcfl.csv {area} {g} {eta}", round(r["neet_pct"].item(), 1), att)
+
+# potenza del pilota: 100 o 50 persone per coorte, tre esiti di base
+pil_csv = pd.read_csv(PROCESSED / "genere_potenza_pilota.csv")
+for n, p0, att in [(100, 0.2, 17.8), (100, 0.3, 19.2), (100, 0.4, 19.7),
+                   (50, 0.2, 25.8), (50, 0.3, 27.4), (50, 0.4, 27.6)]:
+    check(f"pilota MDE n={n} base {p0:.0%}", round(mde_pp_mio(p0, n), 1), att)
+    r = pil_csv[pil_csv["persone per coorte"].eq(n)
+                & pil_csv["esito a sei mesi senza servizio (%)"].eq(100 * p0)]
+    check(f"potenza_pilota.csv n={n} base {p0:.0%}", r["effetto minimo rilevabile (pp)"].item(), att)
+
+
 # --------------------------------------------- claim dei documenti in prosa ---
 # Fin qui il file pinna notebook <-> raw <-> data/processed. Restava scoperto
 # l'ultimo salto, quello che la giuria legge davvero: le cifre trascritte a mano
-# dentro docs/POLICY_PONTE_19.md, docs/RELAZIONE_DATAPOLIS.md e docs/RELAZIONE.md.
+# dentro docs/policy/POLICY_PONTE_19.md, docs/relazione/RELAZIONE_DATAPOLIS.md e docs/team/SCELTE_ANALITICHE.md.
 # Le quattro schede HTML nascono da pipeline/schede.py e leggono i CSV al momento
 # della generazione, quindi erano gia' coperte; i tre documenti in prosa no, ed
 # erano l'unica cosa consegnata che poteva divergere dai dati in silenzio.
@@ -1338,7 +1499,9 @@ info("mob KPI: base femminile 2011 (lavoro, dentro+fuori)", nf_bag)
 # documento a mano, la frase attesa non si trova piu'.
 
 DOCS = RADICE / "docs"
-POLICY, RELAZ, SPINA = "POLICY_PONTE_19.md", "RELAZIONE_DATAPOLIS.md", "RELAZIONE.md"
+POLICY = "policy/POLICY_PONTE_19.md"
+RELAZ = "relazione/RELAZIONE_DATAPOLIS.md"
+SPINA = "team/SCELTE_ANALITICHE.md"
 _doc_cache = {}
 
 
@@ -1452,29 +1615,41 @@ claim(POLICY,
       f"15-24enni di Bagheria è inattivo non studente, circa "
       f"**{ita(_st(2024, 'inattivi_non_studenti'), 0)} persone**, "
       f"**{ita(_k('Inattivi non studenti 15-24', 'gap_pp'))} punti sopra la Sicilia**.")
-claim(POLICY,
-      f"quella quota scende di "
-      f"**{ita(_st(2018, 'quota_inattivi_non_studenti') - _st(2024, 'quota_inattivi_non_studenti'))} punti**, "
-      f"mentre chi cerca lavoro cala di "
-      f"**{ita(_st(2018, 'quota_in_cerca') - _st(2024, 'quota_in_cerca'))}**.")
+# La scomposizione 2018-2024 attraversava la rottura di misura 2019->2021 sulla
+# condizione «in cerca»: i documenti la leggono ora solo dentro la stessa definizione.
+def _sts(anno, col):
+    r = _stati[_stati["territorio_nome"].eq("Sicilia") & _stati["anno"].eq(anno)]
+    return float(r[col].iloc[0])
+
+
+_frase_2124 = (f"chi cerca scende da **{ita(_st(2021, 'quota_in_cerca'))}% a "
+               f"{ita(_st(2024, 'quota_in_cerca'))}%**, mentre gli inattivi non studenti restano "
+               f"fermi (**{ita(_st(2021, 'quota_inattivi_non_studenti'))}% → "
+               f"{ita(_st(2024, 'quota_inattivi_non_studenti'))}%**) e il loro scarto dalla Sicilia "
+               f"sale da {ita(_st(2021, 'quota_inattivi_non_studenti') - _sts(2021, 'quota_inattivi_non_studenti'))} "
+               f"a {ita(_st(2024, 'quota_inattivi_non_studenti') - _sts(2024, 'quota_inattivi_non_studenti'))} punti")
+claim(POLICY, _frase_2124)
 claim(POLICY,
       f"Il {ita(_st(2024, 'inattivi_su_fuori'))}% dei giovani fuori da lavoro e studio "
       f"**non cerca nemmeno**.")
+_fq = pd.read_csv(PROCESSED / "genere_forbice_quadrante.csv")
+_fq24 = _fq[_fq["anno"].eq(2024)].set_index("nome_territorio")
 claim(POLICY,
-      f"arrivano al diploma **+{ita(-_quadro.at['Bagheria', 'gap istruzione (M-F)'])} punti** "
-      f"più dei coetanei e hanno un tasso di occupazione dell'"
-      f"**{ita(_quadro.at['Bagheria', 'occupazione F'])}%**")
+      f"(**+{ita(_fq24.at['Bagheria', 'vantaggio_diploma_15_24_pp'])} punti** sulla fascia 15-24, "
+      f"+{ita(-_quadro.at['Bagheria', 'gap istruzione (M-F)'])} sulla 9-24) e hanno un tasso "
+      f"di occupazione 15-24 dell'**{ita(_quadro.at['Bagheria', 'occupazione F'])}%**")
 claim(POLICY,
       f"esce dal comune il **{ita(_pe('Bagheria', 'WK', 'quota_M'))}% degli uomini** e il "
       f"**{ita(_pe('Bagheria', 'WK', 'quota_F'))}% delle donne**: "
-      f"{ita(_pe('Bagheria', 'WK', 'gap_M_meno_F'))} punti, circa il doppio dello scarto "
-      f"siciliano ({ita(_pe('Sicilia', 'WK', 'gap_M_meno_F'))}) e nazionale "
-      f"({ita(_pe('Italia', 'WK', 'gap_M_meno_F'))}).")
+      f"{ita(_pe('Bagheria', 'WK', 'gap_M_meno_F'))} punti, il doppio dello scarto "
+      f"siciliano ({ita(_pe('Sicilia', 'WK', 'gap_M_meno_F'))}) e quasi il doppio di quello "
+      f"nazionale ({ita(_pe('Italia', 'WK', 'gap_M_meno_F'))}).")
 claim(POLICY,
       f"(F {ita(_pe('Bagheria', 'STD', 'quota_F'))}% contro M "
       f"{ita(_pe('Bagheria', 'STD', 'quota_M'))}%")
 claim(POLICY,
-      f"(ritenzione F 25-29 = **{ita(_co('F'))}** contro {ita(_co('F', terr='Italia'))} in Italia)")
+      f"25-29 anni è a **{ita(_co('F'))}** tre anni dopo, contro {ita(_co('M'))} dei coetanei, "
+      f"{ita(_co('F', terr='Sicilia'))} in Sicilia e {ita(_co('F', terr='Italia'))} in Italia)")
 
 # --- POLICY, sezione 3: target, quote e capacita' ----------------------------
 claim(POLICY, f"(il {ita(_st(2024, 'inattivi_su_fuori'))}% dell'area fuori lavoro-studio)")
@@ -1487,9 +1662,9 @@ claim(POLICY,
       f"{ita(_fuori_non_cerca('F'), 0)} ragazze e {ita(_fuori_non_cerca('M'), 0)} ragazzi, "
       f"{ita(100 * _fuori_non_cerca('F') / (_fuori_non_cerca('F') + _fuori_non_cerca('M')), 0)}% F")
 claim(POLICY,
-      f"{ita(_cp('F', 'casalinghe/i'), 0)} casalinghe contro {ita(_cp('M', 'casalinghe/i'), 0)}, e "
-      f"{ita(_cp('F', 'altra condizione'), 0)} contro {ita(_cp('M', 'altra condizione'), 0)} "
-      f"in \"altra condizione\"")
+      f"casalinghe e casalinghi sono {ita(_cp('F', 'casalinghe/i'), 0)} contro "
+      f"{ita(_cp('M', 'casalinghe/i'), 0)} (F contro M), e in \"altra condizione\" "
+      f"{ita(_cp('F', 'altra condizione'), 0)} contro {ita(_cp('M', 'altra condizione'), 0)}")
 claim(POLICY,
       f"il treno vale il **{ita(_mz('F', 'di cui: treno'))}%** degli spostamenti delle donne e il "
       f"**{ita(_mz('M', 'di cui: treno'))}%** di quelli degli uomini")
@@ -1530,8 +1705,15 @@ claim(RELAZ, f"**~{ita(_st(2024, 'inattivi_non_studenti'), 0)}**")
 claim(RELAZ,
       f"**{ita(abs(_k('Occupazione 15-24', 'gap_pp')))} punti sotto la Sicilia**")
 claim(RELAZ,
-      f"chi cerca lavoro cala di {ita(_st(2018, 'quota_in_cerca') - _st(2024, 'quota_in_cerca'))} punti "
-      f"({ita(_st(2018, 'quota_in_cerca'))}% → {ita(_st(2024, 'quota_in_cerca'))}%)")
+      f"un solo passaggio di {ita(_st(2019, 'quota_in_cerca') - _st(2021, 'quota_in_cerca'))} punti a "
+      f"Bagheria e di {ita(_sts(2019, 'quota_in_cerca') - _sts(2021, 'quota_in_cerca'))} in Sicilia")
+claim(RELAZ,
+      f"**chi cerca lavoro scende da {ita(_st(2021, 'quota_in_cerca'))}% a "
+      f"{ita(_st(2024, 'quota_in_cerca'))}%, gli inattivi non studenti restano fermi "
+      f"({ita(_st(2021, 'quota_inattivi_non_studenti'))}% → "
+      f"{ita(_st(2024, 'quota_inattivi_non_studenti'))}%)**, e il loro scarto dalla Sicilia sale "
+      f"da {ita(_st(2021, 'quota_inattivi_non_studenti') - _sts(2021, 'quota_inattivi_non_studenti'))} a "
+      f"{ita(_st(2024, 'quota_inattivi_non_studenti') - _sts(2024, 'quota_inattivi_non_studenti'))} punti")
 claim(RELAZ,
       f"**−{ita(abs(_k('Almeno diploma 25-49', 'gap_pp')))} e "
       f"−{ita(abs(_k('Occupazione 25-49', 'gap_pp')))} punti**")
@@ -1567,6 +1749,82 @@ claim(RELAZ,
 claim(RELAZ,
       f"| mezzo privato a motore | {ita(_mz('F', 'privato a motore'))}% | "
       f"**{ita(_mz('M', 'privato a motore'))}%** |")
+
+# --- RELAZIONE_DATAPOLIS: cifre entrate con la revisione del 2026-09-23 ------
+_cas = pd.read_csv(PROCESSED / "genere_casalinghe.csv")
+_cas24 = _cas[_cas["anno"].eq(2024) & _cas["genere"].eq("F")].set_index("nome_territorio")["casalinghe_o_i_%"]
+claim(RELAZ,
+      f"contro l'{ita(_cas24['Palermo'])}% di Palermo, il {ita(_cas24['Sicilia'])}% della Sicilia "
+      f"e il {ita(_cas24['Italia'])}% dell'Italia")
+_coe = pd.read_csv(PROCESSED / "genere_coerenza_fonti.csv").set_index(["territorio", "indicatore"])
+claim(RELAZ, f"censimento permanente dà a Bagheria il {ita(_coe.at[('Bagheria', 'L11'), 'permanente_2018'])}%")
+check("ponte L11 2011-2018: scarto entro 1 punto sui quattro territori",
+      float(_coe.xs("L11", level="indicatore")["scarto_2011_2018"].abs().max() <= 1.0), 1)
+claim(RELAZ,
+      f"| Almeno diploma (15-24) | {ita(_fq24.at['Bagheria', 'almeno_diploma_M'])}% | "
+      f"{ita(_fq24.at['Bagheria', 'almeno_diploma_F'])}% | "
+      f"−{ita(_fq24.at['Bagheria', 'vantaggio_diploma_15_24_pp'])} pp (F avanti) |")
+claim(RELAZ,
+      f"il vantaggio è +{ita(_fq24.at['Bagheria', 'vantaggio_diploma_15_24_pp'])} punti, pari alla "
+      f"Sicilia (+{ita(_fq24.at['Sicilia', 'vantaggio_diploma_15_24_pp'])})")
+_r390 = pd.read_csv(PROCESSED / "mob_ribaltamento_390.csv")
+_pc_gap = 100 * (_r390["gap_lavoro_F_M"] < _r390.loc[_r390["nome"] == "Bagheria", "gap_lavoro_F_M"].item()).mean()
+claim(RELAZ, f"sul lavoro il **{_pc_gap:.0f}° percentile** dei comuni siciliani")
+claim(POLICY, f"**{_pc_gap:.0f}° percentile dei comuni siciliani** sul lavoro")
+_dec = pd.read_csv(PROCESSED / "genere_ritenzione_decennale.csv")
+_d1519 = _dec[_dec["eta_da"].eq("Y15-19") & _dec["anni"].eq(10)].set_index(
+    ["nome_territorio", "genere", "anno_da"])["ritenzione_pct"]
+_cali_sic = [_d1519[("Sicilia", g, 2001)] - _d1519[("Sicilia", g, 2011)] for g in ("F", "M")]
+check("ritenzione decennale: il calo siciliano sta fra 4 e 6 punti", float(4 <= min(_cali_sic) and max(_cali_sic) <= 6), 1)
+_cali_bag = [_d1519[("Bagheria", g, 2001)] - _d1519[("Bagheria", g, 2011)] for g in ("F", "M")]
+check("ritenzione decennale: il calo di Bagheria è di circa 14 punti per genere",
+      float(all(13.5 <= c <= 15 for c in _cali_bag)), 1)
+
+
+# profilo 2024 sui quattro territori (§2.1) e quota di chi non cerca
+_pro = _stati[_stati["anno"].eq(2024)].set_index("territorio_nome")
+for _col, _etich in [("quota_occupati", "Occupati"), ("quota_in_cerca", "In cerca di occupazione"),
+                     ("quota_studenti", "Studenti"), ("quota_inattivi_non_studenti", "Inattivi non studenti"),
+                     ("quota_fuori_lavoro_studio", "Fuori da lavoro e studio"),
+                     ("inattivi_su_fuori", "di cui non cercano lavoro")]:
+    claim(RELAZ, f"| {_etich} | **{ita(_pro.at['Bagheria', _col])}%** | {ita(_pro.at['Palermo', _col])}% | "
+                 f"{ita(_pro.at['Sicilia', _col])}% | {ita(_pro.at['Italia', _col])}% |")
+claim(RELAZ, f"più che a Palermo ({ita(_pro.at['Palermo', 'inattivi_su_fuori'])}%), in Sicilia "
+             f"({ita(_pro.at['Sicilia', 'inattivi_su_fuori'])}%) e in Italia ({ita(_pro.at['Italia', 'inattivi_su_fuori'])}%)")
+# ritenzione della coorte 25-29 del 2021 contro coetanei e benchmark (§3.3 e apertura)
+claim(RELAZ, f"è a **{ita(_co('F'))}**, contro {ita(_co('M'))} dei coetanei maschi, "
+             f"{ita(_co('F', terr='Sicilia'))} in Sicilia, {ita(_co('F', terr='Palermo'))} a Palermo e "
+             f"{ita(_co('F', terr='Italia'))} in Italia")
+claim(RELAZ, f"conserva il {ita(_co('F'))}% tre anni dopo, quella maschile il {ita(_co('M'))}%")
+# lo stock non è la fuga (§6)
+_sc = pd.read_csv(PROCESSED / "genere_stock_coorti.csv").set_index("nome_territorio")
+check("stock 15-34: ricambio + saldo = variazione",
+      float((_sc["ricambio_eta"] + _sc["saldo_coorti"] - _sc["variazione"]).abs().max() < 0.001), 1)
+check("stock 15-34: la variazione coincide con analisi_popolazione_giovane",
+      _sc.at["Bagheria", "variazione"], _popt(2024) - _popt(2021), 0.5)
+claim(RELAZ, f"Ma {ita(-_sc.at['Bagheria', 'ricambio_eta'], 0)} di quelle {ita(-_sc.at['Bagheria', 'variazione'], 0)} "
+             f"persone sono **ricambio d'età**")
+claim(RELAZ, f"il saldo è di −{ita(-_sc.at['Bagheria', 'saldo_coorti'], 0)} persone, "
+             f"−{ita(-_sc.at['Bagheria', 'saldo_coorti_pct'], 2)}%, come in Sicilia "
+             f"(−{ita(-_sc.at['Sicilia', 'saldo_coorti_pct'], 2)}%)")
+# KPI: pendenza gia' in corso e scarto da Palermo (§7.4)
+_pt = pd.read_csv(PROCESSED / "genere_pretrend.csv")
+claim(RELAZ, f"Palermo** (oggi −{ita(_md('tasso di occupazione', 3, 'delta da rilevare (pp)'))} punti)")
+claim(RELAZ, f"sale già da solo (+{ita(_pt.set_index('termine').at['pendenza Bagheria (pp/anno)', 'stima'], 2)} "
+             f"punti l'anno dal 2018)")
+
+
+# POLICY §1 e §6: proxy, sex ratio e pendenza gia' in corso
+claim(POLICY, f"non lavorano e non studiano ({ita(_pro.at['Bagheria', 'quota_fuori_lavoro_studio'])}% nel 2024), "
+              f"cioè chi cerca lavoro ({ita(_pro.at['Bagheria', 'quota_in_cerca'])}%) più gli **inattivi non "
+              f"studenti** ({ita(_pro.at['Bagheria', 'quota_inattivi_non_studenti'])}%)")
+_sr = pd.read_csv(PROCESSED / "genere_sex_ratio_5_14.csv")
+_sr24 = _sr[_sr["anno"].eq(2024)].set_index("nome_territorio")["m_per_100f"]
+claim(POLICY, f"({ita(_sr24['Bagheria'], 0)} maschi ogni 100 femmine, contro "
+              f"{ita(_sr24.drop('Bagheria').min(), 0)}-{ita(_sr24.drop('Bagheria').max(), 0)} nei benchmark)")
+claim(POLICY, f"sale già da solo (+{ita(_pt.set_index('termine').at['pendenza Bagheria (pp/anno)', 'stima'], 2)} "
+              f"punti l'anno dal 2018)")
+
 
 # --- RELAZIONE_DATAPOLIS §4: di quale titolo si parla ------------------------
 # La sezione 4 e' l'unica che nomina il LIVELLO del titolo, ed e' quella che regge il
@@ -1608,7 +1866,7 @@ for _ind in ("I6", "I7"):
                                              ("Palermo", "Sicilia", "Italia"))), 1)
 
 # --- RELAZIONE (spina dorsale) ----------------------------------------------
-claim(SPINA, f"ritenzione F 25-29 = {ita(_co('F'))} (Ita")
+claim(SPINA, f"ritenzione F 25-29 = {ita(_co('F'))} (coetanei {ita(_co('M'))}, Sicilia {ita(_co('F', terr='Sicilia'))}")
 claim(SPINA,
       f"**+{ita(_netto.set_index('orizzonte').at[2029, 'kpi_netto'])}**")
 claim(SPINA,
@@ -1622,7 +1880,130 @@ claim(SPINA,
 # data/processed/ restano scoperti, e la riga qui sotto lo dice invece di lasciarlo
 # invisibile: e' l'unico buco noto della copertura documentale.
 info("claim scoperti (taglio non esportato in processed)",
-     "orario e durata verso Palermo, POLICY §4-bis e RELAZIONE §5.4: 4 cifre")
+     "orario e durata verso Palermo, POLICY §4-bis e RELAZIONE §5.4: 4 cifre; "
+     "percentili della destinazione (97/93/94), RELAZIONE §5.1: 3 cifre")
+
+
+# --- robustezza del 2026-09-23: frasi di POLICY e RELAZIONE_DATAPOLIS ------------
+_rmde = pd.read_csv(PROCESSED / "genere_mde.csv")
+_rgo = pd.read_csv(PROCESSED / "genere_rango_390_15_24.csv")
+_rfr = pd.read_csv(PROCESSED / "genere_frechet.csv", dtype={"territorio": str})
+_rne = pd.read_csv(PROCESSED / "genere_neet_rcfl.csv")
+_rfl = pd.read_csv(PROCESSED / "genere_fuori_lavoro_istruzione.csv", dtype={"territorio": str})
+_rpi = pd.read_csv(PROCESSED / "genere_potenza_pilota.csv")
+_rpr = pd.read_csv(PROCESSED / "genere_pretrend_390.csv").iloc[0]
+_rco = pd.read_csv(PROCESSED / "genere_costo_pilota.csv")
+_rpa = pd.read_csv(PROCESSED / "genere_costo_parametri.csv").set_index("chiave")["valore"]
+_rca = pd.read_csv(PROCESSED / "genere_casalinghe.csv", dtype={"territorio": str})
+
+
+def _pm(kpi, anni, col="potenza osservata (%)"):
+    r = _rmde[_rmde["KPI"].str.startswith(kpi) & _rmde["anni pooled per lato"].eq(anni)]
+    return float(r[col].iloc[0])
+
+
+def _rg(ind, col, anno=2024):
+    return float(_rgo[_rgo["indicatore"].str.startswith(ind) & _rgo["anno"].eq(anno)][col].iloc[0])
+
+
+def _fr(terr, gen):
+    return float(_rfr[_rfr["nome_territorio"].eq(terr) & _rfr["anno"].eq(2024)
+                      & _rfr["genere"].eq(gen)]["tetto_pct"].iloc[0])
+
+
+def _ne(area, gen, eta):
+    return float(_rne[_rne["territorio"].eq(area) & _rne["anno"].eq(2024) & _rne["genere"].eq(gen)
+                      & _rne["eta"].eq(eta)]["neet_pct"].iloc[0])
+
+
+_proxy_sic = float(_rfl[_rfl["territorio"].eq("ITG1") & _rfl["anno"].eq(2024)
+                        & _rfl["genere"].eq("T")]["quota_pct"].iloc[0])
+_cas_b = _rca[_rca["territorio"].eq(B) & _rca["genere"].eq("F")].drop_duplicates("anno").set_index("anno")
+_cas_post = _cas_b.loc[2021:2024, "casalinghe_o_i_%"]
+_pil = _rpi[_rpi["persone per coorte"].eq(100)]["effetto minimo rilevabile (pp)"]
+_pil50 = _rpi[_rpi["persone per coorte"].eq(50)]["effetto minimo rilevabile (pp)"]
+_tot = _rco.set_index("scenario")
+_tot_min, _tot_max = _rco["totale annuo"].min(), _rco["totale annuo"].max()
+_pp_min, _pp_max = _rco["costo per posto"].min(), _rco["costo per posto"].max()
+_n_sim = int(_rmde["comuni simili"].iloc[0])
+check("rango fra i simili, occupazione 2024 (il testo dice «secondo»)", _rg("tasso", "rango dal basso fra i simili"), 2, 0.5)
+check("tetto Fréchet di Bagheria F il più basso dei quattro territori",
+      float(_fr("Bagheria", "F") < min(_fr(t, "F") for t in ("Palermo", "Sicilia", "Italia"))), 1, 0.5)
+check("casalinghe: KPI biennio sopra l'80% osservato", float(_pm("quota casalinghe", 2) >= 80), 1, 0.5)
+check("occupazione: nessuna finestra sopra l'80% osservato",
+      float(max(_pm("tasso di occupazione", k) for k in (1, 2, 3)) < 80), 1, 0.5)
+
+_frase_neet = (f"nel 2024 il NEET 15-34 della Sicilia è al **{ita(_ne('ITG1', 'T', 'Y15-34'))}%** "
+               f"({ita(_ne('ITG1', 'F', 'Y15-34'))}% fra le donne, {ita(_ne('ITG1', 'M', 'Y15-34'))}% fra gli "
+               f"uomini), contro il {ita(_ne('IT', 'T', 'Y15-34'))}% dell'Italia; sul 15-24 la stessa fonte dà "
+               f"{ita(_ne('ITG1', 'T', 'Y15-24'))}% per la Sicilia, dove il proxy censuario dà {ita(_proxy_sic)}%.")
+claim(POLICY, _frase_neet)
+claim(RELAZ, _frase_neet.replace("**", "").replace("dell'Italia; sul 15-24", "dell'Italia. Sul 15-24").rstrip("."))
+claim(POLICY, f"e il secondo più basso fra i {int(_rg('tasso', 'comuni simili con Bagheria'))} comuni siciliani "
+              f"della sua taglia (fra tutti i {int(_rg('tasso', 'comuni'))} comuni è "
+              f"{int(_rg('tasso', 'rango dal basso'))}° dal basso")
+claim(RELAZ, f"è **secondo dal basso** (mediana {ita(_rg('tasso', 'mediana dei simili (%)'))}%), fra tutti i "
+             f"{int(_rg('tasso', 'comuni'))} comuni è {int(_rg('tasso', 'rango dal basso'))}° dal basso "
+             f"(mediana {ita(_rg('tasso', 'mediana (%)'))}%)")
+for documento in (POLICY, RELAZ):
+    claim(documento, f"dal 2021 la quota sta fra il {ita(_cas_post.min())}% e il {ita(_cas_post.max())}%")
+claim(POLICY, f"(a Bagheria {ita(_cas_b.at[2024, 'conteggio'], 2)} ragazze)")
+claim(RELAZ, f"a Bagheria {ita(_cas_b.at[2024, 'conteggio'], 2)} ragazze")
+claim(RELAZ, f"salta in mediana di {ita(gradino_cas, 2)} punti")
+for documento in (POLICY, RELAZ):
+    claim(documento, f"come direzione (potenza {ita(_pm('tasso di occupazione', 3), 0)}%) |")
+claim(POLICY, f"| **biennio** (potenza {ita(_pm('quota casalinghe', 2), 0)}%) |")
+for documento in (POLICY, RELAZ):
+    claim(documento, f"| biennio (potenza {ita(_pm('quota casalinghe', 2), 0)}%) |")
+claim(POLICY,
+      f"i {_n_sim} comuni siciliani di taglia simile a Bagheria: per +"
+      f"{ita(_pm('tasso di occupazione', 1, 'delta da rilevare (pp)'))} punti di occupazione è del "
+      f"{ita(_pm('tasso di occupazione', 1), 0)}% su un anno, del {ita(_pm('tasso di occupazione', 2), 0)}% sul "
+      f"biennio e del {ita(_pm('tasso di occupazione', 3), 0)}% sul triennio; per −"
+      f"{ita(abs(_pm('quota casalinghe', 2, 'delta da rilevare (pp)')))} punti di casalinghe arriva all'"
+      f"{ita(_pm('quota casalinghe', 2), 0)}% sul biennio. Il modello binomiale prometteva il "
+      f"{ita(_pm('tasso di occupazione', 3, 'potenza binomiale (%)'), 0)}% sul triennio")
+claim(RELAZ,
+      f"promette che un triennio basti: {ita(_pm('tasso di occupazione', 1, 'potenza binomiale (%)'), 0)}% su un "
+      f"anno, {ita(_pm('tasso di occupazione', 3, 'potenza binomiale (%)'), 0)}% sul triennio.")
+claim(RELAZ,
+      f"i {_n_sim} comuni siciliani di taglia simile a Bagheria, dice altro: per +"
+      f"{ita(_pm('tasso di occupazione', 1, 'delta da rilevare (pp)'))} punti di occupazione la potenza è del "
+      f"{ita(_pm('tasso di occupazione', 1), 0)}% su un anno, del {ita(_pm('tasso di occupazione', 2), 0)}% sul "
+      f"biennio e del {ita(_pm('tasso di occupazione', 3), 0)}% sul triennio")
+claim(RELAZ, f"({ita(_pm('tasso di occupazione', 1, 'varianza annua attorno al trend 2021-2024 / binomiale'), 2)} "
+             f"volte la varianza binomiale)")
+claim(RELAZ, f"Sulle casalinghe (−{ita(abs(_pm('quota casalinghe', 2, 'delta da rilevare (pp)')))} punti) il "
+             f"biennio arriva all'{ita(_pm('quota casalinghe', 2), 0)}%.")
+_frase_pil = (f"{ita(_pil.min())} se l'esito senza servizio è del 20%, {ita(_pil.max())} se è del 40%); con "
+              f"adesioni dimezzate la soglia sale a {ita(_pil50.min(), 0)}-{ita(_pil50.max(), 0)} punti")
+for documento in (POLICY, RELAZ):
+    claim(documento, f"effetti di {ita(_pil.min(), 0)}-{ita(_pil.max(), 0)} punti o più")
+    claim(documento, _frase_pil)
+claim(POLICY, f"di Palermo (−{ita(abs(_rpr['differenza Palermo - Bagheria (pp/anno)']), 2)} punti l'anno) è più "
+              f"piccola di quella del {ita(_rpr['comuni simili più lontani da Palermo di Bagheria (%)'], 0)}% dei "
+              f"comuni siciliani di taglia simile")
+claim(RELAZ, f"di Palermo (−{ita(abs(_rpr['differenza Palermo - Bagheria (pp/anno)']), 2)} punti\nl'anno) è più "
+             f"piccola di quella del {ita(_rpr['comuni simili più lontani da Palermo di Bagheria (%)'], 0)}% dei "
+             f"comuni di taglia simile".replace("\n", " "))
+claim(POLICY, f"lavora al massimo il {ita(_fr('Bagheria', 'F'))}% delle ragazze 15-24 con almeno il diploma, "
+              f"contro il {ita(_fr('Bagheria', 'M'))}% dei ragazzi")
+claim(RELAZ, f"lavorerebbe al massimo il **{ita(_fr('Bagheria', 'F'))}%** delle ragazze 15-24 con almeno il "
+             f"diploma ({ita(cella_lav(B, 2024, 'F', '1'), 0)} occupate su "
+             f"{ita(sum(cella_ist(B, 2024, 'F', x) for x in DIPLOMA), 0)} diplomate), contro il "
+             f"{ita(_fr('Bagheria', 'M'))}% dei ragazzi")
+claim(RELAZ, f"(Palermo {ita(_fr('Palermo', 'F'))}%, Sicilia {ita(_fr('Sicilia', 'F'))}%, Italia "
+             f"{ita(_fr('Italia', 'F'))}%)")
+claim(POLICY, f"costa fra **{ita(_tot_min, 0)} e {ita(_tot_max, 0)} euro l'anno**")
+claim(RELAZ, f"è fra {ita(_tot_min, 0)} e {ita(_tot_max, 0)} euro l'anno")
+claim(POLICY, f"contratto, {ita(_rpa['cooperativa_d2'], 2)} euro l'anno per persona nelle tabelle del Ministero del Lavoro)")
+claim(POLICY, f"dell'area dei Funzionari ({ita(_rpa['comune_funzionari'], 2)} euro l'anno per persona)")
+claim(POLICY, f"più il {ita(100 * _rpa['indiretti'], 0)}% forfettario di costi indiretti")
+claim(POLICY, f"Per posto fa fra {ita(_pp_min, 0)} e {ita(_pp_max, 0)} euro")
+claim(RELAZ, f"fra {ita(_pp_min, 0)} e {ita(_pp_max, 0)} euro per posto")
+claim(POLICY, f"fino a {ita(_rpa['gol_ucs_ora'] * _rpa['gol_ore_p4'], 0)} euro per partecipante")
+claim(POLICY, f"indennità minima siciliana di {ita(_rpa['tirocinio_mese'], 0)} euro al mese, 30 posizioni "
+              f"costano almeno {ita(30 * _rpa['tirocinio_mese'], 0)} euro per ogni mese")
 
 
 # ----------------------------------------------------------------- riepilogo ---

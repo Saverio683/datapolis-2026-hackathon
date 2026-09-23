@@ -14,6 +14,9 @@ Output:
     censpop_popolazione_long.csv   popolazione per età singola e genere, 2018-2024
     censpop_lavoro_gemelle_long.csv        lavoro per le 10 gemelle strutturali, 2018-2024
     censpop_lavoro_15piu_sicilia_long.csv  lavoro 15+ per i 390 comuni siciliani, 2018-2024
+    censpop_lavoro_15_24_sicilia_long.csv  lavoro 15-24 per i 390 comuni siciliani, 2018-2024
+    rcfl_neet_regionale_long.csv   incidenza NEET della rilevazione forze di lavoro per sesso
+                                   ed età, Sicilia e Italia (fonte campionaria regionale)
     censpop_demografia_classi_long.csv     popolazione per classi quinquennali, 2001-2024
     popres_stato_civile_long.csv           popolazione al 1° gennaio per età, sesso e
                                            stato civile (DCIS_POPRES1, 2019-2026)
@@ -293,6 +296,67 @@ def costruisci_censpop_sicilia_15piu() -> dict[str, pd.DataFrame]:
     return {"censpop_lavoro_15piu_sicilia_long.csv": lungo[
         ["territorio", "anno", "genere", "eta",
          "cittadinanza", "titolo_studio", "condizione", "valore"]]}
+
+
+def costruisci_censpop_sicilia_15_24() -> dict[str, pd.DataFrame]:
+    """I 390 comuni sulla classe 15-24, ricomposti dai 12 blocchi del fetch.
+
+    Stessa costruzione della 15+. Serve a due cose del thread genere: la posizione di
+    Bagheria fra i comuni siciliani sulla fascia di lavoro del progetto, e quanto si muove
+    senza interventi il tasso di un comune della sua taglia (il metro dei KPI).
+    """
+    prefissi = [f"censpop_lavoro_15_24_sicilia_{i:02d}" for i in range(1, 13)]
+    if _mancano("15_24_sicilia", *prefissi):
+        return {}
+    lungo = pd.concat([leggi_sdmx(p, COLONNE_ISTR_LAV) for p in prefissi], ignore_index=True)
+    comuni = lungo["territorio"].nunique()
+    assert comuni == 390, f"{comuni} comuni invece di 390: un blocco è tornato vuoto"
+    assert set(lungo["eta"]) == {"Y15-24"}, sorted(set(lungo["eta"]))
+    assert not lungo.duplicated(["territorio", "anno", "genere", "condizione"]).any()
+    return {"censpop_lavoro_15_24_sicilia_long.csv": lungo[
+        ["territorio", "anno", "genere", "eta",
+         "cittadinanza", "titolo_studio", "condizione", "valore"]]}
+
+
+def costruisci_rcfl_neet() -> dict[str, pd.DataFrame]:
+    """Incidenza NEET (%) della rilevazione sulle forze di lavoro, Sicilia e Italia.
+
+    FONTE DIVERSA dal censimento: stima campionaria, solo regionale, definizione europea
+    (non occupati e non in istruzione né formazione, anche non formale). È il NEET 15-34 del
+    bando a scala regionale; il proxy comunale 15-24 «fuori da lavoro e studio» non ci va
+    mai in serie. SEX usa i codici legacy ISTAT: 1 maschi, 2 femmine, 9 totale.
+    """
+    if _mancano("rcfl_neet", "rcfl_neet_regionale"):
+        return {}
+    grezzo = pd.read_csv(ultimo("rcfl_neet_regionale"), dtype=str)
+    totali = {"DATA_TYPE": "NEET_I", "LABPROF_STATUS_A": "99", "EURO_LABOUR_STATUS": "TOT",
+              "EDU_LEV_HIGHEST": "99", "CITIZENSHIP": "TOTAL", "ROLE_IN_HOUSEHOLD": "TOT"}
+    for colonna, codice in totali.items():
+        assert set(grezzo[colonna]) == {codice}, (colonna, sorted(set(grezzo[colonna])))
+    tabella = pd.DataFrame({
+        "territorio": grezzo["REF_AREA"],
+        "anno": grezzo["TIME_PERIOD"].astype(int),
+        "genere": grezzo["SEX"].map({"1": "M", "2": "F", "9": "T"}),
+        "eta": grezzo["AGE"],
+        "neet_pct": pd.to_numeric(grezzo["OBS_VALUE"], errors="coerce"),
+    })
+    assert tabella["genere"].notna().all() and tabella["neet_pct"].notna().all()
+    assert not tabella.duplicated(["territorio", "anno", "genere", "eta"]).any()
+    return {"rcfl_neet_regionale_long.csv":
+            tabella.sort_values(["territorio", "eta", "genere", "anno"], ignore_index=True)}
+
+
+def _verifica_15_24(istr_lav: pd.DataFrame, sicilia: pd.DataFrame) -> None:
+    """Bagheria e Palermo nella tavola dei 390 = le stesse righe della tavola a 4 territori."""
+    chiavi = ["territorio", "anno", "genere", "condizione"]
+    quattro = istr_lav[istr_lav["tavola"].eq("lavoro") & istr_lav["eta"].eq("Y15-24")
+                       & istr_lav["cittadinanza"].eq("TOTAL") & istr_lav["titolo_studio"].eq("ALL")
+                       & istr_lav["territorio"].isin(["082006", "082053"])]
+    confronto = quattro.merge(sicilia, on=chiavi, suffixes=("_4", "_390"))
+    assert len(confronto) == len(quattro) > 0, (len(confronto), len(quattro))
+    scarto = (confronto["valore_4"] - confronto["valore_390"]).abs().max()
+    assert scarto == 0, f"le due tavole 15-24 divergono (scarto massimo {scarto})"
+    print(f"   verifica 15-24 ok: {len(confronto)} celle di Bagheria e Palermo identiche nelle due tavole")
 
 
 def costruisci_censpop_demografia_classi() -> dict[str, pd.DataFrame]:
@@ -678,8 +742,13 @@ def main() -> int:
     print("- censpop gemelle strutturali, 390 comuni 15+, classi quinquennali")
     recenti = {**costruisci_censpop_gemelle(),
                **costruisci_censpop_sicilia_15piu(),
+               **costruisci_censpop_sicilia_15_24(),
                **costruisci_censpop_demografia_classi(),
                **costruisci_popres_stato_civile()}
+    if "censpop_lavoro_15_24_sicilia_long.csv" in recenti:
+        _verifica_15_24(istr_lav, recenti["censpop_lavoro_15_24_sicilia_long.csv"])
+    print("- rilevazione forze di lavoro: NEET regionale")
+    rcfl = costruisci_rcfl_neet()
     print("- territori e codici")
     territori = costruisci_territori(ottomila, istr_lav, popolazione,
                                      *vicini.values(), *recenti.values())
@@ -707,6 +776,7 @@ def main() -> int:
         "comuni_sicilia_centroidi.csv": centroidi,
         **vicini,
         **recenti,
+        **rcfl,
         **pendolarismo,
     }
     print()

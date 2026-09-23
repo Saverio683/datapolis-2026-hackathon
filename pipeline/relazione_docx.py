@@ -1,4 +1,4 @@
-"""docs/RELAZIONE_DATAPOLIS.md -> docs/RELAZIONE_DATAPOLIS.docx, con le figure incorporate.
+"""docs/relazione/RELAZIONE_DATAPOLIS.md -> docs/relazione/RELAZIONE_DATAPOLIS.docx, con le figure incorporate.
 
 Il .docx e' un artefatto *derivato*: il testo, e quindi ogni cifra, vive nel .md, che sta
 dentro il perimetro di pipeline/verifica.py. Qui non si riscrive nulla a mano, si impagina.
@@ -33,7 +33,7 @@ import zipfile
 from pathlib import Path
 
 RADICE = Path(__file__).resolve().parent.parent
-DOCS = RADICE / "docs"
+DOCS = RADICE / "docs" / "relazione"
 FIGURE = RADICE / "figures"
 SORGENTE = DOCS / "RELAZIONE_DATAPOLIS.md"
 USCITA = DOCS / "RELAZIONE_DATAPOLIS.docx"
@@ -50,10 +50,10 @@ LARGHEZZA_CM = 17.0
 INLINE: list[tuple[str, str]] = [
     ("sono giovani che non arrivano a cercare.", "edu_fig03_composizione"),
     ("Bagheria migliora alla velocità del contesto, non di più.", "edu_fig04_scomposizione"),
-    ("cose che di solito si confondono: Bagheria **migliora in assoluto e arretra in", "edu_fig01_storia_posizione"),
+    ("Bagheria **migliora in assoluto e arretra in posizione**.", "edu_fig01_storia_posizione"),
     ("`genere_madri_recente.csv`, `genere_frattura_istruzione.csv`", "fig10_muro_recente"),
     ("`genere_mappa_2011_2024.csv`, sezione «I claim reggono al 2024?»", "fig04_mappa_sicilia"),
-    ("mai come quantità attribuibile al comune).", "fig08_posizionamento"),
+    ("mai come quantità attribuibile al comune.", "fig08_posizionamento"),
     ("→ `genere_quadro_sintesi.csv`", "fig05_forbice"),
     ("«Trend 2018-2024» di `notebooks/genere.ipynb`", "fig01_gap_tre_scale"),
     ("→ `genere_per_1000.csv`, `genere_forbice_quadrante.csv`", "fig11_per_1000"),
@@ -63,11 +63,12 @@ INLINE: list[tuple[str, str]] = [
     ("→ `edu_historical_benchmarks_2011.csv`", "edu_fig02_catena_2011"),
     ("non c'è\nda scegliere quale destinazione servire.", "mob_fig01_verso_palermo"),
     ("Smettono quando il motivo diventa il lavoro.", "mob_fig02_ribaltamento"),
-    ("−7,0 punti: la misura resta in piedi da sola.", "fig12_pendolarismo"),
+    ("una terza tavola. → `genere_pendolarismo.csv`, fig12", "fig12_pendolarismo"),
     ("È chi si muove, e per quale motivo.**", "mob_fig04_taglia_distanza"),
-    ("risolverebbe un\nproblema che non esiste.", "mob_fig03_treno_genere"),
-    ("**La fuga è al netto di niente.**\n  → `genere_stranieri.csv`", "edu_fig08_popolazione"),
-    ("→ `genere_mde.csv` (fig09)", "fig09_kpi_finestra"),
+    ("Aumentarne l'uso non è la leva che manca.", "mob_fig03_treno_genere"),
+    ("12,4% in Italia. → `genere_stranieri.csv`", "edu_fig08_popolazione"),
+    ("a tasso 2024 costante: `genere_tetto_platea.csv`)", "fig09_kpi_finestra"),
+    ("→ `genere_mde.csv` (fig09b)", "fig09b_potenza"),
 ]
 
 # Le figure di R hanno la didascalia negli ultimi due blocchi di inchiostro: una
@@ -93,7 +94,7 @@ SOSTITUZIONI = [
     ("Un 🟡 è diventato ✅, e vale la pena dire come.",
      "Una risposta parziale è diventata piena, e vale la pena dire come."),
     ("| 🔴→🟡 ", "| **Solo in parte.** "),
-    ("| ✅ ", "| **Sì.** "), ("| 🟡 ", "| **In parte.** "), ("| 🔴 ", "| **No.** "),
+    ("| ✅ ", "| **Sì**, "), ("| 🟡 ", "| **In parte**: "), ("| 🔴 ", "| **No**: "),
     ("⚠️ È una lettura", "Cautela: è una lettura"), ("⚠️ ", "cautela: "),
     ("✔ ", "Sì, "),
 ]
@@ -358,7 +359,7 @@ def promuovi_titoli(testo: str) -> str:
 SALTO_PAGINA = '\n```{=openxml}\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n'
 
 COPERTINA = """::: {{custom-style="CopertinaEnte"}}
-Comune di Bagheria (PA) · DataPolis 2026
+DataPolis 2026 · Bagheria (PA)
 :::
 
 ::: {{custom-style="CopertinaTitolo"}}
@@ -437,6 +438,30 @@ def indice(corpo: str) -> str:
     return "\n".join(fuori)
 
 
+def inserisci_figure(testo: str, inline, dida: dict, dest: Path) -> tuple[str, int]:
+    """Mette ogni figura dopo la sua ancora e la numera nell'ordine in cui compare.
+
+    L'ancora si cerca ignorando gli a-capo del .md, perche' riandare a capo non deve
+    spostare una figura; deve comparire una volta sola, altrimenti la build si ferma. La
+    numerazione segue la posizione nel testo, non l'ordine della lista.
+    """
+    posti = []
+    for ancora, nome in inline:
+        schema = r"\s+".join(map(re.escape, ancora.split()))
+        if ancora[-1].isspace():
+            schema += r"\s"
+        trovate = list(re.finditer(schema, testo))
+        assert len(trovate) == 1, (
+            f"ancora per {nome} trovata {len(trovate)} volte: «{ancora[:60]}»")
+        posti.append((trovate[0].end(), nome))
+    posti.sort()
+    blocchi = [(fine, blocco_figura(nome, i, dida, dest))
+               for i, (fine, nome) in enumerate(posti, start=1)]
+    for fine, blocco in reversed(blocchi):
+        testo = testo[:fine] + "\n" + blocco + testo[fine:]
+    return testo, len(posti)
+
+
 def markdown(dest: Path) -> tuple[str, int]:
     testo = SORGENTE.read_text(encoding="utf-8")
     dida = _didascalie()
@@ -446,15 +471,11 @@ def markdown(dest: Path) -> tuple[str, int]:
     titolo = righe[0].lstrip("# ").strip()
     sottotitolo = righe[2].lstrip("# ").strip()
     assert righe[0].startswith("# ") and righe[2].startswith("## "), "testata inattesa"
-    data = re.match(r"^(Bagheria, \d{4}-\d{2}-\d{2})\.", righe[4]).group(1)
+    data = re.match(r"^(Bagheria, \d{4}-\d{2}-\d{2}(?:, versione rivista del \d{4}-\d{2}-\d{2})?)\.",
+                    righe[4]).group(1)
     testo = "\n".join(righe[4:])
 
-    numero = 0
-    for ancora, nome in INLINE:
-        assert testo.count(ancora) == 1, (
-            f"ancora per {nome} trovata {testo.count(ancora)} volte: «{ancora[:60]}»")
-        numero += 1
-        testo = testo.replace(ancora, ancora + "\n" + blocco_figura(nome, numero, dida, dest), 1)
+    testo, numero = inserisci_figure(testo, INLINE, dida, dest)
 
     # Appendice: le figure che il testo non incorpora, cosi' l'atlante e' completo.
     restanti = [n for n in dida if n not in {f for _, f in INLINE}]

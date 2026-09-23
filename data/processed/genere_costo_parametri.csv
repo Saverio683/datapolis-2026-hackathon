@@ -1,0 +1,7 @@
+chiave,parametro,valore,unita,fonte
+cooperativa_d2,"costo annuo cooperativa sociale, livello D2 (educatore professionale, assistente sociale), senza indennità di turno",35812.94,euro/anno,"Ministero del Lavoro, D.D. n. 30 del 14/6/2024, tabella gennaio 2026, riga COSTO ANNUO"
+comune_funzionari,"costo lordo annuo ente locale, area dei Funzionari e dell'Elevata Qualificazione",44539.99,euro/anno,"Ministero del Lavoro, Nota metodologica UCS costi del personale (D.D. 105/2026, agg. D.D. 130/2026), Tabella 1"
+indiretti,tasso forfettario dei costi indiretti sul costo del personale,0.15,quota,"Reg. (UE) 2021/1060, art. 54, par. 1, lett. b), come nella nota metodologica"
+tirocinio_mese,indennità minima mensile di tirocinio extracurriculare in Sicilia,300.0,euro/mese,Deliberazione della Giunta regionale siciliana n. 292 del 19/7/2017
+gol_ucs_ora,"unità di costo standard GOL, orientamento specialistico e accompagnamento al lavoro",39.94,euro/ora,"ANPAL, Delibera del Commissario straordinario n. 5 del 12/4/2023, Allegato B"
+gol_ore_p4,"ore massime GOL, percorso 4: orientamento specialistico (10) e accompagnamento (20)",30.0,ore,"ANPAL, Delibera del Commissario straordinario n. 5 del 12/4/2023, Allegato B"

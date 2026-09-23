@@ -72,7 +72,7 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
   scale_x_continuous(labels = function(x) virgola(x, 0, "%"),
                      expand = expansion(mult = c(0.06, 0.08))) +
   labs(
-    title = "Le ragazze di Bagheria si spostano per studiare, non per lavorare",
+    title = "Le ragazze di Bagheria escono più dei coetanei per studiare, meno per lavorare",
     subtitle = sommario(paste0(
       "Quota di residenti che esce dal comune, in percentuale di chi si sposta ogni giorno per quel motivo, per genere e per motivo dello spostamento, ", ANNO,
       ", su quattro territori: il pannello di sopra riguarda gli spostamenti per lavoro, quello di sotto gli spostamenti per studio.",

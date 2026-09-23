@@ -1,72 +1,77 @@
-# datapolis-2026-hackathon
+# A Bagheria il diploma arriva, il lavoro no
 
-## Setup
+DataPolis 2026, «Analisi e Visione per i Giovani di Bagheria»: analisi quantitativa sulla
+condizione dei 15-34enni di Bagheria (PA) e proposta di intervento data-driven, **Ponte 19**.
 
-Il progetto gestisce le dipendenze tramite [`uv`](https://docs.astral.sh/uv/). Per inizializzare l'ambiente:
+**Da dove partire**: `LEGGIMI_GIURIA.md`. I deliverable impaginati sono in `dist/`: relazione
+e policy proposal in PDF, le quattro schede tematiche in PDF, i quattro notebook in HTML
+(leggibili senza Jupyter).
+
+**Dove lavorare**: la [mappa della documentazione](docs/README.md) distingue relazione,
+policy, presentazione, analisi, materiali del team e idee. I sorgenti ufficiali sono
+in `docs/relazione/` e `docs/policy/`; le scelte interne in `docs/team/SCELTE_ANALITICHE.md`.
+
+## Il brief
+
+Realizzare un'analisi quantitativa sulla condizione dei 15-34enni a Bagheria e proporre una
+soluzione (policy o servizio) data-driven per contrastare la fuga di talenti:
+
+- **Profiling statistico e benchmarking**: istruzione, occupazione e NEET dei giovani di
+  Bagheria, confrontati con Sicilia, Italia e Comune di Palermo;
+- **analisi esplorativa** su almeno una dimensione fra titolo di studio e condizione
+  lavorativa, differenze di genere, pendolarismo verso Palermo (qui: il genere come focus
+  principale, le altre due come thread di supporto);
+- **proposta di intervento** supportata dai dati.
+
+Output richiesti: technical notebook riproducibile, 2-3 visualizzazioni avanzate, policy
+proposal.
+
+## Fonti usate
+
+ISTAT (censimento permanente via API SDMX, 8milaCensus, matrici del pendolarismo, confini
+amministrativi), Ministero dell'Istruzione e del Merito (anagrafe delle scuole), AMAT Palermo
+(GTFS). Il portale open data della Regione Siciliana è stato esplorato con esito negativo.
+Ogni download è tracciato in `docs/sources.md` e in `data/raw/manifest.csv` (URL, data,
+parametri).
+
+## Requisiti
+
+- [uv](https://docs.astral.sh/uv/): installa Python 3.12 e le versioni esatte di `uv.lock`
+  (il primo `uv sync` richiede rete, il resto no).
+- Figure: R (testato 4.5.2) con i pacchetti `ggplot2`, `dplyr`, `tidyr`, `readr`, `tibble`,
+  `patchwork`; font Lato consigliato. La geometria delle mappe la calcola Python, quindi non
+  servono `sf` né le librerie di sistema GDAL/GEOS/PROJ.
+- Documenti: `pandoc`; per `pipeline.pdf` anche LibreOffice e Chromium o Chrome.
+
+## Riproduzione (circa 5 minuti, senza rete: i dati grezzi sono in `data/raw/`)
 
 ```bash
-# Installa uv (se non già presente)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Sincronizza le dipendenze dichiarate in pyproject.toml
 uv sync
+uv run python -m pipeline.build                 # raw -> data/processed/
+uv run python -m pipeline.edu --skip-download   # thread educazione -> edu_*.csv
+uv run python -m unittest discover -s tests     # contratti della pipeline educazione
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/analisi.ipynb
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/genere.ipynb
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/educazione.ipynb
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/mobilita.ipynb
+uv run python -m pipeline.verifica              # controlli automatici, exit 1 se uno fallisce
+Rscript viz/build_all.R                         # tutte le figure in figures/ (PNG 300 dpi + SVG)
+Rscript viz/dump_didascalie.R                   # titoli e didascalie -> figures/didascalie.csv
+uv run python -m pipeline.schede                # le quattro schede HTML di docs/schede/
+uv run python -m pipeline.relazione_docx        # docs/relazione/RELAZIONE_DATAPOLIS.docx
+uv run python -m pipeline.policy_docx           # docs/policy/POLICY_PONTE_19.docx
+uv run python -m pipeline.pdf                   # dist/: PDF, notebook in HTML e zip
 ```
 
-Questo creerà un virtualenv in `.venv/` e installerà tutti i pacchetti elencati nel `pyproject.toml`. Per aggiungere nuove dipendenze usa `uv add <pacchetto>`.
+L'ordine conta: `genere.ipynb` legge tavole prodotte da `analisi.ipynb` e da
+`pipeline.edu`, e `mobilita.ipynb` ne legge due prodotte da `genere.ipynb`. Gli avvisi
+«Kernel is running over TCP without encryption» di Jupyter e «Removed N rows containing
+missing values» di ggplot2 sono attesi.
 
-## Riproduzione completa
+`pipeline/verifica.py` è il collaudo del progetto: ricalcola i numeri chiave direttamente dai
+raw con implementazioni alternative, controlla che le tavole di `data/processed/` coincidano
+e che le cifre scritte nella relazione e nella policy compaiano alla lettera nei documenti.
 
-Da ambiente pulito, nell'ordine. `mobilita.ipynb` legge due tavole prodotte da
-`genere.ipynb`, quindi va eseguito dopo; gli altri notebook sono indipendenti.
-
-```bash
-uv sync                                   # ambiente Python
-uv run python -m pipeline.fetch           # scarica i raw da tutte le fonti
-uv run python -m pipeline.build           # raw -> data/processed/
-uv run python -m pipeline.edu             # thread educazione: raw -> edu_*.csv
-
-uv run jupyter nbconvert --to notebook --execute notebooks/analisi.ipynb
-uv run jupyter nbconvert --to notebook --execute notebooks/genere.ipynb
-uv run jupyter nbconvert --to notebook --execute notebooks/educazione.ipynb
-uv run jupyter nbconvert --to notebook --execute notebooks/mobilita.ipynb
-
-Rscript viz/build_all.R                   # tutte le figure in figures/ (PNG 300dpi + SVG)
-uv run python -m pipeline.schede          # le quattro schede HTML di docs/schede/
-Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didascalie.csv
-uv run python -m pipeline.relazione_docx  # la relazione in .docx, con le figure dentro
-uv run python -m pipeline.verifica        # 755 controlli indipendenti, exit 1 se uno fallisce
-uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
-```
-
-`pipeline/verifica.py` è il collaudo del progetto: ricalcola i numeri chiave
-direttamente dai raw con implementazioni alternative, e verifica che le cifre
-scritte nella relazione e nella proposal siano ancora quelle che i dati producono.
-Se un raw cambia, fallisce finché notebook, tavole e documenti non sono riallineati.
-
-Setup R: i pacchetti vanno nella libreria utente, dai binari P3M. Il dettaglio,
-insieme ai limiti noti (`sf` e `svglite` non installabili senza root), sta in
-`CLAUDE.md`.
-
-# Obiettivo
-Realizzare un’analisi quantitativa sulla condizione dei 15-34enni a Bagheria e proporre una soluzione (policy o servizio) data-driven per contrastare la fuga di talenti.
-
-
-## Richieste
-- Profiling Statistico & Benchmarking: costruire il profilo dei giovani locali (istruzione, occupazione, NEET) confrontando Bagheria con la media siciliana, nazionale e con il Comune di Palermo.
-
-- Analisi Esplorativa (focus a scelta): approfondire almeno una dimensione critica tra:
-    - Relazione tra titolo di studio e condizione lavorativa.
-    - Impatto delle differenze di genere.
-    - Dinamiche e ruolo del pendolarismo verso Palermo.
-    
-- Proposta di Intervento: tradurre le evidenze emerse in una proposta concreta (un nuovo servizio, una policy pubblica o una campagna mirata) supportata dai dati raccolti.
-
-## Output richiesti
-- Technical Notebook: analisi documentata (R, Python o simili) con codice pulito e riproducibile.
-- Data Viz: 2-3 visualizzazioni avanzate (mappe o grafici complessi) di forte impatto comunicativo.
-- Policy Proposal: sintesi di una proposta concreta (servizio o policy) basata sulle evidenze emerse.
-
-## Fonti
-- [ottomilacensus](https://ottomilacensus.istat.it/comune/082/082006/): Istruzione, occupazione, NEET e pendolarismo.
-- [dati.regione.sicilia](https://dati.regione.sicilia.it): Indicatori territoriali sul mercato del lavoro.
-- [opendata](https://opendata.comune.palermo.it): Dataset su mobilità e servizi urbani.
+**Aggiornare le fonti** (facoltativo, serve rete): `uv run python -m pipeline.fetch` e
+`uv run python -m pipeline.edu --refresh` scaricano raw nuovi, datati al giorno del download, e da quel
+momento la build usa quelli. I numeri possono cambiare, e `pipeline.verifica` lo segnala.

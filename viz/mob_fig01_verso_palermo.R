@@ -47,6 +47,13 @@ N_SCENE <- paste(vapply(seq_len(nrow(SCENE)), function(i)
   paste0(SCENE$motivo[i], " ", SCENE$anno[i], ": ", migliaia(round(uscenti(SCENE[i, ]))),
          " persone"), character(1)), collapse = "; ")
 
+# La seconda destinazione piu' pesante fra le due scene: il sottotitolo la legge da qui.
+SECONDA <- max(vapply(seq_len(nrow(SCENE)), function(i) {
+  q <- sort(filter(flussi, anno == SCENE$anno[i], motivo == SCENE$motivo[i])$quota_su_chi_esce,
+            decreasing = TRUE)
+  q[2]
+}, numeric(1)))
+
 quota_dentro <- function(scena) {
   riga <- filter(flussi, anno == scena$anno, motivo == scena$motivo, destinazione == "082053")
   riga$quota_su_chi_esce
@@ -117,7 +124,7 @@ figura <- (pannello(1) | pannello(2)) +
       "Nove studenti su dieci che escono dal comune vanno a Palermo (",
       virgola(quota_dentro(SCENE[1, ]), 1, "%"), "), e due lavoratori su tre (",
       virgola(quota_dentro(SCENE[2, ]), 1, "%"), ").\n",
-      "Il secondo comune di destinazione resta sotto il 7%: la direzione è una sola.\n",
+      "Il secondo comune di destinazione non supera il ", virgola(SECONDA, 1, "%"), ": la direzione è una sola.\n",
       "Su entrambe le misure Bagheria sta oltre il 90° percentile dei 381 comuni siciliani non capoluogo\n",
       "per quota di chi esce diretta al proprio capoluogo di provincia."),
     caption = didascalia_2b(

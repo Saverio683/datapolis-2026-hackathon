@@ -181,7 +181,7 @@ _Impostata su **3 relatori**._
 3. **«Come fate a dire che l'inattività femminile dipende dalla cura se non avete le ore dedicate?»**
     
       
-    - _Risposta:_ Non lo sosteniamo: disponiamo unicamente della condizione auto-dichiarata di casalinga, non dei carichi orari. Il pilota rileverà direttamente con la partecipante se sussistono vincoli di conciliazione.
+    - _Risposta:_ Non lo sosteniamo: disponiamo unicamente della condizione di casalinga, che dal 2021 ISTAT stima con un modello, non dei carichi orari. Il pilota rileverà direttamente con la partecipante se sussistono vincoli di conciliazione.
         
           
         
@@ -202,12 +202,12 @@ _Impostata su **3 relatori**._
 6. **«Come potete promettere un impatto occupazionale solido con soli 200 posti?»**
     
       
-    - _Risposta:_ Non promettiamo quote occupazionali predefinite a livello aggregato: 200 è il tetto di capacità operativa del test. L'efficacia dell'intervento sarà misurata sul gruppo dei partecipanti rispetto a lista d'attesa/controllo.
+    - _Risposta:_ Non promettiamo quote occupazionali predefinite a livello aggregato: 200 è il tetto di capacità operativa del test. L'efficacia dell'intervento sarà misurata sul gruppo dei partecipanti rispetto alla lista d'attesa: due coorti da 100 a sei mesi di distanza. Con questi numeri il confronto vede effetti di 18-20 punti o più: nel primo anno riconosce solo effetti grandi.
         
           
         
 7. **«Quanto costa complessivamente l'attivazione di Ponte 19?»**
     
       
-    - _Risposta:_ La documentazione istruttoria attuale definisce il perimetro metodologico e organizzativo del modello, ma non contiene il piano economico di dettaglio, che sarà oggetto della successiva fase deliberativa.
+    - _Risposta:_ In ordine di grandezza fra 206.000 e 256.000 euro l'anno per quattro case manager e un data manager (cooperativa sociale o personale comunale, più il 15% di costi indiretti): fra 1.030 e 1.281 euro per posto, lo stesso ordine del percorso più intensivo del programma GOL (1.198 euro). Esperienze retribuite escluse; il piano economico di dettaglio si costruisce con gli uffici comunali.
 

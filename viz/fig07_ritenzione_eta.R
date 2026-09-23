@@ -65,6 +65,7 @@ coda <- function(territorio) {
 }
 CODA_BAG <- coda("Bagheria")
 CODA_ITA <- coda("Italia")
+CODA_SIC <- coda("Sicilia")
 
 # Il controllo di robustezza dentro la sola rilevazione permanente: la stessa coorte
 # seguita per cinque anni, due volte. Sta in un file, quindi si legge e non si ricopia.
@@ -111,13 +112,14 @@ figura <- ggplot(dati, aes(eta_2021, ritenzione_rolling3_pct, colour = nome_terr
   labs(
     title = "La finestra per trattenere le ragazze di Bagheria\nè fra i 22 e i 25 anni",
     subtitle = sommario(paste0(
-      "Quota della coorte del 2021 ancora residente nello stesso comune tre anni dopo, in percentuale della coorte di partenza: chi aveva 20 anni nel 2021 ne ha 23 nel 2024. ",
+      "Residenti di ogni età nel 2024 per 100 residenti della stessa coorte nel 2021: chi aveva 20 anni nel 2021 ne ha 23 nel 2024. ",
       "Per età singola da ", ETA_MIN, " a ", ETA_MAX, " anni, per genere, su cinque territori. È una misura netta di saldo, che comprende sia chi parte sia chi arriva: ",
       "dice a che età si perde, non da quando, e la stessa domanda su scala decennale sta in fig07b. Sotto il tratteggio la coorte si è ridotta.\n",
       "I ragazzi escono a ondate, a 17-19 e a 23-24 anni, e in parte rientrano dopo i 26. Le ragazze tengono fino ai 23 e da lì cedono, ",
       "senza rientri: sulle età 25-29 restano fra ", virgola(CODA_BAG[["min"]], 1, "%"), " e ",
-      virgola(CODA_BAG[["max"]], 1, "%"), ", contro una media italiana di ",
-      virgola(CODA_ITA[["media"]], 1, "%"), ".\n",
+      virgola(CODA_BAG[["max"]], 1, "%"), ", contro una media di ",
+      virgola(CODA_SIC[["media"]], 1, "%"), " in Sicilia e di ", virgola(CODA_ITA[["media"]], 1, "%"),
+      " in Italia, che cresce per immigrazione.\n",
       "Ed è un tratto di Bagheria: fra i 22 e i 25 anni i cinque comuni vicini restano piatti (",
       virgola(ritenzione(ETICHETTA_VICINATO, 22), 1, "%"), " e ",
       virgola(ritenzione(ETICHETTA_VICINATO, 25), 1, "%"), "), mentre Bagheria scende da ",
@@ -129,13 +131,12 @@ figura <- ggplot(dati, aes(eta_2021, ritenzione_rolling3_pct, colour = nome_terr
     caption = didascalia_2b(
       lettura = paste0(
         "la riga tratteggiata orizzontale a 100% è la parità: sopra la coorte è cresciuta, sotto si è ridotta. ",
-        "Il rettangolo vermiglio chiaro, presente solo sul pannello delle femmine, è la finestra 22-25 anni. ",
-        "Bagheria è in vermiglio a tratto pieno perché è il soggetto, i quattro riferimenti sono a tratto sottile. ",
+        "Il rettangolo vermiglio chiaro, presente solo sul pannello delle femmine, è la finestra 22-25 anni, misurata sull'età del 2021: chi aveva 22-25 anni nel 2021 ne ha 25-28 nel 2024, ed è in quei tre anni che la coorte si riduce. ",
+        "Bagheria è in vermiglio e con la linea più spessa perché è il soggetto. ",
         "Le linee sono medie mobili centrate su tre età, quindi si leggono i pattern e non i decimali; le età ai bordi servono solo a chiudere la media mobile e restano fuori dal grafico. ",
         "Vicinato = ", paste(vicini$nome_comune, collapse = ", "),
         ", cioè i cinque comuni più vicini per distanza fra i centroidi: le coorti sono sommate prima del rapporto, non è la media dei cinque rapporti, così il denominatore regge il confronto con Bagheria. ",
-        "Le serie dei singoli comuni, troppo piccole per essere lette per età, restano in genere_ritenzione_eta_vicini.csv. ",
-        "Palermo è il controfattuale dichiarato del disegno di valutazione (notebook, sezione «Trend paralleli»)."),
+        "Le serie dei singoli comuni, troppo piccole per essere lette per età, restano in genere_ritenzione_eta_vicini.csv. "),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, età singole, anni 2021 e 2024. ",
         "Elaborazione: notebooks/genere.ipynb (data/processed/genere_ritenzione_eta.csv e genere_ritenzione_eta_vicini.csv)."),

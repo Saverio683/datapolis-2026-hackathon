@@ -14,7 +14,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 PROCESSED = ROOT / "data" / "processed"
 TABLES = ROOT / "data" / "processed"
-DOCS_EDU = ROOT / "docs" / "edu"
+DOCS_EDU = ROOT / "docs" / "analisi" / "educazione"
 NOTEBOOK = ROOT / "notebooks" / "educazione.ipynb"
 
 
@@ -116,7 +116,6 @@ class PipelineContractTests(unittest.TestCase):
 
     def test_final_narrative_has_no_old_idea_scaffolding(self) -> None:
         paths = [
-            DOCS_EDU / "README.md",
             DOCS_EDU / "REPORT_ANALITICO.md",
             DOCS_EDU / "EXECUTIVE_SUMMARY.md",
             DOCS_EDU / "POLICY_PONTE_19_BAGHERIA.md",

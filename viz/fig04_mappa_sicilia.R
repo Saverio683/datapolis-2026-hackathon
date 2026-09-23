@@ -132,7 +132,7 @@ carta <- ggplot() +
   geom_text(data = pila, aes(X_NOME, y_lab, label = testo, colour = colore,
                              fontface = faccia), hjust = 0, size = 3.2) +
   scale_colour_identity() +
-  scale_fill_viridis_c(name = paste0("occupazione femminile ", ANNO, " (%)"),
+  scale_fill_viridis_c(name = paste0("occupazione femminile 15+, ", ANNO, " (%)"),
                        limits = SCALA, na.value = "grey88", breaks = seq(15, 40, 5),
                        guide = guide_colourbar(barwidth = 9, barheight = 0.45,
                                                title.position = "top")) +
@@ -184,12 +184,13 @@ spostamento <- ggplot(comuni, aes(occ_2024)) +
            label = paste0("Bagheria ", BASE, "\n", virgola(prima$bagheria, 1, "%"))) +
   annotate("text", x = dopo$bagheria + 0.7, y = 43, hjust = 0, vjust = 0.4, size = 3.1,
            fontface = "bold", colour = COLORI_TERRITORIO[["Bagheria"]], lineheight = 1.05,
-           label = paste0("Bagheria ", ANNO, "\n", virgola(dopo$bagheria, 1, "%"))) +
+           label = paste0("Bagheria ", ANNO, "\n", virgola(dopo$bagheria, 1, "%"),
+                          ", come la mediana ", BASE)) +
   # Le due mediane: la distanza fra loro è lo scorrimento che Bagheria ha solo inseguito.
   annotate("segment", x = c(prima$mediana, dopo$mediana),
            xend = c(prima$mediana, dopo$mediana), y = 0, yend = 34,
            colour = "grey35", linetype = c("dashed", "solid"), linewidth = c(0.4, 0.7)) +
-  annotate("text", x = dopo$mediana + 0.6, y = 40, hjust = 0, vjust = 1, size = 3,
+  annotate("text", x = dopo$mediana + 4.2, y = 40, hjust = 0, vjust = 1, size = 3,
            colour = "grey30", lineheight = 1.05,
            label = paste0("mediana siciliana\n", BASE, ": ", virgola(prima$mediana, 1, "%"),
                           "   ", ANNO, ": ", virgola(dopo$mediana, 1, "%"))) +
@@ -218,7 +219,7 @@ figura <- carta / spostamento +
     subtitle = sommario(paste0(
       "Tasso di occupazione femminile sulla popolazione di 15 anni e più, per comune siciliano, anno ", ANNO,
       ": in alto la carta dell'isola, in basso la distribuzione dello stesso indicatore confrontata con quella del ", BASE,
-      ". Il finding è la differenza fra livello e posizione, e la graduatoria con i nomi sta in fig04c.\n",
+      ". Conta la distanza fra livello e posizione; la graduatoria con i nomi sta in fig04c.\n",
       "Il livello di Bagheria sale da ", virgola(prima$bagheria, 1, "%"), " a ",
       virgola(dopo$bagheria, 1, "%"), ", ma la mediana regionale sale da ",
       virgola(prima$mediana, 1, "%"), " a ", virgola(dopo$mediana, 1, "%"), ".\n",
@@ -234,16 +235,16 @@ figura <- carta / spostamento +
     caption = didascalia_2b(
       lettura = paste0(
         "sulla carta il colore è il valore, su scala continua viridis: più chiaro significa occupazione femminile più alta, e la stessa scala vale per le barre dell'istogramma sotto. ",
-        "Sono etichettati Bagheria (bordo vermiglio) e i cinque comuni più vicini per distanza fra i centroidi (bordo scuro, tutti entro 8 km): a questa scala i loro poligoni sono un punto, quindi le sei righe sono raccolte da una graffa sola in mare, ordinate per valore decrescente. ",
+        "Sono etichettati Bagheria (bordo vermiglio) e i cinque comuni più vicini per distanza fra i centroidi (bordo scuro, tutti entro ", virgola(max(vicini$distanza_km), 1), " km): a questa scala i loro poligoni sono un punto, quindi le sei righe sono raccolte da una graffa sola in mare, ordinate per valore decrescente. ",
         "Palermo ha bordo viola e un richiamo suo perché non è un vicino ma il termine di paragone. Gli estremi regionali non sono etichettati sulla carta, perché cambiano comune fra le due annate, e si leggono agli estremi dell'istogramma. ",
         "Misiliscemi, istituito nel 2021 per distacco da Trapani, è disegnato in grigio e resta fuori dai 390 comuni delle due annate: nel ", BASE,
         " non esisteva e il dato non gli è attribuibile. È l'unica esclusione. ",
         "Nell'istogramma le barre piene sono il ", ANNO, " e il profilo grigio vuoto è il ", BASE,
-        ": sono sovrapposti e non affiancati perché il finding è lo scorrimento dell'intera distribuzione. ",
+        ": sono sovrapposti e non affiancati perché il risultato è lo scorrimento dell'intera distribuzione. ",
         "Le linee verticali tratteggiate sono i valori del ", BASE, " e quelle piene i valori del ", ANNO,
         ", in vermiglio per Bagheria e in grigio per la mediana regionale; la freccia vermiglia misura quanto Bagheria si è spostata. ",
         "Le due annate vengono da due rilevazioni con disegni diversi (universale a questionario il censimento ", BASE,
-        ", campionaria sui registri il permanente): il livello ne risente, il rango dentro l'anno molto meno, ed è la ragione per cui il confronto fra annate, in fig04b, usa percentili e non punti percentuali. ",
+        ", campionaria sui registri il permanente). Su questo indicatore il confronto fra livelli regge: nel 2018 il permanente dà valori entro un punto da quelli del 2011 su Bagheria, Palermo, Sicilia e Italia (notebooks/genere.ipynb, «Il ponte fra i due censimenti»). Per prudenza la persistenza della graduatoria, in fig04b, usa comunque i percentili. ",
         "La fascia (15 anni e più) e gli anni sono diversi dalle serie 15-24 del thread: la figura è contesto di lungo periodo, non un termine di paragone. ",
         "Il riquadro della carta è centrato sulla terraferma e non sull'estensione con tutte le isole minori: restano fuori Lampedusa e Linosa, Pantelleria e Marettimo, che sono comunque nel dato e nell'istogramma, mentre Ustica, Levanzo, Favignana e le Eolie sono in carta."),
       fonte = paste0(
