@@ -47,9 +47,9 @@ N_COORTI <- decenni |>
 
 # Il controllo a cinque anni dentro la sola rilevazione permanente, letto dallo stesso file
 # invece che ricopiato: se i dati cambiano, la didascalia cambia con loro.
-cinque_anni <- function(terr) {
+cinque_anni <- function(terr, gen = "F") {
   r <- decennale[decennale$nome_territorio == terr & decennale$anni == 5 &
-                   decennale$eta_da == "Y20-24" & decennale$genere == "F" &
+                   decennale$eta_da == "Y20-24" & decennale$genere == gen &
                    decennale$anno_da %in% c(2018, 2019), ]
   r <- r[order(r$anno_da), ]
   list(periodi = paste0(r$anno_da, "-", r$anno_a, collapse = " e "),
@@ -57,6 +57,8 @@ cinque_anni <- function(terr) {
 }
 CTRL_BAG <- cinque_anni("Bagheria")
 CTRL_ITA <- cinque_anni("Italia")
+CTRL_BAG_M <- cinque_anni("Bagheria", "M")
+CTRL_ITA_M <- cinque_anni("Italia", "M")
 
 bagheria_decenni <- filter(decenni, nome_territorio == "Bagheria")
 salto <- bagheria_decenni |>
@@ -114,9 +116,10 @@ figura <- ggplot(decenni, aes(periodo, ritenzione_pct, colour = nome_territorio,
         "I valori in cifre sono stampati solo su Bagheria: con quattro etichette per estremo il pannello diventerebbe illeggibile. ",
         "Il decennio 2011-2021 ha una gamba per rilevazione, perché il 2011 è censimento decennale e il 2021 censimento permanente: la distorsione nota va nel verso prudente, ",
         "perché il censimento 2011 contò meno dell'anagrafe e sta quindi al denominatore del decennio che crolla e al numeratore di quello che tiene, e il divario fra i due decenni è una stima per difetto. ",
-        "Il controllo dentro la sola rilevazione permanente, sulla stessa coorte a cinque anni (", CTRL_BAG$periodi,
+        "Il controllo dentro la sola rilevazione permanente, sulla coorte che a inizio periodo ha 20-24 anni seguita per cinque anni (", CTRL_BAG$periodi,
         "), dà per le femmine di Bagheria ", CTRL_BAG$valori, " contro ", CTRL_ITA$valori,
-        " dell'Italia: il verso regge anche senza mescolare le due rilevazioni. ",
+        " dell'Italia, e per i maschi ", CTRL_BAG_M$valori, " contro ", CTRL_ITA_M$valori,
+        ": la perdita all'uscita dal percorso formativo regge anche senza mescolare le due rilevazioni, ed è di entrambi i generi. ",
         "Il vicinato non compare perché le classi quinquennali sono state scaricate solo per i quattro territori di confronto. ",
         "Palermo è il controfattuale dichiarato del disegno di valutazione (notebook, sezione «Trend paralleli»)."),
       fonte = paste0(

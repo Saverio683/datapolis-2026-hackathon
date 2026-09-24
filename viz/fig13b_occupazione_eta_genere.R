@@ -28,6 +28,16 @@ dati <- read_csv(file.path(PROCESSED, "tasso_occupazione_eta.csv"),
   mutate(classe = factor(classe, levels = c("15-24", "25-49", "50-64", "65+")))
 
 ANNO <- max(dati$anno)
+
+# Lo scarto locale per classe e genere, calcolato nel notebook (sezione «Dopo i 25 anni»):
+# R lo legge e basta. Il titolo dice che fino a 24 anni lo scarto dalla Sicilia non è di
+# genere e dopo i 25 sì: se i dati smentissero una delle due metà, va riscritto.
+scarti <- read_csv(file.path(PROCESSED, "genere_dopo_25_scarti.csv"), show_col_types = FALSE) |>
+  filter(anno == max(anno)) |>
+  select(eta, genere, scarto = `vs Sicilia`)
+scarto_di <- function(cl, g) abs(scarti$scarto[scarti$eta == cl & scarti$genere == g])
+stopifnot(scarto_di("Y15-24", "F") <= scarto_di("Y15-24", "M"),
+          scarto_di("Y25-49", "F") > 2 * scarto_di("Y25-49", "M"))
 PRIMO <- min(dati$anno)
 ANCORE <- c(PRIMO, 2021, ANNO)
 
@@ -94,7 +104,8 @@ figura <- ggplot(serie, aes(asse_2020(anno), tasso_occupazione,
   guides(colour = guide_legend(order = 1), linetype = guide_legend(order = 2)) +
   buco_2020(y = 40, serie$anno, serie$tasso_occupazione) +
   labs(
-    title = "A Bagheria il tasso di occupazione maschile è il doppio di quello femminile\ngià a 15-24 anni",
+    title = paste0("Fino a 24 anni lo scarto di Bagheria dalla Sicilia non è di genere;\ndopo i 25 le donne lavorano ",
+                   virgola(scarto_di("Y25-49", "F"), 1), " punti in meno, gli uomini ", virgola(scarto_di("Y25-49", "M"), 1)),
     subtitle = sommario(paste0(
       "Tasso di occupazione per genere, cioè occupati in percentuale della popolazione della stessa classe d'età e dello stesso genere, dal ",
       PRIMO, " al ", ANNO, ", sulle quattro classi d'età pubblicate a livello comunale. Sul grafico stanno due territori, Bagheria a tratto pieno e ",
@@ -102,11 +113,14 @@ figura <- ggplot(serie, aes(asse_2020(anno), tasso_occupazione,
       "Il tasso sta sulla popolazione della classe e non sulle sole forze di lavoro, quindi comprende studenti e inattivi, e per questo la classe 15-24 resta bassa per entrambi i generi.\n",
       "In punti il divario cresce con l'età (da ", virgola(GIOVANI$gap_pp, 1),
       " pp sui 15-24 a ", virgola(ANZIANI$gap_pp, 1), " pp sui 50-64), ma cresce ovunque. ",
-      "Quello che distingue Bagheria è il rapporto:\n",
+      "Quello che distingue Bagheria è il rapporto: ",
       virgola(GIOVANI$rapporto, 2, "×", taglia_zero = FALSE), " già a 15-24 contro ",
       virgola(GIOVANI_RIF$rapporto, 2, "×", taglia_zero = FALSE), " in ", RIFERIMENTO,
-      ", ed è il più alto dei quattro territori in tutte e quattro le classi. Il divario\n",
-      "c'è già a vent'anni, e in punti sembra piccolo solo perché a quell'età lavorano in pochi."), LARGHEZZA),
+      ", ed è il più alto dei quattro territori in tutte e quattro le classi. Il divario ",
+      "c'è già a vent'anni, e in punti sembra piccolo solo perché a quell'età lavorano in pochi.\n",
+      "Lo scarto locale però è un'altra cosa: rispetto alla Sicilia, a 15-24 anni Bagheria sta sotto di ", virgola(scarto_di("Y15-24", "F"), 1),
+      " punti sulle ragazze e di ", virgola(scarto_di("Y15-24", "M"), 1), " sui ragazzi, a 25-49 di ", virgola(scarto_di("Y25-49", "F"), 1),
+      " sulle donne e di ", virgola(scarto_di("Y25-49", "M"), 1), " sugli uomini. Il ritardo femminile non si chiude dopo lo studio."), LARGHEZZA),
     x = NULL, y = NULL, colour = NULL, linetype = NULL,
     caption = didascalia_2b(
       lettura = paste0(
@@ -119,9 +133,9 @@ figura <- ggplot(serie, aes(asse_2020(anno), tasso_occupazione,
         "Sull'asse orizzontale sono etichettate solo la prima annata, il 2021 e l'ultima; le posizioni restano quelle di tutte le annate."),
       fonte = paste0(
         "ISTAT, Censimento permanente della popolazione, tavola della condizione professionale, ", PRIMO, "-", ANNO,
-        ". Elaborazione: pipeline/build.py (data/processed/tasso_occupazione_eta.csv; fig13 è la stessa tavola a generi uniti)."),
+        ". Elaborazione: pipeline/build.py (data/processed/tasso_occupazione_eta.csv; fig13 è la stessa tavola a generi uniti) e notebooks/genere.ipynb (data/processed/genere_dopo_25_scarti.csv)."),
       larghezza = LARGHEZZA)) +
   tema_figura() +
   theme(panel.spacing.x = unit(1.1, "lines"))
 
-salva(figura, "fig13b_occupazione_eta_genere", larghezza = LARGHEZZA, altezza = 19)
+salva(figura, "fig13b_occupazione_eta_genere", larghezza = LARGHEZZA, altezza = 20.5)

@@ -12,7 +12,7 @@ archivio, presentazione e contesti personali del team.
 | [Fonti](sources.md) | Endpoint, acquisizioni e limiti dei dati; registro condiviso |
 | [Relazione](relazione/RELAZIONE_DATAPOLIS.md) | Testo ufficiale per la giuria; il DOCX accanto è generato |
 | [Policy](policy/POLICY_PONTE_19.md) | Proposta unificata Ponte 19; il DOCX accanto è generato |
-| [Presentazione](presentazione/LINEE_GUIDA.md) | Linee guida, [copione](presentazione/COPIONE_PONTE_19.md), prompter, mappa delle cifre e materiali per l'orale |
+| [Presentazione](presentazione/LINEE_GUIDA.md) | Linee guida, [copione](presentazione/COPIONE_PONTE_19.md), prompter, mappa delle cifre, [modifiche al pptx del 2026-09-24](presentazione/MODIFICHE_PPTX_2026-09-24.md) e materiali per l'orale |
 | [Analisi: educazione](analisi/educazione/README.md) | Metodologia, dizionario e report del thread; la policy di thread è un contributo alla proposta unificata |
 | [Team](team/SCELTE_ANALITICHE.md) | Scelte analitiche, contesti dei membri e aggiornamenti datati |
 | [Idee](idee/README.md) | Ipotesi e piste esplorative, con il loro stato di fattibilità |

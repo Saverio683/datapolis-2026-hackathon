@@ -2,7 +2,7 @@
 
 ## Servizio comunale di transizione e riattivazione, 18-25, con due finestre di ingaggio
 
-Policy proposal del progetto DataPolis 2026, 2026-08-29, versione rivista del 2026-09-23.
+Policy proposal del progetto DataPolis 2026, 2026-08-29, versione rivista del 2026-09-24.
 
 **Ponte 19 è un servizio comunale che va a cercare i giovani di Bagheria fuori da lavoro e
 studio, invece di aspettarli a uno sportello, e li accompagna verso un primo esito
@@ -38,7 +38,9 @@ dove il proxy censuario dà 22,3%. È un riferimento, mai in serie con il dato c
 (`genere_neet_rcfl.csv`). Il target del servizio
 parte da 18 anni perché fino a 18 vale il diritto-dovere all'istruzione e alla
 formazione, e si ferma a 25 perché è lì che i dati collocano le due uscite; i 26-34enni
-restano fuori perché nessuna tavola comunale ne segue la condizione professionale. La
+restano fuori perché nessuna tavola comunale ne segue la condizione professionale. Il deficit
+femminile più grande però sta sopra i 25 anni (sezione 1): estendere il modulo di genere ai
+26-34 è un'opzione dichiarata, da decidere. La
 ricostruzione completa sta in `docs/relazione/RELAZIONE_DATAPOLIS.md` §1 e §9.
 
 ---
@@ -71,15 +73,28 @@ studiare il segno si inverte** (F 16,3% contro M 13,6%, il vantaggio femminile p
 dei quattro territori). Le ragazze si muovono; smettono quando il motivo diventa il lavoro.
 → `genere_pendolarismo.csv`
 
-**Le uscite hanno due tempi diversi.** I ragazzi si assottigliano presto e a ondate (17-19
-e 23-24 anni) **con rientri netti dopo i 26**; le ragazze si perdono **dai 24-25 in poi,
-senza rientri**, cioè esattamente quando il vantaggio educativo dovrebbe convertirsi in
-lavoro e non lo fa (la coorte femminile che nel 2021 aveva 25-29 anni è a **96,3** tre anni
-dopo, contro 101,2 dei coetanei, 97,6 in Sicilia e 103,0 in Italia).
-→ `genere_coorti.csv`, `genere_ritenzione_eta.csv`
+**Dopo i 25 anni il divario non si chiude, e diventa femminile.** A 15-24 anni lo scarto di
+Bagheria da Palermo e dalla Sicilia non è di genere; a 25-49 lo è: le donne lavorano al
+**39,6%** contro il 48,0% di Palermo e il 47,6% della Sicilia (**−8,4 e −8,0 punti**), gli
+uomini sono a 1-3 punti. Al tasso femminile di Palermo sarebbero **695 occupate in più**,
+contro le 40 del 15-24. Non è solo la generazione delle madri: con il ricambio delle coorti
+lo scarto si sarebbe dovuto chiudere a −6,3 punti e resta a −8,4; le nate dal 1984 in poi
+portano circa −6 punti, i coetanei maschi quasi nulla. Il 25-49 qui è il test di che cosa
+succede dopo la fascia target, non una misura dei giovani.
+→ `genere_dopo_25_scarti.csv`, `genere_dopo_25_generazioni.csv`
 
-> **Conseguenza di progettazione**: un intervento che agisce sui 18-19enni non tocca le
-> ragazze che si perdono dopo i 24 anni. Servono due leve, o una leva con due finestre.
+**Le uscite hanno due tempi diversi.** Fra i 15 e i 19 anni si assottigliano soprattutto i
+ragazzi; all'uscita dal percorso formativo, fra i 20 e i 29 anni, le coorti di entrambi i
+generi si riducono 9-12 punti più che in Italia (coorti seguite per cinque anni). Nel
+triennio 2021-2024 la coorte femminile che nel 2021 aveva 25-29 anni è a **96,3** tre anni
+dopo, contro 101,2 dei coetanei, 97,6 in Sicilia e 103,0 in Italia; su cinque anni però la
+differenza di genere non si ripete, e le femmine stanno al livello di Palermo.
+→ `genere_coorti.csv`, `genere_ritenzione_decennale.csv`
+
+> **Conseguenza di progettazione**: un intervento che agisce sui 18-19enni non tocca il
+> secondo passaggio, l'uscita dal percorso formativo, dove la perdita riguarda entrambi i
+> generi e il deficit di lavoro diventa femminile. Servono due leve, o una leva con due
+> finestre.
 
 ---
 
@@ -106,9 +121,11 @@ transizione fra titolo posseduto, attivazione e primo esito, con un obiettivo di
 Il gruppo dei ~1.121 invisibili **non è femminile nelle dimensioni**: 573 ragazze e 549
 ragazzi, 51% F. È femminile **nell'etichetta**: casalinghe e casalinghi sono 387 contro 50
 (F contro M), e in "altra condizione" 183 contro 485. L'outreach deve quindi coprire
-**entrambi i generi con agganci diversi**: per le ragazze esiste già un'etichetta censuaria
-(casalinga) da cui partire nel contatto, per i ragazzi non c'è neppure quella e il canale va
-costruito.
+**entrambi i generi con agganci diversi**: è la **stessa inattività con etichette diverse**.
+La divisione per genere c'era già nel 2018-2019, con l'altro metodo del censimento, e
+l'eccesso femminile di inattività compare solo dopo i 25 anni (sezione 1). L'etichetta non
+identifica nessuno, e per i ragazzi non c'è neppure quella: il canale va costruito per
+entrambi.
 → `genere_composizione_stato_dettaglio.csv`
 
 La quota serve a impedire che un servizio formalmente neutro riproduca l'asimmetria che
@@ -175,14 +192,13 @@ Regole operative, gate e KPI nella sezione 4-bis, componente F2.
 
 ## 4-bis. Rotta F - il modulo di genere
 
-Nella finestra B il servizio incontra una popolazione che il titolo ce l'ha già, che per
-ottenerlo si è già mossa, e che si ferma quando il motivo dello spostamento diventa il
-lavoro. La quota della sezione 3 impedisce al servizio di riprodurre l'asimmetria; questo
+Nella finestra B il servizio incontra una popolazione che il titolo ce l'ha già e che, dopo
+i 25 anni, lavora molto meno delle donne di Palermo e della Sicilia (sezione 1). La quota della sezione 3 impedisce al servizio di riprodurre l'asimmetria; questo
 modulo dice **come** la si corregge. Tre componenti, una per ciascun anello che i dati
 mostrano rotto: il contatto, la barriera, la domanda.
 
-> **Il meccanismo in una riga**: le ragazze di Bagheria si spostano per studiare e si
-> fermano per lavorare.
+> **Il meccanismo in una riga**: le ragazze di Bagheria studiano più dei coetanei e, finito
+> lo studio, il lavoro non arriva.
 
 ### L'evidenza, un anello per componente
 
@@ -200,12 +216,13 @@ sarebbe del **18,8%**, se nessuna ne avesse meno di 20 del **25,8%** sulle 20-24
 il canale non è il matrimonio precoce.
 → `genere_casalinghe.csv`, `genere_casalinghe_bounds.csv`, `genere_stato_civile.csv`, fig02b
 
-**La barriera è di genere per costruzione.** Fra chi già si sposta **per lavoro** esce dal
+**Il pendolarismo va nello stesso verso.** Fra chi già si sposta **per lavoro** esce dal
 comune il **41,2%** dei maschi e il **33,0%** delle femmine (**8,2 punti**, contro 4,1 in
 Sicilia e 4,7 in Italia). Sullo **studio il segno si inverte**: F **16,3%** contro M
 **13,6%**, il vantaggio femminile più ampio del panel. Il denominatore è già condizionato
-al motivo (chi si sposta per lavoro un lavoro ce l'ha), quindi la misura non è un riflesso
-del gap occupazionale: è una conferma indipendente dello stesso punto di rottura.
+al motivo (chi si sposta per lavoro un lavoro ce l'ha): la misura è compatibile con lo
+stesso passaggio, non una sua conferma indipendente. Misura solo chi già lavora, e la fonte
+non ha l'età: sullo studio pesano i giovani, sul lavoro gli adulti fino a 64 anni.
 → `genere_pendolarismo.csv`, fig12
 
 Il thread mobilità lo **replica su un censimento diverso**: sulla matrice origine-destinazione
@@ -296,7 +313,7 @@ strumento amministrativo esistente riorientato su un target dichiarato.
 | | |
 |---|---|
 | **Platea di riferimento** | **573** ragazze 15-24 inattive e non studenti nel 2024 (387 casalinghe, 183 in altra condizione, 3 in pensione) |
-| **Finestra prioritaria** | **22-25**, dove il vantaggio educativo non si converte e la ritenzione si rompe senza rientri |
+| **Finestra prioritaria** | **22-25**, all'uscita dal percorso formativo, dove il vantaggio educativo dovrebbe convertirsi. Il deficit femminile più grande sta sopra i 25 anni: l'estensione ai 26-34 è un'opzione da decidere (sezione 1) |
 | **Presa in carico pilota** | **100** donne nel primo anno (la quota del 50% sui 200 della sezione 3, pari al 17% delle 573) |
 | **Componente F2** | tutte le prese in carico con un'opportunità fuori comune: è un filtro sull'istruttoria, non un sottogruppo finanziato |
 | **Componente F3** | fornitori e concessionari del Comune, senza tetto di platea |
@@ -317,10 +334,12 @@ Il primario del modulo è la **quota casalinghe**, non l'occupazione. Stesso obi
 convergenza, ma è l'unico dei due che, contro la variabilità dei comuni di taglia simile
 (sezione 6), supera l'80% di potenza su una finestra che non attraversa la rottura di
 misura del 2021: il biennio. È quindi il primo a restituire un verdetto (con il ritardo di
-circa due anni dei dati comunali). Due cautele lo accompagnano: dal 2021 la quota è una
+circa due anni dei dati comunali). Tre cautele lo accompagnano: dal 2021 la quota è una
 stima di modello del censimento, che può muoversi anche per ragioni di metodo, e si legge
-solo dentro la definizione 2021+; e si legge sempre accanto al tasso di occupazione, che è
-un conteggio. L'occupazione resta l'outcome che dà senso al primo e si legge sul triennio,
+solo dentro la definizione 2021+; si può muovere anche senza lavoro, perché fra le covariate
+del modello c'è la frequenza di un corso di studio risultante dai registri (Chianella,
+Ciccaglioni, Ercolani, RIEDS 2024); e per questo si legge sempre accanto al tasso di
+occupazione, che è un conteggio. L'occupazione resta l'outcome che dà senso al primo e si legge sul triennio,
 come direzione. Ridurre la quota di chi risulta casalinga non è un giudizio sul lavoro di
 cura: è il segnale che una scelta in più è diventata possibile.
 → `genere_mde.csv`, fig09b
@@ -495,7 +514,11 @@ quattro condizioni scritte nel protocollo:
 - **il pilota vede solo effetti grandi**: con 100 persone per coorte il confronto a sei mesi
   distingue effetti di 18-20 punti o più (17,8 se l'esito senza servizio è del 20%, 19,7 se
   è del 40%); con adesioni dimezzate la soglia sale a 26-28 punti. Un effetto più piccolo
-  resterebbe non dimostrato, non assente.
+  resterebbe non dimostrato, non assente. Le rassegne sui programmi attivi per il lavoro
+  trovano effetti medi vicini a zero nel breve periodo, più positivi due-tre anni dopo la
+  fine del programma e più grandi per le donne (Card, Kluve e Weber, *Journal of the
+  European Economic Association*, 2018): a sei mesi un confronto non significativo è l'esito
+  atteso anche per un servizio che funziona.
 → `genere_potenza_pilota.csv`
 
 **Sui KPI di popolazione: il controfattuale è dichiarato in anticipo, Palermo.** Il
@@ -507,7 +530,11 @@ campione indipendente; senza quel modello, la distanza fra la pendenza di Bagher
 di Palermo (−0,09 punti l'anno) è più piccola di quella del 67% dei comuni siciliani di
 taglia simile (`genere_pretrend_390.csv`). È un confronto indulgente, perché include le
 divergenze reali fra comuni: dice che la distanza da Palermo è ordinaria, non che le
-tendenze siano parallele. Le dieci gemelle strutturali (i comuni più
+tendenze siano parallele. Con un solo comune di confronto, poi, uno shock proprio di Bagheria
+o di Palermo non si separa dall'effetto: il confronto si fa anche con un **controllo
+sintetico** costruito sui 33 comuni di taglia simile, con test placebo sugli stessi comuni
+(la variabilità già misurata per i KPI, sezione 6), e Palermo resta il riferimento
+dichiarato. Le dieci gemelle strutturali (i comuni più
 simili a Bagheria per dimensione, densità, età, stranieri, abitazioni e distanza da
 Palermo) sono il secondo termine di confronto.
 → `genere_pretrend.csv`, `genere_gemelle.csv`
@@ -592,3 +619,5 @@ misurata sul triennio.
 - Non attribuisce l'inattività a una singola causa non osservata.
 - Non tratta la finestra 22-25 come un dato annuale: è una lettura pooled su triennio,
   con oscillazioni fino a 8 pp sulla singola età.
+- Non usa il 25-49 come misura dei giovani: serve solo a mostrare che il divario femminile
+  non si chiude dopo i 25 anni, e il test sulle generazioni non separa l'età dalla coorte.

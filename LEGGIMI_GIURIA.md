@@ -1,6 +1,6 @@
 # Guida alla lettura - DataPolis 2026, «Analisi e Visione per i Giovani di Bagheria»
 
-Versione rivista del 23 settembre 2026, che sostituisce l'invio del 30 agosto.
+Versione rivista del 24 settembre 2026, che sostituisce le versioni precedenti.
 
 Questo pacchetto contiene i tre deliverable richiesti dal bando: il technical notebook,
 le visualizzazioni e la policy proposal. Percorso di lettura consigliato, dal risultato

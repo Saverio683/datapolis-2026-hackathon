@@ -1,364 +1,647 @@
+<style>
+@page { size: A4; margin: 16mm 17mm 18mm; @bottom-right { content: "Ponte 19 · V2 · " counter(page); font: 9pt sans-serif; color: #444; } }
+html { color: #111; background: white; }
+body { font-family: "DejaVu Sans", sans-serif; max-width: none; margin: 0; padding: 0; font-size: 11pt; line-height: 1.35; }
+header#title-block-header { display: none; }
+h1 { font-size: 25pt; } h2 { font-size: 18pt; } h3 { font-size: 15pt; }
+h1, h2, h3 { break-after: avoid; }
+p, li { orphans: 3; widows: 3; }
+table { border-collapse: collapse; width: 100%; font-size: 9pt; }
+th, td { padding: 5px; border-bottom: 1px solid #bbb; text-align: left; vertical-align: top; }
+thead { display: table-header-group; } tr { break-inside: avoid; }
+code { font-size: 9pt; overflow-wrap: anywhere; }
+.prep, .slide, .appendix { break-before: page; }
+.slide h3 { font-size: 20pt; margin: 0 0 5mm; }
+.slide > p { font-size: 10pt; margin: 0 0 3mm; color: #333; }
+.slide blockquote { margin: 0 0 4mm; padding: 0; border: 0; color: #111; }
+.slide blockquote p { font-size: 16pt; line-height: 1.25; margin: 0; break-inside: avoid; }
+.slide em { font-style: normal; }
+.appendix h2 { break-before: page; }
+.appendix > h2:first-child { break-before: auto; }
+</style>
+
+<!-- PDF: pandoc docs/presentazione/COPIONE_PONTE_19.md --standalone --metadata title="Copione Ponte 19 · V2" --metadata lang=it -o /tmp/ponte19-copione.html
+Poi stampare l'HTML in PDF A4 al 100%, senza intestazioni del browser. Lo stile e le interruzioni di pagina sono incorporati qui. -->
+
 # Ponte 19 · Copione della presentazione
 
-DataPolis 2026 · Bagheria, 24 settembre · **Ale** (Alessandro Carosia) e **Saverio** (Saverio Randazzo)
+DataPolis 2026 · Bagheria, 24 settembre 2026\
+**Ale** (Alessandro Carosia) e **Saverio** (Saverio Randazzo)
 
-Deck di riferimento: `docs/presentazione/presentazione_hackaton_v2.pptx`, 18 slide. Ogni cifra di questo copione è stata ricontrollata il 23 settembre sui file di `data/processed/` indicati nel prontuario in fondo; `pipeline.verifica` rieseguito lo stesso giorno: 934 controlli su 934 superati.
+**Riferimento: presentazione_hackaton_v2.pptx, 18 slide.** Revisione del copione: 24 settembre 2026.
 
----
+## Come usare questa copia
 
-## Come è costruito
+È la presentazione ideale, scritta per essere pronunciata e consultata durante l'esposizione. Ogni slide ha una pagina autonoma: in alto trovate relatore, durata stimata e tempo cumulativo; sotto, soltanto il parlato e le indicazioni di regia.
 
-- **Una slide, una domanda.** Quasi ogni slide si apre con la domanda che il pubblico si sta già facendo, e la risposta arriva subito dopo, in una frase corta. È il ritmo della presentazione: domanda, pausa, numero, confronto.
-- **Una frase da titolo per slide.** È la frase che un giornalista in sala deve poter scrivere sul taccuino così com'è. È in **grassetto** nel testo, e ognuna regge davanti a uno statistico.
-- **Mai un numero di Bagheria da solo.** Ogni cifra arriva con il confronto (Palermo, Sicilia, Italia): il bando lo chiede per nome, e la giuria lo controlla.
-- **I limiti si dicono per primi.** NEET 15-34, incrocio titolo-lavoro, fuga: li dichiariamo noi prima che ce li chiedano. Detto per primi è metodo; tirato fuori da una domanda è una mancanza.
-- **Numeri a voce in forma parlata.** «Una su dodici», «più di uno su quattro», «la metà»: ogni forma parlata è stata ricontrollata sul decimale.
-- **Due voci, quattro passaggi di testimone.** Ale apre, Saverio porta il metodo e l'area studio-lavoro, Ale il focus femminile, Saverio la proposta e la misura, Ale tempi e mobilità, chiusura a due voci.
+- **Testo nei blocchi citati:** parole da pronunciare. Gli a capo seguono unità di senso, non impongono una pausa dopo ogni riga.
+- **Grassetto:** parole guida e cifre da ritrovare a colpo d'occhio.
+- **[INDICA…], [PAUSA], [CAMBIO SLIDE], [PASSA…]:** azioni, non parole da leggere. Una pausa segnata vale circa due secondi.
+- **✂:** paragrafo facoltativo, da omettere per intero. I tagli non eliminano denominatori, limiti necessari o passaggi di voce; non costituiscono una versione da dieci minuti.
 
-**Legenda.** Il testo da dire è nei riquadri citati. *[Corsivo tra parentesi]* = regia, non si legge. **Grassetto** = parola da scandire. ✂ = taglio per la versione corta: all'inizio di un paragrafo si salta tutto il paragrafo, dentro un paragrafo si salta solo la frase che segue.
+Guardate il foglio per recuperare il punto, poi rialzate lo sguardo. Quando indicate un grafico, lasciate al pubblico il tempo di trovare ciò che state nominando. Chi non parla segue slide e tempi; i passaggi di voce sono già scritti.
 
----
+**Stampa:** A4, scala 100%, solo fronte; parlato a 16 punti, nero su bianco. Le pagine sono numerate. Stampate le **pagine 3–20** per l'esposizione e tenete l'appendice separata per preparazione e domande.
 
-## Scaletta e tempi
+**Prova:** leggete ad alta voce con le slide, indicando davvero i grafici e voltando le pagine. Ripetete una volta con i passaggi fra relatori. Se il tempo supera lo slot, tagliate il testo prima di aumentare la velocità.
 
-| # | Slide | Chi | Piena | Fine a | Con ✂ | Fine a |
-|---|---|---|---|---|---|---|
-| 1 | Ponte 19 | Ale | 0:40 | 0:40 | 0:40 | 0:40 |
-| 2 | Il problema è una catena | Ale | 1:00 | 1:40 | 0:40 | 1:20 |
-| 3 | Fonti trattate | Saverio | 0:45 | 2:25 | 0:40 | 2:00 |
-| 4 | Tre cifre | Saverio | 0:55 | 3:20 | 0:55 | 2:55 |
-| 5 | Area 1 · Titolo di studio e lavoro | Saverio | 0:15 | 3:35 | 0:05 | 3:00 |
-| 6 | Il deficit resta nel confronto | Saverio | 0:45 | 4:20 | 0:40 | 3:40 |
-| 7 | Il nucleo inattivo | Saverio | 0:45 | 5:05 | 0:45 | 4:25 |
-| 8 | L'incrocio individuale non c'è | Saverio | 0:40 | 5:45 | 0:40 | 5:05 |
-| 9 | Area 2 · Focus femminile | Ale | 0:05 | 5:50 | 0:05 | 5:10 |
-| 10 | Più diploma, meno lavoro | Ale | 0:45 | 6:35 | 0:45 | 5:55 |
-| 11 | Il tasso cresce, il divario resta | Ale | 0:35 | 7:10 | 0:35 | 6:30 |
-| 12 | Casalinghe nel censimento | Ale | 0:40 | 7:50 | 0:40 | 7:10 |
-| 13 | Mobilità e finestra | Ale | 1:00 | 8:50 | 0:40 | 7:50 |
-| 14 | Ponte 19 · la proposta | Saverio | 0:25 | 9:15 | 0:10 | 8:00 |
-| 15 | Dal contatto all'opportunità | Saverio | 0:50 | 10:05 | 0:45 | 8:45 |
-| 16 | Come si misura | Saverio | 1:00 | 11:05 | 0:55 | 9:40 |
-| 17 | Tempi e raggiungibilità | Ale | 0:45 | 11:50 | 0:35 | 10:15 |
-| 18 | Conclusione | Saverio + Ale | 0:50 | 12:40 | 0:45 | 11:00 |
+Le cifre sono riferite ai file elencati nel prontuario finale. Il 24 settembre `pipeline.verifica` ha superato 934 controlli su 934. Le note di metodo, le formulazioni da evitare e le risposte alla giuria sono raccolte in appendice.
 
-Tempi misurati contando le parole del testo parlato, a 135 parole al minuto, con due secondi per ogni pausa segnata. A un ritmo più sciolto (150 parole al minuto) la versione piena scende a circa 11:25 e quella con i ✂ a circa 9:50. **La durata dello slot non è scritta in nessun documento del repository**: gli appunti del 23 settembre stimano 10:40-13:20, il vecchio prompter parla di 10 minuti. Con uno slot da 10 minuti la versione con i ✂ ci sta solo a ritmo sciolto; con 12 minuti o più si studia quella piena. Cronometratevi a voce alta almeno due volte: il tempo vero lo dà la prova, non il conteggio delle parole.
+::: {.prep}
+## Scaletta e tempi stimati
 
-**Regia generale.** Chi parla ha il telecomando. Chi non parla sta un passo indietro e guarda lo schermo, non il pubblico. I passaggi di testimone sono scritti: si dicono così, senza «ok, ora passo la parola».
+| Slide | Passaggio | Voce | Durata | Fine prevista |
+|---|---|---|---|---|
+| 1 | Ponte 19 | ALE | 0:40 | 0:40 |
+| 2 | Il problema è una catena | ALE | 0:55 | 1:35 |
+| 3 | Fonti trattate | SAVERIO | 0:45 | 2:20 |
+| 4 | Tre cifre, due denominatori | SAVERIO | 1:05 | 3:25 |
+| 5 | Area 1: titolo di studio e lavoro | SAVERIO | 0:15 | 3:40 |
+| 6 | Il deficit resta nel confronto | SAVERIO | 0:55 | 4:35 |
+| 7 | Dentro il dato: chi non cerca | SAVERIO | 0:50 | 5:25 |
+| 8 | L'incrocio individuale non c'è | SAVERIO | 0:45 | 6:10 |
+| 9 | Area 2: focus femminile | ALE | 0:15 | 6:25 |
+| 10 | Più diploma, meno lavoro | ALE | 0:40 | 7:05 |
+| 11 | Il tasso cresce, il divario resta | ALE | 0:40 | 7:45 |
+| 12 | Casalinghe nel censimento | ALE | 0:45 | 8:30 |
+| 13 | Mobilità e finestra di intervento | ALE | 1:00 | 9:30 |
+| 14 | Ponte 19: la proposta | SAVERIO | 0:25 | 9:55 |
+| 15 | Dal contatto all'opportunità | SAVERIO | 1:00 | 10:55 |
+| 16 | Come si misura | SAVERIO | 1:00 | 11:55 |
+| 17 | Tempi e raggiungibilità | ALE | 0:50 | 12:45 |
+| 18 | Conclusione | SAVERIO + ALE | 0:45 | 13:30 |
 
----
+**Durata indicativa: 13:30.** È una stima dal testo aggiornato, non una prova cronometrata: 135 parole al minuto, due secondi per pausa, quattro secondi per slide per cambio e consultazione, tre per passaggio di voce, arrotondando ogni slide ai cinque secondi superiori. La lettura dei grafici può richiedere altro tempo.
 
-## Blocco 1 · Apertura e metodo
+La durata ufficiale dello slot non è documentata nel repository. Questa versione non va considerata compatibile con dieci minuti: se quello è il limite, occorre una riduzione dedicata. Segnate a matita i tempi reali dopo la prova.
+:::
 
-### Slide 1 · Ponte 19 · ALE · 0:40
+::: {.slide}
+### Slide 1 · Ponte 19
 
-*[A schermo: titolo «Un servizio che va a cercare chi non cerca e che misura se funziona». Ale al centro, parte senza presentarsi: il nome arriva dopo la domanda.]*
+**ALE** · Stima **0:40** · Fine prevista **0:40**
 
-> Buongiorno. Parto da una domanda. Quante ragazze fra i 15 e i 24 anni, a Bagheria, hanno un lavoro?
->
-> *[Pausa: due secondi pieni. Guardare la sala.]*
->
-> **Una su dodici.** A Palermo quasi una su dieci. In Italia più di una su sei. Eppure, fra ragazze e ragazzi, sono proprio loro ad avere più spesso il diploma.
->
-> *[Pausa.]*
->
-> Siamo Alessandro Carosia e Saverio Randazzo. Da questo paradosso nasce la nostra proposta: **Ponte 19**, un servizio che **va a cercare chi non cerca**, e che **misura se funziona**.
+*[GUARDA LA SALA]*
 
-Titolo da taccuino: **«Più diploma, metà lavoro: il paradosso delle ragazze di Bagheria».**
+> Buongiorno. Quante ragazze fra i 15 e i 24 anni,\
+> a Bagheria, hanno un lavoro?
 
-### Slide 2 · Il problema è una catena · ALE · 1:00
+*[PAUSA]*
 
-*[A schermo: tre punti colorati e «Serve un servizio attivo, non solo uno sportello».]*
+> **Circa una su dodici**, nel 2024.\
+> A Palermo quasi una su dieci. In Italia più di una su sei.\
+> Eppure, a Bagheria, le ragazze hanno più spesso\
+> almeno il diploma rispetto ai ragazzi.
 
-> Il bando chiede i NEET fra i 15 e i 34 anni. Lo diciamo subito: nelle fonti comunali che abbiamo consultato, per Bagheria quel numero non è pubblicato. A livello comunale l'unica fascia giovane su studio e lavoro è 15-24, e il NEET 15-29 si ferma al 2011. Non l'abbiamo inventato: lavoriamo sulla fascia che esiste.
->
-> *[Pausa.]*
->
-> Cosa vediamo? Tre rotture.
->
-> ✂ Molti giovani sono fuori da lavoro e studio, e la maggior parte non cerca. Bagheria migliora, ma resta sotto i territori di confronto. E il divario delle ragazze non nasce a scuola: compare con il lavoro.
->
-> Tre misure dello stesso territorio, non la storia di una persona. Una conclusione: **serve un servizio attivo, non solo uno sportello.**
->
-> Da dove vengono questi numeri? Saverio.
+> Siamo Alessandro Carosia e Saverio Randazzo.\
+> Da questo contrasto nasce **Ponte 19**:\
+> un servizio che va a cercare chi non cerca,\
+> e che misura se funziona.
 
-Titolo da taccuino: **«Il numero che il bando chiede non è pubblicato. Non l'abbiamo inventato».**
+*[CAMBIO SLIDE]*
+:::
 
-### Slide 3 · Fonti trattate · SAVERIO · 0:45
+::: {.slide}
+### Slide 2 · Il problema è una catena
 
-*[A schermo: i tre esagoni ISTAT, 8milaCensus, MIUR.]*
+**ALE** · Stima **0:55** · Fine prevista **1:35**
 
-> Prima dei numeri, il metodo. Solo fonti ufficiali, ognuna con un ruolo. Il **Censimento permanente ISTAT** è il presente: lavoro, istruzione, popolazione, dal 2018 al 2024. **8milaCensus** è la memoria: il NEET 15-29 del 2011 viene da lì, e resta separato dai dati di oggi. ✂ Dal censimento vengono anche gli spostamenti quotidiani per studio e lavoro. L'anagrafe **MIUR** delle scuole tecniche non misura risultati: ci dice dove cercare i ragazzi.
->
-> *[Pausa.]*
->
-> E una regola: **prima i controlli, poi il racconto.** 934 controlli automatici ricalcolano i numeri chiave dai dati di partenza. Oggi li superano tutti.
+> Il bando chiede di studiare i NEET fra 15 e 34 anni.\
+> Nelle fonti comunali consultate, quel dato non è pubblicato.\
+> Per studio e lavoro usiamo la fascia disponibile, **15–24 anni**.\
+> La chiamiamo «fuori da lavoro e studio»:\
+> è un indicatore diverso dal NEET richiesto.
 
-Titolo da taccuino: **«Prima i controlli, poi il racconto».**
+*[INDICA I TRE PUNTI]*
 
-Attenzione: «controlli di coerenza e riproducibilità», mai «la pipeline garantisce tutto».
+> ✂ Vediamo tre segnali: molti giovani sono fuori da lavoro e studio;\
+> Bagheria resta sotto i territori di confronto;\
+> al vantaggio femminile nel diploma si affianca\
+> uno svantaggio nell'occupazione.
 
-### Slide 4 · Tre cifre · SAVERIO · 0:55
+> Sono misure dello stesso territorio.\
+> Non ricostruiscono il percorso delle singole persone.\
+> La proposta è affiancare agli sportelli **un contatto attivo**.
 
-*[A schermo: 26,9% · 70,6% · 12,4%, sotto le barre 2018/2024 e le tre linee. Indicare le cifre una alla volta.]*
+> Saverio, partiamo dalle fonti.
 
-> Quanti giovani di Bagheria sono fuori sia dal lavoro sia dallo studio?
->
-> *[Pausa.]*
->
-> Più di uno su quattro: il **26,9%** dei 15-24enni, nel 2024. In Sicilia, poco più di uno su cinque.
->
-> Ma la domanda che ha deciso il nostro progetto è un'altra: di questi ragazzi, quanti cercano lavoro? Tre su dieci. Gli altri sette, il **70,6%**, non risultano in cerca: il valore più alto fra i quattro territori. E l'occupazione giovanile, al **12,4%**, è la più bassa.
->
-> *[Pausa.]*
->
-> «Non in cerca» è una categoria del censimento, non un'intenzione: non diciamo che non vogliono lavorare. Diciamo che **uno sportello vede solo chi bussa. E sette su dieci non bussano.**
+*[PASSA A SAVERIO · CAMBIO SLIDE]*
+:::
 
-Titolo da taccuino: **«Sette su dieci non bussano: i giovani che nessuno sportello vede».**
+::: {.slide}
+### Slide 3 · Fonti trattate
 
-Trappola a schermo: nella barra 2018 si legge **8,2%**. È l'occupazione **totale** 15-24 del **2018**, non quella femminile del 2024 che Ale citerà tra poco. Stesso numero per coincidenza. Non indicarla; se qualcuno la nota, si dice esattamente questo.
+**SAVERIO** · Stima **0:45** · Fine prevista **2:20**
 
-Le barre 2018 e 2024 stanno ai due lati di una **rottura di misura**: fra 2019 e 2021 il censimento permanente cambia la misura di chi è «in cerca» (`docs/sources.md`, righe 545-549), quindi la divisione fra «in cerca» e «inattivi non studenti» non è confrontabile nel tempo. Si commentano i valori del 2024, mai la differenza fra le due barre. Gli occupati non ne sono toccati, e i confronti fra territori nello stesso anno restano validi.
+*[INDICA LE FONTI IN ORDINE]*
 
-### Slide 5 · Area 1 · Titolo di studio e lavoro · SAVERIO · 0:15
+> Ogni fonte ha un ruolo.\
+> Il **Censimento permanente ISTAT** descrive lavoro,\
+> istruzione e popolazione nelle annate disponibili dal 2018 al 2024.
 
-> Prima area: **titolo di studio e lavoro.** ✂ Una premessa, prima del grafico: nei dati comunali il legame fra il titolo di una persona e il suo lavoro non si vede, e lo leggiamo con due misure affiancate.
+> **8milaCensus** fornisce il confronto storico:\
+> il NEET 15–29 del 2011 resta separato dai dati recenti.
 
----
+> L'anagrafe **MIUR delle scuole tecniche** aiuta a individuare\
+> canali di contatto per il servizio.
 
-## Blocco 2 · Titolo di studio e lavoro (Saverio)
+> ✂ Per la mobilità usiamo anche le tavole del pendolarismo,\
+> dichiarando anno e popolazione osservata.
 
-### Slide 6 · Il deficit resta nel confronto · SAVERIO · 0:45
+*[GUARDA LA SALA]*
 
-*[A schermo: dot plot rosso (Bagheria) contro blu (Sicilia). Scorrere le righe dall'alto in basso.]*
+> **Prima i controlli, poi il racconto.**\
+> La pipeline esegue 934 controlli di coerenza e riproducibilità.\
+> Controlliamo i passaggi dai dati alle cifre che presentiamo.
 
-> Bagheria oggi ha più diplomati e più occupati di sei anni fa? Sì. Basta?
->
-> *[Pausa.]*
->
-> No. Fra gli adulti di 25-49 anni, dove il titolo è ormai completo, ha almeno il diploma il **62,4%**, contro il 66,5% della Sicilia; lavora il **53,6%**, contro il 59,3. Fra i 15-24enni l'occupazione è al 12,4%, contro il 15,6: **tre punti sotto.**
->
-> È un confronto descrittivo, non una prova di causa. Ma dice che **migliorare non basta, se il divario resta aperto.** ✂ La risposta non è un altro corso generico: è accompagnare il passaggio al lavoro.
+*[CAMBIO SLIDE]*
+:::
 
-Titolo da taccuino: **«Bagheria migliora, ma per i giovani il divario non si chiude».**
+::: {.slide}
+### Slide 4 · Tre cifre, due denominatori
 
-Se serve il «prima» (solo a domanda): fra gli adulti 25-49 Bagheria recupera un po', ma non chiude. Il distacco dalla Sicilia sul diploma passa da −5,2 a −4,1 punti e quello sull'occupazione da −7,3 a −5,7. Fra i 15-24enni il distacco sull'occupazione è −3,1 punti sia nel 2018 sia nel 2024. La rottura di misura 2019-2021 tocca solo chi cerca lavoro, non gli occupati né i titoli di studio: qui il confronto 2018-2024 regge. Mai «non recupera» sugli adulti.
+**SAVERIO** · Stima **1:05** · Fine prevista **3:25**
 
-### Slide 7 · Il nucleo inattivo · SAVERIO · 0:45
+*[INDICA 26,9%]*
 
-*[A schermo: tre linee 2018-2024, banda grigia sul 2020.]*
+> A Bagheria, nel 2024, il **26,9% dei 15–24enni**\
+> è fuori sia dal lavoro sia dallo studio: più di uno su quattro.\
+> In Sicilia è il 22,3%.
 
-> L'area fuori da lavoro e studio si sta restringendo. Buona notizia? Guardiamo dentro. Prima un avvertimento: fra il 2019 e il 2021 il censimento cambia il modo di misurare chi cerca lavoro, e il 2020 manca. Quindi confrontiamo solo dal 2021 in poi.
->
-> *[Indicare il tratto dal 2021, linea gialla.]* Dal 2021 scende chi cerca lavoro: dal 10,6% al **7,9%**. *[Indicare la linea rossa.]* Chi è fuori e non cerca è fermo: 19,2% allora, **19,0%** oggi. Circa **millecento ragazze e ragazzi**: una stima dalle tavole, non un elenco di nomi.
->
-> Il dato che regge è quello di oggi: **quasi uno su cinque è fuori da lavoro e studio, e non cerca.**
+*[INDICA 70,6%]*
 
-Titolo da taccuino: **«Il recupero c'è, ma lascia indietro chi non cerca».**
+> Ora restringiamo il gruppo a chi è fuori da lavoro e studio.\
+> **Fra questi**, il 70,6% non risulta in cerca di lavoro:\
+> circa sette su dieci, la quota più alta dei quattro territori.
 
-L'avvertimento sulla rottura di misura non si taglia mai: `docs/sources.md` impone di dichiararlo ogni volta che si cita questa serie, e un giurato statistico lo cerca. Il grafico parte dal 2018, ma a voce i livelli si confrontano solo dal 2021. Mai «dal 37,7% al 26,9%» e mai «dal 18,1% al 7,9%»: sono livelli presi a cavallo della rottura.
+*[INDICA 12,4%]*
 
-### Slide 8 · L'incrocio individuale non c'è · SAVERIO · 0:40
+> L'occupazione è invece il **12,4% di tutti i 15–24enni**,\
+> la quota più bassa dei quattro territori.
 
-*[A schermo: tavola istruzione, tavola lavoro, «incrocio non pubblicato».]*
+> Nei grafici sotto leggiamo qui i valori del 2024.\
+> Fra 2019 e 2021 cambia la misura di chi cerca lavoro:\
+> la composizione delle due barre non è direttamente confrontabile.
 
-> E adesso la domanda che vi aspettate: **quanti diplomati di Bagheria lavorano?**
->
-> *[Pausa.]*
->
-> Non lo sappiamo: le tavole comunali pubbliche non lo dicono. La tavola dell'istruzione non dice chi lavora; la tavola del lavoro non dice che titolo ha. Potevamo incollarle e tirare fuori un numero. Sarebbe stato un numero falso.
->
-> Abbiamo scelto un'altra strada: **il dato che manca lo produce il servizio.** Per ogni partecipante: titolo, condizione di partenza, percorso, esito.
->
-> C'è però un punto in cui due misure affiancate raccontano già molto: il genere. Ale.
+*[PAUSA]*
 
-Titolo da taccuino: **«Il dato che manca, lo produce il servizio».**
+> Non cercare lavoro non significa non voler lavorare,\
+> né dimostra che una persona non usi gli sportelli.\
+> Il dato ci porta a progettare **anche un contatto attivo**.
 
----
+*[CAMBIO SLIDE]*
+:::
 
-## Blocco 3 · Focus femminile (Ale)
+::: {.slide}
+### Slide 5 · Area 1: titolo di studio e lavoro
 
-### Slide 9 · Area 2 · Focus femminile · ALE · 0:05
+**SAVERIO** · Stima **0:15** · Fine prevista **3:40**
 
-> Focus femminile. ✂ Non cerchiamo un colpevole: cerchiamo il punto in cui il divario si concentra.
+> Partiamo da **istruzione e lavoro**:\
+> due misure da leggere insieme,\
+> senza attribuirle alle stesse persone.
 
-### Slide 10 · Più diploma, meno lavoro · ALE · 0:45
+*[CAMBIO SLIDE]*
+:::
 
-*[A schermo: barre rosa e blu, 510 vs 462, 82 vs 165.]*
+::: {.slide}
+### Slide 6 · Il deficit resta nel confronto
 
-> Chi ha più spesso il diploma, a Bagheria: le ragazze o i ragazzi?
->
-> *[Pausa.]*
->
-> Le ragazze. Su mille ragazze fra 15 e 24 anni, **510** hanno almeno il diploma; su mille ragazzi, **462**. E chi lavora di più?
->
-> *[Pausa.]*
->
-> I ragazzi: **165** su mille. Le ragazze, **82. La metà.**
->
-> Una precisazione che conta: le due barre non sono un imbuto. Non sappiamo quante delle 510 diplomate siano fra le 82 che lavorano. Sono due fotografie della stessa popolazione, e insieme dicono una cosa sola: **più diploma, metà lavoro.**
+**SAVERIO** · Stima **0:55** · Fine prevista **4:35**
 
-Titolo da taccuino: **«Più diploma, metà lavoro».**
+*[INDICA I PUNTI ROSSI E BLU]*
 
-Mai: «le diplomate non trovano lavoro», «il diploma non si converte» (come percorso di una persona), «le ragazze più istruite d'Italia».
+> Ogni riga confronta **Bagheria, in rosso, e Sicilia, in blu**,\
+> nel 2024. Più a destra significa una percentuale più alta.
 
-### Slide 11 · Il tasso cresce, il divario resta · ALE · 0:35
+> Le prime due righe riguardano gli adulti fra **25 e 49 anni**.\
+> A Bagheria ha almeno il diploma il 62,4%, contro il 66,5%;\
+> lavora il 53,6%, contro il 59,3%.
 
-*[A schermo: quattro linee, Bagheria in basso.]*
+*[INDICA LE ULTIME DUE RIGHE]*
 
-> Allora va sempre peggio? No, e qui bisogna essere precisi. Il tasso di occupazione delle ragazze fra 15 e 24 anni è passato dal 4,7% del 2018 all'**8,2%** del 2024: il valore più alto della serie. Ma cresce ovunque. Palermo **9,6**. Sicilia **10,4**. Italia **17,3**. E in tutte e sei le annate disponibili, Bagheria è ultima.
->
-> *[Pausa.]*
->
-> Il titolo non è «crollo». Il titolo è: **Bagheria corre, ma non raggiunge.**
+> Qui passiamo ai **15–24enni**.\
+> L'occupazione è al 12,4%, contro il 15,6% della Sicilia:\
+> circa tre punti sotto.
 
-Titolo da taccuino: **«Le ragazze di Bagheria corrono, ma restano ultime».**
+> Nell'ultima riga una quota più alta è invece uno svantaggio:\
+> chi è fuori da lavoro e studio e non cerca è il 19%,\
+> contro il 14,8%.
 
-Vietato: «minimo storico» (l'8,2 è il **massimo** della serie di Bagheria), «crolla», «peggiora», «significativamente».
+> **Il divario resta aperto.** Sono confronti descrittivi:\
+> orientano la proposta, senza dimostrare una causa.
 
-### Slide 12 · Casalinghe nel censimento · ALE · 0:40
+*[CAMBIO SLIDE]*
+:::
 
-*[A schermo: quattro barre orizzontali, Bagheria 13,4% in cima.]*
+::: {.slide}
+### Slide 7 · Dentro il dato: chi non cerca
 
-> C'è un'altra voce del censimento in cui Bagheria spicca. Quante ragazze fra 15 e 24 anni il censimento classifica come casalinghe?
->
-> *[Pausa.]*
->
-> Il **13,4%**. Palermo 11,3, Sicilia 10,1, Italia 4,6: **quasi il triplo della media italiana.**
->
-> Diciamo anche cosa questo numero non è: non misura ore di cura, figli, famiglia. E non è nemmeno una risposta delle ragazze: dal 2021 ISTAT stima questa condizione con un modello statistico. Noi lo usiamo per due cose: sapere **dove andare a cercare**, e fissare una **quota**. Almeno metà dei posti alle ragazze, perché un servizio neutro sulla carta non riproduca lo squilibrio che vuole correggere.
+**SAVERIO** · Stima **0:50** · Fine prevista **5:25**
 
-Titolo da taccuino: **«Casalinghe prima dei 25 anni: a Bagheria quasi il triplo della media italiana».**
+*[INDICA LE TRE LINEE]*
 
-Mai: «carico di cura», «responsabilità familiari», «la famiglia è la barriera», «si dichiarano casalinghe», «hanno risposto casalinga».
+> Le percentuali sono su tutti i **15–24enni di Bagheria**.\
+> La linea grigia è il totale fuori da lavoro e studio:\
+> comprende chi cerca, in giallo, e chi non cerca, in rosso.
 
-### Slide 13 · Mobilità e finestra · ALE · 1:00
+> Il 2020 manca. Fra 2019 e 2021 cambia la misura\
+> di chi cerca lavoro: **confrontiamo solo dal 2021**.
 
-*[A schermo: a sinistra barre studio/lavoro per genere, a destra le curve di ritenzione. Prima indicare la sinistra, poi la destra.]*
+*[INDICA IL TRATTO DAL 2021 AL 2024]*
 
-> ✂ Sono le donne a muoversi meno? Dipende dal motivo. *[Indicare il pannello sinistro.]* Fra chi si sposta ogni giorno per studiare, esce dal comune il **16,3%** delle donne, contro il 13,6% degli uomini. Per lavorare il segno si capovolge: **33,0%** delle donne, **41,2%** degli uomini. Dati 2019.
->
-> *[Indicare il pannello destro.]* Fino a che età Bagheria trattiene le sue ragazze? Per ogni età confrontiamo le residenti del 2021 con la stessa generazione tre anni dopo; sull'asse, l'età nel 2021. Dai 17 ai 23 anni la linea rossa sta sopra il cento; dai 24 scende sotto, e non ci torna più.
->
-> *[Pausa.]*
->
-> È un saldo netto, arrivi meno partenze: non dice chi parte, né dove va. Ma indica **quando** intervenire: **prima che si chiuda la finestra fra i 22 e i 25 anni.**
->
-> Come diventa tutto questo un servizio? Saverio.
+> Chi cerca passa dal 10,6% al **7,9%**.\
+> Chi è fuori e non cerca resta quasi fermo:\
+> dal 19,2% al **19,0%**.
 
-Titolo da taccuino: **«Per studiare escono di più, per lavorare di meno».**
+*[PAUSA]*
 
-Se si taglia il primo paragrafo (pannello sinistro), si parte da «Fino a che età Bagheria trattiene le sue ragazze?» e i dati di pendolarismo restano per il Q&A.
+> **Quasi un giovane su cinque**, nel 2024.\
+> È il gruppo che il contatto attivo vuole raggiungere.
 
-Mai: «abbiamo contato le ragazze che emigrano», «le ragazze vanno a Palermo» (sul 2019 per genere la destinazione non c'è), agganciare il 96,3 alla finestra 22-25. Nel pannello sinistro si dice «donne» e «uomini», non «ragazze» e «ragazzi»: la tavola del pendolarismo non ha l'età, anche se il sottotitolo della slide dice «le ragazze». Dopo il minimo dei 28 anni la curva risale un po' (98,4 a 30), ma resta sotto il cento: per questo si dice «non ci torna più», mai «non risale».
+> ✂ Parliamo di circa millecento persone:\
+> una stima dalle tavole, non un elenco di nomi.
 
----
+*[CAMBIO SLIDE]*
+:::
 
-## Blocco 4 · La proposta
+::: {.slide}
+### Slide 8 · L'incrocio individuale non c'è
 
-### Slide 14 · Ponte 19 · SAVERIO · 0:25
+**SAVERIO** · Stima **0:45** · Fine prevista **6:10**
 
-*[A schermo: «Servizio comunale di transizione e riattivazione per i 18-25».]*
+> Quanti diplomati di Bagheria lavorano?
 
-> Eccolo. **Ponte 19**: un servizio comunale di transizione e riattivazione per i ragazzi fra 18 e 25 anni. Quattro parole: **contatto attivo, quota femminile, opportunità verificate, esiti misurati.** ✂ Una nota sulla fascia: i dati osservano i 15-24, il servizio lavora su due finestre, dai 18 ai 20 anni e dai 22 ai 25.
+*[PAUSA · INDICA LE DUE TAVOLE]*
 
-### Slide 15 · Dal contatto all'opportunità · SAVERIO · 0:50
+> Le tavole comunali usate non permettono di rispondere.\
+> Quella dell'istruzione non dice chi lavora;\
+> quella del lavoro non dice quale titolo ha.\
+> La scritta al centro indica proprio **l'incrocio mancante**.
 
-*[A schermo: quattro frecce. Toccare ogni freccia mentre la si nomina.]*
+> Perciò il servizio raccoglierà, per ogni partecipante,\
+> **titolo, condizione iniziale, percorso ed esito**.\
+> Costruirà il dato sui propri partecipanti,\
+> senza rappresentare automaticamente tutta Bagheria.
 
-> Come funziona, per un ragazzo? Quattro passaggi.
->
-> **Uno, contatto attivo:** non aspettiamo che si iscriva, andiamo a cercarlo, a partire dalle scuole nel momento in cui le lascia.
->
-> **Due, un piano entro quindici giorni,** con una sola prossima azione verificabile. ✂ Può essere tornare a studiare, una qualifica breve, una ricerca accompagnata o un'esperienza di lavoro.
->
-> **Tre, un'opportunità verificata:** se è un'esperienza di lavoro, attività vera, un mentor, un compenso, e la certezza di poterci arrivare.
->
-> **Quattro, esiti misurati** a tre, sei e dodici mesi.
->
-> *[Pausa.]*
->
-> Nel primo anno: **200 posti, almeno 100 per le ragazze.** Duecento è la capacità di un pilota che si può gestire e valutare, non una stima del bisogno.
+> Le misure aggregate permettono però un altro confronto:\
+> quello fra ragazze e ragazzi. Ale.
 
-Titolo da taccuino: **«Un servizio che bussa, invece di aspettare che si bussi».**
+*[PASSA AD ALE · CAMBIO SLIDE]*
+:::
 
-Mai: «200 coprono il 18% della platea» (i 18-25 del servizio e i 15-24 dei dati non coincidono), «tutti avranno un tirocinio». Le esperienze retribuite partono solo se l'audit dei primi 90 giorni trova almeno 30 posizioni vere, con domanda e mentor verificati (policy, §5).
+::: {.slide}
+### Slide 9 · Area 2: focus femminile
 
-### Slide 16 · Come si misura · SAVERIO · 1:00
+**ALE** · Stima **0:15** · Fine prevista **6:25**
 
-*[A schermo: tre riquadri, indicatori territoriali · esiti del servizio · valutazione.]*
+> Nel **focus femminile** affianchiamo diploma e occupazione.\
+> Guardiamo come cambia il segno del divario.
 
-> Come sapremo se funziona? Misuriamo tre cose, senza confonderle.
->
-> **Il territorio:** i due indicatori di Ale. Occupazione femminile dall'8,2 al **9,6%** di Palermo; casalinghe dal 13,4 all'**11,3%**. Traguardi di **convergenza**: dicono la direzione, non provano l'effetto, perché uno spostamento così piccolo si confonde con il modo in cui i comuni simili si muovono da soli.
->
-> **Il servizio:** a sei mesi, chi abbiamo seguito lavora, studia o si forma? A dodici, l'esito regge?
->
-> **La valutazione:** si parte in due gruppi da cento, a sei mesi di distanza. A parità di priorità l'ordine si estrae a sorte, e chi aspetta il turno fa da gruppo di confronto sull'esito a sei mesi. ✂ Tutti gli ammessi ricevono il servizio: cambia solo quando. Il protocollo si pubblica **prima** di partire.
->
-> *[Pausa.]*
->
-> In una frase: **il pilota produce la propria prova.**
->
-> Quando si parte, e come ci si arriva? Ale.
+*[CAMBIO SLIDE]*
+:::
 
-Titolo da taccuino: **«Il pilota produce la propria prova».**
+::: {.slide}
+### Slide 10 · Più diploma, meno lavoro
 
-Mai: «il pilota porterà il tasso comunale al 9,6%», «+40 occupate prodotte dal servizio», «Palermo dimostra l'effetto». Attenzione: la policy consegnata (§7) scrive «il controfattuale è dichiarato in anticipo: Palermo». Se lo citano, la conciliazione è nella risposta 9 della giuria. Le domande su potenza, MDE e lista d'attesa le prende Ale.
+**ALE** · Stima **0:40** · Fine prevista **7:05**
 
-### Slide 17 · Tempi e raggiungibilità · ALE · 0:45
+*[INDICA LE BARRE SUPERIORI]*
 
-*[A schermo: 90 giorni · 12 mesi · 3-6-12 mesi, sotto il vincolo operativo.]*
+> Confrontiamo **mille ragazze e mille ragazzi**,\
+> fra 15 e 24 anni, a Bagheria nel 2024.\
+> Rosa per le ragazze, blu per i ragazzi.
 
-> Quando? **Novanta giorni** per prepararsi: verifica dei datori di lavoro, dei canali di contatto, della quota di genere. ✂ Poi un cancello: senza posizioni vere, non si ripiega sulla formazione generica. Quindi **dodici mesi** di servizio a scaglioni, con esiti rilevati a tre, sei e dodici mesi.
->
-> *[Pausa.]*
->
-> La mobilità entra qui, come regola: un'opportunità entra nel piano solo se ci si arriva con il trasporto pubblico, **negli orari veri di quel lavoro.** ✂ Altrimenti si rinegozia l'orario con il datore, o l'opportunità esce dal piano. Niente promesse astratte sul trasporto: **una verifica per ogni opportunità.**
+> Fra le ragazze, **510** hanno almeno il diploma.\
+> Fra i ragazzi, **462**.
 
-Titolo da taccuino: **«Niente promesse sul trasporto: una verifica per ogni opportunità».**
+*[INDICA LE BARRE INFERIORI]*
 
-Mai: «il trasporto non è un problema», «basta il treno».
+> Sul lavoro il rapporto si rovescia:\
+> **82 ragazze occupate**, contro **165 ragazzi**.
 
----
+*[PAUSA · GUARDA LA SALA]*
 
-## Blocco 5 · Chiusura a due voci
+> **Più diploma, circa metà occupazione.**\
+> Sono due misure separate:\
+> non sappiamo quante delle diplomate siano anche occupate.
 
-### Slide 18 · Conclusione · SAVERIO, poi ALE · 0:50
+> Questo confronto motiva l'attenzione alle ragazze\
+> nella progettazione del servizio.
 
-*[A schermo: «Un servizio che cerca chi non cerca, e misura se funziona». Saverio avanza di un passo, Ale gli si affianca al punto tre.]*
+*[CAMBIO SLIDE]*
+:::
 
-**SAVERIO**
+::: {.slide}
+### Slide 11 · Il tasso cresce, il divario resta
 
-> Quattro punti per chiudere. **Uno:** il perimetro è dichiarato. I dati osservano i 15-24, il servizio accoglie i 18-25. **Due:** l'incrocio fra studio e lavoro che manca non l'abbiamo inventato: lo raccoglierà il servizio.
+**ALE** · Stima **0:40** · Fine prevista **7:45**
 
-**ALE**
+*[INDICA LA LINEA ROSSA]*
 
-> **Tre:** il focus femminile diventa una quota e un modo di cercare, non un servizio solo per ragazze. **Quattro:** Ponte 19 misura i propri risultati.
->
-> *[Pausa.]*
->
-> Una cosa non pretendiamo di averla fatta: spiegare la fuga dei giovani. ✂ Nelle fonti comunali non c'è chi parte, con quale titolo, per dove. Proponiamo qualcosa di più piccolo, e di più utile: **un servizio che va a cercare chi non cerca, e che misura se funziona.**
+> Qui seguiamo l'occupazione femminile **15–24** nel tempo.\
+> La linea rossa di Bagheria sale dal 4,7% del 2018\
+> all'**8,2% del 2024**, il suo valore più alto nella serie.\
+> La banda sul 2020 segnala un dato mancante.
 
-**INSIEME**
+*[INDICA LE ESTREMITÀ DELLE QUATTRO LINEE]*
 
+> Ma crescono anche gli altri territori.\
+> Nel 2024 Palermo è al 9,6%, Sicilia al 10,4%, Italia al 17,3%.\
+> Bagheria resta sotto tutti e tre in ogni annata disponibile.
+
+*[PAUSA]*
+
+> **Migliora il livello, resta lo svantaggio nel confronto.**
+
+*[CAMBIO SLIDE]*
+:::
+
+::: {.slide}
+### Slide 12 · Casalinghe nel censimento
+
+**ALE** · Stima **0:45** · Fine prevista **8:30**
+
+*[INDICA LA BARRA DI BAGHERIA, POI QUELLA DELL'ITALIA]*
+
+> Queste barre mostrano la quota di **donne 15–24**\
+> classificate come casalinghe nel 2024.\
+> Bagheria è al **13,4%**, l'Italia al **4,6%**:\
+> quasi il triplo. Palermo e Sicilia sono fra i due valori.
+
+> È una **stima ISTAT**, non una risposta delle ragazze.\
+> Non misura ore di cura, figli o motivi dell'inattività.\
+> Non ci fornisce nominativi da contattare.
+
+*[GUARDA LA SALA]*
+
+> Questo segnale rafforza la scelta di dedicare attenzione\
+> al contatto con le ragazze e di riservare loro\
+> **almeno metà dei posti**.\
+> Le barriere concrete andranno ascoltate nel colloquio.
+
+*[CAMBIO SLIDE]*
+:::
+
+::: {.slide}
+### Slide 13 · Mobilità e finestra di intervento
+
+**ALE** · Stima **1:00** · Fine prevista **9:30**
+
+*[INDICA IL PANNELLO SINISTRO]*
+
+> Qui osserviamo il pendolarismo del **2019, senza distinzione d'età**.\
+> Fra chi si sposta per studio, esce dal comune il 16,3% delle donne,\
+> contro il 13,6% degli uomini. Per lavoro, il rapporto si rovescia:\
+> 33,0% delle donne, contro 41,2% degli uomini.
+
+*[INDICA IL PANNELLO DESTRO E LA LINEA DEL 100]*
+
+> A destra cambia la misura: confrontiamo le residenti del 2021\
+> con la stessa generazione tre anni dopo.\
+> L'età sull'asse è quella **nel 2021**.\
+> Cento significa uguale consistenza della coorte;\
+> sotto cento, residenti in meno.
+
+> Dai 24 anni la linea rossa di Bagheria scende sotto cento.\
+> È un saldo di coorte: non conta le partenze individuali.
+
+> Il profilo orienta la priorità progettuale **22–25 anni**.\
+> Non dimostra che dopo sia troppo tardi per intervenire.
+
+> Saverio, traduciamo questi segnali nel servizio.
+
+*[PASSA A SAVERIO · CAMBIO SLIDE]*
+:::
+
+::: {.slide}
+### Slide 14 · Ponte 19: la proposta
+
+**SAVERIO** · Stima **0:25** · Fine prevista **9:55**
+
+> **Ponte 19** è un servizio comunale di transizione\
+> e riattivazione per i **18–25enni**.\
+> Questa è la fascia progettuale:\
+> coincide solo in parte con i 15–24 osservati nei dati.
+
+> Il Comune coordina il servizio,\
+> in raccordo con scuole e Centro per l'impiego.
+
+*[CAMBIO SLIDE]*
+:::
+
+::: {.slide}
+### Slide 15 · Dal contatto all'opportunità
+
+**SAVERIO** · Stima **1:00** · Fine prevista **10:55**
+
+*[INDICA I QUATTRO PASSAGGI IN ORDINE]*
+
+> **Uno: contatto attivo**, attraverso scuole e canali del territorio.\
+> **Due: un piano entro quindici giorni**,\
+> con una prossima azione verificabile.
+
+> **Tre: un'opportunità verificata**.\
+> Se è lavoro, servono un'attività reale, un tutor,\
+> un compenso e la possibilità concreta di arrivarci.\
+> **Quattro: esiti misurati**, a tre, sei e dodici mesi.
+
+> Proponiamo **200 posti, almeno 100 per le ragazze**.\
+> È la capacità del pilota, non la stima del bisogno.
+
+> Per personale e costi indiretti stimiamo\
+> **circa 206–256 mila euro l'anno**.\
+> Restano esclusi i compensi delle esperienze di lavoro,\
+> la valutazione esterna e altri costi attuativi.\
+> Il piano economico completo va definito con gli uffici comunali.
+
+> ✂ La dotazione prevista è di quattro operatori\
+> per la presa in carico e una persona dedicata ai dati.
+
+*[CAMBIO SLIDE]*
+:::
+
+::: {.slide}
+### Slide 16 · Come si misura
+
+**SAVERIO** · Stima **1:00** · Fine prevista **11:55**
+
+*[INDICA IL RIQUADRO TERRITORIALE]*
+
+> I traguardi comunali indicano una **direzione**:\
+> avvicinarsi ai valori di Palermo, 9,6% di occupazione femminile\
+> e 11,3% di casalinghe. Non sono effetti promessi dal pilota.
+
+*[INDICA GLI ESITI DEL SERVIZIO]*
+
+> Sui partecipanti misuriamo chi lavora, studia\
+> o segue formazione qualificante a sei mesi,\
+> e se l'esito è ancora attivo a dodici.
+
+*[INDICA IL GRUPPO A, POI IL GRUPPO B]*
+
+> Se la domanda supera i posti disponibili,\
+> a parità di priorità sorteggiamo l'ordine di ingresso:\
+> **cento partono, cento attendono sei mesi**.
+
+> Al sesto mese confrontiamo i due gruppi,\
+> **prima che inizi il secondo**.\
+> A dodici mesi entrambi hanno ricevuto il servizio:\
+> la tenuta dell'esito è una misura descrittiva.
+
+> Senza lista d'attesa, resta il monitoraggio descrittivo.\
+> **Il protocollo va pubblicato prima dell'avvio.**
+
+> Ale, chiudiamo con tempi e raggiungibilità.
+
+*[PASSA AD ALE · CAMBIO SLIDE]*
+:::
+
+::: {.slide}
+### Slide 17 · Tempi e raggiungibilità
+
+**ALE** · Stima **0:50** · Fine prevista **12:45**
+
+*[INDICA 90 GIORNI, POI 12 MESI]*
+
+> **Novanta giorni** per preparare accordi e canali di contatto,\
+> e verificare i datori di lavoro.\
+> Le esperienze retribuite si attivano soltanto\
+> se l'audit trova almeno trenta posizioni reali.
+
+> Seguono **dodici mesi di erogazione**,\
+> con ingressi al mese zero e al mese sei.
+
+*[INDICA 3 · 6 · 12 MESI]*
+
+> I controlli partono dall'ingresso di ciascun partecipante:\
+> l'ultimo follow-up della seconda coorte cade al **mese diciotto**\
+> dall'avvio della prima, oltre il periodo di erogazione.
+
+*[INDICA IL VINCOLO DI MOBILITÀ]*
+
+> Ogni opportunità deve essere raggiungibile\
+> con il trasporto pubblico, **negli orari reali dell'attività**.\
+> Se non lo è, si rinegozia l'orario o si cambia opportunità.
+
+> **Una verifica concreta per ogni percorso.**
+
+*[CAMBIO SLIDE · PASSA A SAVERIO]*
+:::
+
+::: {.slide}
+### Slide 18 · Conclusione
+
+**SAVERIO + ALE** · Stima **0:45** · Fine prevista **13:30**
+
+*[SAVERIO · GUARDA LA SALA]*
+
+> I dati ci hanno aiutato a scegliere una priorità:\
+> **raggiungere anche chi non risulta in cerca di lavoro**.
+
+> Ponte 19 propone un contatto attivo,\
+> un percorso individuale e opportunità verificate,\
+> con almeno metà dei posti riservata alle ragazze.
+
+*[PASSA AD ALE]*
+
+> Non abbiamo dimostrato le cause della fuga dei giovani.\
+> Proponiamo al Comune di valutare **un pilota da 200 posti**,\
+> con risorse e protocollo definiti prima dell'avvio.
+
+*[PAUSA]*
+
+> **Un servizio che va a cercare chi non cerca,\
+> e che misura se funziona.**\
 > Grazie.
 
-*[Fermarsi. Nessun numero nuovo dopo il «grazie». Si aspetta la prima domanda in silenzio.]*
+*[FINE · ATTENDI LE DOMANDE]*
+:::
 
----
+::: {.appendix}
+## Appendice · Note per prepararsi
+
+Questa parte non si legge durante la presentazione. Contiene verifiche, risposte e fonti da studiare o consultare dopo l'esposizione.
+
+### Slide 2–3 · Perimetro e controlli
+
+- Le fonti consultate non pubblicano il NEET comunale 15–34 e l'incrocio individuale titolo × lavoro. Non è un'affermazione sull'inesistenza generale di quei dati.
+- Il confronto storico NEET 15–29 del 2011 resta separato dal proxy recente 15–24.
+- I 934 controlli riguardano coerenza e riproducibilità. Non certificano l'assenza di ogni errore né la validità causale delle interpretazioni. Prima dell'uso, rieseguire `pipeline.verifica` se cambiano i dati.
+
+### Slide 4 · Denominatori e sportelli
+
+- Il 26,9% e il 12,4% sono quote di tutti i residenti 15–24; il 70,6% è una quota del solo gruppo fuori da lavoro e studio. Non sono tre percentuali da sommare.
+- «Non in cerca» non misura né volontà di lavorare né accesso ai servizi. Non usare «sette su dieci non bussano» o «nessuno sportello li vede». Il contatto attivo è una scelta progettuale da verificare.
+- L'8,2% nella barra del 2018 è l'occupazione **totale** 15–24 di quell'anno. Coincide numericamente con il tasso **femminile** del 2024, ma è un'altra misura.
+- Le barre 2018 e 2024 attraversano la rottura di misura fra 2019 e 2021: non confrontare la composizione. Il caveat resta nel parlato, anche se si accorcia. Il titolo incorporato nel grafico non basta a rendere valido quel confronto.
+
+### Slide 6 · Età e direzione del confronto
+
+- Le prime due righe sono sui 25–49; le altre sui 15–24. L'età adulta offre un confronto sul territorio, non un proxy dei giovani.
+- Sull'ultima riga più a destra significa maggiore inattività non studentesca, quindi uno svantaggio. Nelle altre righe più a destra significa più diploma o più occupazione.
+- Solo a domanda: il divario adulto con la Sicilia sul diploma passa da −5,2 a −4,1 punti e sull'occupazione da −7,3 a −5,7, fra 2018 e 2024. Quello giovanile sull'occupazione resta circa −3,1 punti. Queste misure non sono quelle toccate dalla rottura.
+- Lo scarto −3,1 è calcolato sui dati non arrotondati: non ricavarlo sottraendo 12,4 e 15,6. Nel parlato basta «circa tre punti».
+
+### Slide 7 · Serie e componenti
+
+- Il totale grigio comprende le componenti gialla e rossa. Il 19,0% è su tutti i 15–24enni; il 70,6% della slide 4 è sul gruppo fuori da lavoro e studio.
+- Confrontare i livelli solo dal 2021. Il 2020 è assente alla fonte e non è interpolato. Le linee che lo attraversano non rappresentano un'osservazione del 2020.
+- Non leggere il calo come riattivazione delle stesse persone: sono quote aggregate, non traiettorie individuali.
+
+### Slide 8–10 · Due misure, non un percorso
+
+- «Per mille» significa per mille residenti 15–24 **dello stesso genere**, non per mille diplomati.
+- Non dire «le diplomate non trovano lavoro» o «il diploma non si converte» riferendosi a persone osservate. Il servizio raccoglierà l'incrocio sui propri partecipanti, non su tutta la città.
+- Il vantaggio nel diploma non dimostra che lo svantaggio occupazionale nasca soltanto dopo la scuola.
+
+### Slide 11–12 · Tassi femminili
+
+- L'8,2% è il massimo della serie di Bagheria, non un minimo storico. «Ultima» vale fra Bagheria, Palermo, Sicilia e Italia nelle sei annate disponibili.
+- Il 13,4% è una stima di modello ISTAT della condizione di casalinga. Non sono ore di cura, motivazioni dichiarate o nominativi.
+- La quota minima femminile è una scelta del servizio. Evitare diagnosi familiari e affermazioni secondo cui i dati identificano già dove trovare le singole persone.
+
+### Slide 13 · Due pannelli, popolazioni diverse
+
+- A sinistra: pendolarismo 2019, tutte le età. Dire «donne» e «uomini», anche se il sottotitolo della slide dice «ragazze». Il denominatore comprende chi si sposta per quel motivo, inclusi gli spostamenti interni al comune. Non contiene la destinazione.
+- A destra: consistenza della stessa coorte a tre anni; l'asse riporta l'età nel 2021 (nel 2024 sono tre anni in più). La figura usa medie mobili a tre età: la soglia non identifica un'età individuale di partenza.
+- Cento significa consistenza invariata, non «nessuna partenza»: arrivi e partenze possono compensarsi. La curva non segue le stesse persone. Dopo il minimo a 28 anni risale, restando sotto cento nel tratto mostrato.
+- La banda 22–25 evidenzia una priorità progettuale, non un termine oltre il quale intervenire è inutile. Non dire «prima che la finestra si chiuda» come fatto dimostrato.
+- Il 96,3% riguarda la coorte 25–29 nel 2021: non agganciarlo alla banda 22–25.
+
+### Slide 14–15 · Accesso, capacità e costi
+
+- I 200 posti sono capacità proposta, non bisogno stimato; almeno 100 sono per donne. Non calcolare una copertura usando la platea 15–24 per un servizio 18–25.
+- La policy individua finestre 18–20 e 22–25: il trattamento dei 21enni resta da chiarire nel disegno esecutivo (risposta 16 della giuria).
+- La stima annuale di 205.924–256.105 euro comprende quattro case manager, un data manager e il 15% di costi indiretti. Il valore più basso assume affidamento a cooperativa sociale; il più alto personale comunale. È una stima parametrica, non un finanziamento ottenuto.
+- Sono esclusi esperienze retribuite, IVA dell'eventuale affidamento, tempo del personale già in servizio presso gli enti e valutazione esterna. La copertura del follow-up oltre l'erogazione va esplicitata nel piano economico.
+- Non promettere un tirocinio a tutti. Le esperienze retribuite partono soltanto se l'audit iniziale trova almeno 30 posizioni reali, con domanda e tutor verificati.
+
+### Slide 16 · Cosa può dimostrare la valutazione
+
+- I tassi comunali sono obiettivi di convergenza, non risultati attribuibili al pilota. Mai «il servizio porterà il tasso al 9,6%» o «produrrà 40 occupate».
+- Il confronto a sei mesi precede l'avvio del secondo gruppo. A dodici mesi entrambi sono stati esposti al servizio: il follow-up di tenuta è descrittivo.
+- A parità di priorità l'ordine è casuale, alle condizioni del protocollo. Chi abbandona resta nel gruppo assegnato. Senza domanda eccedente i posti non si promette il sorteggio.
+- Con cento per gruppo il disegno distingue solo effetti grandi, circa 18–20 punti: un risultato non conclusivo non dimostra assenza di effetto. Domande su potenza e lista d'attesa: Ale.
+- Per il riferimento a Palermo nella policy, vedere la risposta 9 della giuria. Evitare «il pilota produce la propria prova»: produce dati e, se le condizioni reggono, un confronto per stimare l'effetto.
+
+### Slide 17 · Calendario e raggiungibilità
+
+- I novanta giorni precedono l'avvio. Coorte A: mesi 0, 3, 6, 12; coorte B: ingresso al 6 e follow-up ai mesi 9, 12, 18 dall'avvio di A. Il mese 18 non comprende i novanta giorni preparatori.
+- La timeline dei dodici mesi riguarda l'erogazione; raccolta e gestione del follow-up devono proseguire fino all'ultima rilevazione.
+- Verificare percorso e orari per ogni opportunità. Non dire «il trasporto non è un problema» o «basta il treno».
 
 ## Parole chiave da ripetere
 
 Tornano più volte, di proposito: la ripetizione è quello che il pubblico si porta a casa.
 
 - **cercare chi non cerca** (slide 1, 18)
-- **sette su dieci non bussano** (slide 4, e in Q&A)
+- **contatto attivo** (slide 2, 4, 7, 15, 18)
 - **più diploma, metà lavoro** (slide 1, 10)
-- **corre, ma non raggiunge** / **convergenza, non crollo** (slide 11, 16)
-- **il dato che manca lo produce il servizio** (slide 8, 18)
+- **migliora il livello, resta lo svantaggio** (slide 11)
+- **titolo, condizione iniziale, percorso ed esito** (slide 8)
 - **prima i controlli, poi il racconto** (slide 3)
-- **misura se funziona** / **il pilota produce la propria prova** (slide 1, 16, 18)
+- **misura se funziona** (slide 1, 18)
 
 ## Titoli pronti per i giornalisti
 
@@ -368,7 +651,7 @@ Utili anche nelle interviste a fine sessione. Ognuno ha dietro un numero verific
 |---|---|---|
 | «A Bagheria lavora una ragazza su dodici» | 8,2% delle 15-24enni nel 2024 (Palermo 9,6, Sicilia 10,4, Italia 17,3) | tasso sulla popolazione 15-24, studentesse comprese |
 | «Più diploma, metà lavoro» | 510 contro 462 diplomati, 82 contro 165 occupati, per mille residenti 15-24 | due misure affiancate, non un percorso individuale |
-| «Sette su dieci non bussano» | 70,6% di chi è fuori da lavoro e studio non risulta in cerca, il valore più alto dei quattro territori | categoria censuaria, non un'intenzione |
+| «Fuori da lavoro e studio: sette su dieci non risultano in cerca» | 70,6% di chi è fuori da lavoro e studio non risulta in cerca, il valore più alto dei quattro territori | categoria censuaria: non misura intenzioni né accesso agli sportelli |
 | «Casalinghe prima dei 25 anni: quasi il triplo dell'Italia» | 13,4% contro 4,6% | stima ISTAT della condizione, non ore di cura |
 | «Corrono, ma restano ultime» | ultima in sei annate su sei | il tasso cresce: non è un crollo |
 | «Il numero che il bando chiede non è pubblicato» | NEET 15-34 comunale assente nelle fonti consultate | fonti consultate, non inesistenza assoluta |
@@ -396,10 +679,10 @@ Non lo sappiamo, e non lo diciamo. Nelle stime del censimento il 13,4% delle rag
 Nei dati aggregati non troviamo un'evidenza che ci autorizzi a dirlo, e non diciamo neppure il contrario. Per questo ogni opportunità del servizio passa una verifica di raggiungibilità negli orari reali.
 
 **5. «Quanto costa? Chi paga?»** · SAVERIO
-In ordine di grandezza fra 206.000 e 256.000 euro l'anno per la dotazione minima, quattro case manager e un data manager: il primo valore con una cooperativa sociale, il secondo con personale comunale, più il 15% di costi indiretti. Sono fra 1.030 e 1.281 euro per posto; il percorso più intensivo del programma GOL paga fino a 1.198 euro per partecipante, quindi siamo nello stesso ordine. Restano fuori le esperienze retribuite, che partono solo su posizioni verificate. Le linee candidate sono il Fondo sociale europeo Plus regionale e le risorse comunali per le politiche giovanili; il piano economico di dettaglio si costruisce con gli uffici comunali.
+In ordine di grandezza fra 206.000 e 256.000 euro l'anno per la dotazione minima, quattro case manager e un data manager: il primo valore con una cooperativa sociale, il secondo con personale comunale. Sono fra 1.030 e 1.281 euro per posto; il percorso più intensivo del programma GOL paga fino a 1.198 euro per partecipante, quindi siamo nello stesso ordine. La stima comprende già il 15% di costi indiretti. Restano fuori le esperienze retribuite, l'IVA dell'eventuale affidamento, il tempo del personale già in servizio presso gli enti e la valutazione esterna. Va prevista anche la copertura del follow-up oltre l'erogazione. Le linee candidate sono il Fondo sociale europeo Plus regionale e le risorse comunali per le politiche giovanili; il piano economico di dettaglio si costruisce con gli uffici comunali.
 
 **6. «Perché si chiama Ponte 19?»** · ALE
-Viene dalla transizione all'uscita dalla scuola, verso i 19 anni. L'analisi ha fatto emergere una seconda finestra, fra 22 e 25 anni: per questo il servizio copre i 18-25.
+Viene dalla transizione all'uscita dalla scuola, verso i 19 anni. Il profilo per età ha orientato una seconda priorità progettuale, fra 22 e 25 anni: per questo il servizio copre i 18-25. Non è una soglia che dimostri quando sia troppo tardi per intervenire.
 
 **7. «Cosa chiedete al Comune?»** · SAVERIO
 Di valutare un pilota con un perimetro chiaro: 200 posti, requisiti di accesso, canali di contatto, un cancello a novanta giorni e un protocollo di valutazione pubblicato prima dell'avvio.
@@ -422,7 +705,7 @@ Perché a livello comunale l'incrocio non è pubblicato: nella tavola lavoro il 
 Al numeratore contiamo i titoli dal diploma in su, che sotto i 15 anni non esistono; al denominatore i residenti 15-24. Per prudenza abbiamo calcolato anche il limite sui 18-24: 71,6% delle ragazze contro 65,9% dei ragazzi. Il vantaggio femminile regge.
 
 **5. «8,2 contro 9,6: differenza statistica o solo numerica?»** · ALE
-Statistica. Il test diretto nel notebook di genere dà una differenza Palermo meno Bagheria di 1,40 punti nel 2024, intervallo al 95% da 0,35 a 2,45, p = 0,009; aggregando 2022-2024, 1,18 punti, da 0,58 a 1,78. Resta una differenza piccola, e il test tratta il censimento come un campione, che non è: l'occupazione viene dai registri e la sua incertezza vera non è pubblicata. Per questo a voce non insistiamo su «significativo». I fatti più robusti sono la costanza, ultima in sei annate su sei, e il confronto con i comuni della sua taglia: fra i 34 comuni siciliani con un numero simile di ragazze, Bagheria è seconda dal basso. Fra tutti i 390 comuni no (112ª dal basso): molti comuni piccoli dell'interno stanno sotto. Non usare la non sovrapposizione degli intervalli di Wilson (7,2-9,2 contro 9,3-9,9): si toccano quasi, ed è il test più debole. Il divario ragazzi-ragazze di Bagheria, 8,3 punti, ha un intervallo di Newcombe fra 6,6 e 10,0: lontano da zero.
+Nel modello usato dal notebook sì, con un limite importante. Il test diretto nel notebook di genere dà una differenza Palermo meno Bagheria di 1,40 punti nel 2024, intervallo al 95% da 0,35 a 2,45, p = 0,009; aggregando 2022-2024, 1,18 punti, da 0,58 a 1,78. Resta una differenza piccola, e il test tratta il censimento come un campione, che non è: l'occupazione viene dai registri e la sua incertezza vera non è pubblicata. Per questo a voce non insistiamo su «significativo». I fatti più robusti sono la costanza, ultima in sei annate su sei, e il confronto con i comuni della sua taglia: fra i 34 comuni siciliani con un numero simile di ragazze, Bagheria è seconda dal basso. Fra tutti i 390 comuni no (112ª dal basso): molti comuni piccoli dell'interno stanno sotto. Non usare la non sovrapposizione degli intervalli di Wilson (7,2-9,2 contro 9,3-9,9): si toccano quasi, ed è il test più debole. Il divario ragazzi-ragazze di Bagheria, 8,3 punti, ha un intervallo di Newcombe fra 6,6 e 10,0: lontano da zero.
 
 **6. «Il tasso è quasi raddoppiato dal 2018: non si sta risolvendo da solo?»** · ALE
 Cresce, ma cresce anche nei territori di confronto: Bagheria resta ultima in ogni annata, e lo scarto da Palermo resta sotto i due punti senza chiudersi. Il punto è la mancata convergenza.
@@ -452,7 +735,7 @@ Nessuna lista di persone: il censimento non dà nomi, e non la costruiamo. Il co
 È una soglia minima, non un sovracampionamento. Serve a evitare che l'adesione spontanea riproduca il divario che osserviamo.
 
 **15. «Come garantite la riproducibilità?»** · SAVERIO
-I dati grezzi sono registrati con URL e data e non si modificano mai; la pipeline va dai grezzi ai processati, ai notebook, alle figure. Il collaudo, `pipeline.verifica`, esegue 934 controlli: rieseguito il 23 settembre, li supera tutti.
+I dati grezzi sono registrati con URL e data e non si modificano mai; la pipeline va dai grezzi ai processati, ai notebook, alle figure. Il collaudo, `pipeline.verifica`, esegue 934 controlli: rieseguito il 24 settembre, ha superato 934 controlli su 934. Rieseguirlo dopo modifiche ai dati o ai documenti controllati.
 
 **16. «Il servizio è per i 18-25: e chi ha 21 anni?»** · SAVERIO
 Nella proposta consegnata le due finestre sono 18-20 e 22-25: a 21 anni non c'è una finestra dedicata. Se la giuria lo nota, si riconosce senza difenderlo: è un punto del disegno esecutivo da sistemare nella fase di preparazione.
@@ -464,7 +747,7 @@ No: la tavola del pendolarismo 2018-2019 non ha l'età, per questo diciamo «don
 Non lo sappiamo persona per persona, ma i dati mettono un tetto. Anche se tutte le 82 occupate su mille fossero diplomate, lavorerebbe al massimo il **16,1%** delle ragazze con diploma; per i ragazzi il tetto è il **35,7%**. Il minimo, per entrambi, è zero. È aritmetica sui margini (limiti di Fréchet), non una stima: dice che fra le diplomate lavora al più una su sei, ed è il tetto più basso dei quattro territori.
 
 **19. «Il 13,4% di casalinghe è una risposta delle ragazze?»** · ALE
-No. Dal 2021 ISTAT stabilisce chi lavora, sì o no, soprattutto dai registri; per chi non lavora stima con un modello la probabilità di ogni altra condizione; il numero del comune è la somma di quelle probabilità. Lo si vede nei dati: le casalinghe 15-24 di Bagheria sono 386,84, non un numero intero, mentre gli occupati lo sono sempre. ISTAT non pubblica l'errore di queste stime comunali. Per questo la leggiamo come etichetta per sapere dove cercare, solo dal 2021, e sempre accanto al tasso di occupazione, che è un conteggio.
+No. Dal 2021 ISTAT stabilisce chi lavora, sì o no, soprattutto dai registri; per chi non lavora stima con un modello la probabilità di ogni altra condizione; il numero del comune è la somma di quelle probabilità. Lo si vede nei dati: le casalinghe 15-24 di Bagheria sono 386,84, non un numero intero, mentre gli occupati lo sono sempre. ISTAT non pubblica l'errore di queste stime comunali. Per questo la leggiamo come segnale aggregato per progettare il contatto, senza ricavarne nominativi o motivazioni, solo dal 2021, e sempre accanto al tasso di occupazione, che è un conteggio.
 
 **20. «Il NEET 15-34 della Sicilia, almeno, lo sapete?»** · SAVERIO
 Sì, ma da un'altra fonte: la rilevazione sulle forze di lavoro, campionaria e regionale. Nel 2024 il NEET 15-34 della Sicilia è al **30,1%**, 35,3% fra le donne e 25,2% fra gli uomini; in Italia 17,3%. Sul 15-24 la stessa fonte dà 19,5% per la Sicilia, il nostro proxy censuario 22,3%: stesso ordine di grandezza. È un riferimento, non una misura di Bagheria, e non lo mettiamo in serie con il dato comunale.
@@ -473,14 +756,14 @@ Sì, ma da un'altra fonte: la rilevazione sulle forze di lavoro, campionaria e r
 Due gruppi da cento, con ingresso a sei mesi di distanza: chi aspetta, aspetta sei mesi, e il confronto c'è sull'esito a sei mesi, non su quello a dodici. Con cento per gruppo il confronto vede effetti di 18-20 punti percentuali o più. Nel primo anno il pilota riconosce solo effetti grandi: un effetto più piccolo resterebbe non dimostrato, non assente.
 
 **22. «E se si presentano meno di 200 persone?»** · SAVERIO
-Allora non c'è lista d'attesa e non c'è sorteggio: la valutazione diventa monitoraggio descrittivo, e lo dichiariamo così. Palermo e le gemelle restano un riferimento per i tassi del territorio, non una prova dell'effetto del servizio. Con adesioni dimezzate, cinquanta per gruppo, la soglia salirebbe a 26-28 punti.
+Allora non c'è lista d'attesa e non c'è sorteggio: la valutazione diventa monitoraggio descrittivo, e lo dichiariamo così. Palermo e le gemelle restano un riferimento per i tassi del territorio, non una prova dell'effetto del servizio. Il calcolo con cinquanta per gruppo è solo uno scenario di potenza: non giustifica creare una lista d'attesa quando mancano le condizioni per farla.
 
 **23. «Bagheria è davvero anomala in Sicilia?»** · ALE
 Dipende da con chi la confronti, e lo diciamo. Fra Bagheria, Palermo, Sicilia e Italia è ultima in tutte le annate; fra i 34 comuni siciliani della sua taglia è seconda dal basso; fra tutti i 390 comuni è 112ª dal basso, perché molti comuni piccoli stanno sotto. Sulle casalinghe invece è nella coda alta in qualunque confronto.
 
 ### Se un giurato solleva una discrepanza nei documenti consegnati
 
-I documenti sono chiusi dal 30 agosto. Non si citano queste cifre spontaneamente; se vengono sollevate, si dà il valore giusto con la fonte, in una frase, senza bloccarsi.
+Nei materiali consegnati o nelle versioni precedenti possono comparire formulazioni diverse. Non si citano queste cifre spontaneamente; se vengono sollevate, si dà il valore giusto con la fonte, in una frase, senza bloccarsi.
 
 | Cosa può saltare fuori | Risposta |
 |---|---|
@@ -500,6 +783,10 @@ I documenti sono chiusi dal 30 agosto. Non si citano queste cifre spontaneamente
 ---
 
 ## Frasi vietate
+
+- «Sette su dieci non bussano»: il dato non misura l'accesso agli sportelli.
+- «Dopo i 25 anni è troppo tardi»: il profilo per età non dimostra una scadenza individuale.
+- «Il pilota produce la propria prova»: il confronto richiede le condizioni dichiarate nel protocollo.
 
 - «Abbiamo dimostrato perché le ragazze partono.»
 - «La famiglia d'origine è la barriera.»
@@ -541,3 +828,6 @@ I documenti sono chiusi dal 30 agosto. Non si citano queste cifre spontaneamente
 | 1,40 [0,35; 2,45], p = 0,009 | differenza Palermo − Bagheria, occupazione F 15-24, 2024 | `notebooks/genere.ipynb`, cella 17 |
 | 40,1 · 38,8 · 34,7 · 22,5 | NEET 15-29 **2011**: Bagheria, Palermo, Sicilia, Italia | `ottomilacensus_long.csv` |
 | 12.174 → 11.861 | residenti 15-34, 2021 → 2024 (saldo, non partenze) | `analisi_popolazione_giovane.csv` |
+| 205.924–256.105 euro/anno | stima parametrica di personale e costi indiretti; esclusioni nelle note alla slide 15 | `genere_costo_pilota.csv`, policy §9-bis |
+
+:::

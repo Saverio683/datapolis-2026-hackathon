@@ -280,7 +280,7 @@ sankey <- ggplot() +
 # pannello, quindi vale il tema della figura (vedi la gerarchia in theme.R).
 figura <- sankey +
   labs(
-    title = "Stessa quota fuori da lavoro e istruzione, ragioni opposte: una ragazza su sette è casalinga",
+    title = "Stessa quota fuori da lavoro e istruzione, ragioni opposte: una ragazza su sette risulta casalinga",
     subtitle = sommario(paste0(
       "Come si distribuiscono i ", migliaia(round(TOTALE)),
       " residenti di 15-24 anni di Bagheria nell'anno ", ANNO,
@@ -289,7 +289,7 @@ figura <- sankey +
       "Fuori da lavoro e istruzione (il proxy del NEET calcolabile a scala comunale) c'è più di un giovane su quattro in entrambi i generi: ",
       virgola(fuori_di("F")$quota_pct), "% delle ragazze (", migliaia(fuori_di("F")$persone),
       ") e ", virgola(fuori_di("M")$quota_pct), "% dei ragazzi (", migliaia(fuori_di("M")$persone),
-      "). Ma i due nastri arrivano da monte opposto: sono casalinghe il ",
+      "). Ma i due nastri arrivano da monte opposto: risultano casalinghe il ",
       virgola(quota_di("Bagheria", "casalinghe/i")), "% delle ragazze contro l'",
       virgola(quota_di("Bagheria", "casalinghe/i", "M")), "% dei ragazzi,\nquasi il triplo dell'incidenza nazionale (",
       virgola(quota_di("Italia", "casalinghe/i")), "%), mentre l'«altra condizione» pesa il ",

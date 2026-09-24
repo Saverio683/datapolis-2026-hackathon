@@ -37,6 +37,9 @@ NEL_PACCHETTO = ("README.md", "LEGGIMI_GIURIA.md", "pyproject.toml", "uv.lock",
                  "docs/README.md", "docs/sources.md", "docs/analisi/educazione/",
                  "docs/concorso/", "docs/relazione/RELAZIONE_DATAPOLIS.md",
                  "docs/policy/POLICY_PONTE_19.md", "docs/team/SCELTE_ANALITICHE.md", "docs/schede/")
+# Dentro il perimetro ma fuori dal pacchetto: il generatore del deck sta in pipeline/ e porta
+# testi e note delle slide, cioe' la presentazione, che alla giuria non va.
+FUORI_PACCHETTO = ("pipeline/presentazione_pptx.py",)
 
 A4 = "<style>@page { size: A4; margin: 2cm; } body { font-family: sans-serif; max-width: none; }</style>"
 
@@ -68,7 +71,8 @@ def impacchetta(prodotti):
     """Lo zip: i file versionati o nuovi del perimetro, piu' i prodotti di dist/."""
     elenco = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"],
                             cwd=RADICE, capture_output=True, text=True, check=True).stdout.split("\n")
-    file = sorted(f for f in elenco if f.startswith(NEL_PACCHETTO) and (RADICE / f).is_file())
+    file = sorted(f for f in elenco if f.startswith(NEL_PACCHETTO) and f not in FUORI_PACCHETTO
+                  and (RADICE / f).is_file())
     zip_path = FUORI / f"{PACCHETTO}.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
         for f in file:

@@ -20,6 +20,8 @@ scheda,claim,valore,unita,fonte,cautela
 1. profilo,"residuo su occupazione 15-29, modello contesto territoriale",-5.9 [-7.7; -4.3],p.p.,edu_model_robustness_2011.csv,"2011, indicatore 15-29; IC 95% bootstrap"
 1. profilo,"residuo sul NEET 15-29, modello contesto territoriale",1.8 [0.3; 3.3],p.p.,edu_model_robustness_2011.csv,alto = sfavorevole: qui il segno positivo e' male
 1. profilo,comuni simili con occupazione 15-29 piu' bassa di Bagheria,2/10,comuni,edu_matched_peers_2011.csv,"pari scelti per struttura e istruzione, non per esito"
+2. genere,"scarto dal tasso di occupazione di Palermo a 25-49 anni, F / M",-8.4 / -1.3,p.p.,genere_dopo_25_scarti.csv,"25-49 come test del meccanismo, non come misura dei giovani"
+2. genere,"scarto della generazione nata dal 1984, F / M (vs Palermo)",-5.9 / -0.4,p.p.,genere_dopo_25_generazioni.csv,"modello a due generazioni, non separa eta' e coorte"
 2. genere,"almeno diploma 9-24, vantaggio femminile",4.2,p.p.,genere_quadro_sintesi.csv,"fascia 9-24 della fonte, include bambini"
 2. genere,tasso di occupazione F 15-24,8.2,%,genere_quadro_sintesi.csv,
 2. genere,gap occupazionale M-F 15-24 con IC 95%,8.3 [6.6; 10.0],p.p.,genere_gap_occupazione_ci.csv,Newcombe

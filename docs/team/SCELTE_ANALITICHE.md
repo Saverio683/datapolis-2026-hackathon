@@ -1,6 +1,6 @@
 # Scelte analitiche del team - spina dorsale della relazione
 
-Documento di lavoro del team, scritto il 2026-08-28 e rivisto il 2026-09-23. Non è un
+Documento di lavoro del team, scritto il 2026-08-28 e rivisto il 2026-09-24. Non è un
 deliverable: la relazione per la giuria è `docs/relazione/RELAZIONE_DATAPOLIS.md`. Tiene le decisioni che la relazione di
 accompagnamento non deve rimettere in discussione: la tesi, le tre figure, e i limiti
 che si dichiarano invece di nasconderli. **La relazione completa che ne discende è
@@ -17,10 +17,11 @@ citato punta alla cella o al file che lo produce, e si rigenera con
 
 > **A Bagheria il diploma arriva e il lavoro no. La conversione fallisce soprattutto sulle
 > ragazze: più istruite dei coetanei, hanno un tasso di occupazione 15-24 dell'8,2%, il
-> minimo dei quattro territori in 6 anni su 6. Dopo i 24 anni le ragazze cominciano a
-> perdersi mentre i coetanei rientrano, e anche il pendolarismo femminile si ferma al
-> passaggio dallo studio al lavoro. Chi resta fuori non è chi cerca lavoro: dei 15-24enni
-> fuori da lavoro e studio, il 70,6% non cerca nemmeno.**
+> minimo dei quattro territori in 6 anni su 6. Dopo i 25 anni il divario non si chiude e
+> diventa locale:
+> le donne di 25-49 anni lavorano al 39,6%, 8,4 punti sotto Palermo, gli uomini a 1,3 punti,
+> e la generazione più giovane non ne è risparmiata. Chi resta fuori non è chi cerca lavoro:
+> dei 15-24enni fuori da lavoro e studio, il 70,6% non cerca nemmeno.**
 
 I tre thread non danno tre diagnosi diverse: danno **una diagnosi in tre punti della
 stessa catena**, formazione → conversione → permanenza. Ogni anello viene da una tavola
@@ -30,12 +31,15 @@ diversa, quindi nessuno è la riformulazione di un altro.
 |---|---|---|
 | Il diploma arriva, e si ferma lì | +4,8 pp di vantaggio femminile sul diploma fra i 15-24 (+4,2 sul 9-24); `I8` 2011 al 96,7%, ma `I6` 42,5 e `I7` 14,4 sono gli ultimi del panel | `genere_quadro_sintesi.csv`, `edu_historical_benchmarks_2011.csv` |
 | La conversione fallisce | occupazione F 15-24 all'8,2%, minimo del panel in 6 anni su 6 | `genere_forbice_serie.csv` |
-| …e fallisce anche in mobilità | fra chi già lavora, escono dal comune 41,2% M contro 33,0% F, doppio dello scarto regionale; **sullo studio il segno si inverte** | `genere_pendolarismo.csv` |
-| Poi si perdono | ritenzione F 25-29 = 96,3 (coetanei 101,2, Sicilia 97,6, Italia 103,0); finestra 22-25 | `genere_coorti.csv`, `genere_ritenzione_eta.csv` |
+| Dopo i 25 anni non si converte | tasso F 25-49 al 39,6% contro 48,0% Palermo (−8,4), uomini a −1,3; la generazione nata dal 1984 porta circa −6 punti, i coetanei maschi −0,4 | `genere_dopo_25_scarti.csv`, `genere_dopo_25_generazioni.csv` |
+| …in mobilità è compatibile, non una conferma | fra chi già lavora, escono dal comune 41,2% M contro 33,0% F, doppio dello scarto regionale; **sullo studio il segno si inverte**. Senza età e solo su chi lavora | `genere_pendolarismo.csv` |
+| Poi si perdono, tutti | coorti 20-24 → 25-29 su cinque anni: F 92,8/93,3, M 89,2/91,8, 9-12 punti sotto l'Italia. Nel solo triennio ritenzione F 25-29 = 96,3 contro 101,2 dei coetanei | `genere_ritenzione_decennale.csv`, `genere_coorti.csv` |
 | Chi resta fuori non cerca | 19,0% inattivi non studenti su 26,9% fuori da lavoro e studio = 70,6% | `edu_finding_summary.csv` |
 
 ⚠️ La finestra 22-25 è una lettura **pooled**: le transizioni annuali oscillano fino a
-8 pp sulla stessa età. Si titola sul triennio, mai sull'anno singolo.
+8 pp sulla stessa età. Si titola sul triennio, mai sull'anno singolo. E la differenza di
+genere è del solo triennio: su cinque anni la perdita è di entrambi i generi, e nel vicinato
+il cedimento femminile non c'è (2026-09-24).
 
 ## 2. Il vincolo che rende la proposta seria
 
@@ -91,6 +95,13 @@ pareggio con la Sicilia (+4,8 contro +4,7). Il claim è **il distacco dal vicina
 mancata conversione**, non il primato assoluto.
 
 ### ② `fig07_ritenzione_eta` - il *quando* della fuga
+> ⚠️ **Scelta riaperta (2026-09-24).** La tesi di genere di fig07 regge solo sul triennio
+> 2021-2024: sulle coorti seguite per cinque anni la perdita all'uscita dal percorso formativo
+> è di entrambi i generi. La figura resta valida per il *quando*, non per il *chi*. Candidata a
+> sostituirla: `fig13b_occupazione_eta_genere`, che mostra il deficit femminile dopo i 25 anni
+> (il rinforzo approvato il 2026-09-24); in alternativa `mob_fig01`, già prima riserva. Lo
+> scambio tocca zip, scheda 2 (figura 2.4) e slide: da decidere prima dell'invio.
+
 **Perché**: risponde a «fuga di talenti» con qualcosa di più preciso di "i giovani se ne
 vanno" - dice **chi** e **a che età**. Profilo per età singola (F | M, quattro territori
 + vicinato) con la finestra 22-25 evidenziata, misurata sull'età del 2021. La scala
@@ -228,10 +239,13 @@ taglia e distanza)»; il numero 390 è pinnato in `pipeline/verifica.py`.
    fonte, mai interpolati.
 6. **Rottura di misura 2019→2021** sulla componente "in cerca": i gap fra territori
    reggono, i livelli delle componenti no.
+7. **Il 25-49 è un test del meccanismo, non una misura dei giovani** (2026-09-24): dice che il
+   divario femminile non si chiude dopo i 25 anni. Il 26-34 resta non isolabile e il test sulle
+   generazioni non separa l'età dalla coorte.
 
 ## 6. Prima di congelare
 
 - [x] sensore `nbconvert` sui quattro notebook, verde il 2026-08-30
 - [x] `Rscript viz/build_all.R` dopo l'ultima modifica ai `data/processed/` — 37 figure, il 2026-08-29 (il glob ora prende anche il prefisso `mob_`)
-- [x] `uv run python -m pipeline.verifica` — tutti i 934 controlli PASS il 2026-09-23 (755 il 2026-08-30) (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
+- [x] `uv run python -m pipeline.verifica` — tutti i 986 controlli PASS il 2026-09-24 (934 il 2026-09-23, 755 il 2026-08-30) (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
 - [x] rigenerare `docs/relazione/RELAZIONE_DATAPOLIS.docx` — rigenerato il 2026-08-30 dal .md corrente (37 figure, didascalie da `figures/didascalie.csv`), dopo le cuciture pre-invio

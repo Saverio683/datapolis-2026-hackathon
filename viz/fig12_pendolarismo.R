@@ -72,7 +72,7 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
   scale_x_continuous(labels = function(x) virgola(x, 0, "%"),
                      expand = expansion(mult = c(0.06, 0.08))) +
   labs(
-    title = "Le ragazze di Bagheria escono più dei coetanei per studiare, meno per lavorare",
+    title = "A Bagheria le donne escono dal comune più degli uomini per studiare, meno per lavorare",
     subtitle = sommario(paste0(
       "Quota di residenti che esce dal comune, in percentuale di chi si sposta ogni giorno per quel motivo, per genere e per motivo dello spostamento, ", ANNO,
       ", su quattro territori: il pannello di sopra riguarda gli spostamenti per lavoro, quello di sotto gli spostamenti per studio.",
@@ -80,15 +80,16 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
       ".\n", virgola(scarto_di("Bagheria", "WK"), 1), " punti sul lavoro, il doppio della Sicilia (",
       virgola(scarto_di("Sicilia", "WK"), 1), "), e ", virgola(scarto_di("Bagheria", "STD"), 1),
       " sullo studio contro ", virgola(scarto_di("Sicilia", "STD"), 1), ".",
-      "\nIl denominatore è già condizionato al motivo: chi si sposta per lavoro un lavoro ce l'ha. Lo scarto è quindi",
-      " una\nmisura indipendente sullo stesso passaggio, e sta in piedi da sola accanto al divario occupazionale di fig01 e fig05. Stabile sul ",
+      "\nIl denominatore è già condizionato al motivo: conta solo chi un lavoro ce l'ha. Lo scarto è compatibile",
+      " con\nil divario di fig01 e fig05, non una sua conferma indipendente; e la tavola non ha l'età. Stabile sul ",
       ANNO_CONTROLLO, ": ", virgola(scarto_di("Bagheria", "WK", ANNO_CONTROLLO), 1, taglia_zero = FALSE),
       " e ", virgola(scarto_di("Bagheria", "STD", ANNO_CONTROLLO), 1, taglia_zero = FALSE), " punti."
     ), LARGHEZZA),
     x = "residenti che escono dal comune, in % di chi si sposta per quel motivo", y = NULL,
     caption = didascalia_2b(
       lettura = paste0(
-        "ogni riga è un territorio. Il pallino grande rosa è il valore femminile, quello piccolo blu il maschile: i diametri sono diversi apposta, così dove i due valori quasi coincidono si vede un anello e non un pallino solo. ",
+        "la tavola non ha l'età: sullo studio pesano i giovani, sul lavoro gli adulti fino a 64 anni, quindi i due pannelli confrontano popolazioni diverse e non il passaggio di vita delle stesse persone. ",
+        "Ogni riga è un territorio. Il pallino grande rosa è il valore femminile, quello piccolo blu il maschile: i diametri sono diversi apposta, così dove i due valori quasi coincidono si vede un anello e non un pallino solo. ",
         "La freccia parte dal valore maschile e punta verso quello femminile, quindi il suo verso è la direzione dello scarto; si ferma prima del pallino di arrivo perché una punta sotto il pallino nasconderebbe proprio il verso. ",
         "La cifra sopra la freccia è l'ampiezza dello scarto in punti percentuali, in valore assoluto. ",
         "Bagheria è in vermiglio, gli altri territori in grigio. ",

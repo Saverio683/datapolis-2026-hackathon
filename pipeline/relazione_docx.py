@@ -52,9 +52,10 @@ INLINE: list[tuple[str, str]] = [
     ("Bagheria migliora alla velocità del contesto, non di più.", "edu_fig04_scomposizione"),
     ("Bagheria **migliora in assoluto e arretra in posizione**.", "edu_fig01_storia_posizione"),
     ("`genere_madri_recente.csv`, `genere_frattura_istruzione.csv`", "fig10_muro_recente"),
-    ("`genere_mappa_2011_2024.csv`, sezione «I claim reggono al 2024?»", "fig04_mappa_sicilia"),
+    ("`genere_mappa_2011_2024.csv`, sezione «I claim reggono al 2024?» di `notebooks/genere.ipynb`",
+     "fig04_mappa_sicilia"),
     ("mai come quantità attribuibile al comune.", "fig08_posizionamento"),
-    ("→ `genere_quadro_sintesi.csv`", "fig05_forbice"),
+    ("→ `genere_quadro_sintesi.csv`, `genere_forbice_quadrante.csv`", "fig05_forbice"),
     ("«Trend 2018-2024» di `notebooks/genere.ipynb`", "fig01_gap_tre_scale"),
     ("→ `genere_per_1000.csv`, `genere_forbice_quadrante.csv`", "fig11_per_1000"),
     ("→ `genere_composizione_stato_dettaglio.csv` (fig02)", "fig02_composizione_stato"),
@@ -62,8 +63,8 @@ INLINE: list[tuple[str, str]] = [
     ("l'anno singolo è un controllo, non un titolo. → `genere_ritenzione_transizioni.csv`", "fig07_ritenzione_eta"),
     ("→ `edu_historical_benchmarks_2011.csv`", "edu_fig02_catena_2011"),
     ("non c'è\nda scegliere quale destinazione servire.", "mob_fig01_verso_palermo"),
-    ("Smettono quando il motivo diventa il lavoro.", "mob_fig02_ribaltamento"),
-    ("una terza tavola. → `genere_pendolarismo.csv`, fig12", "fig12_pendolarismo"),
+    ("più ragazze all'università, che è a Palermo.", "mob_fig02_ribaltamento"),
+    ("stesse persone. → `genere_pendolarismo.csv`, fig12", "fig12_pendolarismo"),
     ("È chi si muove, e per quale motivo.**", "mob_fig04_taglia_distanza"),
     ("Aumentarne l'uso non è la leva che manca.", "mob_fig03_treno_genere"),
     ("12,4% in Italia. → `genere_stranieri.csv`", "edu_fig08_popolazione"),
@@ -95,7 +96,6 @@ SOSTITUZIONI = [
      "Una risposta parziale è diventata piena, e vale la pena dire come."),
     ("| 🔴→🟡 ", "| **Solo in parte.** "),
     ("| ✅ ", "| **Sì**, "), ("| 🟡 ", "| **In parte**: "), ("| 🔴 ", "| **No**: "),
-    ("⚠️ È una lettura", "Cautela: è una lettura"), ("⚠️ ", "cautela: "),
     ("✔ ", "Sì, "),
 ]
 
@@ -391,11 +391,11 @@ Analisi condotta su statistica ufficiale ISTAT, interamente riproducibile
 :::
 
 ::: {{custom-style="Didascalia"}}
-Nessuna cifra di questo documento è scritta a mano. Ogni numero citato è prodotto da una
-cella di notebook o da un file di `data/processed/`, e il pin di regressione
-`pipeline/verifica.py` lo ricalcola dai dati grezzi con un'implementazione indipendente,
-verificando poi che la frase di questa relazione lo riporti alla lettera. Il documento si
-rigenera da zero con `uv run python -m pipeline.relazione_docx`.
+Ogni cifra in questo documento è riconducibile alle analisi svolte in ambiente Jupyter:
+proviene da una cella di notebook o da un file di `data/processed/`. Il controllo di
+regressione `pipeline/verifica.py` ricalcola ogni cifra dai dati grezzi, con
+un'implementazione indipendente, e verifica che il testo la riporti alla lettera. Il
+documento può essere rigenerato tramite `uv run python -m pipeline.relazione_docx`.
 :::
 """
 
@@ -493,6 +493,10 @@ def markdown(dest: Path) -> tuple[str, int]:
 
     for vecchio, nuovo in SOSTITUZIONI:
         testo = testo.replace(vecchio, nuovo)
+    # La cautela che apre una frase diventa un'etichetta; dentro una frase, dopo una
+    # parentesi o un punto e virgola, resta minuscola e il periodo continua.
+    testo = re.sub(r"(\A|\n\n|[.!?]\s+)⚠️ ", r"\1**Cautela.** ", testo)
+    testo = testo.replace("⚠️ ", "cautela: ")
     testo = promuovi_titoli(testo)
 
     # Anche il conteggio dei controlli si legge dal testo, invece di essere ribattuto in

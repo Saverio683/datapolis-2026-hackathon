@@ -1233,6 +1233,8 @@ def scheda_genere() -> Path:
     dist = pd.read_csv(PROCESSED / "genere_distribuzione_390.csv").set_index("anno")
     rit = pd.read_csv(PROCESSED / "genere_ritenzione_eta.csv")
     coo = pd.read_csv(PROCESSED / "genere_coorti.csv")
+    sc25 = pd.read_csv(PROCESSED / "genere_dopo_25_scarti.csv")
+    gen25 = pd.read_csv(PROCESSED / "genere_dopo_25_generazioni.csv").set_index(["genere", "benchmark"])
     breve = lambda n: "vicinato" if n.startswith("vicinato") else n
 
     b = q.loc["Bagheria"]
@@ -1253,6 +1255,14 @@ def scheda_genere() -> Path:
                 (civ.genere == "F") & (civ.fascia == "15-24")].iloc[0]
     nubili = 100 * (1 - con25.gia_coniugate / casa["F"])
 
+    s25 = sc25[(sc25.anno == 2024) & (sc25.eta == "Y25-49")].set_index("genere")["vs Palermo"]
+    claim(S, "scarto dal tasso di occupazione di Palermo a 25-49 anni, F / M",
+          f"{s25['F']:.1f} / {s25['M']:.1f}", "p.p.", "genere_dopo_25_scarti.csv",
+          "25-49 come test del meccanismo, non come misura dei giovani")
+    claim(S, "scarto della generazione nata dal 1984, F / M (vs Palermo)",
+          f"{gen25.at[('F', 'Palermo'), 'scarto_generazione_giovane']:.1f} / "
+          f"{gen25.at[('M', 'Palermo'), 'scarto_generazione_giovane']:.1f}", "p.p.",
+          "genere_dopo_25_generazioni.csv", "modello a due generazioni, non separa eta' e coorte")
     claim(S, "almeno diploma 9-24, vantaggio femminile", -b["gap istruzione (M-F)"], "p.p.",
           "genere_quadro_sintesi.csv", "fascia 9-24 della fonte, include bambini")
     claim(S, "tasso di occupazione F 15-24", b["occupazione F"], "%",
@@ -1295,7 +1305,11 @@ def scheda_genere() -> Path:
         f"sfavore sull&rsquo;occupazione "
         f"[IC 95% {num(ci_b.gap_lo)}; {num(ci_b.gap_hi)}]. E non &egrave; un tratto di fascia "
         f"territoriale: fra i dieci comuni siciliani ugualmente scolarizzati, Bagheria &egrave; "
-        f"<b>penultima</b> per occupazione femminile (15+, censimento 2011).")
+        f"<b>penultima</b> per occupazione femminile (15+, censimento 2011). E dopo lo studio "
+        f"il divario non si chiude: a 25-49 anni le donne di Bagheria lavorano "
+        f"{num(abs(s25['F']))} punti meno di quelle di Palermo, gli uomini {num(abs(s25['M']))}, "
+        f"e la generazione nata dal 1984 ne porta circa "
+        f"{num(abs(gen25.at[('F', 'Palermo'), 'scarto_generazione_giovane']), 0)}.")
 
     per_mille = [
         {"label": "ragazze con almeno il diploma", "valore": m24.loc["F"].per_1000_diploma,
@@ -1455,7 +1469,7 @@ def scheda_genere() -> Path:
 
     corpo += blocco(
         fig(),
-        "Le uscite hanno due tempi, e quello femminile &egrave; fra i 22 e i 25 anni",
+        "Nel triennio 2021-2024 la coorte femminile cede fra i 22 e i 25 anni",
         figura("fig07_ritenzione_eta"),
         mostra="Residenti di ogni coorte nel 2024 per 100 residenti della stessa coorte nel "
                "2021 (un saldo netto di arrivi, partenze e decessi, non la quota di chi &egrave; "
@@ -1474,7 +1488,7 @@ def scheda_genere() -> Path:
              f"incorpora. Nessun record escluso: le et&agrave; ai bordi servono solo a "
              f"chiudere la media mobile. Sulla coorte 25-29 la ritenzione femminile di "
              f"Bagheria vale {num(c2529f['Bagheria'])} contro {num(c2529f['Italia'])} in "
-             f"Italia, l&rsquo;unica cella femminile negativa dei quattro territori.",
+             f"Italia, {num(c2529f['Palermo'])} a Palermo e {num(c2529f['Sicilia'])} in Sicilia.",
         lettura="La tratteggiata orizzontale a 100 &egrave; la parit&agrave;: sopra, la coorte "
                 "&egrave; cresciuta; sotto, si &egrave; ridotta. Il rettangolo vermiglio "
                 "chiaro, presente <b>solo sul pannello femminile</b>, &egrave; il soggetto "
@@ -1484,7 +1498,10 @@ def scheda_genere() -> Path:
                 "centroidi, non un vicino singolo. <b>Cautela</b>: la finestra 22-25 &egrave; "
                 "una lettura <i>pooled</i>, e le transizioni annuali oscillano fino a 8 punti "
                 "sulla stessa et&agrave;. Si titola sul triennio, mai sull&rsquo;anno singolo. "
-                "&Egrave; la figura che impone le due finestre di ingaggio della scheda 4.",
+                "E la differenza di genere &egrave; del solo triennio: sulle coorti seguite per "
+                "cinque anni la perdita all&rsquo;uscita dal percorso formativo &egrave; di "
+                "entrambi i generi, e i maschi perdono di pi&ugrave;. &Egrave; la figura che "
+                "impone le due finestre di ingaggio della scheda 4.",
         fonte="ISTAT, censimento permanente, et&agrave; singole 2021 e 2024 &rarr; "
               "<b>genere_ritenzione_eta.csv</b>, <b>genere_coorti.csv</b>. Figura a piena "
               "risoluzione: <b>figures/fig07_ritenzione_eta.png</b>.")
@@ -1731,7 +1748,7 @@ def scheda_pendolarismo() -> Path:
     corpo = intestazione(
         "Focus &laquo;dinamiche e ruolo del pendolarismo verso Palermo&raquo; &middot; "
         "matrice origine-destinazione ISTAT 2011 e 2021",
-        "La destinazione &egrave; una sola, e le ragazze si fermano quando il motivo diventa il lavoro.",
+        "La destinazione &egrave; una sola, e per lavoro le donne escono dal comune meno degli uomini.",
         f"Fra chi lascia Bagheria, va a Palermo il "
         f"{num(sin.loc['quota di chi esce che va a Palermo, studio 2011'].valore)}% di chi esce "
         f"per studio (2011) e il {num(sin.loc['quota di chi esce che va a Palermo, lavoro 2021'].valore)}% "
@@ -1744,8 +1761,9 @@ def scheda_pendolarismo() -> Path:
         f"&Egrave; sul <b>lavoro</b> che le donne escono meno degli uomini: "
         f"{num(bag.gap_lavoro_F_M)} punti, {num(perc_gap, 0)}&deg; percentile dei comuni "
         f"siciliani (14&deg; al netto di taglia e distanza dal capoluogo). Il salto fra i due motivi vale <b>{num(bag.ribaltamento)} punti</b> contro "
-        f"i {num(rib.loc['Sicilia'].ribaltamento)} della Sicilia. Le ragazze si muovono: "
-        f"smettono quando il motivo diventa il lavoro.")
+        f"i {num(rib.loc['Sicilia'].ribaltamento)} della Sicilia. La fonte non ha l&rsquo;et&agrave;: "
+        f"sullo studio pesano i giovani, sul lavoro gli adulti, quindi il ribaltamento &egrave; "
+        f"compatibile con la forbice fra istruzione e lavoro, non una sua conferma.")
 
     usc11 = flu[(flu.anno == 2011) & (flu.motivo == "studio")].persone.sum()
     usc21 = flu[(flu.anno == 2021) & (flu.motivo == "lavoro")].persone.sum()
@@ -1931,7 +1949,7 @@ def scheda_pendolarismo() -> Path:
                 .groupby("genere").n_2021.sum())
     corpo += blocco(
         fig(),
-        "La coorte femminile 25-29 si assottiglia, quella maschile no",
+        "Nel triennio 2021-2024 la coorte femminile 25-29 si assottiglia, quella maschile no",
         legenda([("femmine", COL_G["F"]), ("maschi", COL_G["M"])]),
         divergenti([{"label": f"{r.nome_territorio} ({ETICHETTA_G[r.genere]})",
                      "valore": r["ritenzione_%"], "colore": COL_G[r.genere],
@@ -1951,8 +1969,8 @@ def scheda_pendolarismo() -> Path:
              f"({num(n_coorte['F'], 0)} femmine e {num(n_coorte['M'], 0)} maschi); per gli "
              f"altri territori i denominatori sono di due o tre ordini di grandezza "
              f"superiori. Conteggi censuari, <b>nessun intervallo di confidenza</b>. La "
-             f"ritenzione femminile di Bagheria &egrave; l&rsquo;unica cella femminile sotto "
-             f"100 dei quattro territori. La misura &egrave; un <b>saldo netto</b> fra "
+             f"ritenzione femminile di Bagheria &egrave; la pi&ugrave; bassa dei quattro "
+             f"territori. La misura &egrave; un <b>saldo netto</b> fra "
              f"iscrizioni e cancellazioni: confonde partenze, arrivi e rettifiche "
              f"anagrafiche, e ai 25-29 la mortalit&agrave; &egrave; trascurabile ma le "
              f"rettifiche no.",
@@ -1968,7 +1986,8 @@ def scheda_pendolarismo() -> Path:
                 "alle figure precedenti. Il motivo dello spostamento &egrave; "
                 "un&rsquo;informazione d&rsquo;et&agrave; solo parziale (chi esce per studio "
                 "&egrave; quasi solo secondaria superiore e universit&agrave;) e viene usato "
-                "come tale.",
+                "come tale. Su cinque anni la differenza di genere non si ripete: le coorti "
+                "all&rsquo;uscita dal percorso formativo si riducono per entrambi i generi.",
         fonte="ISTAT, censimento permanente, et&agrave; singole 2021 e 2024 &rarr; "
               "<b>genere_coorti.csv</b>, denominatori da "
               "<b>genere_ritenzione_eta.csv</b>.")
@@ -2063,8 +2082,9 @@ def scheda_ponte19() -> Path:
         tabella(["Evidenza", "Dove", "Scelta imposta"],
                 [(f"Il {num(b24.inattivi_su_fuori)}% di chi &egrave; fuori non cerca",
                   "fig. 1.1", "outreach attivo, non sportello a domanda"),
-                 ("Le uscite hanno due tempi: i ragazzi a 17-19 e 23-24 con rientri, "
-                  "le ragazze da 24-25 senza rientri", "fig. 2.4, 3.5",
+                 ("Le uscite hanno due tempi: la fine della scuola e la fine del percorso "
+                  "formativo (20-29 anni, entrambi i generi); dopo i 25 anni il deficit di "
+                  "lavoro diventa femminile", "fig. 2.4, 3.5",
                   "<b>due finestre</b>: A 18-20 all&rsquo;uscita, B 22-25 sulla conversione"),
                  (f"{num(inatt['F'], 0)} ragazze e {num(inatt['M'], 0)} ragazzi, "
                   f"etichette opposte", "fig. 2.5",

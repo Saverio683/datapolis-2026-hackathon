@@ -1099,3 +1099,33 @@ di 8,4.
   area disciplinare, ma fermo al 2015-2017.
 - Nessuno di questi file è stato scaricato in `data/raw/`: nessuno ha l'età, quindi nessuno
   misura la partenza dei 15-34enni.
+
+## 14. Correzione alla legenda di `CL_TITOLO_STUDIO` (2026-09-24)
+
+La legenda della sezione «Codelist utili» ha due etichette sbagliate: **`PSE` non è il
+terziario**, e `BL` non è la sola laurea. Le etichette ufficiali, lette dal raw
+`data/raw/codelist_titolo_studio_2026-08-12.json`:
+
+| Codice | Etichetta ISTAT |
+|---|---|
+| `NED` | nessun titolo di studio (= `IL` analfabeti + `LBNA` alfabeti privi di titolo) |
+| `PSE` | licenza di scuola elementare |
+| `LSE` | licenza di scuola media inferiore o di avviamento professionale |
+| `USE_IF` | diploma di istruzione secondaria di II grado o di qualifica professionale (corso di 3-4 anni) compresi IFTS |
+| `BL` | diploma di tecnico superiore ITS o titolo di studio terziario di primo livello |
+| `ML_RDD` | titolo di studio terziario di secondo livello e dottorato di ricerca (= `ML` + `RDD`) |
+| `BL_ML_RDD` | titolo universitario o accademico (nella codelist, non nei dati scaricati) |
+
+- Partizione esatta del totale: `NED + PSE + LSE + USE_IF + BL + ML_RDD = ALL`, scarto
+  massimo 6 persone su tutte le celle di `censpop_istr_lav_long.csv` e
+  `censpop_istr_lav_vicini_long.csv` (arrotondamento alla fonte). Riprova su `PSE`:
+  Bagheria, 2018, F, 9-24, `NED + PSE` = 542 + 821 su 4.699 = 29,0%, la colonna
+  `nessun_titolo_o_elementare_%` di `genere_istruzione.csv`.
+- I sottocodici `IL`, `LBNA`, `ML`, `RDD` esistono solo sulla classe `Y_GE9` e sui quattro
+  territori di confronto, non sulle classi giovanili né sui comuni vicini. Lì sommano ai
+  codici padre entro 2 persone.
+- Il codice dei conteggi era già giusto: `pipeline/verifica.py` e le celle di istruzione
+  di `notebooks/genere.ipynb` trattano `PSE` come titolo sotto la licenza media, e
+  «almeno il diploma» come `USE_IF + BL + ML_RDD`. Sbagliata era solo la legenda.
+- «Terziario» (`BL + ML_RDD`) comprende quindi anche i diplomi ITS: non va chiamato «laurea»
+  senza qualificazione.

@@ -1,7 +1,7 @@
 # Figura 7 — dove si perde chi: il profilo di ritenzione per età singola 2021-2024.
 # I ragazzi escono a ondate (17-19 e 23-24) e in parte rientrano dopo i 26; le ragazze
-# tengono fino ai 23 e da lì cedono senza rientri. La finestra utile per un intervento
-# è 22-25 anni.
+# tengono fino ai 23 e da lì cedono senza rientri. È la lettura del triennio 2021-2024: sulle
+# coorti seguite per cinque anni (fig07b) la perdita a quelle età è di entrambi i generi.
 #
 # La domanda gemella — *da quando* si perde, sulla scala decennale — sta in fig07b.
 # Erano due pannelli della stessa figura, tenuti insieme da una "e" nel titolo: due
@@ -110,7 +110,7 @@ figura <- ggplot(dati, aes(eta_2021, ritenzione_rolling3_pct, colour = nome_terr
   coord_cartesian(ylim = c(96, 106)) +
   guides(colour = guide_legend(override.aes = list(linewidth = 1.1))) +
   labs(
-    title = "La finestra per trattenere le ragazze di Bagheria\nè fra i 22 e i 25 anni",
+    title = "Nel triennio 2021-2024 la coorte femminile di Bagheria\ncede fra i 22 e i 25 anni",
     subtitle = sommario(paste0(
       "Residenti di ogni età nel 2024 per 100 residenti della stessa coorte nel 2021: chi aveva 20 anni nel 2021 ne ha 23 nel 2024. ",
       "Per età singola da ", ETA_MIN, " a ", ETA_MAX, " anni, per genere, su cinque territori. È una misura netta di saldo, che comprende sia chi parte sia chi arriva: ",
@@ -125,7 +125,8 @@ figura <- ggplot(dati, aes(eta_2021, ritenzione_rolling3_pct, colour = nome_terr
       virgola(ritenzione(ETICHETTA_VICINATO, 25), 1, "%"), "), mentre Bagheria scende da ",
       virgola(ritenzione("Bagheria", 22), 1, "%"), " a ",
       virgola(ritenzione("Bagheria", 25), 1, "%"),
-      ". È l'età in cui il vantaggio educativo dovrebbe convertirsi in lavoro."), LARGHEZZA),
+      ". È l'età in cui il vantaggio educativo dovrebbe convertirsi in lavoro. ",
+      "Su cinque anni la differenza di genere non si ripete: dai 20-24 ai 25-29 anni perdono anche i ragazzi, e di più (fig07b)."), LARGHEZZA),
     x = "età nel 2021 (nel 2024: tre anni in più)",
     y = "% della coorte del 2021",
     caption = didascalia_2b(

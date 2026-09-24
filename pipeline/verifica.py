@@ -1,4 +1,4 @@
-"""Verifica indipendente dei thread genere e mobilità: 934 controlli di regressione.
+"""Verifica indipendente dei thread genere e mobilità: 986 controlli di regressione.
 
 Ricalcola i numeri chiave DIRETTAMENTE da data/raw/ con un percorso di codice
 autonomo — parsing proprio dei CSV SDMX e 8milaCensus, implementazioni proprie
@@ -1483,6 +1483,66 @@ for n, p0, att in [(100, 0.2, 17.8), (100, 0.3, 19.2), (100, 0.4, 19.7),
     check(f"potenza_pilota.csv n={n} base {p0:.0%}", r["effetto minimo rilevabile (pp)"].item(), att)
 
 
+# ----------------- dopo i 25 anni (2026-09-24): ritardo o mancata conversione ---
+# Sezioni «Dopo i 25 anni» e «La generazione successiva» di notebooks/genere.ipynb. Dal raw
+# della tavola lavoro (classe Y25-49), dalle classi quinquennali e dalle età singole del
+# registro, con percorso proprio: la soluzione a due generazioni si scrive per sostituzione.
+def tasso_classe(terr, anno, gen, classe="Y25-49"):
+    r = lav[lav["REF_AREA"].eq(terr) & lav["anno"].eq(anno) & lav["GENDER"].eq(gen)
+            & lav["AGE_NOCLASS"].eq(classe) & lav["CITIZENSHIP"].eq("TOTAL") & lav["EDU_ATTAIN"].eq("ALL")]
+    occ, tot = r.loc[r["CUR_ACT_STAT"].eq("1"), "v"], r.loc[r["CUR_ACT_STAT"].eq("99"), "v"]
+    assert len(occ) == 1 and len(tot) == 1, (terr, anno, gen, classe)
+    return 100 * occ.item() / tot.item(), tot.item()
+
+
+def scarto_classe(anno, gen, rif, classe="Y25-49"):
+    return tasso_classe(B, anno, gen, classe)[0] - tasso_classe(rif, anno, gen, classe)[0]
+
+
+for t_, (af, am) in {B: (39.6, 67.7), P: (48.0, 69.1), S: (47.6, 70.9)}.items():
+    check(f"tasso occ 25-49 2024 F {NOMI[t_]}", round(tasso_classe(t_, 2024, "F")[0], 1), af)
+    check(f"tasso occ 25-49 2024 M {NOMI[t_]}", round(tasso_classe(t_, 2024, "M")[0], 1), am)
+for gen, rif, classe, att in [("F", P, "Y15-24", -1.4), ("M", P, "Y15-24", -0.1),
+                              ("F", S, "Y15-24", -2.2), ("M", S, "Y15-24", -3.8),
+                              ("F", S, "Y25-49", -8.0), ("M", P, "Y25-49", -1.3),
+                              ("M", S, "Y25-49", -3.1), ("F", P, "Y50-64", -12.8)]:
+    check(f"scarto {classe} {gen} vs {NOMI[rif]} 2024", round(scarto_classe(2024, gen, rif, classe), 1), att)
+check("scarto F 25-49 vs Palermo, serie 2018-2024",
+      str([round(scarto_classe(a, "F", P), 1) for a in ANNI6]), str([-9.8, -9.3, -10.2, -10.0, -9.7, -8.4]))
+_tb, _nb = tasso_classe(B, 2024, "F")
+check("occupate F 25-49 in più al tasso di Palermo", round(_nb * (tasso_classe(P, 2024, "F")[0] - _tb) / 100), 695, 0.5)
+
+
+def varianza_scarto_mia(anno, gen, rif):
+    v = 0.0
+    for t_ in (B, rif):
+        tasso, n = tasso_classe(t_, anno, gen)
+        v += tasso * (100 - tasso) / n
+    return v
+
+
+for gen, rif, (h0, z_att, giov) in [("F", P, (-6.3, -3.3, -5.9)), ("F", S, (-6.1, -3.2, -5.5)),
+                                    ("M", P, (-1.2, -0.2, -0.4)), ("M", S, (-3.0, -0.2, -0.4))]:
+    s18 = (sum(coorte(B, gen, e, 2018) for e in ("Y35-39", "Y40-44", "Y45-49"))
+           / sum(coorte(B, gen, e, 2018) for e in ("Y25-29", "Y30-34", "Y35-39", "Y40-44", "Y45-49")))
+    s24 = eta_somma(B, gen, 41, 49) / eta_somma(B, gen, 25, 49)
+    d18, d24 = scarto_classe(2018, gen, rif), scarto_classe(2024, gen, rif)
+    previsto = d18 * s24 / s18
+    z = (d24 - previsto) / np.sqrt(varianza_scarto_mia(2024, gen, rif)
+                                   + (s24 / s18) ** 2 * varianza_scarto_mia(2018, gen, rif))
+    check(f"generazioni {gen} vs {NOMI[rif]}: scarto 2024 se H0", round(previsto, 1), h0)
+    check(f"generazioni {gen} vs {NOMI[rif]}: z osservato meno H0", round(z, 1), z_att)
+    check(f"generazioni {gen} vs {NOMI[rif]}: scarto generazione giovane",
+          round((d24 * s18 - d18 * s24) / (s18 - s24), 1), giov)
+
+# NEET 25-34 ricavato per differenza fra 15-34 e 15-24, pesi dalle età singole del registro
+for area, sesso, att in [("ITG1", "2", 52.2), ("ITG1", "1", 28.9), ("IT", "2", 29.2), ("IT", "1", 16.0)]:
+    n_ = lambda eta: float(rcfl[rcfl["REF_AREA"].eq(area) & rcfl["SEX"].eq(sesso)
+                                & rcfl["AGE"].eq(eta)]["OBS_VALUE"].item())
+    g = {"2": "F", "1": "M"}[sesso]
+    v = (n_("Y15-34") * eta_somma(area, g, 15, 34) - n_("Y15-24") * eta_somma(area, g, 15, 24)) / eta_somma(area, g, 25, 34)
+    check(f"NEET 25-34 ricavato {area} {g} 2024", round(v, 1), att)
+
 # --------------------------------------------- claim dei documenti in prosa ---
 # Fin qui il file pinna notebook <-> raw <-> data/processed. Restava scoperto
 # l'ultimo salto, quello che la giuria legge davvero: le cifre trascritte a mano
@@ -1649,7 +1709,7 @@ claim(POLICY,
       f"{ita(_pe('Bagheria', 'STD', 'quota_M'))}%")
 claim(POLICY,
       f"25-29 anni è a **{ita(_co('F'))}** tre anni dopo, contro {ita(_co('M'))} dei coetanei, "
-      f"{ita(_co('F', terr='Sicilia'))} in Sicilia e {ita(_co('F', terr='Italia'))} in Italia)")
+      f"{ita(_co('F', terr='Sicilia'))} in Sicilia e {ita(_co('F', terr='Italia'))} in Italia;")
 
 # --- POLICY, sezione 3: target, quote e capacita' ----------------------------
 claim(POLICY, f"(il {ita(_st(2024, 'inattivi_su_fuori'))}% dell'area fuori lavoro-studio)")
@@ -1795,7 +1855,6 @@ claim(RELAZ, f"più che a Palermo ({ita(_pro.at['Palermo', 'inattivi_su_fuori'])
 claim(RELAZ, f"è a **{ita(_co('F'))}**, contro {ita(_co('M'))} dei coetanei maschi, "
              f"{ita(_co('F', terr='Sicilia'))} in Sicilia, {ita(_co('F', terr='Palermo'))} a Palermo e "
              f"{ita(_co('F', terr='Italia'))} in Italia")
-claim(RELAZ, f"conserva il {ita(_co('F'))}% tre anni dopo, quella maschile il {ita(_co('M'))}%")
 # lo stock non è la fuga (§6)
 _sc = pd.read_csv(PROCESSED / "genere_stock_coorti.csv").set_index("nome_territorio")
 check("stock 15-34: ricambio + saldo = variazione",
@@ -1866,7 +1925,7 @@ for _ind in ("I6", "I7"):
                                              ("Palermo", "Sicilia", "Italia"))), 1)
 
 # --- RELAZIONE (spina dorsale) ----------------------------------------------
-claim(SPINA, f"ritenzione F 25-29 = {ita(_co('F'))} (coetanei {ita(_co('M'))}, Sicilia {ita(_co('F', terr='Sicilia'))}")
+claim(SPINA, f"ritenzione F 25-29 = {ita(_co('F'))} contro {ita(_co('M'))} dei coetanei")
 claim(SPINA,
       f"**+{ita(_netto.set_index('orizzonte').at[2029, 'kpi_netto'])}**")
 claim(SPINA,
@@ -2005,6 +2064,87 @@ claim(POLICY, f"fino a {ita(_rpa['gol_ucs_ora'] * _rpa['gol_ore_p4'], 0)} euro p
 claim(POLICY, f"indennità minima siciliana di {ita(_rpa['tirocinio_mese'], 0)} euro al mese, 30 posizioni "
               f"costano almeno {ita(30 * _rpa['tirocinio_mese'], 0)} euro per ogni mese")
 
+
+# --- dopo i 25 anni (2026-09-24): frasi di RELAZIONE, POLICY e spina ----------
+_d25 = pd.read_csv(PROCESSED / "genere_dopo_25.csv", dtype={"territorio": str})
+_sc25 = pd.read_csv(PROCESSED / "genere_dopo_25_scarti.csv")
+_gen25 = pd.read_csv(PROCESSED / "genere_dopo_25_generazioni.csv").set_index(["genere", "benchmark"])
+_n2534 = pd.read_csv(PROCESSED / "genere_neet_25_34.csv").set_index(["nome_territorio", "genere"])
+_dec = pd.read_csv(PROCESSED / "genere_ritenzione_decennale.csv", dtype={"territorio": str})
+_cvic = pd.read_csv(PROCESSED / "genere_coorti_vicini.csv")
+_cas = pd.read_csv(PROCESSED / "genere_casalinghe.csv", dtype={"territorio": str})
+_c4 = pd.read_csv(PROCESSED / "genere_composizione_stato.csv", dtype={"territorio": str})
+
+
+def _t25(terr, gen, col="tasso_occupazione", classe="Y25-49", anno=2024):
+    r = _d25[_d25["nome_territorio"].eq(terr) & _d25["genere"].eq(gen)
+             & _d25["eta"].eq(classe) & _d25["anno"].eq(anno)]
+    return float(r[col].item())
+
+
+def _s25(classe, gen, rif, anno=2024):
+    r = _sc25[_sc25["eta"].eq(classe) & _sc25["genere"].eq(gen) & _sc25["anno"].eq(anno)]
+    return float(r[f"vs {rif}"].item())
+
+
+def _meno(x):
+    return f"−{ita(abs(x))}"
+
+
+def _dc(terr, gen, anno_da, eta_da="Y20-24"):
+    r = _dec[_dec["nome_territorio"].eq(terr) & _dec["genere"].eq(gen)
+             & _dec["anno_da"].eq(anno_da) & _dec["eta_da"].eq(eta_da)]
+    return float(r["ritenzione_pct"].item())
+
+
+_apertura = (f"le donne di 25-49 anni lavorano al {ita(_t25('Bagheria', 'F'))}%, "
+             f"{ita(abs(_s25('Y25-49', 'F', 'Palermo')))} punti sotto Palermo, gli uomini a "
+             f"{ita(abs(_s25('Y25-49', 'M', 'Palermo')))} punti")
+claim(RELAZ, _apertura)
+claim(SPINA, _apertura)
+for _cl, _et in (("Y15-24", "15-24"), ("Y25-49", "25-49")):
+    _v = [_s25(_cl, "F", "Palermo"), _s25(_cl, "M", "Palermo"), _s25(_cl, "F", "Sicilia"), _s25(_cl, "M", "Sicilia")]
+    _f = [_meno(x) for x in _v]
+    if _cl == "Y25-49":
+        _f[0], _f[2] = f"**{_f[0]}**", f"**{_f[2]}**"
+    claim(RELAZ, f"| {_et} | " + " | ".join(_f) + " |")
+claim(RELAZ, f"lavorano al {ita(_t25('Bagheria', 'F'))}% contro il {ita(_t25('Palermo', 'F'))}% di Palermo "
+             f"e il {ita(_t25('Sicilia', 'F'))}% della Sicilia, gli uomini al {ita(_t25('Bagheria', 'M'))}%")
+_serie_f = _sc25[_sc25["eta"].eq("Y25-49") & _sc25["genere"].eq("F")][["vs Palermo", "vs Sicilia"]]
+claim(RELAZ, f"fra {_meno(_serie_f.max().max())} e {_meno(_serie_f.min().min())} punti in ogni anno dal 2018")
+_b, _pa = (_d25[_d25["nome_territorio"].eq(n_) & _d25["genere"].eq("F") & _d25["eta"].eq("Y25-49")
+                & _d25["anno"].eq(2024)].iloc[0] for n_ in ("Bagheria", "Palermo"))
+_in_piu = round(_b["popolazione"] * (_pa["occupati"] / _pa["popolazione"] - _b["occupati"] / _b["popolazione"]))
+claim(RELAZ, f"le occupate 25-49 sarebbero **{_in_piu} in più**")
+claim(POLICY, f"**{_in_piu} occupate in più**")
+claim(RELAZ, f"le casalinghe sono il {ita(_t25('Bagheria', 'F', 'quota_casalinghe'))}% delle donne 25-49 "
+             f"(Palermo {ita(_t25('Palermo', 'F', 'quota_casalinghe'))}%, Sicilia "
+             f"{ita(_t25('Sicilia', 'F', 'quota_casalinghe'))}%, Italia {ita(_t25('Italia', 'F', 'quota_casalinghe'))}%)")
+claim(RELAZ, f"l'avrebbe portato nel 2024 a {_meno(_gen25.at[('F', 'Palermo'), 'scarto_2024_se_H0'])} punti da "
+             f"Palermo; è a {_meno(_gen25.at[('F', 'Palermo'), 'scarto_2024'])} "
+             f"(z {_meno(_gen25.at[('F', 'Palermo'), 'z_osservato_meno_H0'])})")
+claim(RELAZ, f"i coetanei maschi {_meno(_gen25.at[('M', 'Palermo'), 'scarto_generazione_giovane'])}")
+claim(RELAZ, f"({ita(_n2534.at[('Sicilia', 'F'), 'neet_15_24'])}% contro {ita(_n2534.at[('Sicilia', 'M'), 'neet_15_24'])}%) "
+             f"e quasi il doppio a 25-34 ({ita(_n2534.at[('Sicilia', 'F'), 'neet_25_34'])}% contro "
+             f"{ita(_n2534.at[('Sicilia', 'M'), 'neet_25_34'])}%")
+claim(RELAZ, f"({ita(_dc('Bagheria', 'M', 2018))}% e {ita(_dc('Bagheria', 'M', 2019))}% contro "
+             f"{ita(_dc('Bagheria', 'F', 2018))}% e {ita(_dc('Bagheria', 'F', 2019))}%)")
+claim(RELAZ, f"di Palermo ({ita(_dc('Palermo', 'F', 2018))}% e {ita(_dc('Palermo', 'F', 2019))}%)")
+_v25 = _cvic[_cvic["genere"].eq("F") & _cvic["coorte"].eq("25-29 nel 2021")]["ritenzione_%"].item()
+claim(RELAZ, f"(coorte 25-29 al {ita(_v25)})")
+_c18 = _cas[_cas["territorio"].eq(B) & _cas["anno"].eq(2018)].set_index("genere")["casalinghe_o_i_%"]
+claim(RELAZ, f"(casalinghe il {ita(_c18['F'])}% delle ragazze e lo {ita(_c18['M'])}% dei ragazzi nel 2018)")
+_stud = _c4[_c4["territorio"].eq(B) & _c4["anno"].eq(2024) & _c4["stato"].eq("studenti")].set_index("genere")["quota"]
+claim(RELAZ, f"(studentesse il {ita(_stud['F'])}% contro il {ita(_stud['M'])}% dei coetanei)")
+claim(POLICY, f"**{ita(_t25('Bagheria', 'F'))}%** contro il {ita(_t25('Palermo', 'F'))}% di Palermo e il "
+              f"{ita(_t25('Sicilia', 'F'))}% della Sicilia (**{_meno(_s25('Y25-49', 'F', 'Palermo'))} e "
+              f"{_meno(_s25('Y25-49', 'F', 'Sicilia'))} punti**)")
+claim(POLICY, f"si sarebbe dovuto chiudere a {_meno(_gen25.at[('F', 'Palermo'), 'scarto_2024_se_H0'])} punti e resta a "
+              f"{_meno(_gen25.at[('F', 'Palermo'), 'scarto_2024'])}")
+claim(SPINA, f"tasso F 25-49 al {ita(_t25('Bagheria', 'F'))}% contro {ita(_t25('Palermo', 'F'))}% Palermo "
+             f"({_meno(_s25('Y25-49', 'F', 'Palermo'))}), uomini a {_meno(_s25('Y25-49', 'M', 'Palermo'))}")
+claim(SPINA, f"F {ita(_dc('Bagheria', 'F', 2018))}/{ita(_dc('Bagheria', 'F', 2019))}, "
+             f"M {ita(_dc('Bagheria', 'M', 2018))}/{ita(_dc('Bagheria', 'M', 2019))}")
 
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]

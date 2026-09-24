@@ -80,13 +80,13 @@ figura <- ggplot(dati, aes(y = nome_territorio)) +
   scale_x_continuous(labels = function(x) virgola(x, 1, "%"),
                      expand = expansion(mult = 0.09)) +
   labs(
-    title = "I ragazzi se ne vanno presto, le ragazze dopo i 25 anni",
+    title = "Bagheria trattiene meno giovani dell'Italia in ogni coorte, ragazzi e ragazze",
     subtitle = sommario(paste0(
       "Quota della coorte del 2021 ancora residente tre anni dopo, in percentuale della coorte di partenza (chi aveva 15-19 anni nel 2021 ne ha 18-22 nel 2024), ",
       "per genere e per classe quinquennale d'età, su cinque territori. È una misura netta di saldo: comprende sia chi parte sia chi arriva, non distingue le destinazioni ",
       "e incorpora l'aggiustamento post-censuario delle stime di popolazione; lo stesso fenomeno per età singola, che individua la finestra esatta, sta in fig07.\n",
-      "Sotto il 100% la coorte si è ridotta. Bagheria resta sotto il livello italiano in ogni cella, ma la perdita femminile si concentra dopo i 25 anni, ",
-      "l'età in cui il vantaggio educativo dovrebbe convertirsi in lavoro.\n",
+      "Sotto il 100% la coorte si è ridotta. Bagheria resta sotto il livello italiano in ogni cella. In questo triennio la perdita femminile si concentra dopo i 25 anni, ",
+      "ma sulle coorti seguite per cinque anni la perdita all'uscita dal percorso formativo è di entrambi i generi (fig07b).\n",
       "Sulla coorte ", sub(" nel .*", "", COORTE_CHIAVE),
       " le ragazze di Bagheria scendono a ", virgola(ritenzione_F("Bagheria"), 1, "%"),
       ", nel vicinato salgono a ", virgola(ritenzione_F(ETICHETTA_VICINATO), 1, "%"),

@@ -73,7 +73,7 @@ INLINE: list[tuple[str, str]] = [
      "fig05_forbice"),
     ("smettono quando il motivo diventa il lavoro.\n→ `genere_pendolarismo.csv`",
      "fig12_pendolarismo"),
-    ("→ `genere_coorti.csv`, `genere_ritenzione_eta.csv`", "fig03_coorti"),
+    ("→ `genere_coorti.csv`, `genere_ritenzione_decennale.csv`", "fig03_coorti"),
     # 3. Target, quote e capacita'
     # L'a-capo fa parte dell'ancora: senza, il frammento ricompare dentro la riga di fonti
     # della sezione 4-bis e la figura finirebbe a meta' di quell'elenco.
