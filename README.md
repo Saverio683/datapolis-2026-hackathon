@@ -29,14 +29,14 @@ proposal.
 ## Fonti usate
 
 ISTAT (censimento permanente via API SDMX, 8milaCensus, matrici del pendolarismo, confini
-amministrativi), Ministero dell'Istruzione e del Merito (anagrafe delle scuole), AMAT Palermo
+amministrativi, rilevazione sulle forze di lavoro per il solo NEET regionale), Ministero dell'Istruzione e del Merito (anagrafe delle scuole), AMAT Palermo
 (GTFS). Il portale open data della Regione Siciliana è stato esplorato con esito negativo.
-Ogni download è tracciato in `docs/sources.md` e in `data/raw/manifest.csv` (URL, data,
-parametri).
+Ogni download è tracciato in `docs/sources.md` e nei manifest `data/raw/manifest.csv` e
+`data/raw/edu/manifest.csv` (URL, data, parametri).
 
 ## Requisiti
 
-- [uv](https://docs.astral.sh/uv/): installa Python 3.12 e le versioni esatte di `uv.lock`
+- [uv](https://docs.astral.sh/uv/): installa Python (3.12 o successivo) e le versioni esatte di `uv.lock`
   (il primo `uv sync` richiede rete, il resto no).
 - Figure: R (testato 4.5.2) con i pacchetti `ggplot2`, `dplyr`, `tidyr`, `readr`, `tibble`,
   `patchwork`; font Lato consigliato. La geometria delle mappe la calcola Python, quindi non

@@ -23,6 +23,12 @@ di 10,8 punti. Il recupero, però, deriva soprattutto dal calo delle persone in 
 occupazionale con la Sicilia resta sostanzialmente invariato: -3,1 punti sia nel 2018 sia nel
 2024.
 
+> **Cautela per chi legge i report di questa cartella.** Le variazioni 2018-2024 delle
+> componenti attraversano la rottura di misura 2019-2021 sulla condizione «in cerca di
+> occupazione» (`docs/sources.md` §7): dei 10,2 punti di calo di chi cerca, 7,5 cadono nel
+> solo passaggio 2019-2021. La relazione del team confronta quindi le componenti dentro la
+> stessa definizione, sul 2021-2024 (sezione 2.2 di `docs/relazione/RELAZIONE_DATAPOLIS.md`).
+
 La relazione tra istruzione e lavoro è letta correttamente come associazione territoriale. Le
 tavole comunali sul titolo e sulla condizione sono separate e non consentono di calcolare il
 tasso di occupazione dei diplomati di Bagheria.
@@ -36,7 +42,8 @@ cartella documentano il contributo del thread educazione.
 - `notebooks/educazione.ipynb`: notebook eseguito, con output incorporati;
 - `dist/educazione.html`: esportazione consultabile senza Python;
 - [REPORT_ANALITICO.md](REPORT_ANALITICO.md): narrazione analitica generata;
-- [POLICY_PONTE_19_BAGHERIA.md](POLICY_PONTE_19_BAGHERIA.md): proposta del thread generata;
+- `POLICY_PONTE_19_BAGHERIA.md`: proposta del thread generata, superata dalla proposta
+  unificata e per questo esclusa dal pacchetto per la giuria;
 - [EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md): sintesi generata;
 - `figures/edu/`: tredici visualizzazioni prodotte dalla pipeline Python;
 - `data/processed/edu_*.csv`: tavole condivise con gli altri thread;

@@ -25,10 +25,11 @@ cautela compare accanto al numero, non in fondo al documento.
 > cerca lavoro: dei 15-24enni fuori da lavoro e studio, il 70,6% non lo cerca nemmeno.**
 
 I tre thread di analisi (genere, educazione, mobilità) non producono tre diagnosi diverse:
-leggono **lo stesso passaggio, dalla formazione al lavoro, su tre tavole diverse**. Sono
-misure aggregate sullo stesso territorio e non seguono la traiettoria delle stesse
-persone, perché l'incrocio individuale non è pubblicato (sezione 4). Vengono però da fonti
-distinte, quindi nessuna è la riformulazione di un'altra.
+leggono **lo stesso passaggio, dalla formazione al lavoro, da tre angolature**. Genere ed
+educazione interrogano le stesse tavole del censimento permanente con domande diverse;
+mobilità usa una fonte propria, le matrici del pendolarismo. Sono misure aggregate sullo
+stesso territorio e non seguono la traiettoria delle stesse persone, perché l'incrocio
+individuale non è pubblicato (sezione 4).
 
 La proposta (sezione 7) è **Ponte 19**: un servizio comunale di transizione e
 riattivazione per i 18-25enni, con due finestre di ingaggio e un target esplicito sul
@@ -38,7 +39,7 @@ di misura, che la distingue da un auspicio:
 
 > **La platea femminile 15-24 cala del 15,5% entro il 2034, e chi ne farà parte è già nata.
 > Portare il tasso di occupazione delle ragazze al livello di Palermo vale oggi 40 occupate
-> in più. Lo stesso obiettivo, misurato sulla platea del 2029 e del 2034, vale +18 e −2
+> in più. Lo stesso obiettivo, misurato sulla platea del 2029 e del 2034, vale +18,2 e −2,5
 > (fig09). Per questo il KPI si scrive in tasso, non in teste.**
 
 ### La risposta al bando, in breve
@@ -52,7 +53,7 @@ di misura, che la distingue da un auspicio:
 | NEET 15-34 | 🟡 non calcolabile a livello comunale: si usano due misure etichettate e mai fuse, con il valore regionale della rilevazione sulle forze di lavoro come riferimento | sezione 1.1 |
 | Proposta di intervento | ✅ Ponte 19, con KPI misurabili e finestre di lettura dichiarate | sezione 7 |
 | Technical notebook riproducibile | ✅ i quattro notebook girano da zero senza errori; i controlli automatici sono tutti superati | sezione 1 |
-| 2-3 data viz avanzate | ✅ tre figure principali e sei di supporto | sezione 8 |
+| 2-3 data viz avanzate | ✅ tre figure principali, più figure di supporto dichiarate come tali | sezione 8 |
 
 I 🟡 non sono lavori a metà: indicano i punti in cui i dati pubblici finiscono, dichiarati
 invece che aggirati. In un concorso sulla cultura del dato, sapere dove i dati non arrivano
@@ -82,7 +83,8 @@ uv run python -m pipeline.policy_docx           # la policy proposal in .docx
 uv run python -m pipeline.pdf                   # i PDF, i notebook in HTML e lo zip di dist/
 ```
 
-I dati grezzi sono già in `data/raw/`, quindi la sequenza gira senza rete. `pipeline.fetch`
+I dati grezzi sono già in `data/raw/`, quindi dopo il primo `uv sync` la sequenza gira
+senza rete. `pipeline.fetch`
 serve solo ad aggiornarli: scarica file nuovi, datati al giorno del download. L'ordine dei
 passaggi non è arbitrario: `genere.ipynb` legge tavole prodotte da `analisi.ipynb` e da
 `pipeline.edu`, e `mobilita.ipynb` ne legge due prodotte da `genere.ipynb`
@@ -93,7 +95,7 @@ La pipeline ha tre proprietà sostanziali:
 - **Provenance completa.** Ogni file in `data/raw/` è append-only e ha una riga in
   `docs/sources.md` con URL esatto, data e parametri. Le correzioni stanno in
   `pipeline/`, mai nei raw.
-- **Verifica indipendente.** `pipeline/verifica.py` esegue **986 controlli automatici**,
+- **Verifica indipendente.** `pipeline/verifica.py` esegue **1005 controlli automatici**,
   tutti superati. Ricalcola i numeri chiave **direttamente dai raw, con implementazioni
   alternative**: intervalli di Wilson e Newcombe riscritti, modello lineare di probabilità
   in forma analitica, matching rifatto, coorti dalle classi quinquennali. Anche la matrice
@@ -110,10 +112,12 @@ La pipeline ha tre proprietà sostanziali:
   Italia (`IT`). A questi si aggiungono i **390 comuni siciliani**, per i percentili, e
   due gruppi di comuni pari (sezione 2.4).
 - **Fasce d'età**: dipendono dal dominio, perché le fonti non danno il 15-34 ovunque. Per
-  lavoro e istruzione la fascia è **15-24**, l'unica classe giovanile comunale del
-  censimento permanente. La tavola istruzione usa anche il **9-24**, fascia propria della
-  fonte e sempre dichiarata. Per la demografia il **15-34** è esatto, ricostruito dalle
-  età singole. Ogni figura dichiara la fascia.
+  il lavoro la fascia è **15-24**, l'unica classe giovanile comunale della tavola lavoro
+  del censimento permanente. La tavola istruzione ha come classe giovanile solo il
+  **9-24**, sempre dichiarato; sotto i 15 anni un diploma non può esserci, quindi le
+  diplomate 9-24 sono anche le diplomate 15-24, e il diploma si riporta sulla fascia del
+  lavoro con il denominatore delle età singole (sezione 3.1). Per la demografia il
+  **15-34** è esatto, ricostruito dalle età singole. Ogni figura dichiara la fascia.
 - **Anni**: il censimento permanente copre il 2018-2024. Sulla classe 15-24 il **2020
   manca** e resta mancante, mai interpolato. 8milaCensus (1991/2001/2011) è una fonte
   storica separata e sempre etichettata. Fra il 2019 e il 2021 c'è una **rottura di
@@ -127,12 +131,16 @@ La pipeline ha tre proprietà sostanziali:
   regionale, nella rilevazione sulle forze di lavoro, fonte campionaria con definizione
   europea. Secondo questa rilevazione, nel 2024 il NEET 15-34 della Sicilia è al 30,1%
   (35,3% fra le donne, 25,2% fra gli uomini), contro il 17,3% dell'Italia. Sul 15-24 la
-  stessa fonte dà 19,5% per la Sicilia, dove il proxy censuario dà 22,3%. L'ordine di
-  grandezza è lo stesso, e questo fa da controllo esterno del proxy. Il dato regionale è
-  un riferimento, non una misura di Bagheria. → `genere_neet_rcfl.csv`
+  stessa fonte dà 19,5% per la Sicilia, dove il proxy censuario dà 22,3%. Nel 2024
+  l'ordine di grandezza è lo stesso, ma le due serie non si muovono insieme: dal 2021 la
+  rilevazione campionaria scende di oltre dieci punti, il proxy censuario di poco più di
+  tre. Il confronto conferma il livello di un anno, non la tendenza. Il dato regionale è
+  un riferimento, non una misura di Bagheria. → `genere_neet_rcfl.csv`,
+  `edu_youth_states_2018_2024.csv`
 - **Percentili**: la posizione di Bagheria fra i 390 comuni siciliani, ordinati dal valore
-  più basso al più alto (100° = valore più alto). Su occupazione, istruzione e mobilità un
-  percentile alto è favorevole; su NEET, uscita precoce e disoccupazione è sfavorevole.
+  più basso al più alto (100° = valore più alto). Su occupazione e istruzione un
+  percentile alto è favorevole; su NEET, uscita precoce e disoccupazione è sfavorevole;
+  sulla mobilità il segno non è univoco (sezione 5.3).
 - **Scarti**: sono calcolati sui valori non arrotondati, quindi possono differire di un
   decimale dalla differenza fra le cifre stampate.
 
@@ -141,20 +149,24 @@ La pipeline ha tre proprietà sostanziali:
 Nessuna cifra di questa relazione nasce da una raccolta propria. Tutte vengono da
 statistica ufficiale pubblica, scaricata per via programmatica e conservata immutabile in
 `data/raw/`. Un manifesto (`data/raw/manifest.csv`) registra per ogni file l'istante del
-download e l'URL esatto. Le fonti entrate nell'analisi sono sette, e una di queste (il
-GTFS di AMAT) serve solo come controllo. Il portale open data della Regione Siciliana è
-stato esplorato con esito negativo, dichiarato come tale.
+download e l'URL esatto. Le fonti entrate nell'analisi sono otto: una (il GTFS di AMAT)
+serve solo come controllo, un'altra (la rilevazione sulle forze di lavoro) solo come
+riferimento regionale. Il portale open data della Regione Siciliana è stato esplorato con
+esito negativo, dichiarato come tale. Fanno eccezione i parametri di costo della sezione
+7.4, trascritti da atti ministeriali e regionali e citati uno per uno
+(`genere_costo_parametri.csv`, `docs/sources.md` §13.4).
 
 | Fonte | Che cosa dà | Copertura | Ruolo |
 |---|---|---|---|
 | **ISTAT, 8milaCensus** (`ottomilacensus.istat.it`) | 99 indicatori comunali ai confini 2011, tutti i comuni siciliani più province, regioni e Italia | 1991, 2001, 2011 | Serie storica lunga, graduatorie, matching fra comuni pari |
-| **ISTAT, Censimento permanente** (IstatData, API SDMX) | Condizione professionale, titolo di studio, popolazione per età singola, popolazione per classi quinquennali, pendolarismo dentro/fuori comune | 2018-2024 | Fotografia recente, serie annuale, tutti gli incroci di genere |
+| **ISTAT, Censimento permanente** (IstatData, API SDMX) | Condizione professionale, titolo di studio, popolazione per età singola, popolazione per classi quinquennali, pendolarismo dentro/fuori comune | 2018-2024 (età singole dal 2021, pendolarismo solo 2018-2019; le classi quinquennali anche 2001 e 2011) | Fotografia recente, serie annuale, tutti gli incroci di genere |
+| **ISTAT, Rilevazione sulle forze di lavoro** (IstatData, SDMX) | Incidenza dei NEET per sesso ed età, solo regionale | 2018-2025 | Riferimento regionale per il NEET 15-34 del bando (sezione 1.1), mai in serie col dato comunale |
 | **ISTAT, DCIS_POPRES1** (SDMX) | Popolazione residente per stato civile ed età singola | al 1.1.2025 | Verifica del canale «matrimonio precoce» (sezione 3.2) |
-| **ISTAT, Matrici del pendolarismo** | Origine-destinazione comune per comune, con sesso, motivo, mezzo, fascia oraria e durata | 1991, 2001, 2011; solo lavoro nel 2021 | La destinazione degli spostamenti (sezione 5) |
+| **ISTAT, Matrici del pendolarismo** | Origine-destinazione comune per comune, con sesso, motivo, mezzo, fascia oraria e durata | 2001, 2011; solo lavoro nel 2021 (il 1991 è scaricato ma non usato) | La destinazione degli spostamenti (sezione 5) |
 | **ISTAT, Confini amministrativi** (cartografia) | Poligoni dei comuni, vintage 01/01/2026 | corrente | Base geografica delle mappe e delle distanze |
 | **Ministero dell'Istruzione e del Merito** | Anagrafe delle sedi degli istituti tecnici (276 sedi) | a.s. 2025/26 | Canali operativi della proposta, non esiti |
 | Comune di Palermo / AMAT | GTFS della rete urbana | orario 2026 | Solo controllo dell'ultimo miglio (sezione 5.4) |
-| Open Data Regione Siciliana (CKAN) | Nessun indicatore sulla popolazione giovanile di Bagheria (ricognizioni del 2026-08-12 e del 2026-08-29); i due dataset sui servizi al lavoro hanno risposto HTTP 502 al download del 2026-08-25 | - | **Esito negativo**, documentato in `docs/sources.md` §3: esclusa da ogni conclusione |
+| Open Data Regione Siciliana (CKAN) | Nessun indicatore sulla popolazione giovanile di Bagheria (ricognizioni del 2026-08-12 e del 2026-08-29); i due dataset sui servizi al lavoro hanno risposto HTTP 502 al download del 2026-08-25 | - | **Esito negativo**, documentato in `docs/sources.md` §3, §10 e §12: esclusa da ogni conclusione |
 
 Due precisazioni contano più di quanto sembri.
 
@@ -173,8 +185,8 @@ l'anno, mai concatenate in una serie unica.
 
 ### 1.3 Dal dato grezzo alla tavola d'analisi: le trasformazioni
 
-`pipeline/build.py` trasforma i raw in un piccolo insieme di **tabelle lunghe, più alcune
-tabelle di lookup**, e in nient'altro. Nessuna scelta di analisi è incorporata
+`pipeline/build.py` trasforma i raw soprattutto in **tabelle lunghe, più alcune tabelle di
+lookup**; le principali sono qui sotto. Nessuna scelta di analisi è incorporata
 nell'interfaccia: ogni thread filtra ciò che gli serve. È questo che rende confrontabili
 tre analisi indipendenti.
 
@@ -201,8 +213,10 @@ Le operazioni non banali sono tutte in `pipeline/`; nessuna è fatta a mano sui 
   genere, `TOTAL` per la cittadinanza, `99` per la condizione, `ALL` per il titolo), che
   convive come riga sorella con i dettagli. Sommare senza filtrarli raddoppia i numeri,
   quindi la partizione è verificata cella per cella.
-- **Ricostruzione della fascia 15-34.** La classe non esiste nelle tavole. Si ottiene
-  sommando le età singole, quindi solo dove queste esistono, cioè dal 2021.
+- **Ricostruzione della fascia 15-34.** La classe non esiste nelle tavole. Per età e
+  genere si ottiene sommando le età singole, che esistono dal 2021. Le classi quinquennali
+  la ricompongono anche per il 2001, il 2011 e il 2018-2019, e servono alla ritenzione
+  decennale (sezione 3.3).
 - **Geometria senza `sf`.** La libreria R per i dati spaziali richiede librerie di sistema
   (GDAL, GEOS, PROJ) che non si installano senza privilegi di amministratore. Per non
   imporle a chi riproduce, la geometria è calcolata in Python con geopandas, che esporta i
@@ -227,11 +241,11 @@ metodo dichiarato, e ogni metodo è riscritto una seconda volta, in forma divers
 | Quanto è preciso il divario fra due tassi? | Intervallo di **Newcombe** al 95% sulla differenza | gap M−F |
 | Il divario di Bagheria differisce da quello dei territori di confronto? | **Modello lineare di probabilità** pooled 2022-2024, con test sui coefficienti | sezione 3.1 |
 | Il divario si sta allargando? | Regressione del gap sull'anno, 2018-2024 | sezione 3.1 |
-| Rispetto a chi si misura Bagheria? | **Percentili sui 390 comuni siciliani** e due gruppi di comuni pari costruiti per **matching** su covariate strutturali, mai su esiti | sezione 2.4 |
+| Rispetto a chi si misura Bagheria? | **Percentili sui 390 comuni siciliani** e due gruppi di comuni pari costruiti per **matching**, su covariate strutturali o sul profilo di istruzione, mai su esiti del lavoro | sezione 2.4 |
 | La graduatoria del 2011 dice ancora qualcosa nel 2024? | **rho di Spearman** fra le due graduatorie, più la persistenza per quintili | sezione 2.3 |
 | Quanti giovani restano, e a che età se ne vanno? | **Ritenzione di coorte**: rapporto fra la stessa coorte a distanza di anni, a passo annuale e decennale | sezione 3.3 |
 | L'anomalia è del comune o della sua taglia? | Regressione su **distanza dal capoluogo e dimensione**, lettura del **residuo** | sezione 5.3 |
-| Quanto vale l'incertezza dei modelli comunali? | **Bootstrap** sui residui, più validazione incrociata | sezione 2.4 |
+| Quanto vale l'incertezza dei modelli comunali? | **Bootstrap** sui comuni, più validazione incrociata | sezione 2.4 |
 | Le stime campionarie sono confrontabili con i conteggi? | **Calibrazione sui margini esatti** dei conteggi esaustivi, con errore relativo misurato | sezione 5.4 |
 | In quanto tempo si potrà dire se l'intervento ha funzionato? | **Analisi di potenza** e minimo effetto rilevabile (MDE) con due metri: il modello binomiale e la variabilità osservata, senza interventi, nei 33 comuni siciliani di taglia simile | sezione 7.4 |
 | Il pilota vede il proprio effetto? | Potenza del confronto fra due coorti da 100 partecipanti | sezione 7.4 |
@@ -260,8 +274,8 @@ leggerli senza sopravvalutarli.
   produce integrando registri amministrativi e rilevazioni campionarie, e a livello
   comunale ISTAT non pubblica un errore di stima. Dove compare un intervallo, quindi,
   misura la variabilità binomiale della proporzione, non l'incertezza della rilevazione.
-  Dal 2021, inoltre, solo occupati e residenti sono conteggi. Le condizioni non
-  professionali (in cerca, casalinga, studente, pensionato, altra condizione) sono stime
+  Dal 2021, inoltre, solo occupati e residenti sono conteggi. Le altre condizioni (in
+  cerca di occupazione, casalinga, studente, pensionato, altra condizione) sono stime
   di modello: somme di probabilità individuali di cui ISTAT non calcola l'errore standard.
   Lo si vede nei dati, dove quelle celle non sono intere (sezione 3.2). Il censimento 2011
   è invece un'enumerazione, salvo le variabili rilevate su campione (sezione 5.4).
@@ -337,9 +351,11 @@ periodo **chi cerca lavoro scende da 10,6% a 7,9%, gli inattivi non studenti res
 (19,2% → 19,0%)**, e il loro scarto dalla Sicilia sale da 2,7 a 4,2 punti. Il
 miglioramento, dove c'è, non raggiunge chi non cerca. → `edu_youth_states_2018_2024.csv`
 
-La fascia adulta segue lo stesso schema. Fra i 25-49enni la quota con almeno il diploma
-passa dal 56,2% al 62,4% e l'occupazione dal 43,0% al 53,6%. Nel 2024, però, gli scarti
-dalla Sicilia restano rispettivamente di **−4,1 e −5,7 punti**. → `edu_kpi_dashboard.csv`
+La fascia adulta recupera un po' più in fretta, ma resta lontana. Fra i 25-49enni la quota
+con almeno il diploma passa dal 56,2% al 62,4% e l'occupazione dal 43,0% al 53,6%. Gli
+scarti dalla Sicilia si riducono di 1,1 e 1,6 punti, ma nel 2024 restano
+rispettivamente di **−4,1 e −5,7 punti**. → `edu_adult_transition_2018_2024.csv`,
+`edu_kpi_dashboard.csv`
 
 ### 2.3 Il lungo periodo: progresso assoluto, arretramento relativo
 
@@ -365,9 +381,11 @@ posizione**.
   lì, Bagheria compresa. Il posizionamento del 2011 non era una fotografia scaduta, ma una
   previsione verificata. → `genere_mappa_2011_2024.csv`, sezione «I claim reggono al
   2024?» di `notebooks/genere.ipynb`
-- Datazione: due domini indipendenti convergono. Sia il muro sull'occupazione femminile
-  sia la frattura sull'uscita precoce si aprono **nel decennio 2001-2011** e non si
-  richiudono (fig10). → `genere_madri_recente.csv`, `genere_frattura_istruzione.csv`
+- Datazione: i due domini non arretrano allo stesso ritmo. Il muro sull'occupazione
+  femminile si alza **nel decennio 2001-2011**: il percentile resta fermo fra il 1991 e il
+  2001, poi crolla, e al 2024 non si è richiuso (fig10). L'uscita precoce invece perde
+  posizione a passo costante già dal 1991, e il dato comunale si ferma al 2011.
+  → `genere_gap_madri.csv`, `genere_madri_recente.csv`, `genere_frattura_istruzione.csv`
 
 ### 2.4 Le lenti di confronto: cosa sopravvive al cambio di «simile»
 
@@ -392,9 +410,11 @@ strutturali Bagheria è nella norma (3 su 10 sotto); fra i comuni ugualmente sco
 tratto di fascia territoriale.**
 
 I modelli comunali del thread educazione confermano il segno: lo scarto fra occupazione
-giovanile osservata e prevista è di **−5,9 punti** (intervallo bootstrap da −7,7 a −4,3).
-Il loro potere esplicativo, però, è quasi nullo (R² in validazione incrociata 0,05). Il
-risultato si cita quindi come conferma di segno, mai come quantità attribuibile al comune.
+giovanile osservata e prevista è di **−5,9 punti** nel modello di contesto territoriale
+(intervallo bootstrap da −7,7 a −4,3). Il loro potere esplicativo, però, è quasi nullo:
+R² in validazione incrociata 0,05 in quel modello, negativo negli altri due, che danno
+comunque un residuo dello stesso segno. Il risultato si cita quindi come conferma di
+segno, mai come quantità attribuibile al comune.
 → `genere_posizionamento.csv`, `genere_pari_lenti.csv`, `edu_model_robustness_2011.csv`
 
 ---
@@ -421,32 +441,38 @@ composizione per età. Sulla **stessa fascia 15-24 dell'occupazione** il vantagg
 punti, pari alla Sicilia (+4,7). Il gap di occupazione è di 8,3 punti [IC 95% 6,6-10,0].
 → `genere_gap_occupazione_ci.csv`
 
-La scala su cui leggere il gap è stata scelta con un modello, non a occhio (fig01).
-**In punti**, il gap di Bagheria non è un'anomalia locale: sul pooled 2022-24 è 1,1 punti
-più ampio di quello di Palermo (p=0,03) e 1,8-1,9 punti più stretto di quelli di Sicilia e
-Italia. **In rapporto** Bagheria è la peggiore del panel (M/F = 2,01 contro 1,56
-nazionale), ma il rapporto oscilla da un'annata all'altra.
+Il gap si può leggere su più scale (fig01), e un modello lineare di probabilità dice su
+quale Bagheria è anomala. **In punti**, il gap di Bagheria non è un'anomalia locale: sul
+pooled 2022-24 è 1,1 punti più ampio di quello di Palermo (p=0,03) e 1,8-1,9 punti più
+stretto di quelli di Sicilia e Italia. Il pooled tratta come indipendenti annate che
+contano in parte le stesse persone, quindi quel p è ottimistico: sul solo 2024 lo scarto
+da Palermo non è significativo. **In rapporto** Bagheria è la peggiore del panel (M/F =
+2,01 contro 1,56 nazionale), ma il rapporto oscilla da un'annata all'altra.
 
 **Il tratto locale è il livello: il tasso di occupazione femminile all'8,2% [Wilson
 7,2-9,2] è il minimo dei quattro territori in tutte e 6 le annate disponibili.** La
 differenza è testata: il tasso è sotto Palermo di 1,2 punti, sotto la Sicilia di 1,9 e
-sotto l'Italia di 8,9 (p ≤ 0,0001, pooled 2022-24). Il gap in punti tende ad allargarsi,
-con una stima di +0,21 punti l'anno sul 2018-2024. Su sei annate, però, ciascuna con il
-proprio errore campionario, la tendenza non è acquisita: è una direzione, non un risultato.
+sotto l'Italia di 8,9 (p < 0,001, pooled 2022-24). Anche il tasso maschile è il più basso
+del panel in 5 annate su 6, ma a pochi decimi da Palermo; il distacco femminile è più
+ampio (nel 2024 −1,4 punti da Palermo, contro −0,1 dei maschi, sezione 3.1-bis). Il gap
+in punti tende ad allargarsi, con una stima di +0,21 punti l'anno sul 2018-2024. Su sei
+annate, però, ciascuna con la propria variabilità, la tendenza non è acquisita: è una
+direzione, non un risultato.
 → sezioni «Punti percentuali o rapporto?», «Modello lineare di probabilità» e «Trend
 2018-2024» di `notebooks/genere.ipynb`
 
-Il primato vale nel panel e fra i comuni della stessa taglia, non in tutta la Sicilia. Fra
-i 34 comuni siciliani con un numero di ragazze 15-24 fra la metà e il doppio di quello di
-Bagheria, il comune è **secondo dal basso** (mediana 10,6%), fra tutti i 390 comuni è 112°
-dal basso (mediana 9,7%). Sui 390 la posizione è meno estrema perché molti comuni piccoli
+Il primato vale nel panel, non in tutta la Sicilia. Fra i 34 comuni siciliani con un
+numero di ragazze 15-24 fra la metà e il doppio di quello di Bagheria (Bagheria compresa),
+il comune è **secondo dal basso** (mediana 10,6%), fra tutti i 390 comuni è 112° dal
+basso (mediana 9,7%). Sui 390 la posizione è meno estrema perché molti comuni piccoli
 stanno sotto.
 → `genere_rango_390_15_24.csv`; sezione «Bagheria è anomala fra i comuni siciliani?» di
 `notebooks/genere.ipynb`
 
 Anche il vantaggio femminile nell'istruzione va letto con cura. Le ragazze di Bagheria sono
-più istruite dei coetanei su ogni fascia, ma non più delle ragazze siciliane: sulla fascia
-18-24 Sicilia e Italia hanno un vantaggio femminile più ampio. Su ogni fascia regge invece
+più istruite dei coetanei su ogni fascia, ma il loro vantaggio sui coetanei non è più ampio
+di quello siciliano su ogni fascia: sulla 18-24 Sicilia e Italia hanno un vantaggio
+femminile più ampio. Su ogni fascia regge invece
 la coppia **distacco dal vicinato e mancata conversione**. Sui 18-24 il vantaggio femminile
 è di +5,7 punti a Bagheria contro +2,5 nei cinque comuni più vicini; il tasso di
 occupazione femminile, invece, è il più basso del panel.
@@ -476,8 +502,9 @@ fa da proxy dei giovani, ma da test di che cosa succede dopo.
 | 15-24 | −1,4 | −0,1 | −2,2 | −3,8 |
 | 25-49 | **−8,4** | −1,3 | **−8,0** | −3,1 |
 
-Fino ai 24 anni lo scarto locale non è di genere: rispetto alla Sicilia, anzi, i ragazzi
-stanno più indietro delle ragazze. Fra i 25 e i 49 anni lo diventa. Le donne di Bagheria
+Fino ai 24 anni lo scarto dalla Sicilia non è di genere: i ragazzi, anzi, stanno più
+indietro delle ragazze. Da Palermo le ragazze distano di più, ma di poco più di un punto.
+Fra i 25 e i 49 anni lo scarto diventa femminile, e largo, rispetto a entrambi. Le donne di Bagheria
 lavorano al 39,6% contro il 48,0% di Palermo e il 47,6% della Sicilia, gli uomini al 67,7%.
 Lo scarto femminile sta fra −8,0 e −10,2 punti in ogni anno dal 2018 e non è un effetto
 della composizione per età. Al tasso femminile di Palermo le occupate 25-49 sarebbero **695
@@ -496,14 +523,14 @@ generazione viene da un modello a due gradini: si cita come ordine di grandezza.
 
 A scala regionale, su un'altra fonte, il NEET femminile cambia posizione rispetto a quello
 maschile fra le due fasce.
-In Sicilia la rilevazione sulle forze di lavoro lo dà sotto quello maschile a 15-24 anni
+In Sicilia, nel 2024, la rilevazione sulle forze di lavoro lo dà sotto quello maschile a 15-24 anni
 (17,4% contro 21,5%) e quasi il doppio a 25-34 (52,2% contro 28,9%, ricavato per
 differenza). → `genere_dopo_25_generazioni.csv`, `genere_neet_25_34.csv`; sezioni «Dopo i
 25 anni» e «La generazione successiva» di `notebooks/genere.ipynb`
 
 Per la proposta la conseguenza è di perimetro. La parte più grande del problema femminile
-di Bagheria riguarda donne sopra i 25 anni, oltre la fascia che il censimento comunale
-permette di seguire (sezione 7).
+di Bagheria riguarda donne sopra i 25 anni. La classe 25-49 dice che il problema c'è, ma
+non permette di seguirlo età per età, né di isolare i 26-34enni del bando (sezione 7).
 
 ### 3.2 Dentro l'inattività: le casalinghe ventenni, non sposate
 
@@ -517,22 +544,23 @@ condizione. Il modello è un logit multinomiale addestrato sulle risposte del ca
 censuario, con covariate amministrative come età, istruzione, segnali di lavoro, pensione e
 redditi. Il numero comunale è la somma di quelle probabilità, a Bagheria 386,84 ragazze, e
 il suo errore standard non è calcolato. La natura di stima si vede nei dati: sui 390
-comuni, dal 2021 le celle di occupati e residenti sono tutte intere, quelle delle condizioni
-non professionali quasi mai. Nel 2018-2019, con un altro metodo, erano tutte intere.
+comuni, dal 2021 le celle di occupati e residenti sono tutte intere, quelle di tutte le
+altre condizioni quasi mai. Nel 2018-2019, con un altro metodo, erano tutte intere.
 
 Ne seguono tre conseguenze. La prima: nessuna covariata del modello misura il lavoro
 domestico, quindi «casalinga» è l'etichetta che la stima assegna, non una misura della
-cura. La seconda: la serie si legge solo dal 2021, perché fra il 2019 e il 2021 la quota dei
-comuni di taglia simile salta in mediana di 2,87 punti per il solo cambio di metodo. La
-terza: la stabilità della quota dal 2021 è in parte costruita dal metodo, che fra le
-covariate usa le stime comunali del censimento precedente.
-→ `genere_interi_condizione.csv`, `genere_mde.csv`; fonti del metodo: metadati ESMS del
-censimento 2021 (ISTAT per Eurostat) e Chianella, Ciccaglioni, Ercolani, RIEDS 2024
+cura. La seconda: la serie si legge solo dal 2021, perché fra il 2019 e il 2021, in
+corrispondenza del cambio di metodo, la quota dei comuni di taglia simile salta in mediana
+di 2,87 punti. La terza: la stabilità della quota dal 2021 è in parte costruita dal metodo,
+che fra le covariate usa le stime comunali del censimento precedente.
+→ `genere_interi_condizione.csv`, sezione «Il KPI si può misurare?» di
+`notebooks/genere.ipynb`; fonti del metodo: metadati ESMS del censimento 2021 (ISTAT per
+Eurostat) e Chianella, Ciccaglioni, Ercolani, RIEDS 2024
 
 La tavola non dà l'età dentro la fascia, e sull'aggregato pesano le 15-17enni, quasi tutte
 studenti. Due casi limite: se nessuna delle 387 avesse meno di 18 anni, la quota sulle
 18-24enni sarebbe del 18,8%; se nessuna ne avesse meno di 20, sarebbe del 25,8% sulle
-20-24enni. Rispetto all'incidenza italiana, l'eccesso vale 254 ragazze.
+20-24enni. Rispetto all'incidenza italiana, l'eccesso vale 255 ragazze.
 → `genere_casalinghe.csv`, `genere_casalinghe_bounds.csv`
 
 Chi sono queste ragazze? Il canale del matrimonio precoce **non regge i numeri**. Al
@@ -545,7 +573,10 @@ dati pubblici non lo dicono. Per la policy basta il primo fatto: serve un serviz
 DCIS_POPRES1, denominatori coincidenti alla singola unità con la tavola censuaria)
 
 Il gruppo degli «invisibili» (fuori da lavoro, studio e ricerca) **non è femminile nelle
-dimensioni**: 573 ragazze e 549 ragazzi (51% F). È femminile **nell'etichetta**. Fra le
+dimensioni**: 573 ragazze e 549 ragazzi (51% F). In quota sulla propria popolazione le
+ragazze stanno un po' sopra (19,9% contro 18,2% nel 2024, con lo stesso segno in ogni
+annata), ma lo scarto sta fra 1,7 e 3,5 punti dal 2021. È femminile soprattutto
+**nell'etichetta**. Fra le
 ragazze prevale un'etichetta precisa: 387 casalinghe, contro 50 casalinghi fra i ragazzi.
 Fra i ragazzi prevale il residuo senza nome, «altra condizione»: 485 ragazzi contro 183
 ragazze.
@@ -556,10 +587,10 @@ lette. La stessa divisione per genere c'era però già nel 2018-2019, con l'altr
 (casalinghe il 12,4% delle ragazze e lo 0,8% dei ragazzi nel 2018): non è un artefatto del
 solo modello 2021.
 
-A 15-24 anni, quindi, i dati sostengono **la stessa inattività con etichette diverse**, non
-più inattività femminile; l'eccesso femminile compare dopo i 25 anni (sezione 3.1-bis).
-L'outreach deve perciò coprire entrambi i generi, con agganci diversi.
-→ `genere_composizione_stato_dettaglio.csv` (fig02)
+A 15-24 anni, quindi, i dati sostengono **un'inattività di dimensioni simili con etichette
+diverse**; l'eccesso femminile largo compare dopo i 25 anni (sezione 3.1-bis). L'outreach
+deve perciò coprire entrambi i generi, con agganci diversi.
+→ `genere_composizione_stato_dettaglio.csv`, `genere_composizione_stato.csv` (fig02)
 
 ### 3.3 La fuga avviene all'uscita dal percorso formativo, per entrambi i generi
 
@@ -579,11 +610,15 @@ diverse per genere (fig03, fig07):
 
 → `genere_coorti.csv`, `genere_ritenzione_eta.csv`
 
-**Nel triennio la coorte femminile cede fra i 22 e i 25 anni** (età nel 2021). Prima di
-quelle età la curva sta sopra la parità; dopo, la perdita è già avvenuta. Chi aveva 22-25
-anni nel 2021 se ne va quindi fra i 25 e i 28. ⚠️ È una lettura **pooled sul triennio**.
-Le transizioni annuali oscillano fino a 8 punti sulla stessa età (n ~290 per cella), e
-l'anno singolo è un controllo, non un titolo. → `genere_ritenzione_transizioni.csv`
+**Nel triennio la curva femminile scende fra i 22 e i 25 anni** (età nel 2021): prima di
+quelle età sta sopra la parità, dopo resta sotto. Chi aveva 22-25 anni nel 2021 ne ha
+25-28 nel 2024, ed è in quel passaggio che la coorte si riduce. ⚠️ È una lettura **pooled
+sul triennio**. Le transizioni annuali oscillano fino a 8 punti sulla stessa età (n ~290
+per cella), e l'anno singolo è un controllo, non un titolo. Il tratto di genere, inoltre,
+è la forma della curva, non il saldo: prese in blocco, le età 22-25 perdono fra le ragazze
+di Bagheria quanto fra i coetanei maschi e fra le ragazze siciliane. A 21 anni, invece,
+nessuno dei due generi perde residenti netti. → `genere_ritenzione_transizioni.csv`,
+`genere_ritenzione_eta.csv`
 
 **Su cinque anni la differenza di genere non si ripete.** Dentro il solo censimento
 permanente le coorti si possono seguire su due quinquenni, 2018-2023 e 2019-2024. Quelle
@@ -633,8 +668,9 @@ fra le diplomate lavora al più una su sei. → `genere_frechet.csv`
 Resta da chiarire di quale titolo si parla, perché non è lo stesso a tutte le altezze.
 Nella fascia 9-24 del 2024, a Bagheria, oltre il diploma si va di rado: dei **2.864
 residenti con almeno il diploma, il 91,0% si ferma al diploma** di scuola secondaria, e i
-titoli terziari sono **258 persone** in tutto. Il dato dice quale titolo la fascia detiene,
-non quanto in alto arriverà: a 20 anni una laurea non può ancora esserci.
+titoli terziari sono **258 persone** in tutto. A quell'età è così ovunque (fra l'88,1%
+dell'Italia e l'89,4% della Sicilia): il dato dice quale titolo la fascia detiene, non
+quanto in alto arriverà, perché a 20 anni una laurea non può ancora esserci.
 → `censpop_istr_lav_long.csv`
 
 Chi la laurea l'ha già conseguita si osserva al 2011, e lì la scala dei titoli regge solo
@@ -669,7 +705,7 @@ esito.
 
 Il pendolarismo verso Palermo è il terzo focus del bando. Il censimento permanente lo
 pubblica a livello comunale solo come dentro/fuori comune: la dimensione `LOC_DEST` del
-dataflow è servita con un solo valore, quindi non dice dove si va. La destinazione la
+dataflow distingue solo lo stesso comune da un altro comune, quindi non dice dove si va. La destinazione la
 danno le *matrici del pendolarismo* di ISTAT, che riportano i flussi origine-destinazione
 comune per comune, con sesso, motivo, mezzo, fascia oraria e durata. Esistono per i
 censimenti 1991/2001/2011 e, per il solo lavoro, per il censimento permanente 2021.
@@ -742,9 +778,9 @@ A una prima lettura, gli indicatori 2011 dicono che Bagheria si muove poco: la m
 fuori comune (`M2`) è al 25° percentile dei 390 comuni. **Il percentile è esatto, la
 lettura no.** `M2` rapporta chi esce all'intera popolazione fino a 64 anni, quindi è basso
 anche perché a Bagheria lavorano in pochi. Inoltre si va fuori comune per mancanza di
-lavoro dentro, e Bagheria è il comune più grande della corona di Palermo. Conta 12.000
-pendolari contro i 3.000 di Ficarazzi, che infatti manda fuori tre pendolari su quattro,
-contro i due su cinque di Bagheria.
+lavoro dentro, e Bagheria è il comune più grande della corona di Palermo. Nel 2021 conta
+quasi 12.000 pendolari per lavoro contro i circa 3.200 di Ficarazzi, che infatti manda
+fuori tre pendolari su quattro, contro i due su cinque di Bagheria.
 
 Controllando per **distanza dal capoluogo e dimensione**, due variabili geografiche e non
 di comportamento, il residuo di Bagheria sulla quota di chi esce per lavoro nel 2021 è di
@@ -755,8 +791,10 @@ sua taglia a quella distanza. → sezione 3 di `notebooks/mobilita.ipynb`,
 
 Lo stesso vale per la mobilità studentesca `M4`, al 18° percentile. Già la versione
 precedente dell'analisi segnalava che non è di per sé un dato negativo: l'indicatore è un
-rapporto fuori/dentro comune, e Bagheria ha scuole proprie (3 sedi tecniche, anagrafe MIUR). Il
-modello lo conferma, con un residuo di −0,8 punti. → `edu_technical_schools.csv`
+rapporto fuori/dentro comune, e Bagheria ha scuole proprie (3 sedi tecniche, anagrafe MIUR).
+Sulla quota di studenti che escono dal comune (2011), lo stesso modello di distanza e
+taglia dà un residuo di −0,8 punti. → sezione 3 di `notebooks/mobilita.ipynb`,
+`edu_technical_schools.csv`
 
 **La particolarità di Bagheria non è quanto si muove. È chi si muove, e per quale motivo.**
 
@@ -778,11 +816,13 @@ scarto di genere sul treno passa da 14,5 a 15,1 punti.
 
 → `mob_mezzo_genere.csv`, fig `mob_fig03`
 
-Le donne raggiungono Palermo **sul mezzo collettivo**, gli uomini in auto. Fra chi va a
-lavorare a Palermo, a 17 chilometri, le donne partono più tardi: esce prima delle 7:15 il
-54,4% di loro, contro il 65,0% degli uomini. Fra tutti quelli che escono dal comune, le
-donne viaggiano anche più a lungo: 31-60 minuti per il 43,8%, contro il 36,1% degli
-uomini. → cella «fascia oraria di uscita» della sezione 5 di `notebooks/mobilita.ipynb`
+Il mezzo privato resta il primo per entrambi i generi, ma il **mezzo collettivo** pesa fra
+le donne quasi il doppio che fra gli uomini, e il treno da solo porta quasi un terzo delle
+donne che escono. Fra chi va a lavorare a Palermo, a circa 18 chilometri, le donne partono più
+tardi: esce prima delle 7:15 il 54,4% di loro, contro il 65,0% degli uomini. Fra tutti
+quelli che escono dal comune, le donne viaggiano anche più a lungo: 31-60 minuti per il
+43,8%, contro il 36,1% degli uomini. → sezione 6 («Quando si parte») di
+`notebooks/mobilita.ipynb`
 
 **Il treno di Bagheria, però, non è sottoutilizzato: è già l'asset di mobilità più
 distintivo del comune.** Bagheria è al 98° percentile siciliano per quota di chi esce che lo
@@ -795,7 +835,8 @@ usa (97° a parità di distanza e taglia). Aumentarne l'uso non è la leva che m
 > all'ipotesi, e il quartile con più mezzo collettivo ha il divario più ampio. Sul treno
 > l'associazione è nulla (p = 0,29). Coerentemente, l'ultimo miglio a Palermo non è un collo
 > di bottiglia. Secondo il GTFS di AMAT, la terza fonte indicata dal bando, le fermate
-> «Stazione Centrale» hanno 18 linee e ~125-130 passaggi l'ora dalle 7 alle 21.
+> «Stazione Centrale» hanno 18 linee e, fra le 7 e le 21, non meno di 125 passaggi l'ora,
+> già nel servizio estivo ridotto del feed di agosto.
 >
 > **Conseguenza di progettazione.** L'assenza di un'associazione fra comuni non esclude che
 > l'orario o il mezzo pesino sulla singola persona, ma toglie la base a un intervento
@@ -828,9 +869,11 @@ le età: dà la scala del fenomeno, non un obiettivo per la fascia giovanile.
    partano più tardi e viaggino più a lungo è un fatto; che dipenda dal carico di cura resta
    un'ipotesi.
 4. **Correlazioni ecologiche.** Sui 390 comuni la mobilità fuori comune correla con
-   l'occupazione femminile (Spearman +0,32): il dato orienta l'ipotesi, non la dimostra.
-   L'`R²` dei modelli sui divari di genere, inoltre, è vicino a zero: lì «atteso» vuol dire
-   poco più di «media siciliana». → `genere_mobilita_2011.csv`
+   l'occupazione femminile (Spearman +0,32): il dato orienta l'ipotesi, non la dimostra, ed
+   è in parte meccanico, perché dove si lavora di più ci si sposta di più. L'`R²` dei
+   modelli sui divari di genere, inoltre, è vicino a zero: lì «atteso» vuol dire poco più
+   di «media siciliana». → sezione «La nuvola dei 390» di `notebooks/genere.ipynb`,
+   `genere_mobilita_2011.csv`
 5. **Palermo non è un termine di paragone su questa misura.** È un comune grande, e per
    costruzione compare con valori bassissimi.
 
@@ -856,8 +899,9 @@ Chi avrà 15-24 anni nel 2029 e nel 2034 **è già nato**: la platea futura si c
 residenti di 10-19 e 5-14 anni. Non è una proiezione demografica, ma il conto di chi è già
 residente a migrazioni nulle; le partenze e gli arrivi dei prossimi anni lo sposteranno. Le
 ragazze passano da 2.882 (2024) a 2.651 (2029, −8,0%) e a **2.435 (2034, −15,5%)**; i
-ragazzi calano del 2,5% e del 5,8%. Nei territori di confronto il calo è simmetrico fra i
-generi, a Bagheria no. → `genere_platea.csv`
+ragazzi calano del 2,5% e del 5,8%. Nei territori di confronto il calo è simile fra i
+generi, anzi un po' più forte fra i maschi; a Bagheria pesa soprattutto sulle ragazze.
+→ `genere_platea.csv`
 
 ⚠️ L'asimmetria nasce da una sex ratio 5-14 anomala: 117 maschi per 100 femmine, contro
 104-106 dei benchmark. Il valore è in salita dal 2011 ed è identico su due tavole
@@ -866,7 +910,7 @@ indipendenti. Il meccanismo resta aperto, e il dato si cita solo insieme al suo 
 
 La conseguenza per qualunque intervento è aritmetica, ed è il secondo pilastro della
 proposta. Al tasso obiettivo di Palermo (9,59%), l'equivalente di «+40 occupate» misurato
-sulla platea di ciascun anno vale **+18 nel 2029 e −2 nel 2034** (lordo +40,4; attrito
+sulla platea di ciascun anno vale **+18,2 nel 2029 e −2,5 nel 2034** (lordo +40,4; attrito
 demografico −22,2 e −42,9). Un obiettivo scritto in teste si annulla da solo, senza che
 nessuno abbia sbagliato nulla. **Il KPI va scritto in tasso.**
 → `genere_kpi_netto.csv` (fig09; ⚠️ da non confondere con lo scenario «non si fa
@@ -884,12 +928,17 @@ dall'evidenza, nel formato fissato dal progetto: **evidenza → intervento → t
 |---|---|
 | **Evidenza** | Il 70,6% dei 15-24enni fuori da lavoro e studio non cerca lavoro (sez. 2.1). La conversione dei titoli in lavoro fallisce soprattutto sulle ragazze, e dopo i 25 anni il deficit di occupazione diventa femminile anche per la generazione giovane (sez. 3.1 e 3.1-bis). Le coorti si perdono all'uscita dal percorso formativo (sez. 3.3). Il pendolarismo ha lo stesso segno: le ragazze escono dal comune per studiare più dei coetanei (+2,6 punti), le donne escono per lavorare 12,1 punti meno degli uomini (sez. 5.2). La platea si restringe (sez. 6) |
 | **Intervento** | **Ponte 19**: servizio comunale di transizione e riattivazione, con outreach attivo (non a domanda spontanea) e due finestre di ingaggio |
-| **Target** | Finestra A: 18-20enni all'uscita dalla scuola o entro 30 giorni dall'interruzione. Finestra B: 22-25enni fuori da lavoro e studio. Quota di genere ≥50% F sui presi in carico. Capacità pilota: 200 persone l'anno, pari a ~18% dei 1.121 inattivi non studenti 15-24 (platea indicativa: il censimento non dà la fascia 18-25) |
+| **Target** | Finestra A: 18-20enni all'uscita dalla scuola o entro 30 giorni dall'interruzione. Finestra B: 22-25enni fuori da lavoro e studio. Le finestre sono i momenti dell'outreach, non requisiti d'accesso: chi ha 21 anni entra su segnalazione o richiesta. Quota di genere ≥50% F sui presi in carico. Capacità pilota: 200 persone l'anno, pari a ~18% dei 1.121 inattivi non studenti 15-24 (platea indicativa: il censimento non dà la fascia 18-25) |
 | **KPI** | In **tasso**, con finestra di lettura dichiarata (sez. 7.4) |
 
 Il servizio parte da 18 anni perché fino ai 18 vale il diritto-dovere all'istruzione e alla
-formazione. Si ferma a 25 perché le due uscite che i dati individuano cadono entro quell'età
-(sezione 3.3). I 26-34enni del bando restano fuori dal target per una ragione di misura:
+formazione. Si ferma a 25 perché le finestre devono intercettare le uscite prima che si
+compiano: nel triennio la coorte femminile si riduce fra i 25 e i 28 anni, e a cinque anni
+entrambi i generi perdono nel passaggio da 20-24 a 25-29 (sezione 3.3). Fra le due
+finestre resta il 21. A quell'età nessuno dei due generi perde residenti netti (sezione
+3.3), quindi il servizio non ha un canale di ricerca dedicato; chi ha 21 anni ed è fuori da
+lavoro e studio è comunque preso in carico, e si conta a parte fra gli indicatori di
+processo. I 26-34enni del bando restano fuori dal target per una ragione di misura:
 nessuna tavola comunale permette di seguirne la condizione professionale, perché la classe
 25-49 non è scomponibile. Il deficit femminile più grande, però, sta sopra i 25 anni
 (sezione 3.1-bis). Estendere il modulo di genere ai 26-34 è quindi un'opzione dichiarata,
@@ -897,17 +946,18 @@ ancora da decidere e misurabile solo sul dato di servizio.
 
 ### 7.0 Perché non è un intervento sui trasporti
 
-Chi legge la sezione 5 si pone subito una domanda: se il collegamento con Palermo è il
-canale delle donne, perché non intervenire lì? Perché **i dati non lo sostengono**, per due
+Chi legge la sezione 5 si pone subito una domanda: se il mezzo collettivo verso Palermo
+pesa tanto per le donne, perché non intervenire lì? Perché **i dati non lo sostengono**, per due
 ragioni indipendenti. La prima: il treno di Bagheria è già al 98° percentile siciliano per
 uso (sezione 5.4), quindi non c'è un'infrastruttura sottoutilizzata da attivare. La
 seconda: sui 381 comuni non capoluogo una quota maggiore di mezzo collettivo **non** si
-accompagna a un divario di genere più piccolo. L'associazione è nulla, e la stima ha il
-segno opposto all'ipotesi.
+accompagna a un divario di genere più piccolo. L'associazione non trova sostegno
+(p = 0,06), e la stima ha il segno opposto all'ipotesi.
 
-Resta un vincolo operativo che il servizio deve rispettare. Per le donne di Bagheria il
-canale verso Palermo è il mezzo collettivo (34,7% contro 18,9% degli uomini); per gli
-uomini è l'auto (79,0%). **Un servizio che dia per scontata l'auto seleziona per genere**, e
+Resta un vincolo operativo che il servizio deve rispettare. Fra chi esce da Bagheria, il
+mezzo collettivo porta il 34,7% delle donne e il 18,9% degli uomini; il mezzo privato a
+motore, il 79,0% degli uomini. **Un servizio che dia per scontata l'auto seleziona per
+genere**, e
 seleziona proprio contro la metà che la quota di genere vuole raggiungere (sezione 7.2).
 Orari di convocazione, tirocini e sedi vanno quindi scelti fra ciò che è raggiungibile in
 treno e in autobus, e la raggiungibilità va misurata, non assunta.
@@ -950,10 +1000,13 @@ però contano le stesse persone, e per questo serve un secondo metro: la variabi
 tasso mostra senza alcun intervento. Misurata nei 33 comuni siciliani di taglia simile a
 Bagheria, dice altro: per +1,4 punti di occupazione la potenza è del 50% su un anno, del
 59% sul biennio e del 41% sul triennio. Il triennio, nei dati disponibili, attraversa la
-rottura di misura del 2021. Sulle casalinghe (−2,1 punti) il biennio arriva all'82%.
+rottura di misura del 2021, quindi quel 41% è probabilmente pessimistico: le letture future
+staranno tutte dopo la rottura. Resta la finestra dichiarata perché su questo KPI si legge
+solo la direzione, e il triennio è quella in cui il rumore di conteggio pesa meno. Sulle
+casalinghe (−2,1 punti) il biennio arriva all'82%.
 
 La differenza fra i due metri sta nella struttura della variabilità. Da un anno all'altro
-il tasso di un comune oscilla attorno alla propria tendenza meno di un campione (0,36 volte
+il tasso di occupazione di un comune oscilla attorno alla propria tendenza meno di un campione (0,36 volte
 la varianza binomiale). I comuni però divergono fra loro in modo persistente, e accorpare
 più anni non elimina quella divergenza.
 
@@ -985,8 +1038,10 @@ La valutazione ha due livelli.
 
 **Sui presi in carico** si usa un rollout scaglionato: a parità di priorità l'ordine di
 avvio è casuale, e chi comincia più tardi fa da confronto. Perché il confronto esista
-servono due coorti da 100, con ingresso al mese 0 e al mese 6. Chi aspetta, quindi, aspetta
-almeno sei mesi: il confronto esiste sull'esito a sei mesi, non su quello a dodici. Con 100
+servono due coorti da 100, con ingresso al mese 0 e al mese 6. Il primo contatto entro 30
+giorni vale per tutti: chi è assegnato alla seconda coorte riceve il colloquio e
+l'indirizzamento alle misure esistenti, e comincia il percorso al mese 6. Il confronto
+esiste quindi sull'esito a sei mesi, non su quello a dodici. Con 100
 persone per coorte il confronto vede effetti di 18-20 punti o più (17,8 se l'esito senza
 servizio è del 20%, 19,7 se è del 40%); con adesioni dimezzate la soglia sale a 26-28 punti.
 Se le domande non superano i posti, il sorteggio non c'è e la valutazione diventa
@@ -1002,7 +1057,7 @@ anche per un servizio che funziona.
 **Sui KPI di popolazione** il confronto è con un controfattuale **dichiarato in anticipo:
 Palermo**. Il prerequisito è stato controllato. La pendenza del tasso femminile di Bagheria
 nel 2018-2024 (+0,65 punti/anno) non si distingue da quelle di Palermo e dell'Italia (p =
-0,29 / 0,33). Con sei annate il test ha poca potenza, quindi non prova tendenze parallele:
+0,29 / 0,33; la Sicilia è al margine, p = 0,054). Con sei annate il test ha poca potenza, quindi non prova tendenze parallele:
 dice solo che i dati non le smentiscono.
 
 Il test, inoltre, tratta ogni annata come un campione indipendente. Senza quel modello, la
@@ -1052,7 +1107,7 @@ colloquio, perché il censimento non lo osserva.
 componente controintuitiva: qui la proposta rinuncia alla soluzione che tutti si aspettano.
 L'intervento infrastrutturale non è sostenuto dai dati (sezione 7.0), quindi F2 non si
 appoggia all'offerta di trasporto e non finanzia trasporto. Quello che resta di genere è il
-canale: verso Palermo le donne vanno sul mezzo collettivo, gli uomini in auto (treno 31,5%
+canale: fra chi esce dal comune le donne usano il treno quasi il doppio degli uomini (31,5%
 contro 16,4%, sezione 5.4). Un servizio che dia per scontata l'auto seleziona per genere, e
 lo fa in silenzio. Ne discende una sola regola operativa: nessuna opportunità entra nel
 piano di transizione senza **verifica di raggiungibilità col mezzo collettivo negli orari
@@ -1122,7 +1177,7 @@ Il bando chiede 2-3 visualizzazioni avanzate. La terna consegnata copre la voce 
 
 Il criterio di scelta è dichiarato perché sia contestabile. La `fig04` mette Bagheria fra
 390 comuni invece di trattarla come un caso isolato. La `fig05` porta il focus scelto al suo
-punto più netto. La `fig07` è l'unica figura che dice **a che età** si parte, ed è la
+punto più netto. La `fig07` è la figura che dice, età per età, **quando** si parte, ed è la
 ragione per cui Ponte 19 ha due finestre.
 
 Tre figure fanno da supporto. **`fig09_kpi_finestra`** traduce il KPI in persone e lo mette
@@ -1143,7 +1198,8 @@ Il terzo focus del bando ha una serie propria, aggiunta con il thread mobilità:
 - **`mob_fig03_treno_genere`**: mezzo e orario per genere, più il pannello che impedisce di
   leggere la figura come «serve più treno».
 - **`mob_fig04_taglia_distanza`**: la figura che toglie di mezzo un'affermazione invece di
-  aggiungerne una. L'anomalia di `M2` era un effetto della taglia.
+  aggiungerne una. Il basso percentile della mobilità fuori comune era un effetto di
+  taglia e distanza.
 
 **`fig12_pendolarismo`** resta come lettura sul censimento permanente 2018-2019: è la
 replica indipendente della sezione 5.2. Le altre figure stanno nei notebook come apparato.
@@ -1179,7 +1235,8 @@ SVG in `figures/`.
    risultato ecologico: non esclude un effetto sulla singola persona, ma nessuna parte della
    proposta si appoggia all'offerta di trasporto.
 8. **Nessun primato sui titoli**: Bagheria non produce più istruzione dei territori di
-   confronto. Sta davanti solo sulla competenza di base del 2011 (`I8`), ed è ultima del
+   confronto. Sta davanti a Palermo e alla Sicilia solo sulla competenza di base del 2011
+   (`I8`), comunque dietro l'Italia, ed è ultima del
    panel su diploma o laurea (`I6`) e su titolo universitario (`I7`). Ciò che si afferma è
    la mancata conversione, non un surplus di titoli da convertire (sezione 4).
 9. **Nessuna misura diretta dell'emigrazione, né per titolo di studio**: la ritenzione di
@@ -1220,7 +1277,7 @@ SVG in `figures/`.
 | Interfaccia dati Python→R | `data/processed/` |
 
 Stato delle verifiche al 2026-09-24. Il sensore `nbconvert` è **verde sui quattro notebook**
-e `pipeline.verifica` dà **986/986 PASS**. La matrice del pendolarismo ricostruisce **sette
+e `pipeline.verifica` dà **1005/1005 PASS**. La matrice del pendolarismo ricostruisce **sette
 su sette** gli indicatori `M` pubblicati da 8milaCensus e i due totali nazionali dichiarati
 da ISTAT. Nessun numero di questa relazione è scritto a mano: ogni cifra ha accanto il file
 o la cella che la rigenera.

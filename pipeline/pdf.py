@@ -39,7 +39,10 @@ NEL_PACCHETTO = ("README.md", "LEGGIMI_GIURIA.md", "pyproject.toml", "uv.lock",
                  "docs/policy/POLICY_PONTE_19.md", "docs/team/SCELTE_ANALITICHE.md", "docs/schede/")
 # Dentro il perimetro ma fuori dal pacchetto: il generatore del deck sta in pipeline/ e porta
 # testi e note delle slide, cioe' la presentazione, che alla giuria non va.
-FUORI_PACCHETTO = ("pipeline/presentazione_pptx.py",)
+FUORI_PACCHETTO = ("pipeline/presentazione_pptx.py",
+                   # La proposta del solo thread educazione (18-24, una finestra) e' superata
+                   # dalla policy unificata: nello zip sarebbe una seconda «Ponte 19» diversa.
+                   "docs/analisi/educazione/POLICY_PONTE_19_BAGHERIA.md")
 
 A4 = "<style>@page { size: A4; margin: 2cm; } body { font-family: sans-serif; max-width: none; }</style>"
 

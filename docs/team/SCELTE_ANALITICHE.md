@@ -4,7 +4,7 @@ Documento di lavoro del team, scritto il 2026-08-28 e rivisto il 2026-09-24. Non
 deliverable: la relazione per la giuria è `docs/relazione/RELAZIONE_DATAPOLIS.md`. Tiene le decisioni che la relazione di
 accompagnamento non deve rimettere in discussione: la tesi, le tre figure, e i limiti
 che si dichiarano invece di nasconderli. **La relazione completa che ne discende è
-`docs/relazione/RELAZIONE_DATAPOLIS.md`** (scritta il 2026-08-28, aggiornata il 2026-08-29): se una decisione cambia qui,
+`docs/relazione/RELAZIONE_DATAPOLIS.md`** (scritta il 2026-08-28, rivista il 2026-09-24): se una decisione cambia qui,
 va riportata anche lì.
 
 Regola che vale ovunque qui dentro: **nessuna cifra si scrive a mano**. Ogni numero
@@ -82,8 +82,8 @@ consegna; le altre restano nei notebook come apparato.
 > sarebbe la seconda su tre, ridondante nella forma. Il pendolarismo resta comunque
 > presente nel pacchetto, con `scheda3_pendolarismo` e le quattro figure del thread.
 > Per riaprire la scelta basta scambiare `fig07` con `mob_fig01` qui e nel pacchetto
-> d'invio: le due figure sono autonome e nessun'altra parte del testo dipende da quale
-> delle due è in terna.
+> d'invio: le due figure sono autonome, ma lo scambio tocca anche la sezione 8 della
+> relazione, la guida di lettura e la figura 2.4 della scheda 2.
 
 ### ① `fig05_forbice` - il paradosso
 **Perché**: è la tesi in un'immagine sola. Un solo pannello: il quadrante sulla **stessa
@@ -95,12 +95,12 @@ pareggio con la Sicilia (+4,8 contro +4,7). Il claim è **il distacco dal vicina
 mancata conversione**, non il primato assoluto.
 
 ### ② `fig07_ritenzione_eta` - il *quando* della fuga
-> ⚠️ **Scelta riaperta (2026-09-24).** La tesi di genere di fig07 regge solo sul triennio
-> 2021-2024: sulle coorti seguite per cinque anni la perdita all'uscita dal percorso formativo
-> è di entrambi i generi. La figura resta valida per il *quando*, non per il *chi*. Candidata a
-> sostituirla: `fig13b_occupazione_eta_genere`, che mostra il deficit femminile dopo i 25 anni
-> (il rinforzo approvato il 2026-09-24); in alternativa `mob_fig01`, già prima riserva. Lo
-> scambio tocca zip, scheda 2 (figura 2.4) e slide: da decidere prima dell'invio.
+> ⚠️ **Scelta riaperta e poi mantenuta (2026-09-24).** La tesi di genere di fig07 regge solo
+> sul triennio 2021-2024: sulle coorti seguite per cinque anni la perdita all'uscita dal
+> percorso formativo è di entrambi i generi. La figura resta in terna per il *quando*, non per
+> il *chi*, e la relazione (sezioni 3.3 e 8) lo dichiara accanto alla figura. Il deficit
+> femminile dopo i 25 anni sta in `fig13b_occupazione_eta_genere`, fra le figure di supporto;
+> `mob_fig01` resta la prima riserva.
 
 **Perché**: risponde a «fuga di talenti» con qualcosa di più preciso di "i giovani se ne
 vanno" - dice **chi** e **a che età**. Profilo per età singola (F | M, quattro territori
@@ -139,14 +139,14 @@ Il terzo focus del brief, misurato sulla matrice origine-destinazione ISTAT.
   la lettura sbagliata: il treno a Bagheria è al 98° percentile siciliano, non è
   sottoutilizzato. **Cautele**: mezzo/orario/durata sono stime campionarie, calibrate sui
   margini esatti; errore relativo mediano 0,9%.
-- **`mob_fig04_taglia_distanza`** - la figura che **toglie di mezzo un claim**: il 25°
-  percentile di `M2` era un effetto della taglia, a parità di distanza e dimensione il
-  residuo è −1,9 punti. **Cautele**: distanza in linea d'aria, nessuna pretesa causale.
+- **`mob_fig04_taglia_distanza`** - la figura che **toglie di mezzo un claim**: il basso
+  percentile della mobilità fuori comune era un effetto di taglia e distanza; a parità di
+  entrambe, sulla quota di chi esce per lavoro nel 2021, il residuo è −1,9 punti. **Cautele**: distanza in linea d'aria, nessuna pretesa causale.
 
 ### Fuori dalle tre, ma dentro la proposal
-`fig09_kpi_finestra` non è una delle tre: sta nella **policy proposal**, ed è la figura
-che la rende credibile - dichiara in anticipo *quando* si potrà dire se l'intervento ha
-funzionato, e porta la cascata del KPI netto.
+`fig09_kpi_finestra` e `fig09b_potenza` non sono fra le tre: stanno nella **policy
+proposal**, e la rendono credibile. La prima porta la cascata del KPI netto, la seconda
+dichiara in anticipo *quando* si potrà dire se l'intervento ha funzionato.
 
 ---
 
@@ -186,7 +186,7 @@ le schede e lo zip. La regola, in `figura()` di `pipeline/schede.py`, è che il 
 il **ritaglio al solo grafico**: la figura R porta già titolo, sottotitolo e didascalia, che
 la scheda rifà in HTML alla propria tipografia, e un PNG a 300 dpi rimpicciolito a una
 colonna renderebbe quel testo a circa cinque pixel, illeggibile. Il ritaglio trova le bande
-di inchiostro e toglie la testa e le ultime quattro bande, che sono sempre i quattro blocchi
+di inchiostro e toglie la testa e le ultime due bande, che sono sempre i due blocchi
 della didascalia (`--bande` stampa la struttura di ogni PNG). L'**immagine intera** si usa
 solo nelle appendici, a piena larghezza, dove il punto non è il dato ma mostrare che la
 tavola dello zip viaggia da sola con la propria didascalia.
@@ -214,7 +214,7 @@ taglia e distanza)»; il numero 390 è pinnato in `pipeline/verifica.py`.
 | Focus **genere** | ✅ focus principale | thread genere |
 | Focus **titolo × condizione** | 🟡 risolto come due misure parallele sulla stessa fascia | `fig11_per_1000` |
 | Focus **pendolarismo** | ✅ destinazione identificata (91,1% studio e 65,1% lavoro verso Palermo) e ribaltamento di genere, replicato su due fonti | `mob_fig01`-`04`, `fig12_pendolarismo`, `notebooks/mobilita.ipynb` |
-| Technical notebook riproducibile | ✅ sensore nbconvert verde sui quattro notebook (2026-08-30) | - |
+| Technical notebook riproducibile | ✅ sensore nbconvert verde sui quattro notebook (2026-09-24) | - |
 | 2-3 data viz | ✅ le tre dichiarate sopra | `figures/` |
 | Policy proposal | ✅ | `docs/policy/POLICY_PONTE_19.md` |
 
@@ -245,7 +245,7 @@ taglia e distanza)»; il numero 390 è pinnato in `pipeline/verifica.py`.
 
 ## 6. Prima di congelare
 
-- [x] sensore `nbconvert` sui quattro notebook, verde il 2026-08-30
-- [x] `Rscript viz/build_all.R` dopo l'ultima modifica ai `data/processed/` — 37 figure, il 2026-08-29 (il glob ora prende anche il prefisso `mob_`)
-- [x] `uv run python -m pipeline.verifica` — tutti i 986 controlli PASS il 2026-09-24 (934 il 2026-09-23, 755 il 2026-08-30) (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
-- [x] rigenerare `docs/relazione/RELAZIONE_DATAPOLIS.docx` — rigenerato il 2026-08-30 dal .md corrente (37 figure, didascalie da `figures/didascalie.csv`), dopo le cuciture pre-invio
+- [x] sensore `nbconvert` sui quattro notebook, verde il 2026-09-24
+- [x] `Rscript viz/build_all.R` dopo l'ultima modifica ai `data/processed/` — 38 figure, il 2026-09-24 (il glob prende anche il prefisso `mob_`; lo script di `fig14`, mancante nel commit del mattino, è stato ricostruito e rigenera la figura identica)
+- [x] `uv run python -m pipeline.verifica` — tutti i 1005 controlli PASS il 2026-09-24 dopo la passata finale di verifica dei fatti e la correzione delle note del thread mobilità (986 al mattino, 934 il 2026-09-23, 755 il 2026-08-30) (pin di regressione dei thread genere e mobilità: i 51 controlli `mob_` sono nuovi, e coprono il KPI «+279 donne» della proposal)
+- [x] rigenerare `docs/relazione/RELAZIONE_DATAPOLIS.docx` — rigenerato il 2026-09-24 dal .md corrente (38 figure, didascalie da `figures/didascalie.csv`), dopo le cuciture pre-invio

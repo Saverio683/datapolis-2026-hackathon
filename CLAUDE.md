@@ -20,7 +20,7 @@ uv run python -m pipeline.fetch           # scarica raw da tutte le fonti
 uv run python -m pipeline.build           # raw -> processed
 uv run python -m pipeline.edu             # thread educazione: raw -> edu_*.csv
 uv run jupyter nbconvert --to notebook --execute notebooks/analisi.ipynb     # SENSORE (19 celle)
-uv run jupyter nbconvert --to notebook --execute notebooks/genere.ipynb      # SENSORE (165 celle)
+uv run jupyter nbconvert --to notebook --execute notebooks/genere.ipynb      # SENSORE (166 celle)
 uv run jupyter nbconvert --to notebook --execute notebooks/educazione.ipynb  # SENSORE (64 celle)
 uv run jupyter nbconvert --to notebook --execute notebooks/mobilita.ipynb    # SENSORE (40 celle)
 Rscript viz/build_all.R                   # genera tutte le figure in figures/
@@ -29,13 +29,13 @@ Rscript viz/dump_didascalie.R             # titoli e didascalie -> figures/didas
 uv run python -m pipeline.editor_testi fig06   # editor dei soli testi di una figura, anteprima live
 uv run python -m pipeline.relazione_docx  # RELAZIONE_DATAPOLIS.md + figure -> .docx
 uv run python -m pipeline.policy_docx     # POLICY_PONTE_19.md + figure e sinossi -> .docx
-uv run python -m pipeline.verifica        # SENSORE: 986 controlli, exit 1 se uno fallisce
+uv run python -m pipeline.verifica        # SENSORE: 1005 controlli, exit 1 se uno fallisce
 uv run python -m pipeline.pdf             # deliverable -> dist/: PDF + notebook in HTML
 ```
 
 Prima di dichiarare completo qualunque task che tocca un notebook, esegui il nbconvert **di quel notebook** e quello di `analisi.ipynb`. Se fallisce, il task non è finito.
 
-`analisi.ipynb` è il guscio condiviso (caricamento, verifica delle definizioni, export per le figure): da solo copre 19 celle su 288, l'analisi vera sta nei tre notebook di thread. Un nbconvert sul solo `analisi.ipynb` non è quindi la prova che il progetto gira.
+`analisi.ipynb` è il guscio condiviso (caricamento, verifica delle definizioni, export per le figure): da solo copre 19 celle su 289, l'analisi vera sta nei tre notebook di thread. Un nbconvert sul solo `analisi.ipynb` non è quindi la prova che il progetto gira.
 
 Prima di dichiarare completo qualunque task che tocca `data/processed/`, i notebook o i documenti di `docs/`, esegui `pipeline.verifica`. Copre tre salti: raw -> notebook, notebook -> processed, e processed -> le cifre scritte a mano in `docs/team/SCELTE_ANALITICHE.md`, `RELAZIONE_DATAPOLIS.md` e `POLICY_PONTE_19.md`. Quest'ultimo blocco non dichiara i numeri attesi: li rilegge da `data/processed/`, li formatta all'italiana e pretende che la frase compaia alla lettera nel documento, quindi fallisce sia se si muove il dato sia se si ritocca il testo a mano. Quando fallisce, la riga di FAIL stampa la frase da riscrivere.
 

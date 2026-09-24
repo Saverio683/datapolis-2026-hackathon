@@ -178,7 +178,7 @@ figura <- guide_area() /
       "): quello che sopravvive a entrambi si può affermare.\n",
       "Reggono a tutte e due le letture i tre tratti che contano per la proposal: la disoccupazione femminile alta (", conta("L7", "gemelle"), "/", N_GEMELLE,
       " in entrambi), l'occupazione giovanile bassa (", conta("L14", "gemelle"), "/", N_GEMELLE, "),\n",
-      "e soprattutto i giovani che vivono da soli: Bagheria ne ha meno di ogni comune dei due gruppi. Quella è l'autonomia mancata, ed è il tratto proprio di Bagheria.\n",
+      "e soprattutto i giovani che vivono da soli: nessun comune dei due gruppi ne ha meno di Bagheria. Quella è l'autonomia mancata, ed è il tratto proprio di Bagheria.\n",
       "Cambia invece proprio il claim centrale del thread: sull'occupazione femminile fra i pari strutturali Bagheria è nella norma (", conta("L11", "gemelle"), "/", N_GEMELLE,
       ", dentro i quartili),\n",
       "fra i comuni ugualmente scolarizzati è penultima (", conta("L11", "istruiti"), "/", N_GEMELLE, ", sotto il primo quartile). È uno svantaggio che resta a pari istruzione: il lavoro femminile non arriva.\n",

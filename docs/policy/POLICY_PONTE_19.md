@@ -7,7 +7,8 @@ Policy proposal del progetto DataPolis 2026, 2026-08-29, versione rivista del 20
 **Ponte 19 è un servizio comunale che va a cercare i giovani di Bagheria fuori da lavoro e
 studio, invece di aspettarli a uno sportello, e li accompagna verso un primo esito
 verificabile.** Il nome viene dall'età di uscita dalla scuola superiore, 19 anni; l'analisi
-ha fatto emergere una seconda finestra, fra 22 e 25, e il servizio copre quindi i 18-25.
+ha fatto emergere una seconda finestra, fra 22 e 25. Il servizio copre i 18-25: le due
+finestre sono i momenti in cui va a cercare i giovani, non requisiti d'accesso.
 Quattro scelte di progetto, tutte derivate dai dati e non da preferenze di design:
 
 1. il target ha **due finestre d'età**, non una, perché le uscite hanno due tempi;
@@ -37,10 +38,11 @@ uomini), contro il 17,3% dell'Italia; sul 15-24 la stessa fonte dà 19,5% per la
 dove il proxy censuario dà 22,3%. È un riferimento, mai in serie con il dato comunale
 (`genere_neet_rcfl.csv`). Il target del servizio
 parte da 18 anni perché fino a 18 vale il diritto-dovere all'istruzione e alla
-formazione, e si ferma a 25 perché è lì che i dati collocano le due uscite; i 26-34enni
-restano fuori perché nessuna tavola comunale ne segue la condizione professionale. Il deficit
-femminile più grande però sta sopra i 25 anni (sezione 1): estendere il modulo di genere ai
-26-34 è un'opzione dichiarata, da decidere. La
+formazione, e si ferma a 25 perché le finestre devono intercettare le uscite prima che si
+compiano, e quella dall'uscita dal percorso formativo si compie fra i 25 e i 29 anni; i
+26-34enni restano fuori perché nessuna tavola comunale ne segue la condizione
+professionale. Il deficit femminile più grande però sta sopra i 25 anni (sezione 1):
+estendere il modulo di genere ai 26-34 è un'opzione dichiarata, da decidere. La
 ricostruzione completa sta in `docs/relazione/RELAZIONE_DATAPOLIS.md` §1 e §9.
 
 ---
@@ -67,21 +69,22 @@ non è un tratto di fascia territoriale.
 `genere_posizionamento.csv`, `genere_rango_390_15_24.csv`
 
 **Il pendolarismo ha lo stesso segno.** Fra chi già si sposta per lavorare, nel 2019
-esce dal comune il **41,2% degli uomini** e il **33,0% delle donne**: 8,2 punti, il
-doppio dello scarto siciliano (4,1) e quasi il doppio di quello nazionale (4,7). Ma **per
+esce dal comune il **41,2% degli uomini** e il **33,0% delle donne**: 8,2 punti, il doppio dello scarto siciliano (4,1) e più di una volta e mezza quello nazionale (4,7). Ma **per
 studiare il segno si inverte** (F 16,3% contro M 13,6%, il vantaggio femminile più ampio
 dei quattro territori). Le ragazze si muovono; smettono quando il motivo diventa il lavoro.
 → `genere_pendolarismo.csv`
 
 **Dopo i 25 anni il divario non si chiude, e diventa femminile.** A 15-24 anni lo scarto di
-Bagheria da Palermo e dalla Sicilia non è di genere; a 25-49 lo è: le donne lavorano al
+Bagheria dalla Sicilia non è di genere, e da Palermo le ragazze distano di poco più di un
+punto; a 25-49 lo scarto è femminile, e largo: le donne lavorano al
 **39,6%** contro il 48,0% di Palermo e il 47,6% della Sicilia (**−8,4 e −8,0 punti**), gli
 uomini sono a 1-3 punti. Al tasso femminile di Palermo sarebbero **695 occupate in più**,
 contro le 40 del 15-24. Non è solo la generazione delle madri: con il ricambio delle coorti
 lo scarto si sarebbe dovuto chiudere a −6,3 punti e resta a −8,4; le nate dal 1984 in poi
 portano circa −6 punti, i coetanei maschi quasi nulla. Il 25-49 qui è il test di che cosa
 succede dopo la fascia target, non una misura dei giovani.
-→ `genere_dopo_25_scarti.csv`, `genere_dopo_25_generazioni.csv`
+→ `genere_dopo_25.csv`, `genere_dopo_25_scarti.csv`, `genere_dopo_25_generazioni.csv`,
+`genere_gap_persone.csv`
 
 **Le uscite hanno due tempi diversi.** Fra i 15 e i 19 anni si assottigliano soprattutto i
 ragazzi; all'uscita dal percorso formativo, fra i 20 e i 29 anni, le coorti di entrambi i
@@ -109,7 +112,8 @@ transizione fra titolo posseduto, attivazione e primo esito, con un obiettivo di
 | | |
 |---|---|
 | **Finestra A - uscita** | residenti **18-20** all'uscita dalla secondaria o entro 30 giorni dall'interruzione |
-| **Finestra B - mancata conversione** | residenti **22-25** fuori da lavoro e studio, o occupati che rifiutano opportunità fuori comune |
+| **Finestra B - mancata conversione** | residenti **22-25** fuori da lavoro e studio |
+| **Fuori finestra** | i 21enni, e i 18-25enni che le due finestre non intercettano, entrano su segnalazione (scuole, servizi sociali, Centro per l'impiego) o su richiesta. A 21 anni nessuno dei due generi perde residenti netti, quindi quell'età non ha un canale di ricerca dedicato (`genere_ritenzione_eta.csv`) |
 | **Target primario** | chi **non cerca attivamente** (il 70,6% dell'area fuori lavoro-studio) |
 | **Quota di genere** | **minimo 50% donne** sui presi in carico, con monitoraggio trimestrale |
 | **Capacità pilota** | 200 partecipanti nel primo anno (~18% dei 1.121 inattivi non studenti), contati sui 15-24enni: capacità progettata su una platea indicativa, perché il censimento non dà la fascia 18-25 |
@@ -121,9 +125,12 @@ transizione fra titolo posseduto, attivazione e primo esito, con un obiettivo di
 Il gruppo dei ~1.121 invisibili **non è femminile nelle dimensioni**: 573 ragazze e 549
 ragazzi, 51% F. È femminile **nell'etichetta**: casalinghe e casalinghi sono 387 contro 50
 (F contro M), e in "altra condizione" 183 contro 485. L'outreach deve quindi coprire
-**entrambi i generi con agganci diversi**: è la **stessa inattività con etichette diverse**.
-La divisione per genere c'era già nel 2018-2019, con l'altro metodo del censimento, e
-l'eccesso femminile di inattività compare solo dopo i 25 anni (sezione 1). L'etichetta non
+**entrambi i generi con agganci diversi**: è un'**inattività di dimensioni simili con
+etichette diverse**.
+La divisione per genere c'era già nel 2018-2019, con l'altro metodo del censimento. In
+quota le ragazze fuori da lavoro, studio e ricerca stanno un po' sopra i coetanei (19,9%
+contro 18,2% nel 2024), ma
+l'eccesso femminile largo compare solo dopo i 25 anni (sezione 1). L'etichetta non
 identifica nessuno, e per i ragazzi non c'è neppure quella: il canale va costruito per
 entrambi.
 → `genere_composizione_stato_dettaglio.csv`
@@ -172,15 +179,18 @@ replicarvi un incentivo sarebbe spesa su un problema che non c'è.
 
 ⚠️ **I dati non sostengono un intervento infrastrutturale.** La correlazione fra mobilità
 fuori comune (`M2`) e occupazione femminile (`L11`) sui 390 comuni (Spearman **+0,32**: dove si esce di più dal comune, le donne lavorano di
-più) suggeriva che Bagheria soffrisse di scarsa mobilità. Non regge per due ragioni. La
-prima: il basso percentile di `M2` era un **effetto della taglia**, e a parità di distanza
-dal capoluogo e di dimensione il residuo di Bagheria è **−1,9 punti** (z = −0,13). La
-seconda: il canale «più mezzo collettivo, meno divario di genere» è stato testato sugli
-stessi 390 comuni e **non trova sostegno** (Spearman **−0,10**, p = 0,06, di segno opposto
+più; in parte è meccanico, perché dove si lavora di più ci si sposta di più) suggeriva che
+Bagheria soffrisse di scarsa mobilità. Non regge per due ragioni. La prima: a parità di
+distanza dal capoluogo e di dimensione Bagheria esce dal comune quanto ci si aspetta, con
+un residuo di **−1,9 punti** (z = −0,13) sulla quota di chi esce per lavoro nel 2021. La
+seconda: il canale «più mezzo collettivo, meno divario di genere» è stato testato sui 381
+comuni non capoluogo e **non trova sostegno** (Spearman **−0,10**, p = 0,06, di segno opposto
 all'ipotesi; sul treno l'associazione è nulla, p = 0,29), mentre il treno di Bagheria sta al
 **98° percentile siciliano**. Il vincolo non è l'offerta di trasporto. Un'associazione
 assente fra comuni non esclude che orario e mezzo pesino sulla singola persona: per questo
 la raggiungibilità si verifica caso per caso.
+→ sezione «La nuvola dei 390» di `notebooks/genere.ipynb` (M2 × L11), sezioni 3 e 7 di
+`notebooks/mobilita.ipynb`
 
 La componente vive quindi come **verifica di raggiungibilità col mezzo collettivo negli orari
 reali della posizione**, dentro l'istruttoria di ogni piano di transizione, e il sostegno
@@ -203,7 +213,7 @@ mostrano rotto: il contatto, la barriera, la domanda.
 ### L'evidenza, un anello per componente
 
 **Il contatto esiste già, ma come etichetta.** Nel 2024 il censimento classifica come
-casalinghe **387** 15-24enni, il **13,4%** della fascia, contro l'**11,3%** di Palermo, il
+casalinghe **387** ragazze di 15-24 anni, il **13,4%** delle coetanee, contro l'**11,3%** di Palermo, il
 **10,1%** della Sicilia e il **4,6%** dell'Italia; dal 2021 la quota sta fra il 12,8% e il
 14,8%. Non è una
 dichiarazione né un conteggio: dal 2021 ISTAT stima la condizione di chi non è occupato con
@@ -211,15 +221,12 @@ un modello, sommando per comune probabilità individuali (a Bagheria 386,84 raga
 tavola comunale non ne riporta l'errore (`genere_interi_condizione.csv`). Il 2018-2019 viene
 da un altro metodo e non si mette in serie. La tavola
 non dà l'età dentro la fascia: se nessuna avesse meno di 18 anni la quota sulle 18-24enni
-sarebbe del **18,8%**, se nessuna ne avesse meno di 20 del **25,8%** sulle 20-24enni. Al
-1.1.2025 le già coniugate 15-24 sono **41 (1,4%)**: almeno l'**89%** non è sposata, quindi
-il canale non è il matrimonio precoce.
+sarebbe del **18,8%**, se nessuna ne avesse meno di 20 del **25,8%** sulle 20-24enni. Il
+canale non è il matrimonio precoce (sezione 3).
 → `genere_casalinghe.csv`, `genere_casalinghe_bounds.csv`, `genere_stato_civile.csv`, fig02b
 
-**Il pendolarismo va nello stesso verso.** Fra chi già si sposta **per lavoro** esce dal
-comune il **41,2%** dei maschi e il **33,0%** delle femmine (**8,2 punti**, contro 4,1 in
-Sicilia e 4,7 in Italia). Sullo **studio il segno si inverte**: F **16,3%** contro M
-**13,6%**, il vantaggio femminile più ampio del panel. Il denominatore è già condizionato
+**Il pendolarismo va nello stesso verso** (sezione 1): per studiare le ragazze escono dal
+comune più dei coetanei, per lavorare le donne escono meno degli uomini. Il denominatore è già condizionato
 al motivo (chi si sposta per lavoro un lavoro ce l'ha): la misura è compatibile con lo
 stesso passaggio, non una sua conferma indipendente. Misura solo chi già lavora, e la fonte
 non ha l'età: sullo studio pesano i giovani, sul lavoro gli adulti fino a 64 anni.
@@ -229,15 +236,16 @@ Il thread mobilità lo **replica su un censimento diverso**: sulla matrice origi
 2011 (conteggio esaustivo, altra tavola e altro denominatore) il divario è **+2,6 punti** sullo
 studio e **−12,1** sul lavoro, un ribaltamento di **14,7 punti** contro 6,0 in Sicilia, 6,5 in
 Italia e 1,9 nel Comune di Palermo, con Bagheria al **15° percentile dei comuni
-siciliani** sul lavoro (14° al netto di taglia e distanza dal capoluogo). Attenzione ai segni: qui lo scarto è F − M (negativo quando le
-donne escono meno), mentre la misura del 2019 citata sopra è M − F; la grandezza è la stessa.
-→ `mob_ribaltamento_territori.csv`, `mob_sintesi.csv`, mob_fig02
+siciliani** sul lavoro (14° al netto di taglia e distanza dal capoluogo). Attenzione ai
+segni: qui lo scarto è F − M (negativo quando le donne escono meno), mentre la misura del
+2019 della sezione 1 è M − F. Le due misure vengono da fonti e anni diversi e hanno valori
+diversi; coincide il verso.
+→ `mob_ribaltamento_territori.csv`, sezione 4 di `notebooks/mobilita.ipynb`, mob_fig02
 
-**La domanda non arriva a chi il titolo ce l'ha.** Le ragazze hanno il diploma più spesso
-dei coetanei (**+4,8 punti** sulla fascia 15-24; +4,2 sulla 9-24, 33,4% contro 29,2%) e
-hanno un tasso di occupazione 15-24 dell'**8,2%** contro il **16,5%** dei maschi. Fra i
-comuni a pari istruzione Bagheria è **penultima** (un solo comune su 10 fa peggio) per occupazione femminile (15+,
-2011): a pari titolo il lavoro non arriva.
+**La domanda non arriva a chi il titolo ce l'ha** (sezione 1): le ragazze sono più
+diplomate dei coetanei e occupate la metà (8,2% contro 16,5%), e fra i comuni a pari
+istruzione Bagheria è penultima per occupazione femminile (15+, 2011): a pari titolo il
+lavoro non arriva.
 → `genere_forbice_quadrante.csv`, `genere_quadro_sintesi.csv`, `genere_pari_lenti.csv`,
 `genere_posizionamento.csv`, fig05, fig08
 
@@ -250,9 +258,10 @@ comuni a pari istruzione Bagheria è **penultima** (un solo comune su 10 fa pegg
 > (correlazione di Spearman fra il rapporto uomini/donne sui diplomati, `I1`, e il tasso di
 > occupazione femminile, `L11`: **−0,24**, p<0,001),
 > mentre Bagheria contraddice il pattern. Resta vero che Bagheria è indietro sui titoli più
-> alti per entrambi i generi (diploma e laurea degli adulti, `docs/relazione/RELAZIONE_DATAPOLIS.md`
-> §4): è un tema reale, ma non è la leva di questo modulo.
-> → `genere_forbice_serie.csv`, `genere_nuvola_390.csv`, fig05b, fig06b
+> alti per entrambi i generi (diploma e laurea degli adulti 25-49 nel 2024, sotto la
+> Sicilia sia fra le donne sia fra gli uomini: `genere_titoli_eta.csv`, fig14): è un tema
+> reale, ma non è la leva di questo modulo.
+> → `genere_forbice_serie.csv`, `genere_nuvola_390.csv`, `edu_kpi_dashboard.csv`, fig05b, fig06
 
 ### Le tre componenti
 
@@ -268,19 +277,16 @@ osserva: lo chiede il colloquio.
 → `edu_technical_schools.csv` (anagrafe MIUR: 3 sedi tecniche a Bagheria, 23 a Palermo)
 
 **F2 - Barriera: non il collegamento, ma l'orario e il mezzo che si dà per scontato.**
-L'ipotesi ovvia è già stata testata sui 390 comuni e **non trova sostegno**: «più mezzo
-collettivo, meno divario di genere» non regge (Spearman **−0,10**, p = 0,06, di segno
-opposto all'ipotesi; sul treno l'associazione è nulla, p = 0,29). Il treno a Bagheria è al
-**98° percentile siciliano** (97° a parità di distanza e taglia), quindi non è
-sottoutilizzato, e l'ultimo miglio dentro Palermo non è un collo di bottiglia. **Il vincolo
-non è l'offerta di trasporto**, e questo modulo non ci si appoggia: F2 è la forma operativa
-della componente E della sezione 4.
-→ `mob_treno_390.csv`, `notebooks/mobilita.ipynb` (sezioni 5 e 8)
+L'ipotesi ovvia, «più mezzo collettivo, meno divario di genere», è già stata testata e non
+regge (componente E della sezione 4); il treno non è sottoutilizzato, e l'ultimo miglio
+dentro Palermo non è un collo di bottiglia. **Il vincolo non è l'offerta di trasporto**, e
+questo modulo non ci si appoggia: F2 è la forma operativa della componente E.
+→ `mob_treno_390.csv`, `notebooks/mobilita.ipynb` (sezioni 5, 7 e 8)
 
 Quello che resta di genere, e che i dati mostrano, è un'altra cosa:
 
 - **il mezzo**: fra chi esce da Bagheria (2011) il treno vale il **31,5%** degli spostamenti delle donne e il **16,4%** di quelli degli uomini (mezzo privato 63,6% contro 79,0%). Le donne usano il treno quasi il doppio degli uomini, gli uomini l'auto;
-- **l'orario**: fra chi va a lavorare a Palermo, a 17 km, prima delle 7:15 esce il **65,0%** degli uomini e il **54,4%** delle donne; fra chi va a studiare a Palermo la differenza quasi scompare: **la divergenza oraria nasce col lavoro**. Fra tutti quelli che escono dal comune, il **43,8%** delle donne impiega 31-60 minuti contro il 36,1% degli uomini.
+- **l'orario**: fra chi va a lavorare a Palermo, a circa 18 km, prima delle 7:15 esce il **65,0%** degli uomini e il **54,4%** delle donne; fra chi va a studiare a Palermo la differenza quasi scompare: **la divergenza oraria nasce col lavoro**. Fra tutti quelli che escono dal comune, il **43,8%** delle donne impiega 31-60 minuti contro il 36,1% degli uomini.
 
 Quindi F2 non finanzia trasporto: **vincola il servizio**, e costa istruttoria invece che budget.
 
@@ -348,15 +354,15 @@ cura: è il segnale che una scelta in più è diventata possibile.
 platea residente della stessa cella; quota di prese in carico avviate entro 30 giorni;
 copertura della finestra 22-25 sul totale femminile preso in carico.
 
-**F2**: quota di partecipanti F che accedono a un'opportunità **fuori comune** entro 6 mesi,
-riferimento **33,0% → 41,2%** (la quota di chi esce per lavoro fra le donne e fra gli uomini
-di Bagheria, tutte le età, 2019). L'obiettivo è lavorare a Palermo restando residenti a
+**F2**: fra le partecipanti che entro 6 mesi hanno un lavoro, quota che lo ha **fuori
+comune**, riferimento **33,0% → 41,2%** (la quota di chi esce per lavoro fra le donne e fra
+gli uomini di Bagheria che si spostano per lavoro, tutte le età, 2019). L'obiettivo è lavorare a Palermo restando residenti a
 Bagheria: è il contrario della fuga, non un suo incentivo. Accanto, la misura del filtro:
 quota di posizioni entrate nel piano di transizione che hanno **superato la verifica di
 raggiungibilità col mezzo collettivo**, e quota di quelle scartate per orario di ingresso
 incompatibile.
-⚠️ Misurabile **solo sul dato di servizio**: la fonte scomposta per genere copre 2018 e 2019
-e su quella misura «fuori comune» è aggregato. La matrice origine-destinazione identifica
+⚠️ Misurabile **solo sul dato di servizio**: nel censimento permanente la fonte scomposta
+per genere copre 2018 e 2019, e su quella misura «fuori comune» è aggregato. La matrice origine-destinazione identifica
 Palermo ma è ferma ai censimenti (e il 2021 è senza sesso), quindi non regge una lettura
 annuale.
 
@@ -365,7 +371,7 @@ annuale.
 
 ⚠️ **In tasso e non in teste, e qui più che altrove.** La platea femminile 15-24 passa da
 **2.882** (2024) a 2.651 (2029) e **2.435** (2034), **−15,5%**, mentre quella maschile
-perde il 5,8%: nei benchmark il calo è simmetrico fra i generi, qui no. Un obiettivo in
+perde il 5,8%: nei benchmark il calo è simile fra i generi, qui no. Un obiettivo in
 teste si annullerebbe da solo, e sul lato femminile più in fretta.
 → `genere_platea.csv`, fig09
 
@@ -373,9 +379,9 @@ teste si annullerebbe da solo, e sul lato femminile più in fretta.
 
 | Evidenza raccolta | Decisione |
 |---|---|
-| Meno del 30% delle prese in carico F arriva dalla traccia F1 a 90 giorni | Il canale di contatto è sbagliato: rivedere i luoghi prima di aumentare la capacità |
+| Meno del 30% delle prese in carico F arriva dalla traccia F1 dopo i primi 90 giorni di erogazione | Il canale di contatto è sbagliato: rivedere i luoghi prima di aumentare la capacità |
 | Posizioni verificate raggiungibili col mezzo collettivo negli orari richiesti | F2 opera come filtro dell'istruttoria; l'abbonamento si attiva solo sul già occupato |
-| Posizioni verificate raggiungibili di fatto solo in auto | Il vincolo è l'orario del datore, non il trasporto: rinegoziare l'ingresso prima di finanziare mobilità |
+| Posizioni verificate raggiungibili di fatto solo in auto | Se il vincolo è l'orario d'ingresso, rinegoziarlo col datore; se è la sede, cercare posizioni equivalenti raggiungibili; solo dopo valutare un sostegno alla mobilità |
 | Nessuna gara utile nei 12 mesi di erogazione | F3 resta dichiarata ma non si contabilizza fra le leve attive |
 
 ### Cosa il modulo non promette
@@ -384,23 +390,23 @@ teste si annullerebbe da solo, e sul lato femminile più in fretta.
 - Non attribuisce la condizione di casalinga a una scelta né a un vincolo familiare osservato. Lo stato civile esclude il matrimonio precoce come canale, ma non osserva convivenze né maternità.
 - Non afferma un flusso femminile «verso Palermo» corrente: la destinazione per genere esiste solo al 2011 (matrice ISTAT), la serie annuale 2018-2019 dà «fuori comune» aggregato e il 2021 non ha il sesso. Il KPI di F2 si legge sul dato di servizio (sezione 6).
 - Non promette che F3 sposti da sola il KPI di popolazione: rende la domanda verificabile, il resto resta appeso a F1 e F2.
-- Non propone interventi sul trasporto. L'ipotesi è stata testata sui 390 comuni e non ha trovato sostegno, e il treno di Bagheria è al 98° percentile siciliano: non è l'offerta di trasporto che manca.
+- Non propone interventi sul trasporto. L'ipotesi è stata testata sui 381 comuni non capoluogo e non ha trovato sostegno, e il treno di Bagheria è al 98° percentile siciliano: non è l'offerta di trasporto che manca.
 - Non sostiene alcuna tesi di segregazione per indirizzo di studio. L'anagrafe MIUR dà le sedi, non gli iscritti per genere e indirizzo: il dato non esiste, e senza quello «gli indirizzi femminili non convertono» resta un'ipotesi, non un'evidenza.
 
 ---
 
 ## 5. Decision gate dei primi 90 giorni
 
-Nei 90 giorni di preparazione il servizio raccoglie evidenza sul territorio e decide, riga per riga, quali moduli attivare.
+Nei 90 giorni di preparazione il servizio raccoglie evidenza sul territorio e decide, riga per riga, quali moduli attivare. La riga sulla quota di genere si legge invece dopo i primi 90 giorni di erogazione, quando le prese in carico esistono.
 
 | Evidenza raccolta | Decisione |
 |---|---|
 | ≥30 esperienze retribuite con domanda e mentor verificati | Attivare il modulo esperienza |
 | Gap di competenza ricorrente associato a posizioni reali | Progettare un modulo breve e mirato |
-| Posizioni verificate raggiungibili di fatto solo in auto | Rinegoziare l'orario d'ingresso col datore: il trasporto non è la barriera (sezione 4-bis, F2) |
+| Posizioni raggiungibili solo in auto, e le altre righe del modulo di genere | Sezione 4-bis, «Righe che il modulo aggiunge al decision gate» |
 | Carico di cura barriera primaria nel sottogruppo femminile | Attivare la conciliazione **oltre** l'attivazione, non al suo posto |
 | Domanda insufficiente o non verificabile | Concentrare su outreach, orientamento e mercato metropolitano |
-| Quota di genere sotto il 40% a 90 giorni | Rivedere i canali di contatto prima di aumentare la capacità |
+| Quota di genere sotto il 40% dopo i primi 90 giorni di erogazione | Rivedere i canali di contatto prima di aumentare la capacità |
 
 ---
 
@@ -410,14 +416,14 @@ Nei 90 giorni di preparazione il servizio raccoglie evidenza sul territorio e de
 
 La platea femminile 15-24 **è già nata** e cala: 2.882 (2024) → 2.651 (2029) → **2.435
 (2034), −15,5%**, contando i residenti di oggi a migrazioni nulle; nei benchmark il calo è
-simmetrico fra i generi, qui no. L'asimmetria viene da un rapporto fra i sessi anomalo fra i
+simile fra i generi, anzi un po' più forte fra i maschi, qui pesa soprattutto sulle ragazze. L'asimmetria viene da un rapporto fra i sessi anomalo fra i
 5-14enni (117 maschi ogni 100 femmine, contro 104-106 nei benchmark), replicato su due tavole
 ma senza un meccanismo identificato: il KPI in tasso serve comunque, perché la platea cala
 anche fra i ragazzi (−5,8%). Al tasso
 obiettivo di Palermo (9,59%), le stesse "+40 occupate" misurate sulla platea di ciascun
-anno valgono **+18 al 2029 e −2 al 2034** (lordo +40,4, attrito −22,2 e −42,9).
+anno valgono **+18,2 al 2029 e −2,5 al 2034** (lordo +40,4, attrito −22,2 e −42,9).
 Un obiettivo in teste si annullerebbe da solo senza che nessuno abbia sbagliato nulla.
-→ `genere_platea.csv`, `genere_kpi_netto.csv`, `fig09_kpi_finestra`
+→ `genere_platea.csv`, `genere_sex_ratio_5_14.csv`, `genere_kpi_netto.csv`, `fig09_kpi_finestra`
 
 ⚠️ Da non confondere con l'altro attrito: **−19/−37** è lo scenario «non si fa niente»
 (tasso 2024 fermo, `genere_tetto_platea.csv`); **−22/−43** è lo stesso conto al tasso
@@ -472,7 +478,8 @@ Oggi **nessuno li rileva**: il servizio deve produrli.
 - quota che avvia l'azione concordata entro 30 giorni;
 - giorni medi consecutivi fuori da lavoro, studio e formazione;
 - **utenza per età singola e genere**, contro la platea residente della stessa cella;
-- copertura delle due finestre (18-20 e 22-25) separatamente.
+- copertura delle due finestre (18-20 e 22-25) separatamente, e prese in carico fuori
+  finestra (21enni e ingressi su segnalazione) contate a parte.
 
 ### KPI di qualità
 Durata e tipologia del contratto; coerenza dichiarata fra indirizzo e attività; continuità
@@ -480,11 +487,11 @@ a 6 e 12 mesi; ricaduta nell'inattività; esiti aggregati per titolo e indirizzo
 pubblicare celle piccole.
 
 ### KPI della componente mobilità
-Quota di partecipanti F che accedono a un'opportunità **fuori comune** entro 6 mesi,
-riferimento 33,0% → 41,2% (donne e uomini di Bagheria che escono per lavoro, tutte le età,
-2019).
-⚠️ **Non aggiornabile dalla fonte**: il pendolarismo **scomposto per genere** esiste solo
-per 2018-2019 e su quella misura la destinazione è «fuori comune» aggregato. La matrice
+Fra le partecipanti che entro 6 mesi hanno un lavoro, quota che lo ha **fuori comune**,
+riferimento 33,0% → 41,2% (donne e uomini di Bagheria che escono per lavoro, fra chi si
+sposta per lavoro, tutte le età, 2019).
+⚠️ **Non aggiornabile dalla fonte**: nel censimento permanente il pendolarismo **scomposto
+per genere** esiste solo per 2018-2019 e su quella misura la destinazione è «fuori comune» aggregato. La matrice
 origine-destinazione ISTAT *sì* identifica Palermo (91,1% di chi esce per studio nel 2011,
 65,1% per lavoro nel 2021) ma è ferma ai censimenti, e il 2021 è senza sesso: nessuna delle
 due serve a leggere un intervento anno per anno. Questo KPI si misura sul **dato di
@@ -503,9 +510,11 @@ confronto temporaneo. Protocollo, outcome primario, finestre temporali ed esclus
 pubblicati **prima** dell'avvio. È questo livello che identifica l'effetto del servizio, a
 quattro condizioni scritte nel protocollo:
 
-- **due coorti da 100**, con ingresso al mese 0 e al mese 6: chi aspetta, aspetta almeno
-  sei mesi, quindi sull'esito primario a sei mesi il gruppo di confronto esiste. Chi
-  abbandona resta nel gruppo in cui è stato assegnato;
+- **due coorti da 100**, con ingresso al mese 0 e al mese 6. Il primo contatto entro 30
+  giorni vale per tutti: chi è assegnato alla seconda coorte riceve il colloquio e
+  l'indirizzamento alle misure esistenti, e comincia il percorso al mese 6. Sull'esito
+  primario a sei mesi il gruppo di confronto quindi esiste. Chi abbandona resta nel gruppo
+  in cui è stato assegnato;
 - **sull'esito a dodici mesi il confronto non c'è**: a quel punto anche la seconda coorte è
   in carico da sei mesi, e la tenuta al dodicesimo mese si riporta come dato descrittivo;
 - **se le domande non superano i posti, non c'è sorteggio**: la valutazione diventa
@@ -534,15 +543,16 @@ tendenze siano parallele. Con un solo comune di confronto, poi, uno shock propri
 o di Palermo non si separa dall'effetto: il confronto si fa anche con un **controllo
 sintetico** costruito sui 33 comuni di taglia simile, con test placebo sugli stessi comuni
 (la variabilità già misurata per i KPI, sezione 6), e Palermo resta il riferimento
-dichiarato. Le dieci gemelle strutturali (i comuni più
-simili a Bagheria per dimensione, densità, età, stranieri, abitazioni e distanza da
-Palermo) sono il secondo termine di confronto.
-→ `genere_pretrend.csv`, `genere_gemelle.csv`
+dichiarato. Le dieci gemelle strutturali (i comuni più simili a Bagheria per dimensione,
+densità, età, stranieri, abitazioni e distanza da Palermo) sono un ulteriore termine di
+confronto.
+→ `genere_pretrend.csv`, `genere_pretrend_390.csv`, `genere_gemelle.csv`
 
 ⚠️ Sul tasso di occupazione femminile 15+, Bagheria sta **sotto la mediana delle gemelle
 in tutti gli anni 2018-2024** (di 2,1-3,1 punti, contro 1,7 nel 2011): lo stacco aperto nel
 decennio 2001-2011 non si è chiuso. Il disegno deve poter distinguere l'effetto
 dell'intervento dalla prosecuzione di quel divario.
+→ `genere_pretrend_gemelle_recente.csv`, `genere_posizionamento.csv`
 
 ---
 
@@ -562,7 +572,8 @@ parte del suo valore.
 ## 9. Accountability pubblica
 
 Dashboard trimestrale con soli indicatori aggregati: persone contattate, piani attivati,
-esiti a 3/6/12 mesi, durata media dell'inattività, **composizione per genere e finestra**,
+esiti a 3/6/12 mesi, durata media dell'inattività, **composizione per genere e finestra**
+(ingressi fuori finestra compresi),
 differenza rispetto al gruppo di confronto. Celle piccole non pubblicate.
 
 Il successo non è il numero di iscritti. È una transizione stabile, e una convergenza
@@ -590,8 +601,9 @@ misurata sul triennio.
   Restano fuori le esperienze retribuite della componente D, che si attivano solo su
   posizioni verificate (all'indennità minima siciliana di 300 euro al mese, 30 posizioni
   costano almeno 9.000 euro per ogni mese), l'IVA di un eventuale affidamento, il tempo del
-  personale già in servizio di Comune, scuole e Centro per l'impiego, e la valutazione
-  esterna. È una stima parametrica, non un piano economico: quello va costruito con gli
+  personale già in servizio di Comune, scuole e Centro per l'impiego, la valutazione
+  esterna, i 90 giorni di preparazione e il follow-up della seconda coorte oltre il
+  dodicesimo mese. È una stima parametrica, non un piano economico: quello va costruito con gli
   uffici comunali. → `genere_costo_pilota.csv`, `genere_costo_parametri.csv`.
   Le linee candidate sono il Fondo sociale europeo Plus del programma regionale 2021-2027 e
   le risorse comunali per le politiche giovanili.

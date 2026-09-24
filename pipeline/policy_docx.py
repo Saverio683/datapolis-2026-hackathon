@@ -84,10 +84,12 @@ INLINE: list[tuple[str, str]] = [
     # 4-bis. Rotta F, un anello per componente
     ("→ `genere_casalinghe.csv`, `genere_casalinghe_bounds.csv`, `genere_stato_civile.csv`, fig02b",
      "fig02b_casalinghe_territori"),
-    ("→ `mob_ribaltamento_territori.csv`, `mob_sintesi.csv`, mob_fig02", "mob_fig02_ribaltamento"),
+    ("→ `mob_ribaltamento_territori.csv`, sezione 4 di `notebooks/mobilita.ipynb`, mob_fig02",
+     "mob_fig02_ribaltamento"),
     ("`genere_pari_lenti.csv`, `genere_posizionamento.csv`, fig05, fig08",
      "fig08_posizionamento"),
-    ("→ `genere_forbice_serie.csv`, `genere_nuvola_390.csv`, fig05b, fig06b", "fig05b_forbice_serie"),
+    ("→ `genere_forbice_serie.csv`, `genere_nuvola_390.csv`, `edu_kpi_dashboard.csv`, fig05b, fig06",
+     "fig05b_forbice_serie"),
     ("`notebooks/mobilita.ipynb`, mob_fig03", "mob_fig03_treno_genere"),
     ("→ `genere_composizione_stato_dettaglio.csv`, `genere_ritenzione_eta.csv`",
      "fig07_ritenzione_eta"),
@@ -96,7 +98,7 @@ INLINE: list[tuple[str, str]] = [
     # 6. KPI
     ("→ `mob_flussi_bagheria.csv`, `mob_sintesi.csv`, mob_fig01", "mob_fig01_verso_palermo"),
     # 7. Valutazione dell'impatto
-    ("→ `genere_pretrend.csv`, `genere_gemelle.csv`", "edu_fig07_pari_2011"),
+    ("→ `genere_pretrend.csv`, `genere_pretrend_390.csv`, `genere_gemelle.csv`", "edu_fig07_pari_2011"),
 ]
 
 # Il triangolo di avviso non esiste in Times New Roman e non ha il registro di un

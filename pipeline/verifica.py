@@ -1,4 +1,4 @@
-"""Verifica indipendente dei thread genere e mobilità: 986 controlli di regressione.
+"""Verifica indipendente dei thread genere e mobilità: 1005 controlli di regressione.
 
 Ricalcola i numeri chiave DIRETTAMENTE da data/raw/ con un percorso di codice
 autonomo — parsing proprio dei CSV SDMX e 8milaCensus, implementazioni proprie
@@ -304,7 +304,7 @@ check("bound 18-24", round(q_cas / (p1824 / p1524), 1), 18.8)
 check("bound 20-24", round(q_cas / (p2024 / p1524), 1), 25.8)
 q_ita = 100 * cella_lav(I, 2024, "F", "4") / cella_lav(I, 2024, "F", "99")
 eccesso = (q_cas - q_ita) / 100 * cella_lav(B, 2024, "F", "99")
-check("eccesso casalinghe vs incidenza italiana (non arrotondato)", round(eccesso), 254, 1.6)
+check("eccesso casalinghe vs incidenza italiana (non arrotondato)", round(eccesso), 255, 0.5)
 
 # ------------------------------------------------------------- istruzione 9-24 ---
 DIPLOMA = ["USE_IF", "BL", "ML_RDD"]
@@ -435,6 +435,18 @@ check("profilo rolling3 F Bagheria età 24", round(rolling3(B, "F", 24), 1), 99.
 check("profilo rolling3 F Bagheria età 28", round(rolling3(B, "F", 28), 1), 96.7)
 check("profilo rolling3 M Bagheria età 28", round(rolling3(B, "M", 28), 1), 103.7)
 check("profilo rolling3 F Italia età 25", round(rolling3(I, "F", 25), 1), 102.9)
+
+# Le due affermazioni sulle finestre della proposta (relazione §3.3 e §7, policy §3):
+# a 21 anni nessuno dei due generi perde residenti netti, e il blocco 22-25 preso intero
+# perde fra le ragazze di Bagheria quanto fra i maschi e fra le ragazze siciliane.
+for gen in ("F", "M"):
+    check(f"a 21 anni nessuna perdita netta, {gen} Bagheria (singola e rolling3)",
+          str(stock(B, 2024, gen, 24, 24) > stock(B, 2021, gen, 21, 21)
+              and rolling3(B, gen, 21) > 100), "True")
+blocco_22_25 = {(B, "F"): 98.9, (B, "M"): 98.0, (S, "F"): 98.3}
+for (t, gen), att in blocco_22_25.items():
+    check(f"ritenzione blocco 22-25 {gen} {NOMI[t]}",
+          round(100 * stock(t, 2024, gen, 25, 28) / stock(t, 2021, gen, 22, 25), 1), att)
 
 # popolazione 15-34 (assert condivisi)
 check("pop 15-34 Bagheria 2021", stock(B, 2021, "T", 15, 34), 12174, 0.5)
@@ -574,6 +586,14 @@ check("comuni I1<100", int((nuv["I1"] < 100).sum()), 170, 0.5)
 # round() darebbe 24.8 (half-even). Si confronta il valore, non la stampa.
 check("mediana L11 se I1<100", float(nuv.loc[nuv["I1"] < 100, "L11"].median()), 24.85, 0.005)
 check("mediana L11 se I1>=100", round(nuv.loc[nuv["I1"] >= 100, "L11"].median(), 1), 22.4)
+
+# M2 x L11: la correlazione ecologica che relazione (§5.5) e policy (componente E) citano.
+# Pearson sui ranghi, non scipy: e' l'implementazione alternativa di spearmanr.
+mob_l11 = com[["M2", "L11"]].dropna()
+check("comuni con M2 e L11 2011", len(mob_l11), 390, 0.5)
+check("Spearman M2 x L11", round(float(np.corrcoef(stats.rankdata(mob_l11["M2"]),
+                                                   stats.rankdata(mob_l11["L11"]))[0, 1]), 2),
+      0.32, 0.006)
 
 # ------------------------------------------------------- famiglia precoce ---
 fam_attese = {("F4", 1991): (1.3, 9.0, 2.0, 2.1, 2.9), ("F4", 2001): (1.7, 6.4, 2.6, 2.6, 4.6),
@@ -1702,7 +1722,7 @@ claim(POLICY,
       f"esce dal comune il **{ita(_pe('Bagheria', 'WK', 'quota_M'))}% degli uomini** e il "
       f"**{ita(_pe('Bagheria', 'WK', 'quota_F'))}% delle donne**: "
       f"{ita(_pe('Bagheria', 'WK', 'gap_M_meno_F'))} punti, il doppio dello scarto "
-      f"siciliano ({ita(_pe('Sicilia', 'WK', 'gap_M_meno_F'))}) e quasi il doppio di quello "
+      f"siciliano ({ita(_pe('Sicilia', 'WK', 'gap_M_meno_F'))}) e più di una volta e mezza quello "
       f"nazionale ({ita(_pe('Italia', 'WK', 'gap_M_meno_F'))}).")
 claim(POLICY,
       f"(F {ita(_pe('Bagheria', 'STD', 'quota_F'))}% contro M "
@@ -1940,7 +1960,15 @@ claim(SPINA,
 # invisibile: e' l'unico buco noto della copertura documentale.
 info("claim scoperti (taglio non esportato in processed)",
      "orario e durata verso Palermo, POLICY §4-bis e RELAZIONE §5.4: 4 cifre; "
-     "percentili della destinazione (97/93/94), RELAZIONE §5.1: 3 cifre")
+     "percentile della destinazione per lavoro 2011 (93), RELAZIONE §5.1: 1 cifra")
+
+# Gli altri due percentili della tabella §5.1 stanno nelle note di mob_sintesi.csv, che dal
+# 2026-09-24 il notebook calcola sulla quota verso il proprio capoluogo invece di scriverle.
+_sint = pd.read_csv(PROCESSED / "mob_sintesi.csv").set_index("misura")
+for _mis, _etich in (("quota di chi esce che va a Palermo, studio 2011", "per studio**, 2011"),
+                     ("quota di chi esce che va a Palermo, lavoro 2021", "per lavoro**, 2021")):
+    _r = _sint.loc[_mis]
+    claim(RELAZ, f"| **{_etich} | **{ita(_r['valore'])}%** | {_r['nota'].split('°')[0]}° |")
 
 
 # --- robustezza del 2026-09-23: frasi di POLICY e RELAZIONE_DATAPOLIS ------------
@@ -2145,6 +2173,34 @@ claim(SPINA, f"tasso F 25-49 al {ita(_t25('Bagheria', 'F'))}% contro {ita(_t25('
              f"({_meno(_s25('Y25-49', 'F', 'Palermo'))}), uomini a {_meno(_s25('Y25-49', 'M', 'Palermo'))}")
 claim(SPINA, f"F {ita(_dc('Bagheria', 'F', 2018))}/{ita(_dc('Bagheria', 'F', 2019))}, "
              f"M {ita(_dc('Bagheria', 'M', 2018))}/{ita(_dc('Bagheria', 'M', 2019))}")
+
+# Passata finale del 2026-09-24: le cifre entrate nei documenti con la verifica dei fatti.
+_inatt = (_c4[_c4["territorio"].eq(B) & _c4["stato"].eq("altri inattivi") & _c4["anno"].ge(2021)
+              & _c4["genere"].isin(["F", "M"])].pivot_table(index="anno", columns="genere", values="quota"))
+_sc_inatt = _inatt["F"] - _inatt["M"]
+claim(RELAZ, f"({ita(_inatt.at[2024, 'F'])}% contro {ita(_inatt.at[2024, 'M'])}% nel 2024, con lo stesso "
+             f"segno in ogni annata), ma lo scarto sta fra {ita(_sc_inatt.min())} e {ita(_sc_inatt.max())} "
+             f"punti dal 2021")
+claim(POLICY, f"({ita(_inatt.at[2024, 'F'])}% contro {ita(_inatt.at[2024, 'M'])}% nel 2024)")
+claim(RELAZ, f"Rispetto all'incidenza italiana, l'eccesso vale {round(eccesso)} ragazze.")
+_kn = _netto.set_index("orizzonte")["kpi_netto"]
+claim(RELAZ, f"vale +{ita(_kn[2029])} e {_meno(_kn[2034])}")
+claim(RELAZ, f"vale **+{ita(_kn[2029])} nel 2029 e {_meno(_kn[2034])} nel 2034**")
+claim(POLICY, f"valgono **+{ita(_kn[2029])} al 2029 e {_meno(_kn[2034])} al 2034**")
+_pt = pd.read_csv(PROCESSED / "genere_pretrend.csv").set_index("termine")["p"]
+claim(RELAZ, f"la Sicilia è al margine, p = {ita(_pt['differenza di pendenza: Sicilia - Bagheria'], 3)}")
+claim(POLICY, f"Sicilia al margine, {ita(_pt['differenza di pendenza: Sicilia - Bagheria'], 3)}")
+_adu = (pd.read_csv(PROCESSED / "edu_adult_transition_2018_2024.csv", dtype={"territorio": str})
+        .set_index(["territorio", "anno"]))
+_d_adu = [(_adu.at[(B, 2024), c] - _adu.at[(S, 2024), c]) - (_adu.at[(B, 2018), c] - _adu.at[(S, 2018), c])
+          for c in ("quota_almeno_diploma", "quota_occupati_25_49")]
+claim(RELAZ, f"si riducono di {ita(_d_adu[0])} e {ita(_d_adu[1])} punti")
+_il = pd.read_csv(PROCESSED / "censpop_istr_lav_long.csv", dtype={"territorio": str})
+_ist = _il[_il["tavola"].eq("istruzione") & _il["anno"].eq(2024) & _il["eta"].eq("Y9-24")
+           & _il["genere"].eq("T") & _il["cittadinanza"].eq("TOTAL")].pivot_table(
+    index="territorio", columns="titolo_studio", values="valore", aggfunc="sum")
+_solo_dipl = 100 * _ist["USE_IF"] / _ist[["USE_IF", "BL", "ML_RDD"]].sum(axis=1)
+claim(RELAZ, f"(fra l'{ita(_solo_dipl['IT'])}% dell'Italia e l'{ita(_solo_dipl['ITG1'])}% della Sicilia)")
 
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]

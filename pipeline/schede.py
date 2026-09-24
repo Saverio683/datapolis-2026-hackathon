@@ -97,6 +97,12 @@ def num(x, d: int = 1, suf: str = "", segno: bool = False, zero: bool = False) -
     return testo + suf
 
 
+def il(testo: str, a: bool = False) -> str:
+    """L'articolo davanti a una cifra: «l'89%», «il 13%»; con `a`, «all'82%», «al 41%»."""
+    vocale = testo.startswith(("8", "11", "18"))
+    return ("all&rsquo;" if vocale else "al ") if a else ("l&rsquo;" if vocale else "il ")
+
+
 def e(testo) -> str:
     return html.escape(str(testo))
 
@@ -761,7 +767,7 @@ def scheda_profilo() -> Path:
             for t in ORDINE}
     corpo += blocco(
         fig(),
-        "Il benchmarking: pi&ugrave; studenti della media, meno occupati, pi&ugrave; inattivi",
+        "Il benchmarking: meno occupati e pi&ugrave; inattivi di ogni territorio di confronto",
         impilate(righe_imp),
         mostra="Composizione percentuale della condizione prevalente dei 15-24enni nel 2024, "
                "per i quattro territori di confronto del bando. Ogni barra somma a 100: sono "
@@ -951,8 +957,8 @@ def scheda_profilo() -> Path:
              f"15-24, qui la fonte non ha il buco.",
         lettura=f"Bagheria &egrave; la linea vermiglia a tratto pieno, gli altri territori "
                 f"al 55%. Nello slope conta la <b>pendenza</b>, non l&rsquo;altezza: tutti e "
-                f"quattro i territori salgono, e Bagheria sale abbastanza da scavalcare "
-                f"Palermo e da portare il proprio divario con la Sicilia da "
+                f"quattro i territori salgono, e Bagheria sale abbastanza da portare il "
+                f"proprio divario con la Sicilia da "
                 f"{num(gap9_18, 1, ' p.p.', segno=True)} a "
                 f"{num(gap9_24, 1, ' p.p.', segno=True)}. Nella tavola la colonna a destra "
                 f"&egrave; la distanza fra le due fasce dello stesso territorio: &egrave; "
@@ -998,7 +1004,10 @@ def scheda_profilo() -> Path:
                "indicatore a indicatore e sono scritte accanto a ciascuno: si legge ogni riga "
                "per s&eacute;, mai una colonna. La figura <b>non</b> si unisce alla serie "
                "2018-2024 del resto della scheda, che &egrave; un&rsquo;altra rilevazione con "
-               "altre definizioni.",
+               "altre definizioni. I cinque indicatori sono quelli del thread educazione; "
+               "resta fuori la competenza di base (<b>I8</b>, licenza media fra i 15-19enni), "
+               "l&rsquo;unica che nello stesso trentennio <b>guadagna</b> posizione: la "
+               "discute la relazione, &sect;4.",
         base=f"N = 390 comuni siciliani a ogni censimento; Bagheria &egrave; uno di questi. "
              f"Conteggi censuari e non stime campionarie: <b>nessun intervallo di "
              f"confidenza</b> e nessun test. Tre sole osservazioni per indicatore, a dieci "
@@ -1536,13 +1545,14 @@ def scheda_genere() -> Path:
         lettura=f"Rosa le femmine, blu i maschi; a piena intensit&agrave; le due barre che "
                 f"reggono il ragionamento, cio&egrave; le casalinghe e l&rsquo;&laquo;altra "
                 f"condizione&raquo; maschile. Le quattro barre sono conteggi sulla stessa "
-                f"scala e si confrontano direttamente. <b>Le casalinghe di Bagheria sono "
-                f"nubili</b>: al 1&deg; gennaio 2025 le gi&agrave; coniugate 15-24 sono "
+                f"scala e si confrontano direttamente. <b>Le casalinghe di Bagheria non sono "
+                f"giovani spose</b>: al 1&deg; gennaio 2025 le gi&agrave; coniugate 15-24 sono "
                 f"{num(con25.gia_coniugate, 0)} ({num(con25.quota_gia_coniugate_pct)}%) contro "
-                f"{num(casa['F'], 0)} casalinghe, quindi almeno il "
-                f"<b>{num(nubili, 0)}% non &egrave; sposato</b>, e il matrimonio under-25 a "
-                f"Bagheria sta sotto Palermo e Sicilia. Il canale non &egrave; la famiglia "
-                f"propria ma quella d&rsquo;origine: serve un servizio di <b>attivazione</b>, "
+                f"{num(casa['F'], 0)} casalinghe, quindi la quota di non sposate &egrave; "
+                f"<b>almeno {il(num(nubili, 0))}{num(nubili, 0)}%</b>, e il matrimonio under-25 a "
+                f"Bagheria sta sotto Palermo e Sicilia. Il matrimonio precoce non spiega il "
+                f"fenomeno; convivenze e figli la fonte non li osserva. Serve quindi un "
+                f"servizio di <b>attivazione</b>, "
                 f"non solo di conciliazione. La quota &egrave; sensibile alla struttura per "
                 f"et&agrave;, e passa da {num(bounds.iloc[0, 1])}% sui 15-24 a "
                 f"{num(bounds.iloc[2, 1])}% se si assume che nessuna abbia meno di 20 anni.",
@@ -1641,7 +1651,7 @@ def scheda_genere() -> Path:
         figura("fig05_forbice", intera=True, larghezza=1650),
         mostra="&Egrave; la figura 2.2, nella versione integrale che sta nello zip: stessa "
                "misura, stesse cinque unit&agrave;, ma con le mediane del panel disegnate e "
-               "la didascalia a quattro blocchi incorporata nell&rsquo;immagine. Compare qui "
+               "la didascalia a due blocchi incorporata nell&rsquo;immagine. Compare qui "
                "<b>intera e non ritagliata</b> perch&eacute; il punto non &egrave; il dato, "
                "che la scheda ha gi&agrave; dato, ma mostrare che ogni tavola del progetto "
                "viaggia da sola: chi la trova in una cartella sa gi&agrave; che cosa misura, "
@@ -1719,7 +1729,8 @@ def scheda_pendolarismo() -> Path:
 
     claim(S, "di chi esce per studio (2011), quota diretta a Palermo",
           sin.loc["quota di chi esce che va a Palermo, studio 2011"].valore, "%",
-          "mob_sintesi.csv / mob_flussi_bagheria.csv", "93o percentile dei 381 non capoluogo")
+          "mob_sintesi.csv / mob_flussi_bagheria.csv",
+          "97o percentile dei 381 non capoluogo, quota verso il proprio capoluogo")
     claim(S, "di chi esce per lavoro (2021), quota diretta a Palermo",
           sin.loc["quota di chi esce che va a Palermo, lavoro 2021"].valore, "%",
           "mob_sintesi.csv", "definizione 2021 diversa dal 2011: non e' una serie")
@@ -1846,7 +1857,7 @@ def scheda_pendolarismo() -> Path:
     n_mob = ora.groupby("genere").persone.sum()
     corpo += blocco(
         fig(),
-        "Il treno &egrave; il canale femminile, l&rsquo;auto quello maschile",
+        "Il treno pesa fra le donne quasi il doppio che fra gli uomini",
         legenda([("femmine", COL_G["F"]), ("maschi", COL_G["M"])]),
         '<div class="duo">'
         '<div><h4>Mezzo usato (2011)</h4>'
@@ -1878,7 +1889,7 @@ def scheda_pendolarismo() -> Path:
         lettura="Rosa le femmine, blu i maschi; a piena intensit&agrave; la barra pi&ugrave; "
                 "alta della coppia, cio&egrave; il canale prevalente per quel sesso. Le due "
                 "colonne hanno scale indipendenti. Le donne partono pi&ugrave; tardi e "
-                "viaggiano pi&ugrave; a lungo, per 17 chilometri; il rientro non &egrave; "
+                "viaggiano pi&ugrave; a lungo; il rientro non &egrave; "
                 "rilevato, quindi <b>il carico di cura resta un&rsquo;ipotesi e non un "
                 "dato</b>. La conseguenza operativa &egrave; nella scheda 4: un servizio che "
                 "d&agrave; per scontata l&rsquo;auto seleziona per genere.",
@@ -2027,6 +2038,7 @@ def scheda_ponte19() -> Path:
     n29, n34 = netto.loc[2029], netto.loc[2034]
     mde_occ = mde[mde.KPI.str.startswith("tasso di occupazione")].set_index(
         "anni pooled per lato")
+    mde_cas = mde[mde.KPI.str.startswith("quota casalinghe")].set_index("anni pooled per lato")
     tf = tetto[tetto.genere == "F"].set_index("orizzonte")
     bersaglio = sin[sin.misura.str.startswith("donne in pi")].valore.iloc[0]
     pilota = 200
@@ -2070,8 +2082,9 @@ def scheda_ponte19() -> Path:
         f"<b>Il vincolo che rende la proposta seria.</b> La platea femminile 15-24 "
         f"<b>&egrave; gi&agrave; nata</b> e, a migrazioni nulle, cala del "
         f"{num(-pb.loc['F'].var_2034_pct)}% al 2034 (sui coetanei maschi "
-        f"{num(-pb.loc['M'].var_2034_pct)}%): le stesse &laquo;+40 occupate&raquo; valgono +18 "
-        f"nel 2029 e &minus;2 nel 2034. Un obiettivo scritto in teste "
+        f"{num(-pb.loc['M'].var_2034_pct)}%): le stesse &laquo;+40 occupate&raquo; valgono "
+        f"{num(n29.kpi_netto, segno=True)} nel 2029 e &minus;{num(-n34.kpi_netto)} nel 2034. "
+        f"Un obiettivo scritto in teste "
         f"si annullerebbe da solo entro il 2034 senza che nessuno abbia sbagliato nulla. "
         f"Per questo il KPI primario &egrave; un <b>tasso</b>, con la sua finestra di lettura "
         f"dichiarata prima dell&rsquo;avvio.")
@@ -2084,8 +2097,9 @@ def scheda_ponte19() -> Path:
                   "fig. 1.1", "outreach attivo, non sportello a domanda"),
                  ("Le uscite hanno due tempi: la fine della scuola e la fine del percorso "
                   "formativo (20-29 anni, entrambi i generi); dopo i 25 anni il deficit di "
-                  "lavoro diventa femminile", "fig. 2.4, 3.5",
-                  "<b>due finestre</b>: A 18-20 all&rsquo;uscita, B 22-25 sulla conversione"),
+                  "lavoro diventa femminile", "fig. 2.4; relazione &sect;3.1-bis e &sect;3.3",
+                  "<b>due finestre</b> di outreach: A 18-20 all&rsquo;uscita, B 22-25 sulla "
+                  "conversione; i 21enni entrano su segnalazione"),
                  (f"{num(inatt['F'], 0)} ragazze e {num(inatt['M'], 0)} ragazzi, "
                   f"etichette opposte", "fig. 2.5",
                   "<b>quota &ge;50% F</b> e due tracce di contatto distinte"),
@@ -2321,7 +2335,8 @@ def scheda_ponte19() -> Path:
         lettura="&laquo;Pooled per lato&raquo; significa che gli anni vengono accorpati prima "
                 "e dopo l&rsquo;avvio: tre anni per lato sono sei anni di dati, non tre. La "
                 "riga in nero &egrave; la finestra dichiarata. Il binomiale promette che il "
-                "triennio basti; nei comuni simili nessuna finestra arriva all&rsquo;80%, "
+                "triennio basti; nei comuni simili, sull&rsquo;occupazione, nessuna finestra "
+                "arriva all&rsquo;80%, "
                 "perch&eacute; accorpare anni riduce il rumore di conteggio ma non le "
                 "divergenze persistenti fra comuni. Il tasso comunale dice quindi la "
                 "<b>direzione</b> della convergenza; l&rsquo;effetto del servizio si misura "
@@ -2329,7 +2344,11 @@ def scheda_ponte19() -> Path:
                 "<b>annuale</b> spetta ai KPI di processo, che oggi nessuno rileva e che il "
                 "servizio produce: primo contatto entro 30 giorni, piano entro 15, utenza per "
                 "et&agrave; singola e genere contro la platea residente, copertura separata "
-                "delle due finestre.",
+                "delle due finestre e degli ingressi fuori finestra. L&rsquo;altro KPI di "
+                "popolazione, la quota di casalinghe 15-24 (primario del modulo di genere), "
+                f"sul biennio arriva invece {il(num(mde_cas.loc[2, 'potenza osservata (%)'], 0), a=True)}"
+                f"{num(mde_cas.loc[2, 'potenza osservata (%)'], 0)}% "
+                "anche nei comuni simili: &egrave; il primo a restituire un verdetto.",
         fonte="Censimento permanente, tavola lavoro 15-24 dei 390 comuni siciliani, "
               "2018-2024 &rarr; <b>genere_mde.csv</b>; pre-trend in "
               "<b>genere_pretrend.csv</b> e <b>genere_pretrend_390.csv</b>; gruppo di "

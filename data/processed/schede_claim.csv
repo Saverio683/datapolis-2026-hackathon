@@ -37,7 +37,7 @@ scheda,claim,valore,unita,fonte,cautela
 2. genere,"residenti 9-24 con almeno il diploma, di cui terziari",2864 / 258,persone,censpop_istr_lav_long.csv,"la fascia 9-24 non ha ancora finito di studiare: e' il titolo detenuto, non quello finale"
 2. genere,"di chi ha almeno il diploma, quota che si ferma al diploma",90.99162011173185,%,censpop_istr_lav_long.csv,
 2. genere,"catena dei titoli 2011, scarto vs Sicilia (I8 / I6 / I7)",+0.2 / -5.7 / -3.9,p.p.,edu_historical_benchmarks_2011.csv,"tre fasce d'eta' diverse: e' una scala di gradini, non una serie"
-3. pendolarismo,"di chi esce per studio (2011), quota diretta a Palermo",91.0902696365768,%,mob_sintesi.csv / mob_flussi_bagheria.csv,93o percentile dei 381 non capoluogo
+3. pendolarismo,"di chi esce per studio (2011), quota diretta a Palermo",91.0902696365768,%,mob_sintesi.csv / mob_flussi_bagheria.csv,"97o percentile dei 381 non capoluogo, quota verso il proprio capoluogo"
 3. pendolarismo,"di chi esce per lavoro (2021), quota diretta a Palermo",65.07903494176372,%,mob_sintesi.csv,definizione 2021 diversa dal 2011: non e' una serie
 3. pendolarismo,"divario F-M sull'uscire per studio, 2011",2.621171977168105,p.p.,mob_ribaltamento_territori.csv,"conteggio esaustivo, nessuna eta' nella fonte"
 3. pendolarismo,"divario F-M sull'uscire per lavoro, 2011",-12.05183695732424,p.p.,mob_ribaltamento_territori.csv,15o percentile dei 390 comuni

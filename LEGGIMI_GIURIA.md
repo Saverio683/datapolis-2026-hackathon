@@ -27,13 +27,15 @@ al metodo:
    output salvati. Le versioni HTML, leggibili senza Jupyter, sono in `dist/`.
 6. **Riproduzione da ambiente pulito** - i comandi, nell'ordine, sono in `README.md`.
    I dati grezzi sono inclusi in `data/raw/`: dopo il primo `uv sync` la pipeline gira
-   senza rete. Ogni download è tracciato in `docs/sources.md` e in `data/raw/manifest.csv`
-   con URL, data e parametri.
+   senza rete. Ogni download è tracciato in `docs/sources.md` e nei due manifest,
+   `data/raw/manifest.csv` e `data/raw/edu/manifest.csv`, con URL, data e parametri.
 7. **La verifica** - `uv run python -m pipeline.verifica` ricalcola i numeri chiave
    direttamente dai dati grezzi con implementazioni alternative e pretende che le cifre
    scritte nella relazione e nella policy compaiano nei documenti alla lettera; esce con
    errore se anche un solo controllo fallisce. Poche cifre lette da una cella di notebook e
    non ancora esportate in `data/processed/` sono elencate dalla verifica stessa.
 
-Tutte le cifre provengono da statistica ufficiale pubblica (ISTAT, Ministero
-dell'Istruzione e del Merito, Comune di Palermo/AMAT).
+Tutte le cifre dell'analisi provengono da statistica ufficiale pubblica (ISTAT, Ministero
+dell'Istruzione e del Merito, Comune di Palermo/AMAT). I parametri di costo della proposta
+vengono da atti del Ministero del Lavoro, dell'ANPAL, della Regione Siciliana e dell'Unione
+europea, citati uno per uno in `data/processed/genere_costo_parametri.csv`.

@@ -1,6 +1,6 @@
 ---
 date: 2026-06-19
-source_file: "/home/kiycoh/Documents/dev/datapolis-2026-hackathon/docs/concorso/DataPolis_Concorso2026-UNI_OnePager-v02.pdf"
+source_file: "docs/concorso/DataPolis_Concorso2026-UNI_OnePager-v02.pdf"
 type: Note
 ---
 

@@ -155,7 +155,7 @@ striscia <- ggplot(frattura, aes(asse(anno), percentile_390)) +
   scala_tempo(margine = 5.1) +
   scale_y_continuous(limits = c(45, 100), breaks = c(50, 75, 100)) +
   coord_cartesian(clip = "off") +
-  labs(subtitle = paste0("E la stessa frattura, vista dall'istruzione\n",
+  labs(subtitle = paste0("E l'istruzione, che arretra da prima\n",
                          "uscita precoce dalla scuola - più alto = peggio"),
        x = NULL, y = "percentile")
 
@@ -220,8 +220,8 @@ figura <- ((posizione / striscia + plot_layout(heights = c(1, 0.32))) | confront
   plot_annotation(
     title = "Il muro si alza fra il 2001 e il 2011, e nel 2024 è ancora lì",
     subtitle = sommario(paste0(
-      "Tre letture della stessa frattura, allineate sullo stesso asse del tempo: in alto a sinistra la posizione di Bagheria nella distribuzione dei 390 comuni siciliani, in percentile, su quattro indicatori del mercato del lavoro; ",
-      "sotto, la stessa frattura vista dall'istruzione con l'uscita precoce dalla scuola; a destra il tasso di occupazione femminile di Bagheria dentro il suo gruppo di dieci comuni gemelli, in punti percentuali. ",
+      "Tre letture dell'arretramento di Bagheria, allineate sullo stesso asse del tempo: in alto a sinistra la posizione di Bagheria nella distribuzione dei 390 comuni siciliani, in percentile, su quattro indicatori del mercato del lavoro; ",
+      "sotto, l'istruzione con l'uscita precoce dalla scuola; a destra il tasso di occupazione femminile di Bagheria dentro il suo gruppo di dieci comuni gemelli, in punti percentuali. ",
       "I primi due pannelli sono in percentile e il terzo in livello: sono unità diverse, e ciascuna si legge dentro il suo pannello.\n",
       "Fra il 1991 e il 2011 le donne di Bagheria entrano nel lavoro, ma il mercato non le assorbe: l'occupazione femminile scende al ",
       pct("L11", 2011), " percentile.\n",
@@ -234,10 +234,11 @@ figura <- ((posizione / striscia + plot_layout(heights = c(1, 0.32))) | confront
       "Rispetto alle gemelle strutturali lo scarto resta aperto: ", virgola(scarto_2011),
       " punti nel 2011, e fra ", SCARTO_MIN, " e ", SCARTO_MAX, " in ogni anno dal ",
       ANNI_PERM[1], " al ", ANNI_PERM[2], ".\n",
-      "Nello stesso decennio peggiora anche l'istruzione, e in modo indipendente dal lavoro: l'uscita precoce dalla scuola passa dal ",
-      virgola(frattura$percentile_390[frattura$anno == 2001], 0, "°"), " al ",
-      virgola(frattura$percentile_390[frattura$anno == 2011], 0, "° percentile"), ".\n",
-      "Due domini diversi, due indicatori diversi, la stessa datazione: il 2001-2011 è una frattura reale, non un artefatto della misura del lavoro.\n",
+      "Anche l'istruzione perde posizione, ma a passo costante: l'uscita precoce dalla scuola passa dal ",
+      virgola(frattura$percentile_390[frattura$anno == 1991], 0, "°"), " percentile del 1991 al ",
+      virgola(frattura$percentile_390[frattura$anno == 2001], 0, "°"), " del 2001 e all'",
+      virgola(frattura$percentile_390[frattura$anno == 2011], 0, "°"), " del 2011.\n",
+      "La frattura del lavoro femminile ha una data, il 2001-2011; quella dell'istruzione è un arretramento lungo, che il dato comunale non segue oltre il 2011.\n",
       "Per la proposal: la frattura è databile e resta aperta, e il pre-periodo del disegno di valutazione adesso è misurato invece che assunto."), LARGHEZZA),
     caption = didascalia_2b(
       lettura = paste0(

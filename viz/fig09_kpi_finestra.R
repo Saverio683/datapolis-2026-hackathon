@@ -44,6 +44,9 @@ kpi <- read_csv(file.path(PROCESSED, "genere_kpi_netto.csv"), show_col_types = F
 stopifnot(nrow(kpi) == 2,
           abs(kpi$kpi_lordo - delta("tasso femminile di Palermo")) < 1,
           kpi$platea == c(platea$platea_2029, platea$platea_2034))
+# Il netto con un decimale, come lordo e attrito: -2,5 arrotondato a intero darebbe -2 o -3
+# a seconda della regola, e la relazione e la policy lo scrivono -2,5.
+segnato <- function(x) paste0(if (x < 0) "−" else "+", virgola(abs(x), 1, taglia_zero = FALSE))
 
 # --- pannello A: le ragazze 15-24, un quadratino ogni dieci -------------------------
 # Le classi sono cumulative e ordinate (oggi -> Palermo -> parità -> Italia -> il resto):
@@ -113,7 +116,7 @@ attrito <- ggplot(cascata, aes(valore, voce, fill = voce)) +
   geom_col(width = 0.62) +
   # L'etichetta esce dalla barra dalla parte in cui la barra cresce: dentro, una barra
   # corta come il netto del 2034 non la conterrebbe.
-  geom_text(aes(label = sprintf("%+.0f", valore),
+  geom_text(aes(label = vapply(valore, segnato, ""),
                 hjust = ifelse(valore >= 0, -0.25, 1.25)),
             size = 3.4, fontface = "bold", colour = "grey20") +
   scale_fill_manual(values = COLORI_CASCATA, guide = "none") +
@@ -134,19 +137,19 @@ attrito <- ggplot(cascata, aes(valore, voce, fill = voce)) +
 figura <- (waffle | attrito) +
   plot_layout(widths = c(1, 0.9)) +
   plot_annotation(
-    title = "Quaranta ragazze: il KPI è realistico, ma la demografia se lo riprende",
+    title = "Quaranta ragazze in più: un obiettivo di convergenza che la demografia si riprende",
     subtitle = sommario(paste0(
       "Il KPI della proposta tradotto in persone: a sinistra le ", migliaia(popolazione), " ragazze di 15-24 anni di Bagheria nel ", anno,
       ", una per una, divise fra chi lavora oggi e i traguardi successivi; a destra lo stesso obiettivo messo di fronte al restringimento della platea nei due orizzonti della proposta. ",
       "Non c'è nessun modello: è aritmetica sulla stessa popolazione, letta due volte. Quanto debba essere grande un effetto perché una rilevazione riesca a vederlo sta in fig09b.\n",
       "Oggi ", occupate, " ragazze su ", migliaia(popolazione),
       " lavorano. Allineare il tasso femminile a quello di Palermo vuol dire +",
-      delta("tasso femminile di Palermo"), " occupate: il KPI realistico a 2-3 anni.\n",
+      delta("tasso femminile di Palermo"), " occupate: l'obiettivo di convergenza della proposta, che si misura in tasso.\n",
       "La parità con i coetanei ne vorrebbe +", delta("parità con i coetanei maschi di Bagheria"),
       ", il tasso nazionale +", delta("tasso femminile dell'Italia"),
       ": quelli non sono obiettivi, sono la misura del problema.\n",
       "E il +", delta("tasso femminile di Palermo"), " vale già meno alla scadenza: la platea 2029 è già nata ed è più piccola, così lo stesso tasso obiettivo\n",
-      "ne vale ", sprintf("%+.0f", kpi$kpi_netto[1]), " al ", kpi$orizzonte[1], " e ", sprintf("%+.0f", kpi$kpi_netto[2]), " al ", kpi$orizzonte[2],
+      "ne vale ", segnato(kpi$kpi_netto[1]), " al ", kpi$orizzonte[1], " e ", segnato(kpi$kpi_netto[2]), " al ", kpi$orizzonte[2],
       ". Il target va scritto in tasso e non in teste, oppure riparametrato ogni anno sulla platea corrente."), LARGH_FIGURA),
     caption = didascalia_2b(
       lettura = paste0(

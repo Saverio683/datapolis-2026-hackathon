@@ -1129,3 +1129,17 @@ terziario**, e `BL` non è la sola laurea. Le etichette ufficiali, lette dal raw
   «almeno il diploma» come `USE_IF + BL + ML_RDD`. Sbagliata era solo la legenda.
 - «Terziario» (`BL + ML_RDD`) comprende quindi anche i diplomi ITS: non va chiamato «laurea»
   senza qualificazione.
+
+## 14. Errata dei percorsi (passata finale del 2026-09-24)
+
+Questo file è in sola aggiunta: le righe sopra restano come sono state scritte, e qui si
+correggono i percorsi che nel frattempo sono cambiati.
+
+- §10: dopo la migrazione del thread educazione dentro il repository, `titolo_condizione/data/raw/manifest.csv`
+  è diventato `data/raw/edu/manifest.csv` (con lo stato dei download in
+  `data/raw/edu/download_status.json`), e `titolo_condizione/config/sources.yml` è diventato
+  `pipeline/edu/config/sources.yml`.
+- §11: `docs/CONTEXT-fabio.md` è ora `docs/team/CONTEXT-fabio.md`, ed è un documento
+  interno del team, escluso dal pacchetto per la giuria.
+- I download del thread educazione sono tracciati in `data/raw/edu/manifest.csv`, non in
+  `data/raw/manifest.csv`: i due manifest insieme coprono tutti i file di `data/raw/`.

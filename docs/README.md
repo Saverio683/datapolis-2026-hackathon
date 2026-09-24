@@ -4,7 +4,9 @@ Per riprodurre il progetto, partire dal [README generale](../README.md).
 Per leggere i risultati, partire dalla [guida per la giuria](../LEGGIMI_GIURIA.md).
 I percorsi scritti tra backtick nei documenti sono relativi alla radice del repository.
 Questa mappa descrive il repository completo: lo ZIP per la giuria esclude idee,
-archivio, presentazione e contesti personali del team.
+archivio, presentazione, il generatore del deck e i materiali interni del team (contesti
+personali, aggiornamenti datati, revisione tecnica). Dei documenti del team entra solo
+`team/SCELTE_ANALITICHE.md`.
 
 | Categoria | Contenuto e punto di ingresso |
 |---|---|
@@ -27,10 +29,10 @@ archivio, presentazione e contesti personali del team.
 - Schede: modificare `pipeline/schede.py` e rigenerare con `python -m pipeline.schede`.
 - Report di educazione: i tre report e i JSON di esecuzione/validazione sono generati;
   le istruzioni e i documenti metodologici sono descritti nel README del thread.
-- Presentazione: conservare i materiali originali. `hackathon.pptx` e
-  `Datapolis_presentazione_finale.pptx` non sono stati dichiarati equivalenti né eliminati.
-  Il generatore è in `pipeline/presentazione_pptx.py`; l'[aggiornamento del team](team/AGGIORNAMENTO_SAVERIO_2026-09-23.md)
-  documenta i suoi controlli numerici non più allineati. Non usarlo per sovrascrivere il deck corrente.
+- Presentazione: i deck sono in `presentazione/`, una versione per file (v1-v4), e non si
+  sovrascrivono. Il generatore `pipeline/presentazione_pptx.py` non è allineato ai numeri
+  correnti (l'[aggiornamento del team](team/AGGIORNAMENTO_SAVERIO_2026-09-23.md) lo
+  documenta): non usarlo per rigenerare il deck.
 
 ## Esportazioni e consegne
 

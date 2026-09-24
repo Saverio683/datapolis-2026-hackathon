@@ -1,8 +1,8 @@
 misura,valore,unita,nota
 "quota che esce dal comune per lavoro, 2021",40.15366627693336,%,"a parità di taglia e distanza: nella media (z=-0,13)"
-"quota di chi esce che va a Palermo, lavoro 2021",65.07903494176372,%,97° percentile dei 381 comuni non capoluogo
-"quota di chi esce che va a Palermo, studio 2011",91.09026963657679,%,93° percentile
-"divario F-M sull'uscire per lavoro, 2011",-12.051836957324241,p.p.,"Sicilia -4,6 · 15° percentile sui 390 (13° sui 381 non capoluogo) · replicato nel 2018-2019"
+"quota di chi esce che va a Palermo, lavoro 2021",65.07903494176372,%,"94° percentile dei 381 comuni non capoluogo, quota verso il proprio capoluogo"
+"quota di chi esce che va a Palermo, studio 2011",91.09026963657679,%,"97° percentile dei 381 comuni non capoluogo, quota verso il proprio capoluogo"
+"divario F-M sull'uscire per lavoro, 2011",-12.051836957324241,p.p.,"Sicilia -4,6 · 15° percentile sui 390 (14° al netto di taglia e distanza) · replicato nel 2018-2019"
 "divario F-M sull'uscire per studio, 2011",2.621171977168105,p.p.,"Sicilia +1,4 · le ragazze escono più dei coetanei"
 "ribaltamento studio-lavoro, 2011",14.673008934492346,p.p.,"Sicilia +6,0 · Italia +6,5 · Palermo +1,9"
 "quota treno fra chi esce, donne",31.515628504296007,%,"uomini 16,4% · comune nel complesso al 98° percentile siciliano"
