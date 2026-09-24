@@ -1602,7 +1602,26 @@ def ita(x, d=1):
     return f"{x:,.{d}f}".replace(",", "\x00").replace(".", ",").replace("\x00", ".")
 
 
+_saltati = []
+
+
+def presente(documento):
+    """Nel pacchetto per la giuria relazione e policy ci sono solo in PDF, in dist/.
+
+    I loro claim non si possono rileggere, quindi si saltano e il riepilogo lo dichiara.
+    Se manca il sorgente e manca anche il PDF, il file e' sparito: errore, non salto.
+    """
+    if (DOCS / documento).exists():
+        return True
+    if (RADICE / "dist" / (Path(documento).stem + ".pdf")).exists():
+        return False
+    raise FileNotFoundError(DOCS / documento)
+
+
 def claim(documento, frammento):
+    if not presente(documento):
+        _saltati.append(documento)
+        return
     ok = frammento in doc(documento)
     esiti.append((ok, f"claim {documento}", "presente" if ok else "ASSENTE", frammento))
     print(f"{'PASS' if ok else 'FAIL'}  claim {documento}: "
@@ -2205,6 +2224,10 @@ claim(RELAZ, f"(fra l'{ita(_solo_dipl['IT'])}% dell'Italia e l'{ita(_solo_dipl['
 # ----------------------------------------------------------------- riepilogo ---
 falliti = [e for e in esiti if not e[0]]
 print(f"\n{'=' * 70}\nTOTALE: {len(esiti)} controlli, {len(esiti) - len(falliti)} PASS, {len(falliti)} FAIL")
+if _saltati:
+    print(f"SALTATI {len(_saltati)} claim su {', '.join(sorted(set(_saltati)))}: qui il documento "
+          f"c'e' solo in PDF (pacchetto per la giuria); i claim si controllano nel repository, "
+          f"che ha i sorgenti Markdown.")
 for _, nome, calc, att in falliti:
     print(f"  FAIL {nome}: {calc} != {att}")
 raise SystemExit(1 if falliti else 0)

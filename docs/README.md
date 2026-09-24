@@ -4,7 +4,8 @@ Per riprodurre il progetto, partire dal [README generale](../README.md).
 Per leggere i risultati, partire dalla [guida per la giuria](../LEGGIMI_GIURIA.md).
 I percorsi scritti tra backtick nei documenti sono relativi alla radice del repository.
 Questa mappa descrive il repository completo: lo ZIP per la giuria esclude idee,
-archivio, i sorgenti della presentazione (del deck entra solo il PDF della v5,
+archivio, i sorgenti Markdown di relazione e policy (entrano i loro PDF, in `dist/`), i
+sorgenti della presentazione (del deck entra solo il PDF della v5,
 `dist/PRESENTAZIONE_PONTE_19.pdf`), il generatore del deck e i materiali interni del team (contesti
 personali, aggiornamenti datati, revisione tecnica). Dei documenti del team entra solo
 `team/SCELTE_ANALITICHE.md`.

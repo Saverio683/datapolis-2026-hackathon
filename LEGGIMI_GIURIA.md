@@ -15,9 +15,9 @@ le visualizzazioni e la policy proposal) e la presentazione proiettata al festiv
    test sul mezzo collettivo sui 381 comuni non capoluogo.
 2. **`dist/RELAZIONE_DATAPOLIS.pdf`** - la relazione completa, con le figure incorporate.
    La sezione di apertura, «In una pagina», contiene tesi, proposta e la tabella che collega
-   ogni richiesta del bando alla sezione che la soddisfa. Il testo è quello di
-   `docs/relazione/RELAZIONE_DATAPOLIS.md`, che è la versione dentro il perimetro dei controlli
-   automatici; il PDF ne è l'impaginazione.
+   ogni richiesta del bando alla sezione che la soddisfa. Il PDF impagina il sorgente
+   Markdown su cui girano i controlli automatici; il sorgente resta nel repository di lavoro
+   e non è nel pacchetto, che porta relazione e policy solo in PDF.
 3. **`dist/POLICY_PONTE_19.pdf`** - la policy proposal: «Ponte 19», servizio comunale di
    transizione e riattivazione per i 18-25enni, con evidenza, target, KPI in tasso,
    finestre di lettura dichiarate, disegno di valutazione e governance. Il nome viene dai
@@ -37,9 +37,11 @@ le visualizzazioni e la policy proposal) e la presentazione proiettata al festiv
    senza rete. Ogni download è tracciato in `docs/sources.md` e nei due manifest,
    `data/raw/manifest.csv` e `data/raw/edu/manifest.csv`, con URL, data e parametri.
 8. **La verifica** - `uv run python -m pipeline.verifica` ricalcola i numeri chiave
-   direttamente dai dati grezzi con implementazioni alternative e pretende che le cifre
-   scritte nella relazione e nella policy compaiano nei documenti alla lettera; esce con
-   errore se anche un solo controllo fallisce. Poche cifre lette da una cella di notebook e
+   direttamente dai dati grezzi con implementazioni alternative; esce con errore se anche un
+   solo controllo fallisce. Nel repository pretende anche che le cifre scritte nella
+   relazione e nella policy compaiano alla lettera nei sorgenti Markdown: nel pacchetto,
+   dove i due documenti ci sono solo in PDF, quei controlli testuali si saltano e la verifica
+   lo dichiara in fondo. Poche cifre lette da una cella di notebook e
    non ancora esportate in `data/processed/` sono elencate dalla verifica stessa.
 
 Tutte le cifre dell'analisi provengono da statistica ufficiale pubblica (ISTAT, Ministero

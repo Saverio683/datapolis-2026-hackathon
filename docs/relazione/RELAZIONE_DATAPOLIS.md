@@ -5,7 +5,7 @@
 Bagheria, 2026-08-29, versione rivista del 2026-09-24. La relazione accompagna i tre
 deliverable richiesti dal concorso: il **technical notebook** (`notebooks/analisi.ipynb`,
 `notebooks/genere.ipynb`, `notebooks/educazione.ipynb`, `notebooks/mobilita.ipynb`), le
-**visualizzazioni** (`figures/`) e la **policy proposal** (`docs/policy/POLICY_PONTE_19.md`).
+**visualizzazioni** (`figures/`) e la **policy proposal** (`dist/POLICY_PONTE_19.pdf`).
 
 Una nota per la lettura. Le frecce (→) in chiusura dei paragrafi indicano il file di
 `data/processed/` o la cella di notebook che produce le cifre appena citate; la pipeline
@@ -921,7 +921,7 @@ niente», −19/−37 a tasso 2024 costante: `genere_tetto_platea.csv`)
 ## 7. Dall'evidenza alla proposta: Ponte 19
 
 La proposta completa, con modello operativo, decision gate e disegno di valutazione, sta in
-`docs/policy/POLICY_PONTE_19.md`. Questa sezione ne ricostruisce la derivazione
+`dist/POLICY_PONTE_19.pdf`. Questa sezione ne ricostruisce la derivazione
 dall'evidenza, nel formato fissato dal progetto: **evidenza → intervento → target → KPI**.
 
 | | |
@@ -1085,7 +1085,7 @@ dashboard trimestrale aggregata.
 ### 7.6 Rotta F: il modulo di genere
 
 La quota di genere (sezione 7.2) impedisce al servizio di riprodurre l'asimmetria che deve
-correggere, ma **non dice come correggerla**. Lo dice `docs/policy/POLICY_PONTE_19.md`
+correggere, ma **non dice come correggerla**. Lo dice `dist/POLICY_PONTE_19.pdf`
 §4-bis, la parte di Ponte 19 che risponde al focus principale del bando. Qui se ne riassume
 l'ossatura: una relazione che mette il genere al centro non può rimandare altrove l'unico
 pezzo di intervento costruito su di esso.
@@ -1270,7 +1270,7 @@ SVG in `figures/`.
 | Thread genere (focus principale) | `notebooks/genere.ipynb` |
 | Thread educazione (transizione istruzione→lavoro) | `notebooks/educazione.ipynb` |
 | Thread mobilità (pendolarismo verso Palermo) | `notebooks/mobilita.ipynb` |
-| Policy proposal unificata | `docs/policy/POLICY_PONTE_19.md` |
+| Policy proposal unificata | `dist/POLICY_PONTE_19.pdf` |
 | Documento di lavoro: tesi, scelta delle figure, limiti | `docs/team/SCELTE_ANALITICHE.md` |
 | Provenance delle fonti (URL, date, query, trappole) | `docs/sources.md` |
 | Figure (PNG 300dpi + SVG) | `figures/` |

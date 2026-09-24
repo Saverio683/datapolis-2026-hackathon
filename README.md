@@ -9,8 +9,9 @@ e policy proposal in PDF, le quattro schede tematiche in PDF, i quattro notebook
 allineate alla revisione della sera stessa.
 
 **Dove lavorare**: la [mappa della documentazione](docs/README.md) distingue relazione,
-policy, presentazione, analisi, materiali del team e idee. I sorgenti ufficiali sono
-in `docs/relazione/` e `docs/policy/`; le scelte interne in `docs/team/SCELTE_ANALITICHE.md`.
+policy, presentazione, analisi, materiali del team e idee. I sorgenti Markdown di relazione e
+policy sono in `docs/relazione/` e `docs/policy/` (nel pacchetto per la giuria ci sono solo i
+loro PDF, in `dist/`); le scelte interne in `docs/team/SCELTE_ANALITICHE.md`.
 
 ## Il brief
 
@@ -63,6 +64,10 @@ uv run python -m pipeline.relazione_docx        # docs/relazione/RELAZIONE_DATAP
 uv run python -m pipeline.policy_docx           # docs/policy/POLICY_PONTE_19.docx
 uv run python -m pipeline.pdf                   # dist/: PDF, notebook in HTML e zip
 ```
+
+Nel pacchetto per la giuria relazione e policy ci sono solo in PDF: la sequenza si ferma a
+`pipeline.schede`, perché `relazione_docx`, `policy_docx` e `pdf` partono dai sorgenti
+Markdown, che stanno nel repository, e i loro prodotti sono già in `dist/`.
 
 L'ordine conta: `genere.ipynb` legge tavole prodotte da `analisi.ipynb` e da
 `pipeline.edu`, e `mobilita.ipynb` ne legge due prodotte da `genere.ipynb`. Gli avvisi

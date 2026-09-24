@@ -2132,7 +2132,7 @@ def scheda_ponte19() -> Path:
         lettura="La riga in nero &egrave; quella che decide la forma del servizio: se sette "
                 "persone su dieci fra chi &egrave; fuori non stanno cercando, uno sportello a "
                 "domanda spontanea raggiunge chi gi&agrave; cerca, non loro. La colonna centrale &egrave; un rimando, non un dato.",
-        fonte="Derivazione completa in <b>docs/policy/POLICY_PONTE_19.md</b>. Ogni numero rimanda "
+        fonte="Derivazione completa in <b>dist/POLICY_PONTE_19.pdf</b>. Ogni numero rimanda "
               "alla figura che lo produce, e da l&igrave; al file di "
               "<b>data/processed/</b>.")
 
@@ -2210,7 +2210,7 @@ def scheda_ponte19() -> Path:
         fonte="Anagrafe scolastica MIUR &rarr; <b>edu_technical_schools.csv</b>; "
               "<b>edu_youth_states_2018_2024.csv</b>; <b>mob_treno_390.csv</b>, "
               "<b>mob_taglia_distanza.csv</b>. Testo integrale delle componenti in "
-              "<b>docs/policy/POLICY_PONTE_19.md</b>, sezione 4.")
+              "<b>dist/POLICY_PONTE_19.pdf</b>, sezione 4.")
 
     corpo += blocco(
         fig("Tavola"),
@@ -2251,7 +2251,7 @@ def scheda_ponte19() -> Path:
                 "capacit&agrave; sperando che il numero si aggiusti da s&eacute;. La quota "
                 "obiettivo resta &ge; 50% (tavola 4.6): il 40% &egrave; la soglia di "
                 "allarme, non il bersaglio.",
-        fonte="Testo integrale del decision gate in <b>docs/policy/POLICY_PONTE_19.md</b>, "
+        fonte="Testo integrale del decision gate in <b>dist/POLICY_PONTE_19.pdf</b>, "
               "sezione 5; la componente mobilit&agrave; della terza riga &egrave; discussa "
               "nella sezione 4-bis, componente F2.")
 
@@ -2442,8 +2442,8 @@ def scheda_ponte19() -> Path:
                 "non un conteggio di partenze evitate, e la quinta &egrave; la ragione per "
                 "cui le due finestre di ingaggio sono <b>due</b> e larghe, invece di una "
                 "sola centrata sull&rsquo;et&agrave; con il picco apparente.",
-        fonte="Elenco integrale in <b>docs/policy/POLICY_PONTE_19.md</b>, sezione 10, e in "
-              "<b>docs/relazione/RELAZIONE_DATAPOLIS.md</b>, sezione 9.")
+        fonte="Elenco integrale in <b>dist/POLICY_PONTE_19.pdf</b>, sezione 10, e in "
+              "<b>dist/RELAZIONE_DATAPOLIS.pdf</b>, sezione 9.")
 
     corpo += blocco(
         fig("Tavola"),
@@ -2473,7 +2473,7 @@ def scheda_ponte19() -> Path:
 
     return scrivi("scheda4_ponte19.html", "Ponte 19", corpo,
                   "Scheda 4 di 4 &middot; risponde alla richiesta &laquo;Proposta di "
-                  "intervento&raquo;. Versione integrale: <b>docs/policy/POLICY_PONTE_19.md</b>.")
+                  "intervento&raquo;. Versione integrale: <b>dist/POLICY_PONTE_19.pdf</b>.")
 
 
 # ===================================================================== esecuzione

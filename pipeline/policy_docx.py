@@ -485,8 +485,8 @@ sintesi che aprono il testo. Ogni numero è prodotto da una cella di notebook o 
 di `data/processed/`, e il pin di regressione `pipeline/verifica.py` lo ricalcola dai dati
 grezzi con un'implementazione indipendente, verificando poi che la frase di questa
 proposta lo riporti alla lettera. L'analisi che la sostiene, con l'atlante completo delle
-figure e la ricostruzione metodologica, sta in `docs/relazione/RELAZIONE_DATAPOLIS.md`. Il documento
-si rigenera da zero con `uv run python -m pipeline.policy_docx`.
+figure e la ricostruzione metodologica, sta in `dist/RELAZIONE_DATAPOLIS.pdf`. Il documento
+si rigenera da zero, nel repository che ne ha il sorgente, con `uv run python -m pipeline.policy_docx`.
 :::
 """
 

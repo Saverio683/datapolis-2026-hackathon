@@ -27,7 +27,7 @@ occupazionale con la Sicilia resta sostanzialmente invariato: -3,1 punti sia nel
 > componenti attraversano la rottura di misura 2019-2021 sulla condizione «in cerca di
 > occupazione» (`docs/sources.md` §7): dei 10,2 punti di calo di chi cerca, 7,5 cadono nel
 > solo passaggio 2019-2021. La relazione del team confronta quindi le componenti dentro la
-> stessa definizione, sul 2021-2024 (sezione 2.2 di `docs/relazione/RELAZIONE_DATAPOLIS.md`).
+> stessa definizione, sul 2021-2024 (sezione 2.2 di `dist/RELAZIONE_DATAPOLIS.pdf`).
 
 La relazione tra istruzione e lavoro è letta correttamente come associazione territoriale. Le
 tavole comunali sul titolo e sulla condizione sono separate e non consentono di calcolare il
@@ -36,7 +36,7 @@ tasso di occupazione dei diplomati di Bagheria.
 ## Materiali del thread
 
 I percorsi qui sotto partono dalla radice del repository condiviso. La proposta
-ufficiale del team è [Ponte 19](../../policy/POLICY_PONTE_19.md); i report di questa
+ufficiale del team è Ponte 19 (`dist/POLICY_PONTE_19.pdf`); i report di questa
 cartella documentano il contributo del thread educazione.
 
 - `notebooks/educazione.ipynb`: notebook eseguito, con output incorporati;

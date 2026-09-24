@@ -1,11 +1,12 @@
 # Scelte analitiche del team - spina dorsale della relazione
 
 Documento di lavoro del team, scritto il 2026-08-28 e rivisto il 2026-09-24. Non è un
-deliverable: la relazione per la giuria è `docs/relazione/RELAZIONE_DATAPOLIS.md`. Tiene le decisioni che la relazione di
+deliverable: la relazione per la giuria è `dist/RELAZIONE_DATAPOLIS.pdf`. Tiene le decisioni che la relazione di
 accompagnamento non deve rimettere in discussione: la tesi, le tre figure, e i limiti
 che si dichiarano invece di nasconderli. **La relazione completa che ne discende è
-`docs/relazione/RELAZIONE_DATAPOLIS.md`** (scritta il 2026-08-28, rivista il 2026-09-24): se una decisione cambia qui,
-va riportata anche lì.
+`dist/RELAZIONE_DATAPOLIS.pdf`** (scritta il 2026-08-28, rivista il 2026-09-24): se una
+decisione cambia qui, va riportata anche lì, nel sorgente `docs/relazione/RELAZIONE_DATAPOLIS.md`
+del repository.
 
 Regola che vale ovunque qui dentro: **nessuna cifra si scrive a mano**. Ogni numero
 citato punta alla cella o al file che lo produce, e si rigenera con
@@ -216,7 +217,7 @@ taglia e distanza)»; il numero 390 è pinnato in `pipeline/verifica.py`.
 | Focus **pendolarismo** | ✅ destinazione identificata (91,1% studio e 65,1% lavoro verso Palermo) e ribaltamento di genere, replicato su due fonti | `mob_fig01`-`04`, `fig12_pendolarismo`, `notebooks/mobilita.ipynb` |
 | Technical notebook riproducibile | ✅ sensore nbconvert verde sui quattro notebook (2026-09-24) | - |
 | 2-3 data viz | ✅ le tre dichiarate sopra | `figures/` |
-| Policy proposal | ✅ | `docs/policy/POLICY_PONTE_19.md` |
+| Policy proposal | ✅ | `dist/POLICY_PONTE_19.pdf` |
 
 ## 5. I limiti che si dichiarano per primi
 

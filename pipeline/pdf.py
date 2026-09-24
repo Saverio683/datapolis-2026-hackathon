@@ -40,8 +40,9 @@ DECK = ("docs/presentazione/presentazione_hackaton_v5.pptx", "PRESENTAZIONE_PONT
 NEL_PACCHETTO = ("README.md", "LEGGIMI_GIURIA.md", "pyproject.toml", "uv.lock",
                  "data/", "pipeline/", "notebooks/", "viz/", "figures/", "tests/",
                  "docs/README.md", "docs/sources.md", "docs/analisi/educazione/",
-                 "docs/concorso/", "docs/relazione/RELAZIONE_DATAPOLIS.md",
-                 "docs/policy/POLICY_PONTE_19.md", "docs/team/SCELTE_ANALITICHE.md", "docs/schede/")
+                 "docs/concorso/", "docs/team/SCELTE_ANALITICHE.md", "docs/schede/")
+# Relazione e policy entrano solo come PDF, fra i prodotti di dist/: i sorgenti Markdown
+# restano nel repository, e pipeline.verifica nel pacchetto salta i loro claim e lo dice.
 # Dentro il perimetro ma fuori dal pacchetto: il generatore del deck sta in pipeline/ e porta
 # testi e note delle slide, cioe' la presentazione, che alla giuria non va.
 FUORI_PACCHETTO = ("pipeline/presentazione_pptx.py",

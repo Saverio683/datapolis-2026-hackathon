@@ -20,7 +20,7 @@ Quattro scelte di progetto, tutte derivate dai dati e non da preferenze di desig
    raggiunto, non come lo si raggiunge.
 
 Nessuna cifra qui è scritta a mano: ognuna punta al file che la produce. L'analisi da cui
-la proposta discende è `docs/relazione/RELAZIONE_DATAPOLIS.md`.
+la proposta discende è `dist/RELAZIONE_DATAPOLIS.pdf`.
 
 **Una parola sul NEET, perché è il termine con cui la locandina apre.** Il bando parla di
 «alto tasso di NEET (15-34enni)». Quella misura, a livello comunale, **non esiste nei dati
@@ -43,7 +43,7 @@ compiano, e quella dall'uscita dal percorso formativo si compie fra i 25 e i 29 
 26-34enni restano fuori perché nessuna tavola comunale ne segue la condizione
 professionale. Il deficit femminile più grande però sta sopra i 25 anni (sezione 1):
 estendere il modulo di genere ai 26-34 è un'opzione dichiarata, da decidere. La
-ricostruzione completa sta in `docs/relazione/RELAZIONE_DATAPOLIS.md` §1 e §9.
+ricostruzione completa sta in `dist/RELAZIONE_DATAPOLIS.pdf` §1 e §9.
 
 ---
 
