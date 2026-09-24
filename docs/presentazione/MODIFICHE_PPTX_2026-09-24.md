@@ -193,3 +193,23 @@ Resta com'è. Dopo di lei va **una slide nuova**, 11-bis.
     nella nota di riga 406 e nella terza scheda delle tre evidenze;
   - il titolo della slide di fig07, «Le ragazze restano fino ai 23 anni, poi la coorte si
     riduce», va affiancato al dato maschile.
+
+## Dalla v4 proiettata alla v5 consegnata (sera del 2026-09-24)
+
+La v4 è il deck proiettato al festival e resta com'è. La v5 è la stessa v4 con quattro slide
+allineate a relazione e policy dopo la passata finale di verifica dei fatti; nello ZIP per la
+giuria entra solo il suo PDF, `dist/PRESENTAZIONE_PONTE_19.pdf`, generato da `pipeline.pdf`.
+Le altre quindici slide sono identiche alla v4, controllate pagina per pagina sul PDF.
+
+- **Slide 12** (casalinghe): la slide è un'unica immagine. Le cinque righe che parlavano di
+  condizione «dichiarata» sono coperte da caselle del colore di fondo con il testo corretto:
+  dal 2021 la quota è una stima di modello del censimento, non una dichiarazione (relazione,
+  sezione 3.2). Il grafico e le cifre non cambiano.
+- **Slide 16** (target): la finestra B passa da «21-25+» a «22-25», e il riquadro «Dati
+  osservati vs inferiti» aggiunge che i 21enni entrano su segnalazione (policy, sezione 3).
+- **Slide 17** (outreach): al posto delle variazioni 2018-2024 (−10,2 e −0,6 punti), che
+  attraversano la rottura di misura del 2019-2021, le due componenti a definizione costante:
+  chi cerca dal 10,6% al 7,9%, gli inattivi non studenti fermi al 19,2% e al 19,0%
+  (relazione, sezione 2.2).
+- **Slide 18** (mobilità): il test sul mezzo collettivo è sui 381 comuni non capoluogo, non
+  sui 390 (relazione, sezione 5.4).

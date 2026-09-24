@@ -4,6 +4,7 @@ Non ricalcola niente: converte quello che le altre pipeline hanno già prodotto.
 Va quindi eseguito per ultimo, dopo `relazione_docx`, `policy_docx` e `schede`.
 
   .docx -> .pdf   LibreOffice headless (lento: qualche minuto per la relazione)
+  .pptx -> .pdf   LibreOffice headless, il deck proiettato; nello zip entra solo il PDF
   .html -> .pdf   Chromium o Chrome headless, che rispettano le regole `@page A4`
   .md   -> .pdf   pandoc per l'HTML, poi Chromium (senza LaTeX non c'è via diretta)
   .ipynb -> .html nbconvert, per chi legge il notebook senza avere Jupyter
@@ -29,9 +30,13 @@ PAGINE = ["docs/schede/scheda1_profilo.html", "docs/schede/scheda2_genere.html",
 TESTI = [("LEGGIMI_GIURIA.md", "Guida alla lettura - DataPolis 2026")]
 NOTEBOOK = ["notebooks/analisi.ipynb", "notebooks/genere.ipynb",
             "notebooks/educazione.ipynb", "notebooks/mobilita.ipynb"]
+# Il deck del 2026-09-24 entra come PDF, mai il .pptx. E' la v5: la v4 proiettata con
+# quattro slide allineate alla relazione rivista (docs/presentazione/MODIFICHE_PPTX_2026-09-24.md).
+DECK = ("docs/presentazione/presentazione_hackaton_v5.pptx", "PRESENTAZIONE_PONTE_19.pdf")
 
 # Nello zip entra solo cio' che serve a leggere e a rifare: il resto del repo (note di
-# lavoro, contesto per i membri del team, presentazione) resta fuori.
+# lavoro, contesto per i membri del team, sorgenti della presentazione) resta fuori. Del
+# deck entra solo il PDF, fra i prodotti di dist/.
 NEL_PACCHETTO = ("README.md", "LEGGIMI_GIURIA.md", "pyproject.toml", "uv.lock",
                  "data/", "pipeline/", "notebooks/", "viz/", "figures/", "tests/",
                  "docs/README.md", "docs/sources.md", "docs/analisi/educazione/",
@@ -95,6 +100,12 @@ def main():
         print(f"docx -> pdf: {nome} (minuti, non secondi)", flush=True)
         esegui(office, "--headless", "--convert-to", "pdf", "--outdir", FUORI, RADICE / nome)
         attesi.append(FUORI / (Path(nome).stem + ".pdf"))
+
+    sorgente, nome_pdf = DECK
+    print(f"pptx -> pdf: {sorgente}", flush=True)
+    esegui(office, "--headless", "--convert-to", "pdf", "--outdir", FUORI, RADICE / sorgente)
+    (FUORI / (Path(sorgente).stem + ".pdf")).replace(FUORI / nome_pdf)
+    attesi.append(FUORI / nome_pdf)
 
     for nome in PAGINE:
         print(f"html -> pdf: {nome}", flush=True)

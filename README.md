@@ -5,7 +5,8 @@ condizione dei 15-34enni di Bagheria (PA) e proposta di intervento data-driven, 
 
 **Da dove partire**: `LEGGIMI_GIURIA.md`. I deliverable impaginati sono in `dist/`: relazione
 e policy proposal in PDF, le quattro schede tematiche in PDF, i quattro notebook in HTML
-(leggibili senza Jupyter).
+(leggibili senza Jupyter) e la presentazione del 24 settembre in PDF, con quattro slide
+allineate alla revisione della sera stessa.
 
 **Dove lavorare**: la [mappa della documentazione](docs/README.md) distingue relazione,
 policy, presentazione, analisi, materiali del team e idee. I sorgenti ufficiali sono
